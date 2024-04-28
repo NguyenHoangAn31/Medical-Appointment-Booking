@@ -10,6 +10,7 @@ export {default as Booking} from './Booking';
 export {default as CheckOut} from './CheckOut';
 export {default as Login} from '../Login';
 export {default as LoginPhone} from '../LoginPhone';
+
 export {default as PhoneSubmit} from '../PhoneSubmit';
 export {default as LoginGmail} from '../LoginGmail';
 export {default as Signup} from '../Signup';

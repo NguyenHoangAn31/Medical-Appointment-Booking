@@ -1578,6 +1578,7 @@
     "@firebase/util" "1.9.5"
     tslib "^2.1.0"
 
+
 "@firebase/app-compat@0.2.31":
   version "0.2.31"
   resolved "https://registry.npmjs.org/@firebase/app-compat/-/app-compat-0.2.31.tgz"
@@ -1589,10 +1590,13 @@
     "@firebase/util" "1.9.5"
     tslib "^2.1.0"
 
+
 "@firebase/app-types@0.9.1":
+
   version "0.9.1"
   resolved "https://registry.npmjs.org/@firebase/app-types/-/app-types-0.9.1.tgz"
   integrity sha512-nFGqTYsnDFn1oXf1tCwPAc+hQPxyvBT/QB7qDjwK+IDYThOn63nGhzdUTXxVD9Ca8gUY/e5PQMngeo0ZW/E3uQ==
+
 
 "@firebase/app@0.10.1":
   version "0.10.1"
@@ -1879,6 +1883,7 @@
     "@firebase/util" "1.9.5"
     tslib "^2.1.0"
     undici "5.28.4"
+
 
 "@firebase/util@1.9.5":
   version "1.9.5"
@@ -2317,6 +2322,7 @@
   version "1.1.0"
   resolved "https://registry.npmjs.org/@protobufjs/utf8/-/utf8-1.1.0.tgz"
   integrity sha512-Vvn3zZrhQZkkBE8LSuW3em98c0FwgO4nxzv6OdSxPKJIEKY2bGbHn+mhGIPerzI4twdxaP8/0+06HBpwf345Lw==
+
 
 
 "@rc-component/color-picker@~1.5.3":
@@ -2827,6 +2833,7 @@
   integrity sha512-FQx220y22OKNTqaByeBGqHWYz4cl94tpcxeFdvBo3wjG6XPBuZ0BNgNZRV5J5TFmmcsJ4IzsLkmGRiQbnYsBEQ==
   dependencies:
     "@types/node" "*"
+
 
 "@types/node@*", "@types/node@>=12.12.47", "@types/node@>=13.7.0":
   version "20.12.7"
@@ -5457,6 +5464,7 @@ fastq@^1.6.0:
   dependencies:
     reusify "^1.0.4"
 
+
 faye-websocket@0.11.4, faye-websocket@^0.11.3:
   version "0.11.4"
   resolved "https://registry.npmjs.org/faye-websocket/-/faye-websocket-0.11.4.tgz"
@@ -6106,7 +6114,9 @@ icss-utils@^5.0.0, icss-utils@^5.1.0:
   resolved "https://registry.npmjs.org/icss-utils/-/icss-utils-5.1.0.tgz"
   integrity sha512-soFhflCVWLfRNOPU3iv5Z9VUdT44xFRbzjLsEzSr5AQmgqPMTHdU3PMT1Cf1ssx8fLNJDA1juftYl+PUcv3MqA==
 
+
 idb@7.1.1, idb@^7.0.1:
+
   version "7.1.1"
   resolved "https://registry.npmjs.org/idb/-/idb-7.1.1.tgz"
   integrity sha512-gchesWBzyvGHRO9W8tzUWFDycow5gwjvFKfyV9FF32Y7F50yZMp7mP+T2mJIWFx49zicqyC4uefHM17o6xKIVQ==

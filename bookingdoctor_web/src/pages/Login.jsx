@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 // import firebase from '../services/auth/firebase';
 import { motion } from 'framer-motion';
@@ -37,7 +38,6 @@ const Login = () => {
             </div>
         </div>
       </div>
-      
     </div>
   )
 }

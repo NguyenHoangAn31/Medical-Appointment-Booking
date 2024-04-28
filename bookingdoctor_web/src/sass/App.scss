@@ -4,6 +4,13 @@
 @import '../sass/variables';
 @import '../sass/global';
 
+
+// Hien Create(List - Detail) - 28/4/2024
+@import '../../src/components/UI/Doctor/sass/list';
+@import '../../src/components/UI/Doctor/sass/detail';
+
+
 @import '../components/Layouts/Client/Header/header';
 @import '../components/Layouts/Client/Footer/footer';
 @import '../components/UI/Home/SearchHome';
+
