@@ -85,7 +85,7 @@ body {
 }
 
 section {
-  margin: 40px 0;
+  margin: 50px 0;
 }
 
 nav {
@@ -135,4 +135,107 @@ nav .nav-link:hover {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+}
+
+.home__title_small {
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.home__title_largest {
+  font-size: 42px;
+  font-weight: bolder;
+}
+
+.text__paragrah {
+  font-size: 16px;
+  font-style: italic;
+  color: rgba(0, 0, 0, 0.51);
+  margin-top: 30px;
+}
+
+.form__search {
+  z-index: 100;
+  margin-top: 70px;
+  position: relative;
+  width: 100%;
+  padding: 30px 0;
+}
+.form__search .search__home {
+  position: absolute;
+  right: -20%;
+  width: 100%;
+  padding: 25px 30px;
+  border-radius: 20px;
+  border: 0;
+  box-shadow: var(--boxShadow);
+  outline: none;
+}
+.form__search .btn__search_home {
+  position: absolute;
+  top: 85%;
+  right: -17%;
+  outline: none;
+  background-image: linear-gradient(to right, #9DCEFF 20%, #92A3FD 100%);
+  padding: 5px 20px;
+  border-radius: 10px;
+  border: 0;
+  color: #fff;
+}
+.form__search .btn__search_home:focus {
+  border: 1px solid #9DCEFF;
+}
+
+.view__partient {
+  float: right;
+  width: 180px;
+  height: 90px;
+  border-radius: 20px;
+  background-color: #C0E5FA;
+  padding: 15px 20px;
+}
+.view__partient h5 {
+  font-weight: bold;
+  color: #000000;
+}
+.view__partient p {
+  font-size: 14px;
+  color: #000000;
+}
+
+.bg__search_home {
+  width: 350px;
+  height: 500px;
+  border: 3px solid #9DCEFF;
+  box-shadow: var(--boxShadow);
+  border-radius: 200px;
+  overflow: hidden;
+  margin-left: 50px;
+}
+.bg__search_home img {
+  width: 380px;
+  height: 500px;
+  -o-object-fit: cover;
+     object-fit: cover;
+}
+
+.btn__banner {
+  position: absolute;
+  bottom: 100px;
+  right: -10px;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: #000000;
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 24px;
+  cursor: pointer;
+}
+.btn__banner:hover {
+  background-color: #fff;
+  color: #000;
+  border: 1px solid #000000;
 }/*# sourceMappingURL=App.css.map */

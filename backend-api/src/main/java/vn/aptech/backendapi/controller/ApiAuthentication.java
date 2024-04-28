@@ -81,7 +81,10 @@ public class ApiAuthentication {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body("You chose the wrong login method, please choose another method!");
         }
-
     }
+
+   // public ResponseEntit
+
+
 }
 
