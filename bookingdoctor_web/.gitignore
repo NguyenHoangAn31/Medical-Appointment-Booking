@@ -11,6 +11,8 @@ node_modules
 dist
 dist-ssr
 *.local
+src/services/auth
+src/route/CheckRouters/token
 
 # Editor directories and files
 .vscode/*

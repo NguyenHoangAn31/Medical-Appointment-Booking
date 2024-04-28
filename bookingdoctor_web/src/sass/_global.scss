@@ -1,0 +1,58 @@
+.main-app {
+    min-height: 650px;
+}
+.btn__login{
+    background-color: #000af7;
+    color: #fff;
+    padding: 15px 30px;
+    text-decoration: none;
+    font-size: 18px;
+    border-radius: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    &:hover{
+        background-color: #000af7;
+        color: #fff;
+    }
+}
+
+.login__title{
+    font-size:  40px;
+    font-weight: bold;
+    color: #000af7;
+}
+.login__title_sup{
+    font-size:  30px;
+    font-weight: bold;
+    color: #000af7;
+}
+
+.input__username{
+    width: 100%;
+    padding: 10px 20px;
+    border-radius: 20px;
+    border: 2px solid #ff61ba;
+    &::placeholder{
+        font-style: italic;
+        font-size: 14px;
+        font-weight: 400;
+        color: #CECECE;
+    }
+    &:focus{
+        border: 2px solid #ff61ba;
+    }
+}
+.btn__submit{
+    width: 100%;
+    padding: 10px 20px;
+    border-radius: 20px;
+    border: 2px solid #FFF;
+    background-color: #ff61ba;
+    box-shadow: var(--boxShadow); 
+    color: #FFF;
+}
+
+section{
+    margin: 40px 0;
+}
