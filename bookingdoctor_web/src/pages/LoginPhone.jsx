@@ -1,10 +1,32 @@
 import React, { useState, useEffect } from 'react';
+import {useNavigate} from 'react-router-dom'; 
 import bg_login from '../../public/images/image-login.png';
 import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
+
+import * as authService from '../../src/services/API/authService';
 
 const LoginPhone = () => {
 
+    const [username, setUsername] = useState('');
+    const provider ='phone';
+    const navigateTo  = useNavigate();
+
+
+    const handleSendOtp = async (event) => {
+        event.preventDefault()
+        try {
+               
+               const result =  await authService.sendOtp(username, provider);
+               console.log(result);
+            //    if(result.data){
+            //     navigateTo('/login-by-phone-submit?username=${username}');
+            //    }
+        
+        } catch (error) {
+            console.error('Error sending OTP: ', error)
+        }
+    };
+    
 
     return (
         <>
@@ -23,10 +45,16 @@ const LoginPhone = () => {
                                 <h5 className='login__title_sup'>Booking appointment</h5>
                                 <div className='py-5 border-top border-dark border-2 mt-3'>
                                     {/* <h5 className='mb-3 text-black-50'>Step 1: Nhập số điện thoại</h5> */}
-                                    <form>
+                                    <form onClick={handleSendOtp}>
                                         <input type="hidden" name="provider" value="phone" />
                                         <div className="mb-3">
-                                            <input type="text" className="input__username" id="input__phone" placeholder="Enter your phone: +84123456789" />
+                                            <input 
+                                                className="input__username" 
+                                                id="input__phone"
+                                                placeholder="Enter your phone: +84123456789"
+                                                value={username}
+                                                onChange={(e) => setUsername(e.target.value)}
+                                              />
                                         </div>
                                         <div className="mb-4">
                                             <motion.div whileTap={{ scale: 0.8 }}>
@@ -37,7 +65,7 @@ const LoginPhone = () => {
                                 </div>
 
                                 <div className='mt-xl-5'>
-                                    <p>Quay về trang login. <Link to="/login" className='text-decoration-none ms-2'>Back to login</Link></p>
+                                    <p>Quay về trang login. <a hrefh="/login" className='text-decoration-none ms-2'>Back to login</a></p>
                                 </div>
                             </div>
                         </div>
@@ -45,26 +73,7 @@ const LoginPhone = () => {
                 </div>
             </div>
 
-            {/* Phần modal hiển thị */}
-            {/* {showModal && (
-                <div className="modal" tabIndex="-1">
-                    <div className="modal-dialog modal-dialog-centered">
-                        <div className="modal-content">
-                            <div className="modal-header">
-                                <h5 className="modal-title">Modal title</h5>
-                                <button type="button" className="btn-close" onClick={closeModal} data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div className="modal-body">
-                                <p>Modal body text goes here.</p>
-                            </div>
-                            <div className="modal-footer">
-                                <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                <button type="button" className="btn btn-primary">Save changes</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            )} */}
+            
         </>
     )
 }
