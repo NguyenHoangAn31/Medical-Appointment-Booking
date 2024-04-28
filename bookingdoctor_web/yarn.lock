@@ -1450,7 +1450,9 @@
     "@firebase/util" "1.9.5"
     tslib "^2.1.0"
 
-"@firebase/app-compat@0.2.31", "@firebase/app-compat@0.x":
+
+"@firebase/app-compat@0.2.31":
+
   version "0.2.31"
   resolved "https://registry.npmjs.org/@firebase/app-compat/-/app-compat-0.2.31.tgz"
   integrity sha512-TP9EwOiqDDL4tsP9EyOJn+RYUTkopS0nCg6TZ0PH8XiUgLlgDAF2waAZNha0+18elUkVjbWoXcudCgJ0iVWEVA==
@@ -1461,12 +1463,16 @@
     "@firebase/util" "1.9.5"
     tslib "^2.1.0"
 
-"@firebase/app-types@0.9.1", "@firebase/app-types@0.x":
+
+"@firebase/app-types@0.9.1":
+
   version "0.9.1"
   resolved "https://registry.npmjs.org/@firebase/app-types/-/app-types-0.9.1.tgz"
   integrity sha512-nFGqTYsnDFn1oXf1tCwPAc+hQPxyvBT/QB7qDjwK+IDYThOn63nGhzdUTXxVD9Ca8gUY/e5PQMngeo0ZW/E3uQ==
 
-"@firebase/app@0.10.1", "@firebase/app@0.x":
+
+
+"@firebase/app@0.10.1":
   version "0.10.1"
   resolved "https://registry.npmjs.org/@firebase/app/-/app-0.10.1.tgz"
   integrity sha512-H8hvbSVxNt+QaUQ1O0Gqidksi5ilj6eL8iMYxUNZgsMwZ1yOTgXc2C9zktbPQKokgcMq+EbF0k/t5iouslSkiA==
@@ -1752,7 +1758,9 @@
     tslib "^2.1.0"
     undici "5.28.4"
 
-"@firebase/util@1.9.5", "@firebase/util@1.x":
+
+
+"@firebase/util@1.9.5":
   version "1.9.5"
   resolved "https://registry.npmjs.org/@firebase/util/-/util-1.9.5.tgz"
   integrity sha512-PP4pAFISDxsf70l3pEy34Mf3GkkUcVQ3MdKp6aSVb7tcpfUQxnsdV7twDd8EkfB6zZylH6wpUAoangQDmCUMqw==
@@ -2625,6 +2633,9 @@
     "@types/node" "*"
 
 "@types/node@*", "@types/node@^18.0.0 || >=20.0.0", "@types/node@>=12.12.47", "@types/node@>=13.7.0":
+
+
+
   version "20.12.7"
   resolved "https://registry.npmjs.org/@types/node/-/node-20.12.7.tgz"
   integrity sha512-wq0cICSkRLVaf3UGLMGItu/PtdY7oaXaI/RVU+xliKVOtRna3PRY57ZDfztpDL0n11vfymMUnXv8QwYCO7L1wg==
@@ -5277,7 +5288,9 @@ fastq@^1.6.0:
   dependencies:
     reusify "^1.0.4"
 
-faye-websocket@^0.11.3, faye-websocket@0.11.4:
+
+
+faye-websocket@0.11.4, faye-websocket@^0.11.3:
   version "0.11.4"
   resolved "https://registry.npmjs.org/faye-websocket/-/faye-websocket-0.11.4.tgz"
   integrity sha512-CzbClwlXAuiRQAlUyfqPgvPoNKTckTPGfwZV4ZdAhVcP2lh9KUxJg2b5GkE7XbjKQ3YJnQ9z6D9ntLAlB+tP8g==
@@ -5929,7 +5942,9 @@ icss-utils@^5.0.0, icss-utils@^5.1.0:
   resolved "https://registry.npmjs.org/icss-utils/-/icss-utils-5.1.0.tgz"
   integrity sha512-soFhflCVWLfRNOPU3iv5Z9VUdT44xFRbzjLsEzSr5AQmgqPMTHdU3PMT1Cf1ssx8fLNJDA1juftYl+PUcv3MqA==
 
-idb@^7.0.1, idb@7.1.1:
+
+idb@7.1.1, idb@^7.0.1:
+
   version "7.1.1"
   resolved "https://registry.npmjs.org/idb/-/idb-7.1.1.tgz"
   integrity sha512-gchesWBzyvGHRO9W8tzUWFDycow5gwjvFKfyV9FF32Y7F50yZMp7mP+T2mJIWFx49zicqyC4uefHM17o6xKIVQ==

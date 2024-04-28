@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+
 import {useNavigate} from 'react-router-dom'; 
 import bg_login from '../../public/images/image-login.png';
 import { motion } from 'framer-motion';
@@ -45,6 +46,7 @@ const LoginPhone = () => {
                                 <h5 className='login__title_sup'>Booking appointment</h5>
                                 <div className='py-5 border-top border-dark border-2 mt-3'>
                                     {/* <h5 className='mb-3 text-black-50'>Step 1: Nhập số điện thoại</h5> */}
+
                                     <form onClick={handleSendOtp}>
                                         <input type="hidden" name="provider" value="phone" />
                                         <div className="mb-3">
@@ -65,6 +67,7 @@ const LoginPhone = () => {
                                 </div>
 
                                 <div className='mt-xl-5'>
+
                                     <p>Quay về trang login. <a hrefh="/login" className='text-decoration-none ms-2'>Back to login</a></p>
                                 </div>
                             </div>
@@ -73,7 +76,6 @@ const LoginPhone = () => {
                 </div>
             </div>
 
-            
         </>
     )
 }
