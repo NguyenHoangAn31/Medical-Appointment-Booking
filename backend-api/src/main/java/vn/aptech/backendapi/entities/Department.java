@@ -15,6 +15,7 @@ public class Department extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String name;
+    private String icon;
     private String url;
 
     private boolean status;

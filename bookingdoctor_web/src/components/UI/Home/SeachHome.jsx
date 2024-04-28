@@ -1,5 +1,4 @@
 import React from 'react'
-import bg_search_home from '../../../../public/images/bg_home_01.jpg'
 import { MdArrowOutward } from "react-icons/md"
 import { FaStar } from "react-icons/fa"
 
@@ -16,26 +15,25 @@ const SeachHome = () => {
                                 There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour
                             </p>
                         </div>
-                        <div className="col-12">
+                        <div className="col-12 mb-lg-5">
                             <form action="#" className='form__search'>
                                 <input type="text" name="input_search" className='search__home' placeholder='Search Sysptoms / Doctor / Clinics' />
                                 <button type='submit' className='btn__search_home'>Search</button>
                             </form>
                         </div>
-                        <div className="col-12">
+                        <div className="col-12 mt-lg-5">
                             <div className="view__partient">
-                                <h5>10K<plus>+</plus></h5>
+                                <h5>10K<sup>+</sup></h5>
                                 <p>Happy partient</p>
                             </div>
-
                         </div>
                     </div>
 
                 </div>
                 <div className="col-md-4">
-                    <div className="col-12">
+                    <div className="col-12 text-center position-relative">
                         <div className='bg__search_home'>
-                            <img src={bg_search_home} alt="" className='img-fluid' />
+                            <img src="/images/bg_home_01.jpg" alt="" />
                         </div>
                         <a href="#" className='btn__banner'><MdArrowOutward /></a>
                     </div>
