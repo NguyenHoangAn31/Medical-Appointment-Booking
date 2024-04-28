@@ -1,31 +1,31 @@
 -- Qui ước đặt tên
 
-class 
+class
 
     1: product__card_name, product__card_title, product__card_star, product__card_price
+
 Ghi chú phần mình làm:
 // Khoa: Doctor: create 13/04/2024
-// Khoa: Doctor:  update,.... 13/04/2024
+// Khoa: Doctor: update,.... 13/04/2024
 // Khoa: Doctor: create, update,.... 13/04/2024
 // Khoa: Doctor: create, update,.... 13/04/2024
-
 
 Báo cáo: 24h hằng ngày báo cáo lên group những phần mình làm
 
-Tìm dữ liệu và xử lý image: 
-    Tìm dữ liệu: 
-        Doctor: An kiếm 14/04/2024 - 5 record mỗi khoa, đăng ký bằng gmail
-        Partient: Chương kiếm 14/04/2024
-        Image: Hiển xử lý( Hình xử lý Image: hình đại diện: 400x600 PNG ) 14/04/2024
-        Khoa xử lý insert database, Cấu trúc thư mục up lên github 15/04/2024
+Tìm dữ liệu và xử lý image:
+Tìm dữ liệu:
+Doctor: An kiếm 14/04/2024 - 5 record mỗi khoa, đăng ký bằng gmail
+Partient: Chương kiếm 14/04/2024
+Image: Hiển xử lý( Hình xử lý Image: hình đại diện: 400x600 PNG ) 14/04/2024
+Khoa xử lý insert database, Cấu trúc thư mục up lên github 15/04/2024
 
 Website:
-    // Hiển:
-        Doctor
-            1: Xem lich book
-            2: Tạo giờ khám ngày khám
-            3: Xem thông tin bệnh nhân
-            4: Quản lý account
+// Hiển:
+Doctor
+1: Xem lich book
+2: Tạo giờ khám ngày khám
+3: Xem thông tin bệnh nhân
+4: Quản lý account
 
     // Khoa:
         Login, Sign-in
@@ -41,8 +41,8 @@ Website:
             6: Book lịch khám
             7: Feedback
 
-    // An - Chương: 
-        Admin: 
+    // An - Chương:
+        Admin:
             1: Quản lý User: An làm
                 - Thêm account doctor
                 - Thêm account admin1, admin2, admin3
@@ -65,7 +65,8 @@ Website:
                 Khoa: Da liễu
                 Khoa: Mắt
             11: Dashboard: An làm
-App: 
-    Partient: Khoa - An
+
+App:
+Partient: Khoa - An
 
     Doctor: Hiển - Chương
