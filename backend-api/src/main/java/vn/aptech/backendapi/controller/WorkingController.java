@@ -5,6 +5,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -17,8 +18,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import vn.aptech.backendapi.dto.WorkingCreateDto;
 import vn.aptech.backendapi.dto.WorkingDto;
+import vn.aptech.backendapi.service.Doctor.DoctorService;
 import vn.aptech.backendapi.service.Working.WorkingService;
 
 @RestController
@@ -27,11 +28,12 @@ public class WorkingController {
     @Autowired
     private WorkingService workingService;
 
-    @GetMapping(value = "/all", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<WorkingDto>> findAll() {
-        List<WorkingDto> result = workingService.findAll();
-        return ResponseEntity.ok(result);
-    }
+    @Autowired
+    private DoctorService doctorService;
+
+    @Autowired
+    private ModelMapper mapper;
+
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<WorkingDto> findById(@PathVariable("id") int id) {
@@ -55,6 +57,7 @@ public class WorkingController {
 
     @PostMapping(value = "/create", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<WorkingDto> Create(@RequestBody WorkingDto dto) {
+        
         WorkingDto result = workingService.save(dto);
         if (result != null) {
             return ResponseEntity.ok(result); // Return the created SlotDto
@@ -64,24 +67,11 @@ public class WorkingController {
     }
 
     @PutMapping(value = "/update/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<WorkingDto> updateTutorial(@PathVariable("id") int id, @RequestBody WorkingCreateDto dto) {
+    public ResponseEntity<WorkingDto> updateTutorial(@PathVariable("id") int id, @RequestBody WorkingDto dto) {
         Optional<WorkingDto> existingWorkingOptional = workingService.findById(id);
         if (existingWorkingOptional.isPresent()) {
-            WorkingDto existingWorking = existingWorkingOptional.get();
-            existingWorking.setAddress(dto.getAddress());
-            existingWorking.setCompany(dto.getCompany());
-
-
-            String startWork = dto.getStartWork();
-            String endtWork = dto.getEndWork();
-
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-            LocalDate startWorkDate = LocalDate.parse(startWork, formatter);
-            LocalDate endtWorkDate = LocalDate.parse(endtWork, formatter);
-
-            existingWorking.setStartWork(startWorkDate);
-            existingWorking.setEndWork(endtWorkDate);
-
+            WorkingDto existingWorking = mapper.map(dto,existingWorkingOptional.get().getClass());
+            existingWorking.setId(id);
             WorkingDto updatedWorking = workingService.save(existingWorking);
             return ResponseEntity.ok(updatedWorking);
         }

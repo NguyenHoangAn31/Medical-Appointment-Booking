@@ -1,5 +1,7 @@
 package vn.aptech.backendapi.service.Working;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -9,7 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import vn.aptech.backendapi.dto.WorkingDto;
+import vn.aptech.backendapi.entities.Doctor;
 import vn.aptech.backendapi.entities.Working;
+import vn.aptech.backendapi.repository.DoctorRepository;
 import vn.aptech.backendapi.repository.WorkingRepository;
 
 @Service
@@ -19,10 +23,17 @@ public class WorkingServiceImpl implements WorkingService {
     private WorkingRepository workingRepository;
 
     @Autowired
+    private DoctorRepository doctorRepository;
+
+    @Autowired
     private ModelMapper mapper;
 
     private WorkingDto toDto(Working s) {
-        return mapper.map(s, WorkingDto.class);
+        WorkingDto w = mapper.map(s, WorkingDto.class);
+        w.setDoctor_id(s.getDoctor().getId());
+        w.setStartWork(s.getStartWork().toString());
+        w.setEndWork(s.getEndWork().toString());
+        return w;
     }
 
     @Override
@@ -32,6 +43,7 @@ public class WorkingServiceImpl implements WorkingService {
                 .collect(Collectors.toList());
     }
 
+
     @Override
     public Optional<WorkingDto> findById(int id) {
         Optional<Working> result = workingRepository.findById(id);
@@ -40,8 +52,27 @@ public class WorkingServiceImpl implements WorkingService {
 
     @Override
     public WorkingDto save(WorkingDto dto) {
-        Working s = mapper.map(dto, Working.class);
-        Working result = workingRepository.save(s);
+
+        Working w = mapper.map(dto, Working.class);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+        if (dto.getStartWork() != null && dto.getStartWork().length()>0) {
+            String startWork = dto.getStartWork();
+            LocalDate startWorkDate = LocalDate.parse(startWork, formatter);
+            w.setStartWork(startWorkDate);
+        }
+        if (dto.getEndWork() != null && dto.getStartWork().length()>0) {
+            String endtWork = dto.getEndWork();
+            LocalDate endtWorkDate = LocalDate.parse(endtWork, formatter);
+            w.setEndWork(endtWorkDate);
+        }
+
+        if (dto.getDoctor_id() > 0) {
+            Optional<Doctor> d = doctorRepository.findById(dto.getDoctor_id());
+            d.ifPresent(doctor -> w.setDoctor(mapper.map(d, Doctor.class)));
+        }
+        
+        Working result = workingRepository.save(w);
         return toDto(result);
     }
 

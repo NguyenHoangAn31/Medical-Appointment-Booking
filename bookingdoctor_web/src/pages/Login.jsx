@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import firebase from '../services/auth/firebase';
+// import firebase from '../services/auth/firebase';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 

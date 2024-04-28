@@ -4,8 +4,6 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDate;
-
 
 @Data
 @Getter
@@ -14,6 +12,9 @@ public class WorkingDto {
     private int id;
     private String company;
     private String address;
-    private LocalDate startWork;
-    private LocalDate endWork;
+    private String startWork;
+    private String endWork;
+    private byte status;
+    private int doctor_id;
+
 }

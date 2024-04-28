@@ -23,18 +23,24 @@ const patientRouters = [
     {path:'/checkout',component:Client.CheckOut,layout:ClientLayout}
 ]
 
-const privateRouters = [
-    {path:'/dashboard',component:DashBoard.Dashboard,layout:DashBoardLayout},
-    {path:'/dashboard/profile',component:DashBoard.Profile,layout:DashBoardLayout},
-]
+
 
 const doctorRouters = [
+    {path:'/dashboard/doctor',component:DashBoard.DashboardDoctor,layout:DashBoardLayout},
+    {path:'/dashboard/doctor/profile',component:DashBoard.ProfileDoctor,layout:DashBoardLayout},
     {path:'/dashboard/doctor/schedule',component:DashBoard.Schedule,layout:DashBoardLayout}
 ]
 const adminRouters = [
+    {path:'/dashboard/admin',component:DashBoard.DashboardAdmin,layout:DashBoardLayout},
+    {path:'/dashboard/admin/profile',component:DashBoard.ProfileAdmin,layout:DashBoardLayout},
     {path:'/dashboard/admin/manage-schedule',component:DashBoard.Schedule,layout:DashBoardLayout},
     {path:'/dashboard/admin/manage-patient',component:DashBoard.ManagePatient,layout:DashBoardLayout},
-    {path:'/dashboard/admin/manage-doctor',component:DashBoard.ManageDoctor,layout:DashBoardLayout}
+    {path:'/dashboard/admin/manage-doctor',component:DashBoard.ManageDoctor,layout:DashBoardLayout},
+    {path:'/dashboard/admin/manage-department',component:DashBoard.ManageDepartment,layout:DashBoardLayout},
+    {path:'/dashboard/admin/manage-slot',component:DashBoard.ManageSlot,layout:DashBoardLayout},
+    {path:'/dashboard/admin/manage-appointment',component:DashBoard.ManageAppointment,layout:DashBoardLayout},
+    {path:'/dashboard/admin/manage-feedback',component:DashBoard.ManageFeedback,layout:DashBoardLayout},
+    {path:'/dashboard/admin/manage-new',component:DashBoard.ManageNew,layout:DashBoardLayout}
 ]
 
-export{publicRouters,patientRouters,privateRouters, doctorRouters,adminRouters}
+export{publicRouters,patientRouters, doctorRouters,adminRouters}

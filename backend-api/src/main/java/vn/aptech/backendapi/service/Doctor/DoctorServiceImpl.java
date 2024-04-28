@@ -46,8 +46,8 @@ public class DoctorServiceImpl implements DoctorService{
         workingDto.setId(working.getId());
         workingDto.setCompany(working.getCompany());
         workingDto.setAddress(working.getAddress());
-        workingDto.setStartWork(working.getStartWork());
-        workingDto.setEndWork(working.getEndWork());
+        workingDto.setStartWork(working.getStartWork().toString());
+        workingDto.setEndWork(working.getEndWork().toString());
         return workingDto;
     }
 
