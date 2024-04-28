@@ -15,13 +15,15 @@ import java.time.LocalDate;
 @Table(name="partients")
 public class Partient extends BaseEntity {
     @Id
-    private  String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private  int id;
     @Column(name = "fullname")
     private String fullName;
     private String gender; // giới tính
     private LocalDate birthday; // ngày sinh
     private String address; // Địa chỉ
     private String image; // Image
+    private boolean status;
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;

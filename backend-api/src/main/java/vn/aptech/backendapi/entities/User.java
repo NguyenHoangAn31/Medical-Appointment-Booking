@@ -2,9 +2,8 @@ package vn.aptech.backendapi.entities;
 
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.util.List;
 
@@ -29,7 +28,15 @@ public class User extends BaseEntity {
     @Column(name="keycode")
     private String keyCode;
     private String provider;
-//    @ManyToOne
-//    @JoinColumn(name = "role_id", referencedColumnName = "id")
-//    private Role role;
+
+    private boolean status;
+    public List<String> getAuthorities(){
+        return roles.stream().map(Role::getShortName).toList();
+    }
+
+    public List<SimpleGrantedAuthority> getGrantedAuthorities(){
+        return roles.stream().map(o->new SimpleGrantedAuthority(o.getShortName())).toList();
+    }
+
+
 }

@@ -25,6 +25,7 @@ public class Appointment extends BaseEntity  {
     @ManyToOne
     @JoinColumn(name = "schedule_id", referencedColumnName = "id")
     private Schedule schedule;
+    private Integer price;
     private String payment;
     private String status;
 }

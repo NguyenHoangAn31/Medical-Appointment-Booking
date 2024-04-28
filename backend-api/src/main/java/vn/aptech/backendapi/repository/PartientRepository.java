@@ -6,5 +6,5 @@ import vn.aptech.backendapi.entities.Partient;
 
 
 @Repository
-public interface PartientRepository extends JpaRepository<Partient, String> {
+public interface PartientRepository extends JpaRepository<Partient, Integer> {
 }

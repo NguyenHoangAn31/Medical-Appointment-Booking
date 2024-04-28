@@ -24,6 +24,8 @@ public class Working extends  BaseEntity {
     @Column(name="end_work")
     private LocalDate endWork;
 
+    private boolean status;
+
     @ManyToOne
     @JoinColumn(name = "doctor_id", referencedColumnName = "id")
     private Doctor doctor;

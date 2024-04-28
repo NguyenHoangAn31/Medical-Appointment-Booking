@@ -20,6 +20,8 @@ public class News extends BaseEntity {
     private String image;
     private String url;
 
+    private boolean status;
+
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
