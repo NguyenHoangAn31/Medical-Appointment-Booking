@@ -46,7 +46,7 @@ public class ApiAuthentication {
 
 
     @PostMapping("/send-otp")
-    public ResponseEntity<String> sendOtp(@RequestBody AuthenticationWithUsernameAndKeycode body) {
+    public ResponseEntity<Boolean> sendOtp(@RequestBody AuthenticationWithUsernameAndKeycode body) {
         String username = body.getUsername();
         String provider = body.getProvider();
         Optional<User> userOptional = userService.findByEmailOrPhone(username);
@@ -58,9 +58,9 @@ public class ApiAuthentication {
                 LocalDateTime now = LocalDateTime.now();
                 // Kiểm tra tính hợp lệ của token
                 if (now.isBefore(expiredAt)) {
-                    return ResponseEntity.ok("Token is still valid"); // Token chưa hết hạn, không thực hiện gửi OTP
+                    return ResponseEntity.ok(true); // Token chưa hết hạn, không thực hiện gửi OTP
                 } else {
-                    return ResponseEntity.ok("Token is expired, login successful"); // Token đã hết hạn, thực hiện đăng nhập
+                    return ResponseEntity.ok(false); // Token đã hết hạn, thực hiện đăng nhập
                 }
             } else {
                 String otp = RandomStringUtils.randomNumeric(6);
@@ -71,15 +71,15 @@ public class ApiAuthentication {
                         user.setKeyCode(otp);
                         userService.save(user);
                     }
-                    return ResponseEntity.ok("Keycode updated successfully: " + otp);
+                    return ResponseEntity.ok(true);
                 } else {
                     return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                            .body("User not found with identifier: " + username); // Không tìm thấy người dùng
+                            .body(false); // Không tìm thấy người dùng
                 }
             }
         }else{
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("You chose the wrong login method, please choose another method!");
+                    .body(false);
         }
     }
 

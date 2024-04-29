@@ -12,8 +12,9 @@ const publicRouters = [
     {path:'/doctordetail',component:Client.DoctorDetail,layout:ClientLayout},
     {path:'/login',component:Client.Login,layout:ClientLayout},
     {path:'/login-by-phone',component:Client.LoginPhone,layout:ClientLayout},
-    {path:'/login-by-phone-submit',component:Client.PhoneSubmit,layout:ClientLayout},
+    {path:'/login-by-phone-submit',component:Client.LoginPhoneStep,layout:ClientLayout},
     {path:'/login-by-gmail',component:Client.LoginGmail,layout:ClientLayout},
+    {path:'/login-by-gmail-submit',component:Client.LoginGmailStep,layout:ClientLayout},
     {path:'/booking',component:Client.Booking,layout:ClientLayout},
     {path:'/signup',component:Client.Signup,layout:ClientLayout},
 ]

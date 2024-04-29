@@ -14,9 +14,6 @@ const Header = () => {
           <div className="collapse navbar-collapse" id="navbarSupportedContent">
             <ul className="navbar-nav ms-auto me-5">
               <li className="nav-item">
-                <Link to="/" className="nav-link active" aria-current="page">Home</Link>
-              </li>
-              <li className="nav-item">
                 <Link to="/about" className="nav-link">About Us</Link>
               </li>
               <li className="nav-item">

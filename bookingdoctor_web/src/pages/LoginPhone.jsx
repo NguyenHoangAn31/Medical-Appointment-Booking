@@ -3,31 +3,38 @@ import React, { useState, useEffect } from 'react';
 import {useNavigate} from 'react-router-dom'; 
 import bg_login from '../../public/images/image-login.png';
 import { motion } from 'framer-motion';
+import axios from 'axios';
 
-import * as authService from '../../src/services/API/authService';
+//import * as authService from '../../src/services/API/authService';
 
 const LoginPhone = () => {
 
     const [username, setUsername] = useState('');
     const provider ='phone';
+    
     const navigateTo  = useNavigate();
-
 
     const handleSendOtp = async (event) => {
         event.preventDefault()
-        try {
-               
-               const result =  await authService.sendOtp(username, provider);
-               console.log(result);
-            //    if(result.data){
-            //     navigateTo('/login-by-phone-submit?username=${username}');
-            //    }
+        const data = {
+            username: username,
+            provider: provider
+        }
         
+        try {
+
+            const result =  await axios.post('http://localhost:8080/api/auth/send-otp', data);
+               
+            console.log(result);
+
+            if(result && result.data){
+                navigateTo(`/login-by-phone-submit?username=${username}`);
+            }
+
         } catch (error) {
-            console.error('Error sending OTP: ', error)
+
         }
     };
-    
 
     return (
         <>
