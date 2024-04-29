@@ -1,7 +1,3 @@
-
-export {default as Dashboard} from './Dashboard';
-export {default as Profile} from './Profile';
-
 export {default as DashboardAdmin} from './Admin/DashboardAdmin';
 export {default as ProfileAdmin} from './Admin/ProfileAdmin';
 export {default as ManageDoctor} from './Admin/ManageDoctor';

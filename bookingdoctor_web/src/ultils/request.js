@@ -1,14 +1,15 @@
 import axios from "axios";
 
 const request = axios.create({
-    baseUrl: 'https://localhost:8080/api/'
+    baseURL: 'http://localhost:8080/api/'
 })
 
 // Hàm tìm dữ liệu findAll or findById
-export const get = async (path, option ={}) => {
-    const response =await request.get(path, option);
+export const get = async (path, option = {}) => {
+    const response = await request.get(path, option);
     return response.data;
-}
+
+};
 
 // Hàm create dử liệu
 

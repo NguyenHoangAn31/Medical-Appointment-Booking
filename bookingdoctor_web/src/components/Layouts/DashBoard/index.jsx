@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import getUserData from '../../../route/CheckRouters/token/Token';
@@ -9,87 +8,99 @@ import {
     FireFilled,
     BulbOutlined,
     AppstoreOutlined,
-    ShopOutlined
+    ShopOutlined,
+    DashboardOutlined,
+    MedicineBoxOutlined,
+    UserOutlined,
+    HomeOutlined,
+    FieldTimeOutlined,
+    InfoCircleOutlined,
+    QuestionCircleOutlined,
+    FormOutlined,
+    ProfileOutlined,
+    ScheduleOutlined
 } from '@ant-design/icons';
 import { Button, Breadcrumb, Layout, Menu, theme } from 'antd';
 const { Header, Content, Footer, Sider } = Layout;
 
-const role = getUserData.user.roles[0]
-var items = [
-]
-if (role == "ADMIN") {
-    items.push(
-        {
-            label: "Dashbaord",
-            icon: <AppstoreOutlined />,
-            key: "/dashboard/admin",
-        },
-        {
-            label: "Manage Patient",
-            key: "/dashboard/admin/manage-patient",
-            icon: <ShopOutlined />,
-        },
-        {
-            label: "Manage Doctor",
-            key: "/dashboard/admin/manage-doctor",
-            icon: <ShopOutlined />,
-        },
-        {
-            label: "Manage Department",
-            key: "/dashboard/admin/manage-department",
-            icon: <ShopOutlined />,
-        },
-        {
-            label: "Manage Slot",
-            key: "/dashboard/admin/manage-slot",
-            icon: <ShopOutlined />,
-        },
-        {
-            label: "Manage Appointment",
-            key: "/dashboard/admin/manage-appointment",
-            icon: <ShopOutlined />,
-        },
-        {
-            label: "Manage Schedule",
-            key: "/dashboard/admin/manage-schedule",
-            icon: <ShopOutlined />,
-        },
-        {
-            label: "Manage Feedback",
-            key: "/dashboard/admin/manage-feedback",
-            icon: <ShopOutlined />,
-        },
-        {
-            label: "Manage New",
-            key: "/dashboard/admin/manage-new",
-            icon: <ShopOutlined />,
-        },
-        {
-            label: "Profile",
-            icon: <AppstoreOutlined />,
-            key: "/dashboard/admin/profile",
-        }
-    )
+var items = []
+if (getUserData != null) {
+    var role = getUserData.user.roles[0];
+    if (role == "ADMIN") {
+        items.push(
+            {
+                label: "Dashboard",
+                icon: <DashboardOutlined />,
+                key: "/dashboard/admin",
+            },
+            {
+                label: "Manage Patient",
+                key: "/dashboard/admin/manage-patient",
+                icon: <MedicineBoxOutlined />,
+            },
+            {
+                label: "Manage Doctor",
+                key: "/dashboard/admin/manage-doctor",
+                icon: <UserOutlined />,
+            },
+            {
+                label: "Manage Department",
+                key: "/dashboard/admin/manage-department",
+                icon: <HomeOutlined />,
+            },
+            {
+                label: "Manage Slot",
+                key: "/dashboard/admin/manage-slot",
+                icon: <FieldTimeOutlined />,
+            },
+            {
+                label: "Manage Appointment",
+                key: "/dashboard/admin/manage-appointment",
+                icon: <ShopOutlined />,
+            },
+            {
+                label: "Manage Schedule",
+                key: "/dashboard/admin/manage-schedule",
+                icon: <ScheduleOutlined />,
+            },
+            {
+                label: "Manage Feedback",
+                key: "/dashboard/admin/manage-feedback",
+                icon: <QuestionCircleOutlined />,
+            },
+            {
+                label: "Manage New",
+                key: "/dashboard/admin/manage-new",
+                icon: <FormOutlined />,
+            },
+            {
+                label: "Profile",
+                icon: <ProfileOutlined />,
+                key: "/dashboard/admin/profile",
+            }
+        )
+    }
+    else if (role == "DOCTOR") {
+        items.push(
+            {
+                label: "Dashboard",
+                key: "/dashboard/doctor",
+                icon: <DashboardOutlined />,
+            },
+            {
+                label: "Schedule",
+                key: "/dashboard/doctor/schedule",
+                icon: <ScheduleOutlined />,
+            },
+            {
+                label: "Profile",
+                icon: <ProfileOutlined />,
+                key: "/dashboard/doctor/profile",
+            }
+        )
+    }
 }
-else if (role == "DOCTOR") {
-    items.push(
-        {
-            label: "Dashboard",
-            key: "/dashboard/doctor",
-            icon: <ShopOutlined />,
-        },
-        {
-            label: "Schedule",
-            key: "/dashboard/doctor/schedule",
-            icon: <ShopOutlined />,
-        },
-        {
-            label: "Profile",
-            icon: <AppstoreOutlined />,
-            key: "/dashboard/doctor/profile",
-        }
-    )
-}
+
 const DashBoardLayout = ({ children }) => {
     const [collapsed, setCollapsed] = useState(false);
     const [darkTheme, setDarkTheme] = useState(true);
@@ -115,7 +126,7 @@ const DashBoardLayout = ({ children }) => {
     const {
         token: { colorBgContainer, borderRadiusLG },
     } = theme.useToken();
-  
+
     return (
 
         <Layout
@@ -123,7 +134,11 @@ const DashBoardLayout = ({ children }) => {
                 minHeight: '100vh',
             }}
         >
-            <Sider theme={darkTheme ? 'dark' : 'light'} width={250} trigger={null} collapsible collapsed={collapsed}>
+            <Sider theme={darkTheme ? 'dark' : 'light'} width={250} trigger={null} collapsible collapsed={collapsed}
+            style={{
+                position: 'fixed',
+                height: '100vh',}}
+            >
                 <div className="demo-logo-vertical text-center text-white fs-1 my-2">
                     <div style={{ width: 60, height: 60 }} className='logo-icon d-flex m-auto bg-dark justify-content-center rounded-circle align-items-center'>
                         <FireFilled />
@@ -137,11 +152,12 @@ const DashBoardLayout = ({ children }) => {
                     }}
                     selectedKeys={[selectedKeys]}
                     items={items}
+                   
                 ></Menu>
                 <ToggleThemeButton darkTheme={darkTheme} toggleTheme={toggleTheme} />
             </Sider>
 
-            <Layout>
+            <Layout style={{marginLeft: collapsed ? 80 : 250,transition:'.2s'}}>
                 <Header
                     style={{
                         padding: 0,
@@ -196,7 +212,7 @@ const DashBoardLayout = ({ children }) => {
 };
 
 
-const ToggleThemeButton = ({toggleTheme }) => {
+const ToggleThemeButton = ({ toggleTheme }) => {
     return (
         <div style={{
             bottom: 17,
@@ -210,3 +226,8 @@ const ToggleThemeButton = ({toggleTheme }) => {
     )
 }
 export default DashBoardLayout;
+
+
+
+
+

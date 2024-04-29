@@ -2,7 +2,7 @@ const userData = {
   user: {
     id: 1,
     email: "docterlinktest12345@gmail.com",
-    roles: ["DOCTOR"],
+    roles: ["ADMIN"],
   },
   accessToken:
     "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwicm9sZXMiOiJET0NUT1IiLCJleHAiOjE3MTQ0MDMwMTZ9.F7kO37lB8kDDLVS4tJ4g3AolcrbNQYDpH7iVVWrrCP3obBGGeTpZ-cHIlyItEy_EXVsqah1wLSvRrJW235D4og",
