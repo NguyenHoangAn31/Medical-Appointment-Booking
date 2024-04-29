@@ -5,6 +5,36 @@ import { Link } from 'react-router-dom';
 
 const LoginGmail = () => {
 
+    const [username, setUsername] = useState('');
+    const provider ='gmail';
+    
+    const navigateTo  = useNavigate();
+
+
+    const handleSendOtp = async (event) => {
+        event.preventDefault()
+        const data = {
+            username: username,
+            provider: provider
+        }
+        console.log(username);
+        
+        try {
+
+            const result =  await axios.post('http://localhost:8080/api/auth/send-otp', data);
+               
+            //    const result =  await authService.sendOtp(data);
+                console.log(result);
+
+            if(result && result.data){
+                navigateTo(`/login-by-phone-submit?username=${username}`);
+            }
+
+        } catch (error) {
+            console.error('Error sending OTP: ', error)
+        }
+    };
+
     return (
         <>
             <div className='container mt-5'>
