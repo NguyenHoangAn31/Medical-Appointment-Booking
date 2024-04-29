@@ -11,6 +11,5 @@ public class AuthenticationWithUsernameAndKeycode {
     private String username;
     @NotBlank
     private String keycode;
-
     private String provider;
 }
