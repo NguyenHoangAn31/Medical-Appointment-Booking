@@ -22,6 +22,7 @@ const LoginGmail = () => {
         
         try {
 
+
             const result =  await axios.post('http://localhost:8080/api/auth/send-otp', data);              
             if(result && result.data){
                 navigateTo(`/login-by-gmail-submit?username=${username}`);

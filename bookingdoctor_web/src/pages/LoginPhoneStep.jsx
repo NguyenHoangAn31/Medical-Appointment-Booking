@@ -5,6 +5,7 @@ import bg_login from '../../public/images/image-login.png';
 import { motion } from 'framer-motion';
 import {Link, useNavigate} from 'react-router-dom';
 import queryString from 'query-string';
+
 import * as ecryptToken from '../ultils/encrypt'
 
 
@@ -21,7 +22,6 @@ const LoginPhoneStep = () => {
     
     const handleSubmit = async (e) =>{
         e.preventDefault();
-
         // Chuyển hướng trở lại đường dẫn hiện tại sau khi đăng nhập thành công
         const data = {
             username: username,
