@@ -1,9 +1,10 @@
 
+// eslint-disable-next-line no-unused-vars
 import React, { useState, useEffect } from 'react'
 import axios from 'axios';
 import bg_login from '../../public/images/image-login.png';
 import { motion } from 'framer-motion';
-import {Link, useNavigate} from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import queryString from 'query-string';
 
 import * as ecryptToken from '../ultils/encrypt'
@@ -18,9 +19,9 @@ const LoginPhoneStep = () => {
         const queryParams = queryString.parse(window.location.search);
         setUsername(queryParams.username);
         // Bây giờ bạn có thể làm gì đó với giá trị của username
-      }, []);
-    
-    const handleSubmit = async (e) =>{
+    }, []);
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
         // Chuyển hướng trở lại đường dẫn hiện tại sau khi đăng nhập thành công
         const data = {
@@ -31,38 +32,37 @@ const LoginPhoneStep = () => {
         console.log(data);
         try {
 
-            const result =  await axios.post('http://localhost:8080/api/auth/login', data);
-               
-               console.log(result.data.user.roles[0]);
+            const result = await axios.post('http://localhost:8080/api/auth/login', data);
 
-                if (result && result.data) {
-                    // Lưu kết quả vào localStorage
-                    // const userResult = result.data
-                    sessionStorage.setItem('Token', ecryptToken.encryptToken(JSON.stringify(result.data)));
-                    if(result.data.user.roles[0] === 'DOCTOR'){
+            // console.log(result.data.user.roles[0]);
+
+            if (result && result.data) {
+                // Lưu kết quả vào localStorage
+                // const userResult = result.data
+                sessionStorage.setItem('Token', ecryptToken.encryptToken(JSON.stringify(result.data)));
+                if (result.data.user.roles[0] === 'DOCTOR') {
+                    localStorage.setItem('currentPath', '');
+                    navigateTo(`/dashboard/doctor`);
+                } else if (result.data.user.roles[0] === 'ADMIN') {
+                    localStorage.setItem('currentPath', '');
+                    navigateTo(`/dashboard/admin`);
+                } else {
+                    if (currentPath == null || currentPath == '') {
+                        navigateTo('/');
+                    } else {
                         localStorage.setItem('currentPath', '');
-                        navigateTo(`/dashboard/doctor`);
-                    }else if(result.data.user.roles[0] === 'ADMIN'){
-                        localStorage.setItem('currentPath', '');
-                        navigateTo(`/dashboard/admin`);
-                    }else{
-                        if(currentPath == null || currentPath == ''){
-                            navigateTo('/');
-                        }else{
-                            localStorage.setItem('currentPath', '');
-                            navigateTo(currentPath);
-                        }
+                        navigateTo(currentPath);
                     }
-                    
                 }
-                window.location.reload();
 
-        } catch (error) {
-        }
+            }
+            window.location.reload();
+
+        } catch (error) { /* empty */ }
     }
-    
-  return (
-    <>
+
+    return (
+        <>
             <div className='container mt-5'>
                 <div className="row">
                     <div className="col-md-6">
@@ -82,11 +82,11 @@ const LoginPhoneStep = () => {
                                         <input type="hidden" name="provider" value="phone" />
                                         <div className="mb-3">
                                             <input type="text" className="input__username"
-                                             id="input__phone"
-                                             placeholder="Enter keycode"
-                                             value={keycode}
-                                             onChange={(e) => setKeycode(e.target.value)}
-                                             />
+                                                id="input__phone"
+                                                placeholder="Enter keycode"
+                                                value={keycode}
+                                                onChange={(e) => setKeycode(e.target.value)}
+                                            />
                                         </div>
                                         <div className="mb-4">
                                             <motion.div whileTap={{ scale: 0.8 }}>
@@ -105,7 +105,7 @@ const LoginPhoneStep = () => {
                 </div>
             </div>
         </>
-  )
+    )
 }
 
 export default LoginPhoneStep
