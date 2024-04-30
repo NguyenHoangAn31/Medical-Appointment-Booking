@@ -5,10 +5,14 @@ import bg_login from '../../public/images/image-login.png';
 import { motion } from 'framer-motion';
 import {Link, useNavigate} from 'react-router-dom';
 import queryString from 'query-string';
+import * as ecryptToken from '../ultils/encrypt'
+
+
 const LoginPhoneStep = () => {
     const [username, setUsername] = useState('');
     const [keycode, setKeycode] = useState('');
     const navigateTo = useNavigate();
+    const currentPath = localStorage.getItem('currentPath');
     useEffect(() => {
         const queryParams = queryString.parse(window.location.search);
         setUsername(queryParams.username);
@@ -17,6 +21,8 @@ const LoginPhoneStep = () => {
     
     const handleSubmit = async (e) =>{
         e.preventDefault();
+
+        // Chuyển hướng trở lại đường dẫn hiện tại sau khi đăng nhập thành công
         const data = {
             username: username,
             keycode: keycode,
@@ -27,16 +33,31 @@ const LoginPhoneStep = () => {
 
             const result =  await axios.post('http://localhost:8080/api/auth/login', data);
                
-                console.log(result.data);
+               console.log(result.data.user.roles[0]);
 
                 if (result && result.data) {
                     // Lưu kết quả vào localStorage
-                    sessionStorage.setItem('Token', JSON.stringify(result.data));
-                    navigateTo(`/`);
+                    // const userResult = result.data
+                    sessionStorage.setItem('Token', ecryptToken.encryptToken(JSON.stringify(result.data)));
+                    if(result.data.user.roles[0] === 'DOCTOR'){
+                        localStorage.setItem('currentPath', '');
+                        navigateTo(`/dashboard/doctor`);
+                    }else if(result.data.user.roles[0] === 'ADMIN'){
+                        localStorage.setItem('currentPath', '');
+                        navigateTo(`/dashboard/admin`);
+                    }else{
+                        if(currentPath == null || currentPath == ''){
+                            navigateTo('/');
+                        }else{
+                            localStorage.setItem('currentPath', '');
+                            navigateTo(currentPath);
+                        }
+                    }
+                    
                 }
+                window.location.reload();
 
         } catch (error) {
-            console.error('Error sending OTP: ', error)
         }
     }
     

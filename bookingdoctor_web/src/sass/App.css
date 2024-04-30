@@ -239,6 +239,7 @@ nav .nav-link:hover {
   border-radius: 15px;
   text-decoration: none;
   color: #1d1617;
+  cursor: pointer;
 }
 .login:hover {
   background-color: #000af7;
