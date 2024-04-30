@@ -1,6 +1,8 @@
 
 // Hien create 28/4/2024
 
+@import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@300..700&display=swap');
+
 .doctor__list {
     width: 100%;
     height: auto; /* Thay đổi từ 372px thành auto */
@@ -43,13 +45,14 @@
     position: absolute;
     left: 40px;
     top: 324px;
-    font-family: Poppins;
+    font-family: "Comfortaa", sans-serif;
     text-align: left;
-    font-size: 11px;
-    font-weight: bold;
+    font-size: 12px;
+    font-weight: 700;
 }
 
 .doctor__list_department {
+    font-family: "Comfortaa", sans-serif;
     color: blue;
     width: 150px;
     height: 18px;
