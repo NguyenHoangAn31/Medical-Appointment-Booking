@@ -25,7 +25,7 @@ const LoginPhone = () => {
 
             const result =  await axios.post('http://localhost:8080/api/auth/send-otp', data);
                
-            console.log(result);
+            console.log(result.data);
 
             if(result && result.data){
                 navigateTo(`/login-by-phone-submit?username=${username}`);
