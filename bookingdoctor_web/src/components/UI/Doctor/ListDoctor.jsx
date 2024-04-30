@@ -6,6 +6,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 // eslint-disable-next-line no-unused-vars
 import { Link } from 'react-router-dom';
+import { GoArrowUpRight } from "react-icons/go";
+
 
 const ListDoctor = () => {
     const [doctors, setDoctors] = useState([]);
@@ -41,10 +43,10 @@ const ListDoctor = () => {
                                     />
                                     <div className="doctor__list_background_title"></div>
                                     <span className="doctor__list_title">{doctor.title} {doctor.fullName}</span>
-                                    <span className="doctor__list_department">{doctor.department.name}</span>
+                                    <span className="doctor__list_department">Khoa: {doctor.department.name}</span>
                                     <div className="doctor__list_icon">
                                         <Link to={`/doctor/${doctor.id}`}>
-                                            <i className="fa-solid fa-file-export"></i>
+                                            <GoArrowUpRight />
                                         </Link>
                                     </div>
                                 </div>

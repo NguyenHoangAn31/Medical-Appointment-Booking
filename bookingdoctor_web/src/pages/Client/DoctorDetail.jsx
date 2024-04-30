@@ -5,8 +5,10 @@
 // eslint-disable-next-line no-unused-vars
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-// eslint-disable-next-line no-unused-vars
+import { Link } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
+import { FaUserDoctor } from "react-icons/fa6";
+
 // eslint-disable-next-line react/prop-types
 const DoctorDetail = () => {
   const { id } = useParams();
@@ -110,15 +112,29 @@ const DoctorDetail = () => {
           </ol>
         </div>
         <div className="container">
-          <div className="m-5">
-            Danh sách các bác sĩ cùng chuyên khoa:
-            <ul>
-              {relateds.map((related, index) => (
-                <li key={index}>
-                  {related.fullName}
-                </li>
-              ))}
-            </ul>
+          <div className="row doctor__detail_list">
+            <span className='doctor__detail_list_title'><FaUserDoctor />&nbsp;&nbsp;&nbsp;XEM THÊM CÁC BÁC SĨ CÙNG CHUYÊN KHOA&nbsp;&nbsp;&nbsp;<FaUserDoctor /></span>
+            {relateds.map((related, index) => (
+              <div className="col-md-3" key={index}>
+                <div className="card doctor__detail_list_card">
+                  {/* <img src="..." className="card-img-top" alt="..."> */}
+                  <img
+                    src={related.gender === 'Male'
+                      ? "../../../../public/images/doctors/2.png"
+                      : "../../../../public/images/doctors/6.png"}
+                    alt=""
+                    className="card-img-top"
+                  />
+                  <div className="card-body">
+                    <h5 className="card-title">
+                      <Link to={`/doctor/${related.id}`} className='card-title_link'>
+                        {related.title} {related.fullName}
+                      </Link>
+                    </h5>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
         <div className="m-5">&nbsp;&nbsp;&nbsp;</div>
