@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -27,4 +28,7 @@ public class Partient extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
+
+    @OneToMany(mappedBy = "partient", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Medical> medicals;
 }

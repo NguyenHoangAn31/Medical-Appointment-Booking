@@ -1,23 +1,50 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef  } from 'react'
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { motion } from 'framer-motion';
 import getUserData from '../../../../route/CheckRouters/token/Token';
+import { BiBell, BiHeart, BiLogIn, BiCalendarCheck, BiSolidUserRectangle    } from "react-icons/bi";
+//import * as patientService from '../../../../services/API/patientService';
 import axios from 'axios';
+
 
 const Header = () => {
   const location = useLocation();
   const currentPath = location.pathname;
   const history = useNavigate();
+  const [user, setUser] = useState([]);
+  const [isMenuVisible, setIsMenuVisible] = useState(false);
+
 
   useEffect(() => {
-    // var user
-    // if(getUserData != null) {
-    //     const UserResult = axios.get('http://localhost:8080/api/doctor/', params{
-
-    //     })
-    // }
+    const fecthApi = async () => {
+      try {
+        const userId = getUserData.user.id;
+       const result =  await axios.get(`http://localhost:8080/api/patient/${userId}`);
+          console.log(result.data);
+          setUser(result.data);
+;;
+      } catch (error) {
+        
+      }
+      
+  }
+  
+  fecthApi();
 
   }, []);
+
+  
+
+  const menuRef = useRef(null);
+
+  const handleMenuToggle = () => {
+    setIsMenuVisible(!isMenuVisible);
+  };
+
+  const handleMouseLeave = () => {
+    setIsMenuVisible(false);
+  };
+
   const handleLogin = () => {
     localStorage.setItem('currentPath', currentPath);
     history('/login');
@@ -54,9 +81,26 @@ const Header = () => {
             </ul>
             <motion.div whileTap={{ scale: 0.8 }}>
               {getUserData != null ? (
-                <div>
-                  {/* <div  className="login">{getUserData.user.fullName}</div> */}
-                  <div onClick={handleSignOut} className="login">Sign out</div>
+                <div className='icon_login'>
+                    <div>
+                      {user && user.image != null ? (
+                        <img src={"/image" + user.image} alt="" id='user-login' onClick={handleMenuToggle} className='img__icon_login img-fluid' />
+                      ) : (
+                        <img src="/images/login_default.jpg" alt="asds" id='user-login' onClick={handleMenuToggle} className='img__icon_login img-fluid' />
+                      )                                   
+                      }  
+                    </div>
+                    {isMenuVisible && (
+                    <ul className='list-unstyled dropdown__user' ref={menuRef} onMouseLeave={handleMouseLeave}>
+                      <li><a href=""></a>Hello! {user.fullName}</li>
+                      <li><a href=""></a><BiBell /> Notication</li>
+                      <li><a href=""></a><BiSolidUserRectangle/> Profile</li>
+                      <li><a href=""></a><BiCalendarCheck /> Booking</li>
+                      <li><a href=""></a><BiHeart /> Fauvorite</li>
+                      <li onClick={handleSignOut}><a ></a><BiLogIn /> Sign out</li>
+                    </ul>
+                    )}
+                  {/* <div  className="login">Sign out</div> */}
                 </div>
                   
               ) : (
