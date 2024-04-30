@@ -1,2 +1,69 @@
-package vn.aptech.backendapi.service.Patient;public class PatientServiceImpl {
+package vn.aptech.backendapi.service.Patient;
+
+
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import vn.aptech.backendapi.dto.DoctorDto;
+import vn.aptech.backendapi.dto.MedicalDto;
+import vn.aptech.backendapi.dto.PatientDto;
+import vn.aptech.backendapi.dto.WorkingDto;
+import vn.aptech.backendapi.entities.Doctor;
+import vn.aptech.backendapi.entities.Medical;
+import vn.aptech.backendapi.entities.Partient;
+import vn.aptech.backendapi.repository.PartientRepository;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+@Service
+public class PatientServiceImpl implements PatientService {
+
+
+    @Autowired
+    private PartientRepository partientRepository;
+    @Autowired
+    private ModelMapper mapper;
+
+    public PatientDto toDo(Partient p){
+        return mapper.map(p, PatientDto.class);
+    }
+
+    private PatientDto mapToPatientDto(Partient partient) {
+        PatientDto patientDto  = new PatientDto();
+        patientDto.setId(partient.getId());
+        patientDto.setFullName(partient.getFullName());
+        patientDto.setGender(partient.getGender());
+        patientDto.setBirthday(partient.getBirthday());
+        patientDto.setAddress(partient.getAddress());
+        patientDto.setImage(partient.getImage());
+        //patientDto.setMedicals(partient.getMedicals());
+        // Không gán WorkingDto ở đây vì sẽ gán sau trong findById
+        return patientDto;
+    }
+    private MedicalDto mapToMedicalDto(Medical m){
+        MedicalDto medicalDto = new MedicalDto();
+        medicalDto.setId(m.getId());
+        medicalDto.setName(m.getName());
+        medicalDto.setContent(m.getContent());
+        medicalDto.setPatientId(m.getId());
+        return medicalDto;
+    }
+
+    public Optional<PatientDto> getPatientByUserId(int userId){
+        Optional<Partient> optionalPatient = partientRepository.getPatientByUserId(userId);
+        if(optionalPatient.isPresent()){
+            Partient patient = optionalPatient.get();
+            List<MedicalDto> medicalList = patient.getMedicals().stream()
+                    .map(this::mapToMedicalDto)
+                    .collect(Collectors.toList());
+            PatientDto patientDto = mapToPatientDto(patient);
+            patientDto.setMedicals(medicalList);
+            return Optional.of(patientDto);
+        }else {
+            return Optional.empty();
+        }
+    }
+
 }

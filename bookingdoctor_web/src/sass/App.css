@@ -279,6 +279,42 @@ nav .nav-link:hover {
   font-weight: 500;
 }
 
+.img__icon_login {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+.icon_login {
+  position: relative;
+}
+.icon_login .dropdown__user {
+  position: absolute;
+  right: 0px;
+  width: 200px;
+  background-color: #fff;
+  z-index: 10;
+}
+.icon_login .dropdown__user li {
+  padding: 10px 20px;
+  border-bottom: 1px solid #f2f2f2;
+  cursor: pointer;
+}
+.icon_login .dropdown__user li:hover {
+  background-color: #f2f2f2;
+}
+.icon_login .dropdown__user li a {
+  color: #1d1617;
+  font-size: 18px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.icon_login .dropdown__user li a:hover {
+  color: #000af7;
+}
+
 .footer .footer__partient {
   list-style: none !important;
   line-height: 30px !important;
