@@ -2,12 +2,10 @@
 import React, { useState, useEffect } from 'react';
 // import firebase from '../services/auth/firebase';
 import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 const Login = () => {
-
-
-
+  
   return (
     <div className='container mt-5'>
       <div className="row">

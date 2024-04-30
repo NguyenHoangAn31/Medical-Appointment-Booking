@@ -45,7 +45,9 @@ public class ApiAuthentication {
 //    public ResponseEntity<String> signIn(@@RequestBody )
 
 
-    @PostMapping("/send-otp")
+
+    @PostMapping(value = "/send-otp", produces = MediaType.APPLICATION_JSON_VALUE)
+
     public ResponseEntity<Boolean> sendOtp(@RequestBody AuthenticationWithUsernameAndKeycode body) {
         String username = body.getUsername();
         String provider = body.getProvider();
@@ -60,6 +62,7 @@ public class ApiAuthentication {
                 if (now.isBefore(expiredAt)) {
                     return ResponseEntity.ok(true); // Token chưa hết hạn, không thực hiện gửi OTP
                 } else {
+                    refreshTokenRepository.delete(refreshToken);
                     return ResponseEntity.ok(false); // Token đã hết hạn, thực hiện đăng nhập
                 }
             } else {
