@@ -5,6 +5,8 @@ export {default as ManagePatient} from './Admin/ManagePatient';
 export {default as ManageSchedule} from './Admin/ManageSchedule';
 export {default as ManageDepartment} from './Admin/ManageDepartment';
 export {default as ManageSlot} from './Admin/ManageSlot';
+export {default as AddSlot} from './Admin/ManageSlot/AddSlot';
+export {default as EditSlot} from './Admin/ManageSlot/EditSlot'
 export {default as ManageAppointment} from './Admin/ManageAppointment';
 export {default as ManageFeedback} from './Admin/ManageFeedback';
 export {default as ManageNew} from './Admin/ManageNew';
