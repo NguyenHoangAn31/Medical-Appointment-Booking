@@ -11,6 +11,7 @@ export {default as CheckOut} from './CheckOut';
 export {default as Login} from '../Login';
 export {default as LoginPhone} from '../LoginPhone';
 export {default as LoginGmail} from '../LoginGmail';
+export {default as LoginTest} from '../LoginTest';
 
 export {default as LoginPhoneStep} from '../LoginPhoneStep';
 export {default as LoginGmailStep} from '../LoginGmailStep';
