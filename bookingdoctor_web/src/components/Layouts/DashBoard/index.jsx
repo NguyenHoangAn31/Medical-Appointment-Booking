@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import getUserData from '../../../route/CheckRouters/token/Token';
 
 
@@ -19,16 +19,18 @@ import {
     QuestionCircleOutlined,
     FormOutlined,
     ProfileOutlined,
-    ScheduleOutlined
+    ScheduleOutlined,
+    LogoutOutlined
 } from '@ant-design/icons';
-import { Button, Breadcrumb, Layout, Menu, theme } from 'antd';
+import { Button, Breadcrumb, Layout, Menu, theme, Dropdown, Space } from 'antd';
 const { Header, Content, Footer, Sider } = Layout;
 
-var items = []
+
+var itemslist = []
 if (getUserData != null) {
     var role = getUserData.user.roles[0];
     if (role == "ADMIN") {
-        items.push(
+        itemslist.push(
             {
                 label: "Dashboard",
                 icon: <DashboardOutlined />,
@@ -73,16 +75,11 @@ if (getUserData != null) {
                 label: "Manage New",
                 key: "/dashboard/admin/manage-new",
                 icon: <FormOutlined />,
-            },
-            {
-                label: "Profile",
-                icon: <ProfileOutlined />,
-                key: "/dashboard/admin/profile",
             }
         )
     }
     else if (role == "DOCTOR") {
-        items.push(
+        itemslist.push(
             {
                 label: "Dashboard",
                 key: "/dashboard/doctor",
@@ -92,30 +89,32 @@ if (getUserData != null) {
                 label: "Schedule",
                 key: "/dashboard/doctor/schedule",
                 icon: <ScheduleOutlined />,
-            },
-            {
-                label: "Profile",
-                icon: <ProfileOutlined />,
-                key: "/dashboard/doctor/profile",
             }
         )
     }
 }
 
+
+
 const DashBoardLayout = ({ children }) => {
     const [collapsed, setCollapsed] = useState(false);
-    const [darkTheme, setDarkTheme] = useState(true);
+    const [darkTheme, setDarkTheme] = useState(false);
     const navigate = useNavigate();
+
 
     const toggleTheme = () => {
         setDarkTheme(!darkTheme)
     }
-    //Breadcrumb
+    // Breadcrumb
     const location = useLocation();
     const pathname = location.pathname;
     const paths = pathname.split('/').filter(path => path !== '');
     const lastPath = paths[paths.length - 1];
-
+    // xử lý logout
+    const handleLogout = () => {
+        sessionStorage.removeItem("Token");
+        navigate("/");
+    }
 
     const [selectedKeys, setSelectedKeys] = useState("/");
 
@@ -136,9 +135,10 @@ const DashBoardLayout = ({ children }) => {
             }}
         >
             <Sider theme={darkTheme ? 'dark' : 'light'} width={250} trigger={null} collapsible collapsed={collapsed}
-            style={{
-                position: 'fixed',
-                height: '100vh',}}
+                style={{
+                    position: 'fixed',
+                    height: '100vh',
+                }}
             >
                 <div className="demo-logo-vertical text-center text-white fs-1 my-2">
                     <div style={{ width: 60, height: 60 }} className='logo-icon d-flex m-auto bg-dark justify-content-center rounded-circle align-items-center'>
@@ -152,13 +152,12 @@ const DashBoardLayout = ({ children }) => {
                         navigate(item.key);
                     }}
                     selectedKeys={[selectedKeys]}
-                    items={items}
-                   
+                    items={itemslist}
                 ></Menu>
                 <ToggleThemeButton darkTheme={darkTheme} toggleTheme={toggleTheme} />
             </Sider>
 
-            <Layout style={{marginLeft: collapsed ? 80 : 250,transition:'.2s'}}>
+            <Layout style={{ marginLeft: collapsed ? 80 : 250, transition: '.2s' }}>
                 <Header
                     style={{
                         padding: 0,
@@ -175,6 +174,40 @@ const DashBoardLayout = ({ children }) => {
                             height: 64,
                         }}
                     />
+                    <Dropdown
+                        menu={{
+                            items: [{
+                                key: '1',
+                                label: (
+                                    <Link to={role === "ADMIN" ? "/dashboard/admin/profile" : "/dashboard/doctor/profile"}>
+                                        <ProfileOutlined /> <span className='m-1'>Profile</span>
+                                    </Link>
+                                ),
+                            },
+                            {
+                                key: '2',
+                                label: (
+                                    <span onClick={handleLogout}>
+                                        <LogoutOutlined /><span className='m-2'>Logout</span>
+                                    </span>
+                                ),
+                            },],
+                        }}
+                        placement="bottomRight"
+                    >
+                        <img
+                            src="/images/dashboard/default_user.jpg"
+                            alt=""
+                            height="50"
+                            width="50"
+                            style={{
+                                float: 'right',
+                                margin: '7px 25px 0 0',
+                                borderRadius: '50%'
+                            }}
+                        />
+
+                    </Dropdown>
                 </Header>
                 <Content
                     style={{
@@ -210,6 +243,8 @@ const DashBoardLayout = ({ children }) => {
             </Layout>
         </Layout>
     );
+
+
 };
 
 

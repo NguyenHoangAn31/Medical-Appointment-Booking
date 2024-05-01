@@ -7,7 +7,10 @@
   padding: 0;
   box-sizing: border-box !important;
 }
-
+a{
+  text-decoration: none;
+  color: black;
+}
 html, body {
   scroll-behavior: smooth;
   width: 100%;

@@ -1,28 +1,48 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { SearchOutlined } from '@ant-design/icons';
-import { Button, Input, Popconfirm, Space, Table } from 'antd';
+import { PlusOutlined, SearchOutlined } from '@ant-design/icons';
+import { Button, Input, Popconfirm, Space, Table, notification } from 'antd';
 import Highlighter from 'react-highlight-words';
-import { getAllSlot,deleteSlot } from '../../../services/API/slotService';
-
+import { getAllSlot, deleteSlot } from '../../../../services/API/slotService';
+import { Link } from 'react-router-dom';
+import openAlert from '../../../../components/Layouts/DashBoard/openAlert';
 
 
 const ManageSlot = () => {
+  // useState cho search
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
   const searchInput = useRef(null);
+  // thông báo
+  const [openNotificationWithIcon, contextHolder] = openAlert();
 
+  // useState cho mảng dữ liệu slots
   const [slots, setSlots] = useState([]);
+  // tải dữ liệu và gán vào slots thông qua hàm setSlots
+  const loadSlots = async () => {
+    const fetchedSlots = await getAllSlot();
+    // thêm key vào mỗi slot
+    const slotsWithKeys = fetchedSlots.map((slot, index) => ({
+      ...slot,
+      key: index.toString(),
+    }));
+    setSlots(slotsWithKeys);
+  };
+  // thực hiện load dữ liệu 1 lần 
   useEffect(() => {
     loadSlots();
   }, []);
-  const loadSlots = async () => {
-    setSlots(await getAllSlot());
+  // xóa record và reload lại và gọi lại hàm reload dữ liệu
+  const delete_Slot = async (id) => {
+    try {
+      await deleteSlot(id);
+      loadSlots();
+      openNotificationWithIcon('success', 'Deletete Successfully', '')
+    } catch (error) {
+      console.log(error)
+    }
+
   };
 
-  const delete_Slot = async (id) => {
-    await deleteSlot(id);
-    loadSlots();
-  };
 
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
     confirm();
@@ -150,14 +170,33 @@ const ManageSlot = () => {
     {
       title: 'Action',
       dataIndex: 'operation',
-      render: (_, record) =>
-        slots.length >= 1 ? (
-          <Popconfirm title="Sure to delete?" onConfirm={() => delete_Slot(record.id)}>
-            <a>Delete</a>
-          </Popconfirm>
-        ) : null,
+      render: (_, record) => (
+        <>
+          <Link style={{ marginRight: '16px' }}
+            to={`/dashboard/admin/manage-slot/edit/${record.id}`}>Edit</Link>
+          {slots.length >= 1 ? (
+            <Popconfirm title="Sure to delete?" onConfirm={() => delete_Slot(record.id)}>
+              <span>Delete</span>
+            </Popconfirm>
+          ) : null}
+        </>
+      ),
     },
   ];
-  return <Table columns={columns} dataSource={slots} />;
+  return (
+    <>
+      {contextHolder}
+      <Link to="/dashboard/admin/manage-slot/create">
+        <Button type="primary" icon={<PlusOutlined />} style={{ float: 'right', marginBottom: '15px' }}>
+          Add New Slot
+        </Button>
+      </Link>
+      <Table columns={columns} dataSource={slots} />
+    </>
+  )
 };
+
+
+
+
 export default ManageSlot;
