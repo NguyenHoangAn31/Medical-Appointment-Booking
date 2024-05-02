@@ -11,6 +11,10 @@ a{
   text-decoration: none;
   color: black;
 }
+/*ẩn thanh scroll*/
+::-webkit-scrollbar {
+  display: none;
+}
 html, body {
   scroll-behavior: smooth;
   width: 100%;
