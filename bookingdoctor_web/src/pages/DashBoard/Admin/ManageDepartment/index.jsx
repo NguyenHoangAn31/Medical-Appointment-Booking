@@ -39,6 +39,7 @@ const ManageDepartment = () => {
       loadDepartments();
       openNotificationWithIcon('success', 'Deletete Department Successfully', '')
     } catch (error) {
+      openNotificationWithIcon('warning', 'Department is active', '')
       console.log(error)
     }
 
