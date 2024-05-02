@@ -43,7 +43,6 @@ public class DepartmentController {
     @DeleteMapping(value = "/delete/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> deleteById(@PathVariable("id") int id) {
         boolean deleted = departmentService.deleteById(id);
-        System.out.println("Alo");
         if (deleted) {
             return ResponseEntity.ok().build();
         } else {
