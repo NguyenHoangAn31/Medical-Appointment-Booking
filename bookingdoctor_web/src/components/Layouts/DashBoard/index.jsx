@@ -140,8 +140,8 @@ const DashBoardLayout = ({ children }) => {
                     height: '100vh',
                 }}
             >
-                <div className="demo-logo-vertical text-center text-white fs-1 my-2">
-                    <div style={{ width: 60, height: 60 }} className='logo-icon d-flex m-auto bg-dark justify-content-center rounded-circle align-items-center'>
+                <div style={{ textAlign: 'center', color: 'white', fontSize: '45px', margin: '10px' }}>
+                    <div style={{ width: 60, height: 60, display: 'flex', margin: 'auto', backgroundColor: 'black', justifyContent: 'center', alignItems: 'center', borderRadius: '50%' }}>
                         <FireFilled />
                     </div>
                 </div>
@@ -180,7 +180,7 @@ const DashBoardLayout = ({ children }) => {
                                 key: '1',
                                 label: (
                                     <Link to={role === "ADMIN" ? "/dashboard/admin/profile" : "/dashboard/doctor/profile"}>
-                                        <ProfileOutlined /> <span className='m-1'>Profile</span>
+                                        <ProfileOutlined /> <span style={{ marginLeft: '7px' }}>Profile</span>
                                     </Link>
                                 ),
                             },
@@ -188,24 +188,26 @@ const DashBoardLayout = ({ children }) => {
                                 key: '2',
                                 label: (
                                     <span onClick={handleLogout}>
-                                        <LogoutOutlined /><span className='m-2'>Logout</span>
+                                        <LogoutOutlined /><span style={{ marginLeft: '7px' }}>Logout</span>
                                     </span>
                                 ),
                             },],
                         }}
                         placement="bottomRight"
                     >
-                        <img
-                            src="/images/dashboard/default_user.jpg"
-                            alt=""
-                            height="50"
-                            width="50"
-                            style={{
-                                float: 'right',
-                                margin: '7px 25px 0 0',
-                                borderRadius: '50%'
-                            }}
-                        />
+                        <div style={{ display: 'flex', float: 'right',alignItems:'center',marginRight:'20px',gap:'7px' }}>
+                            <img
+                                src="/images/dashboard/default_user.jpg"
+                                alt=""
+                                height="50"
+                                width="50"
+                                style={{
+                                    borderRadius: '50%'
+                                }}
+                            />
+                            <span>example@gmail.com</span>
+
+                        </div>
 
                     </Dropdown>
                 </Header>
@@ -228,6 +230,7 @@ const DashBoardLayout = ({ children }) => {
                             minHeight: 360,
                             background: colorBgContainer,
                             borderRadius: borderRadiusLG,
+                            position: 'relative'
                         }}
                     >
                         {children}
@@ -252,8 +255,9 @@ const ToggleThemeButton = ({ toggleTheme }) => {
     return (
         <div style={{
             bottom: 17,
-            left: 17
-        }} className='toggle-theme-btn position-absolute'>
+            left: 17,
+            position: 'absolute'
+        }} >
             <Button onClick={toggleTheme}>
                 <BulbOutlined />
 

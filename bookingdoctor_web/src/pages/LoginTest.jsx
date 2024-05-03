@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 // import { auth } from "../services/auth/firebase.config";
 import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
+import { toast, Toaster } from "react-hot-toast";
 
 import { useNavigate } from 'react-router-dom';
 import bg_login from '../../public/images/image-login.png';
@@ -10,11 +11,10 @@ import axios from 'axios';
 
 const LoginTest = () => {
 
-  const [otp, setOtp] = useState("");
-  const [username, setUsername] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [showOTP, setShowOTP] = useState(false);
-  const [user, setUser] = useState(null);
+    const [username, setUsername] = useState("");
+    const [loading, setLoading] = useState(false);
+    const [showOTP, setShowOTP] = useState(false);
+
 
   //console.log(username.slice(1));
   function onCaptchVerify() {
@@ -34,28 +34,31 @@ const LoginTest = () => {
   function onSignup(e) {
     e.preventDefault();
 
-    setLoading(true);
-    onCaptchVerify();
-
-    const appVerifier = window.recaptchaVerifier;
-    const formatPh = "+84" + username.slice(1);
-    console.log(formatPh);
-    signInWithPhoneNumber(auth, formatPh, appVerifier)
-      .then((confirmationResult) => {
-        window.confirmationResult = confirmationResult;
-        setLoading(false);
-        setShowOTP(true);
-        //toast.success("OTP sended successfully!");
-      })
-      .catch((error) => {
-        console.log(error);
-        setLoading(false);
-      });
-  }
+        setLoading(true);
+        onCaptchVerify();
+    
+        const appVerifier = window.recaptchaVerifier;
+        const formatPh = "+84" + username.slice(1);
+        console.log(formatPh);
+        signInWithPhoneNumber(auth, formatPh, appVerifier)
+          .then((confirmationResult) => {
+            window.confirmationResult = confirmationResult;
+            setLoading(false);
+            setShowOTP(true);
+            toast.success("OTP sended successfully!",  {
+                position: "top-right"
+              });
+          })
+          .catch((error) => {
+            console.log(error);
+            setLoading(false);
+          });
+      }
 
   return (
     <>
-      <div className='container mt-5'>
+    <div className='container mt-5'>
+    <div><Toaster className='toaster' toastOptions={{ duration: 4000 }} /></div>
         <div className="row">
           <div className="col-md-6">
             <div className="col-12">
@@ -89,11 +92,10 @@ const LoginTest = () => {
                     </div>
                   </form>
 
-                </div>
-
-                <div className='mt-xl-5'>
-
-                  <p>Quay về trang login. <a hrefh="/login" className='text-decoration-none ms-2'>Back to login</a></p>
+                        <div className='mt-xl-5'>
+                            <p>Quay về trang login. <a hrefh="/login" className='text-decoration-none ms-2'>Back to login</a></p>
+                        </div>
+                    </div>
                 </div>
               </div>
             </div>

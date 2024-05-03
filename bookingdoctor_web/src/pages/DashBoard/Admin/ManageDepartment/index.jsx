@@ -1,13 +1,14 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { PlusOutlined, SearchOutlined } from '@ant-design/icons';
-import { Button, Input, Popconfirm, Space, Spin, Table } from 'antd';
+import { Button, Input, Popconfirm, Space, Spin, Table, Tag } from 'antd';
 import Highlighter from 'react-highlight-words';
-import { getAllSlot, deleteSlot } from '../../../../services/API/slotService';
+import { getAllDepartment, deleteDepartment } from '../../../../services/API/departmentService';
 import { Link } from 'react-router-dom';
 import openAlert from '../../../../components/Layouts/DashBoard/openAlert';
 import Spinner from '../../../../components/Layouts/DashBoard/Spinner';
 
-const ManageSlot = () => {
+
+const ManageDepartment = () => {
   // useState cho search
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
@@ -15,29 +16,30 @@ const ManageSlot = () => {
   // thông báo
   const [openNotificationWithIcon, contextHolder] = openAlert();
 
-  // useState cho mảng dữ liệu slots
-  const [slots, setSlots] = useState([]);
-  // tải dữ liệu và gán vào slots thông qua hàm setSlots
-  const loadSlots = async () => {
-    const fetchedSlots = await getAllSlot();
-    // thêm key vào mỗi slot
-    const slotsWithKeys = fetchedSlots.map((slot, index) => ({
-      ...slot,
+  // useState cho mảng dữ liệu departments
+  const [departments, setDepartments] = useState([]);
+  // tải dữ liệu và gán vào departments thông qua hàm setDepartments
+  const loadDepartments = async () => {
+    const fetchedDepartments = await getAllDepartment();
+    // thêm key vào mỗi department
+    const departmentsWithKeys = fetchedDepartments.map((department, index) => ({
+      ...department,
       key: index.toString(),
     }));
-    setSlots(slotsWithKeys);
+    setDepartments(departmentsWithKeys);
   };
   // thực hiện load dữ liệu 1 lần 
   useEffect(() => {
-    loadSlots();
+    loadDepartments();
   }, []);
   // xóa record và reload lại và gọi lại hàm reload dữ liệu
-  const delete_Slot = async (id) => {
+  const delete_Department = async (id) => {
     try {
-      await deleteSlot(id);
-      loadSlots();
-      openNotificationWithIcon('success', 'Deletete Successfully', '')
+      await deleteDepartment(id);
+      loadDepartments();
+      openNotificationWithIcon('success', 'Deletete Department Successfully', '')
     } catch (error) {
+      openNotificationWithIcon('warning', 'Department is active', '')
       console.log(error)
     }
 
@@ -152,7 +154,7 @@ const ManageSlot = () => {
       title: 'Id',
       dataIndex: 'id',
       key: 'id',
-      width: '33.333%',
+      width: '16.666%',
       ...getColumnSearchProps('id'),
       sorter: (a, b) => a.id - b.id,
     },
@@ -160,22 +162,51 @@ const ManageSlot = () => {
       title: 'Name',
       dataIndex: 'name',
       key: 'name',
-      width: '33.333%',
+      width: '16.666%',
       ...getColumnSearchProps('name'),
       sorter: (a, b) => {
         return a.name.localeCompare(b.name);
       },
       sortDirections: ['descend', 'ascend']
+    },    
+    {
+      title: 'Icon',
+      dataIndex: 'icon',
+      key: 'icon',
+      width: '16.666%'
+    }, ,
+    {
+      title: 'Url',
+      dataIndex: 'url',
+      key: 'url',
+      width: '16.666%'
     },
+    {
+      title: 'Status',
+      dataIndex: 'status',
+      key: 'status',
+      width: '16.666%',
+      render: (_, { status }) => {
+        console.log(status)
+        let color = status ? 'green' : 'volcano';
+        let title = status ? 'Active' : 'Not Active'
+        return (
+          <Tag color={color} key={title}>
+            {title ? title.toUpperCase() : ''}
+          </Tag>
+        );
+      },
+    },
+
     {
       title: 'Action',
       dataIndex: 'operation',
       render: (_, record) => (
         <>
           <Link style={{ marginRight: '16px',color:'blue' }}
-            to={`/dashboard/admin/manage-slot/edit/${record.id}`}>Edit</Link>
-          {slots.length >= 1 ? (
-            <Popconfirm title="Sure to delete?" onConfirm={() => delete_Slot(record.id)}>
+            to={`/dashboard/admin/manage-department/edit/${record.id}`}>Edit</Link>
+          {departments.length >= 1 ? (
+            <Popconfirm title="Sure to delete?" onConfirm={() => delete_Department(record.id)}>
               <span style={{color:'red'}}>Delete</span>
             </Popconfirm>
           ) : null}
@@ -187,11 +218,11 @@ const ManageSlot = () => {
     <>
       {contextHolder}
 
-      {slots.length == 0 ? <Spinner/> : <> <Link to="/dashboard/admin/manage-slot/create">
+      {departments.length == 0 ? <Spinner /> : <><Link to="/dashboard/admin/manage-department/create">
         <Button type="primary" icon={<PlusOutlined />} style={{ float: 'right', marginBottom: '15px' }}>
-          Add New Slot
+          Add New Department
         </Button>
-      </Link> <Table columns={columns} dataSource={slots} /></>}
+      </Link><Table columns={columns} dataSource={departments} /></>}
     </>
   )
 };
@@ -199,4 +230,4 @@ const ManageSlot = () => {
 
 
 
-export default ManageSlot;
+export default ManageDepartment;
