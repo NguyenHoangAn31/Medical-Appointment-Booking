@@ -1,20 +1,20 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { PlusOutlined, SearchOutlined } from '@ant-design/icons';
 import { Button, Input, Popconfirm, Space, Spin, Table, Tag } from 'antd';
 import Highlighter from 'react-highlight-words';
 import { getAllDepartment, deleteDepartment } from '../../../../services/API/departmentService';
 import { Link } from 'react-router-dom';
-import openAlert from '../../../../components/Layouts/DashBoard/openAlert';
-import Spinner from '../../../../components/Layouts/DashBoard/Spinner';
-
+import Spinner from '../../../../components/Spinner';
+import { AlertContext } from '../../../../components/Layouts/DashBoard';
 
 const ManageDepartment = () => {
+  // thông báo
+  const Alert = useContext(AlertContext);
   // useState cho search
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
   const searchInput = useRef(null);
-  // thông báo
-  const [openNotificationWithIcon, contextHolder] = openAlert();
+
 
   // useState cho mảng dữ liệu departments
   const [departments, setDepartments] = useState([]);
@@ -37,9 +37,9 @@ const ManageDepartment = () => {
     try {
       await deleteDepartment(id);
       loadDepartments();
-      openNotificationWithIcon('success', 'Deletete Department Successfully', '')
+      Alert('success', 'Deletete Department Successfully', '')
     } catch (error) {
-      openNotificationWithIcon('warning', 'Department is active', '')
+      Alert('error', 'Something Went Wrong', '')
       console.log(error)
     }
 
@@ -168,15 +168,21 @@ const ManageDepartment = () => {
         return a.name.localeCompare(b.name);
       },
       sortDirections: ['descend', 'ascend']
-    },    
+    },
     {
-      title: 'Icon',
+      title: 'Image',
       dataIndex: 'icon',
       key: 'icon',
-      width: '16.666%'
-    }, ,
+      width: '16.666%',
+      render: (_, { icon }) => {
+        return (
+          <img src={"http://localhost:8080/images/department/" + icon} width="150" alt="" />
+        );
+      },
+
+    },
     {
-      title: 'Url',
+      title: 'Address',
       dataIndex: 'url',
       key: 'url',
       width: '16.666%'
@@ -187,7 +193,6 @@ const ManageDepartment = () => {
       key: 'status',
       width: '16.666%',
       render: (_, { status }) => {
-        console.log(status)
         let color = status ? 'green' : 'volcano';
         let title = status ? 'Active' : 'Not Active'
         return (
@@ -203,11 +208,11 @@ const ManageDepartment = () => {
       dataIndex: 'operation',
       render: (_, record) => (
         <>
-          <Link style={{ marginRight: '16px',color:'blue' }}
+          <Link style={{ marginRight: '16px', color: 'blue' }}
             to={`/dashboard/admin/manage-department/edit/${record.id}`}>Edit</Link>
           {departments.length >= 1 ? (
             <Popconfirm title="Sure to delete?" onConfirm={() => delete_Department(record.id)}>
-              <span style={{color:'red'}}>Delete</span>
+              <span style={{ color: 'red' }}>Delete</span>
             </Popconfirm>
           ) : null}
         </>
@@ -216,13 +221,13 @@ const ManageDepartment = () => {
   ];
   return (
     <>
-      {contextHolder}
-
       {departments.length == 0 ? <Spinner /> : <><Link to="/dashboard/admin/manage-department/create">
         <Button type="primary" icon={<PlusOutlined />} style={{ float: 'right', marginBottom: '15px' }}>
           Add New Department
         </Button>
       </Link><Table columns={columns} dataSource={departments} /></>}
+
+
     </>
   )
 };

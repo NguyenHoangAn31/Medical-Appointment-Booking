@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, createContext, useContext } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import getUserData from '../../../route/CheckRouters/token/Token';
 
@@ -23,6 +23,7 @@ import {
     LogoutOutlined
 } from '@ant-design/icons';
 import { Button, Breadcrumb, Layout, Menu, theme, Dropdown, Space } from 'antd';
+import openAlert from '../../openAlert';
 const { Header, Content, Footer, Sider } = Layout;
 
 
@@ -94,6 +95,7 @@ if (getUserData != null) {
     }
 }
 
+export const AlertContext = createContext();
 
 
 const DashBoardLayout = ({ children }) => {
@@ -105,6 +107,10 @@ const DashBoardLayout = ({ children }) => {
     const toggleTheme = () => {
         setDarkTheme(!darkTheme)
     }
+    // thông báo 
+
+    const [openNotificationWithIcon, contextHolder] = openAlert();
+
     // Breadcrumb
     const location = useLocation();
     const pathname = location.pathname;
@@ -128,123 +134,127 @@ const DashBoardLayout = ({ children }) => {
     } = theme.useToken();
 
     return (
+        <AlertContext.Provider value={openNotificationWithIcon}>
 
-        <Layout
-            style={{
-                minHeight: '100vh',
-            }}
-        >
-            <Sider theme={darkTheme ? 'dark' : 'light'} width={250} trigger={null} collapsible collapsed={collapsed}
+            <Layout
                 style={{
-                    position: 'fixed',
-                    height: '100vh',
+                    minHeight: '100vh',
                 }}
             >
-                <div style={{ textAlign: 'center', color: 'white', fontSize: '45px', margin: '10px' }}>
-                    <div style={{ width: 60, height: 60, display: 'flex', margin: 'auto', backgroundColor: 'black', justifyContent: 'center', alignItems: 'center', borderRadius: '50%' }}>
-                        <FireFilled />
-                    </div>
-                </div>
-                <Menu theme={darkTheme ? 'dark' : 'light'}
-                    className="SideMenuVertical"
-                    mode="vertical"
-                    onClick={(item) => {
-                        navigate(item.key);
-                    }}
-                    selectedKeys={[selectedKeys]}
-                    items={itemslist}
-                ></Menu>
-                <ToggleThemeButton darkTheme={darkTheme} toggleTheme={toggleTheme} />
-            </Sider>
-
-            <Layout style={{ marginLeft: collapsed ? 80 : 250, transition: '.2s' }}>
-                <Header
+                {contextHolder}
+                <Sider theme={darkTheme ? 'dark' : 'light'} width={250} trigger={null} collapsible collapsed={collapsed}
                     style={{
-                        padding: 0,
-                        background: colorBgContainer,
+                        position: 'fixed',
+                        height: '100vh',
                     }}
                 >
-                    <Button
-                        type="text"
-                        icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-                        onClick={() => setCollapsed(!collapsed)}
-                        style={{
-                            fontSize: '16px',
-                            width: 64,
-                            height: 64,
-                        }}
-                    />
-                    <Dropdown
-                        menu={{
-                            items: [{
-                                key: '1',
-                                label: (
-                                    <Link to={role === "ADMIN" ? "/dashboard/admin/profile" : "/dashboard/doctor/profile"}>
-                                        <ProfileOutlined /> <span style={{ marginLeft: '7px' }}>Profile</span>
-                                    </Link>
-                                ),
-                            },
-                            {
-                                key: '2',
-                                label: (
-                                    <span onClick={handleLogout}>
-                                        <LogoutOutlined /><span style={{ marginLeft: '7px' }}>Logout</span>
-                                    </span>
-                                ),
-                            },],
-                        }}
-                        placement="bottomRight"
-                    >
-                        <div style={{ display: 'flex', float: 'right',alignItems:'center',marginRight:'20px',gap:'7px' }}>
-                            <img
-                                src="/images/dashboard/default_user.jpg"
-                                alt=""
-                                height="50"
-                                width="50"
-                                style={{
-                                    borderRadius: '50%'
-                                }}
-                            />
-                            <span>example@gmail.com</span>
-
+                    <div style={{ textAlign: 'center', color: 'white', fontSize: '45px', margin: '10px' }}>
+                        <div style={{ width: 60, height: 60, display: 'flex', margin: 'auto', backgroundColor: 'black', justifyContent: 'center', alignItems: 'center', borderRadius: '50%' }}>
+                            <FireFilled />
                         </div>
-
-                    </Dropdown>
-                </Header>
-                <Content
-                    style={{
-                        margin: '0 16px',
-                    }}
-                >
-                    <Breadcrumb
-                        style={{
-                            margin: '16px 0',
-                        }}
-                    >
-                        <Breadcrumb.Item>{role}</Breadcrumb.Item>
-                        <Breadcrumb.Item>{lastPath}</Breadcrumb.Item>
-                    </Breadcrumb>
-                    <div
-                        style={{
-                            padding: 24,
-                            minHeight: 360,
-                            background: colorBgContainer,
-                            borderRadius: borderRadiusLG,
-                            position: 'relative'
-                        }}
-                    >
-                        {children}
                     </div>
-                </Content>
-                <Footer
-                    style={{
-                        textAlign: 'center',
-                    }}
-                >
-                    Ant Design ©{new Date().getFullYear()} Created by Ant UED
-                </Footer>
+                    <Menu theme={darkTheme ? 'dark' : 'light'}
+                        className="SideMenuVertical"
+                        mode="vertical"
+                        onClick={(item) => {
+                            navigate(item.key);
+                        }}
+                        selectedKeys={[selectedKeys]}
+                        items={itemslist}
+                    ></Menu>
+                    <ToggleThemeButton darkTheme={darkTheme} toggleTheme={toggleTheme} />
+                </Sider>
+
+                <Layout style={{ marginLeft: collapsed ? 80 : 250, transition: '.2s' }}>
+                    <Header
+                        style={{
+                            padding: 0,
+                            background: colorBgContainer,
+                        }}
+                    >
+                        <Button
+                            type="text"
+                            icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+                            onClick={() => setCollapsed(!collapsed)}
+                            style={{
+                                fontSize: '16px',
+                                width: 64,
+                                height: 64,
+                            }}
+                        />
+                        <Dropdown
+                            menu={{
+                                items: [{
+                                    key: '1',
+                                    label: (
+                                        <Link to={role === "ADMIN" ? "/dashboard/admin/profile" : "/dashboard/doctor/profile"}>
+                                            <ProfileOutlined /> <span style={{ marginLeft: '7px' }}>Profile</span>
+                                        </Link>
+                                    ),
+                                },
+                                {
+                                    key: '2',
+                                    label: (
+                                        <span onClick={handleLogout}>
+                                            <LogoutOutlined /><span style={{ marginLeft: '7px' }}>Logout</span>
+                                        </span>
+                                    ),
+                                },],
+                            }}
+                            placement="bottom"
+                        >
+                            <div style={{ display: 'flex', float: 'right', alignItems: 'center', marginRight: '20px', gap: '7px' }}>
+                                <img
+                                    src="/images/dashboard/default_user.jpg"
+                                    alt=""
+                                    height="50"
+                                    width="50"
+                                    style={{
+                                        borderRadius: '50%'
+                                    }}
+                                />
+                                <span>example@gmail.com</span>
+
+                            </div>
+
+                        </Dropdown>
+                    </Header>
+                    <Content
+                        style={{
+                            margin: '0 16px',
+                        }}
+                    >
+                        <Breadcrumb
+                            style={{
+                                margin: '16px 0',
+                            }}
+                        >
+                            <Breadcrumb.Item>{role}</Breadcrumb.Item>
+                            <Breadcrumb.Item>{lastPath}</Breadcrumb.Item>
+                        </Breadcrumb>
+                        <div
+                            style={{
+                                padding: 24,
+                                minHeight: 360,
+                                background: colorBgContainer,
+                                borderRadius: borderRadiusLG,
+                                position: 'relative'
+                            }}
+                        >
+                            {children}
+                        </div>
+                    </Content>
+                    <Footer
+                        style={{
+                            textAlign: 'center',
+                        }}
+                    >
+                        Ant Design ©{new Date().getFullYear()} Created by Ant UED
+                    </Footer>
+                </Layout>
             </Layout>
-        </Layout>
+        </AlertContext.Provider>
+
     );
 
 

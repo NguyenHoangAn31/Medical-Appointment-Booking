@@ -1,19 +1,20 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { PlusOutlined, SearchOutlined } from '@ant-design/icons';
 import { Button, Input, Popconfirm, Space, Spin, Table } from 'antd';
 import Highlighter from 'react-highlight-words';
 import { getAllSlot, deleteSlot } from '../../../../services/API/slotService';
 import { Link } from 'react-router-dom';
-import openAlert from '../../../../components/Layouts/DashBoard/openAlert';
-import Spinner from '../../../../components/Layouts/DashBoard/Spinner';
-
+import Spinner from '../../../../components/Spinner';
+import { AlertContext } from '../../../../components/Layouts/DashBoard';
 const ManageSlot = () => {
+  const Alert = useContext(AlertContext);
+
   // useState cho search
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
   const searchInput = useRef(null);
   // thông báo
-  const [openNotificationWithIcon, contextHolder] = openAlert();
+  // const [openNotificationWithIcon, contextHolder] = openAlert();
 
   // useState cho mảng dữ liệu slots
   const [slots, setSlots] = useState([]);
@@ -36,7 +37,7 @@ const ManageSlot = () => {
     try {
       await deleteSlot(id);
       loadSlots();
-      openNotificationWithIcon('success', 'Deletete Successfully', '')
+      Alert('success', 'Deletete Successfully', '')
     } catch (error) {
       console.log(error)
     }
@@ -157,7 +158,7 @@ const ManageSlot = () => {
       sorter: (a, b) => a.id - b.id,
     },
     {
-      title: 'Name',
+      title: 'Time',
       dataIndex: 'name',
       key: 'name',
       width: '33.333%',
@@ -185,8 +186,6 @@ const ManageSlot = () => {
   ];
   return (
     <>
-      {contextHolder}
-
       {slots.length == 0 ? <Spinner/> : <> <Link to="/dashboard/admin/manage-slot/create">
         <Button type="primary" icon={<PlusOutlined />} style={{ float: 'right', marginBottom: '15px' }}>
           Add New Slot

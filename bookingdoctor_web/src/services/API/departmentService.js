@@ -27,17 +27,17 @@ export const findDepartmentById = async (id) => {
         throw error;
     }
 }
-export const addDepartment = async (slot) => {
+export const addDepartment = async (department) => {
     try {
-        await request.post(`department/create`,slot);
+        await request.post(`department/create`,department);
     } catch (error) {
         console.log(error);
         throw error;
     }
 };
-export const updateDepartment = async (id,slot) => {
+export const updateDepartment = async (id,department) => {
     try {
-        await request.put(`department/update/${id}`,slot);
+        await request.put(`department/update/${id}`,department);
     } catch (error) {
         console.log(error);
         throw error;

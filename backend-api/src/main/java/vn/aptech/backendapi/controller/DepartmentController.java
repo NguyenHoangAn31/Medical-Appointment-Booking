@@ -1,8 +1,17 @@
 package vn.aptech.backendapi.controller;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.URISyntaxException;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
+import java.nio.file.Path;
+import java.nio.file.Files;
 
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -13,7 +22,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import vn.aptech.backendapi.dto.DepartmentDto;
 import vn.aptech.backendapi.service.Department.DepartmentService;
@@ -21,6 +34,9 @@ import vn.aptech.backendapi.service.Department.DepartmentService;
 @RestController
 @RequestMapping(value = "/api/department")
 public class DepartmentController {
+
+    private final String UPLOAD_DIR = Paths.get("src/main/resources/static/images/department/").toString();
+
     @Autowired
     private DepartmentService departmentService;
 
@@ -41,7 +57,13 @@ public class DepartmentController {
     }
 
     @DeleteMapping(value = "/delete/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> deleteById(@PathVariable("id") int id) {
+    public ResponseEntity<?> deleteById(@PathVariable("id") int id) throws IOException {
+        Optional<DepartmentDto> result = departmentService.findById(id);
+        if (result.get().getIcon() != null || result.get().getIcon().length() != 0) {
+            String fullPath = UPLOAD_DIR + "\\" + result.get().getIcon();
+            Path filePath = Paths.get(fullPath);
+            Files.delete(filePath);
+        }
         boolean deleted = departmentService.deleteById(id);
         if (deleted) {
             return ResponseEntity.ok().build();
@@ -51,25 +73,79 @@ public class DepartmentController {
     }
 
     @PostMapping(value = "/create", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<DepartmentDto> Create(@RequestBody DepartmentDto dto) {
-        System.out.println("ok");
-        DepartmentDto result = departmentService.save(dto);
+    public ResponseEntity<DepartmentDto> Create(@RequestParam("icon") MultipartFile photo,
+            @RequestParam("department") String department) throws IOException {
+
+        // xử lý DepartmentDto
+        ObjectMapper objectMapper = new ObjectMapper();
+        DepartmentDto departmentDto = objectMapper.readValue(department, DepartmentDto.class);
+        // xử lý hình ảnh
+
+        Path uploadPath = Paths.get(UPLOAD_DIR);
+        if (!Files.exists(uploadPath)) {
+            Files.createDirectories(uploadPath);
+        }
+        byte[] bytes = photo.getBytes();
+        String fileExtension = FilenameUtils.getExtension(photo.getOriginalFilename());
+        String uuidFileName = UUID.randomUUID().toString() + "." + fileExtension;
+        Path path = Paths.get(UPLOAD_DIR).resolve(uuidFileName);
+
+        try {
+            Files.write(path, bytes);
+            departmentDto.setIcon(uuidFileName);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        DepartmentDto result = departmentService.save(departmentDto);
         if (result != null) {
             return ResponseEntity.ok(result); // Return the created SlotDto
         } else {
             return ResponseEntity.notFound().build();
         }
+
     }
 
     @PutMapping(value = "/update/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<DepartmentDto> updateTutorial(@PathVariable("id") int id, @RequestBody DepartmentDto dto) {
-        Optional<DepartmentDto> existingDepartmentOptional = departmentService.findById(id);
-        if (existingDepartmentOptional.isPresent()) {
-            DepartmentDto existingDepartment = existingDepartmentOptional.get();
-            existingDepartment.setName(dto.getName());
-            existingDepartment.setUrl(dto.getUrl());
-            existingDepartment.setStatus(dto.getStatus());
-            DepartmentDto updatedDepartment = departmentService.save(existingDepartment);
+    public ResponseEntity<DepartmentDto> updateTutorial(@PathVariable("id") int id,
+            @RequestParam(name = "icon", required = false) MultipartFile photo,
+            @RequestParam("department") String department) throws IOException {
+
+        System.out.println("photo : " + photo);
+        System.out.println("department : " + department);
+
+        // xử lý DepartmentDto
+        ObjectMapper objectMapper = new ObjectMapper();
+        DepartmentDto departmentDto = objectMapper.readValue(department, DepartmentDto.class);
+        // xử lý hình ảnh
+        if (photo != null) {
+            // nếu ảnh tồn tại thì xóa
+            if (departmentDto.getIcon() != null) {
+                String fullPath = UPLOAD_DIR + "\\" + departmentDto.getIcon();
+                Path filePath = Paths.get(fullPath);
+                Files.delete(filePath);
+            }
+            Path uploadPath = Paths.get(UPLOAD_DIR);
+            if (!Files.exists(uploadPath)) {
+                Files.createDirectories(uploadPath);
+            }
+            byte[] bytes = photo.getBytes();
+            String fileExtension = FilenameUtils.getExtension(photo.getOriginalFilename());
+            String uuidFileName = UUID.randomUUID().toString() + "." + fileExtension;
+            Path path = Paths.get(UPLOAD_DIR).resolve(uuidFileName);
+
+            try {
+                Files.write(path, bytes);
+                departmentDto.setIcon(uuidFileName);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }
+        departmentDto.setId(id);
+        DepartmentDto updatedDepartment = departmentService.save(departmentDto);
+        if (updatedDepartment != null) {
+
             return ResponseEntity.ok(updatedDepartment);
         }
         return ResponseEntity.notFound().build();
