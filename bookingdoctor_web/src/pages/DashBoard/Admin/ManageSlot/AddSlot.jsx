@@ -3,6 +3,7 @@ import {
     Button,
     Form,
     Input,
+    Space,
     TimePicker,
 } from 'antd';
 import { Link } from 'react-router-dom';
@@ -10,35 +11,37 @@ import { LeftOutlined } from '@ant-design/icons';
 import { addSlot } from '../../../../services/API/slotService';
 import openAlert from '../../../../components/Layouts/DashBoard/openAlert';
 
-const formItemLayout = {
+const layout = {
     labelCol: {
-        xs: {
-            span: 24,
-        },
-        sm: {
-            span: 6,
-        },
+        span: 8,
     },
     wrapperCol: {
-        xs: {
-            span: 24,
-        },
-        sm: {
-            span: 14,
-        },
+        span: 16,
     },
 };
-
+const tailLayout = {
+    wrapperCol: {
+        offset: 8,
+        span: 16,
+    },
+};
 function AddSlot() {
 
     const [slot, setSlot] = useState({
         name: '',
     });
+
+    const [form] = Form.useForm();
+
     //thông báo
     const [openNotificationWithIcon, contextHolder] = openAlert();
 
     const onInputChange = (name, value) => {
         setSlot({ ...slot, [name]: value });
+    };
+    //reset field
+    const onReset = () => {
+        form.resetFields();
     };
 
 
@@ -57,16 +60,18 @@ function AddSlot() {
         <>
             {contextHolder}
 
-            <Link to={`/dashboard/admin/manage-slot`}><LeftOutlined /> Back To Slot</Link>
-            <h1 className='mb-3'>Create New Slot</h1>
+            {/* <Link to={`/dashboard/admin/manage-slot`}><LeftOutlined /> Back To Slot</Link> */}
+            <h2>Add New Slot</h2>
 
             <Form
-                {...formItemLayout}
-                variant="filled"
+                {...layout}
+                form={form}
+                name="control-hooks"
+                onFinish={handleFormSubmit}
                 style={{
                     maxWidth: 600,
+                    marginTop: '45px'
                 }}
-                onFinish={handleFormSubmit}
             >
                 <Form.Item
                     label="Time"
@@ -82,15 +87,15 @@ function AddSlot() {
                 </Form.Item>
 
 
-                <Form.Item
-                    wrapperCol={{
-                        offset: 6,
-                        span: 16,
-                    }}
-                >
-                    <Button type="primary" htmlType="submit">
-                        Submit
-                    </Button>
+                <Form.Item {...tailLayout}>
+                    <Space>
+                        <Button type="primary" htmlType="submit">
+                            Submit
+                        </Button>
+                        <Button htmlType="button" onClick={onReset}>
+                            Reset
+                        </Button>
+                    </Space>
                 </Form.Item>
             </Form>
         </>

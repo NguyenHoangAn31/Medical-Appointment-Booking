@@ -12,22 +12,12 @@ import { updateSlot } from '../../../../services/API/slotService';
 import openAlert from '../../../../components/Layouts/DashBoard/openAlert';
 
 
-const formItemLayout = {
+const layout = {
   labelCol: {
-    xs: {
-      span: 24,
-    },
-    sm: {
-      span: 6,
-    },
+    span: 8,
   },
   wrapperCol: {
-    xs: {
-      span: 24,
-    },
-    sm: {
-      span: 14,
-    },
+    span: 16,
   },
 };
 
@@ -36,7 +26,7 @@ function EditSlot() {
   const { id } = useParams();
 
   // khởi tạo đối tượng slot
-  const [slot, setSlot] = useState({name: ''});
+  const [slot, setSlot] = useState({ name: '' });
   // khởi tạo đối tượng slot kiểm tra sự thay đổi
   const [initialSlot, setInitialSlot] = useState({ name: '' });
 
@@ -79,16 +69,18 @@ function EditSlot() {
   return (
     <>
       {contextHolder}
-      <Link to={`/dashboard/admin/manage-slot`}><LeftOutlined /> Back To Slot</Link>
+      {/* <Link to={`/dashboard/admin/manage-slot`}><LeftOutlined /> Back To Slot</Link> */}
+      <h2>Edit Slot</h2>
+
       <Form
-        {...formItemLayout}
-        variant="filled"
+        {...layout}
+        name="control-hooks"
+        onFinish={handleFormSubmit}
         style={{
           maxWidth: 600,
+          marginTop: '45px'
         }}
-        onFinish={handleFormSubmit}
       >
-        <h1 className='mb-3'>Edit Slot</h1>
 
         <Form.Item
           label="Time"
