@@ -40,7 +40,7 @@
   border-radius: 10px;
   box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
   ol {
-    font-family: "Roboto", sans-serif;
+    font-family: "Comfortaa", sans-serif;
     margin: 32px auto;
     line-height: 1.8;
     list-style: none;
@@ -87,5 +87,35 @@
   
   li:last-child::after {
     height: calc(100% - 50px);
+  }
+}
+
+.doctor__detail_list{
+  margin-top: 50px;
+  .doctor__detail_list_title{
+    color: blue;
+    text-align: center;
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 50px;
+    font-family: "Comfortaa", sans-serif;
+  }
+  .card{
+    border-radius: 10px;
+  }
+  .doctor__detail_list_card{
+    font-family: "Comfortaa", sans-serif;
+    text-align: center;
+    .card-title{
+      margin-top: 20px;
+      color: blue;
+      font-weight: 900;
+    }
+    .card-title_link{
+      text-decoration: none;
+      :hover{
+        text-decoration: underline;
+      }
+    }
   }
 }

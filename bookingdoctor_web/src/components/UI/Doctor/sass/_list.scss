@@ -39,7 +39,7 @@
 }
 
 .doctor__list_title {
-    color: rgba(0, 0, 0, 1);
+    color: #000;
     width: 200px;
     height: 21px;
     position: absolute;
@@ -48,12 +48,12 @@
     font-family: "Comfortaa", sans-serif;
     text-align: left;
     font-size: 12px;
-    font-weight: 700;
+    font-weight: 900;
 }
 
 .doctor__list_department {
     font-family: "Comfortaa", sans-serif;
-    color: blue;
+    color: rgb(138, 138, 138);
     width: 150px;
     height: 18px;
     position: absolute;
@@ -61,12 +61,19 @@
     top: 346px;
     font-weight: 600;
     text-align: left;
-    font-size: 12px;
+    font-size: 11px;
 }
 
 .doctor__list_icon {
     position: absolute;
-    left: 185px;
-    top: 328px;
+    background-color: #fff;
+    width: 50px;
+    height: 50px;
+    left: 190px;
+    top: 320px;
+    text-align: center;
     font-size: 30px;
+    border: 1px solid blue;
+    border-radius: 50%;
 }
+

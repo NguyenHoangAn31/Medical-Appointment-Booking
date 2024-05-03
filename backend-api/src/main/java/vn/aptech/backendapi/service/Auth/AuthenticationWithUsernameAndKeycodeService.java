@@ -15,6 +15,7 @@ import vn.aptech.backendapi.repository.RefreshTokenRepository;
 import vn.aptech.backendapi.repository.UserRepository;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -51,4 +52,22 @@ public class AuthenticationWithUsernameAndKeycodeService {
         return  auth;
 
     }
+
+    public Authentication checkToken(String username){
+        Optional<RefreshToken> authenticationOptional = refreshTokenRepository.findRefreshTokenByUsername(username);
+        Authentication auth = new Authentication();
+        if(authenticationOptional.isPresent()){
+            RefreshToken refreshToken = authenticationOptional.get();
+            User user = refreshToken.getUser();
+            String tokenCode = refreshToken.getCode();
+            LocalDateTime expiredAt = refreshToken.getExpiredAt();
+            LocalDateTime now = LocalDateTime.now();
+            if(now.isBefore(expiredAt)){
+                var accessToken = jwt.encode(user.getId(), user.getAuthorities(), expiredAt, TOKEN_SECRET);
+                auth = new Authentication(new UserInformation(user), accessToken, tokenCode, expiredAt);
+            }
+        }
+        return  auth;
+    }
+
 }

@@ -26,4 +26,5 @@ public class DoctorDto {
     private List<WorkingDto> workings;
 
 
+
 }
