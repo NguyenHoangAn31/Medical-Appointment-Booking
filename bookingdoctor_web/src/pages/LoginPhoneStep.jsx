@@ -13,6 +13,7 @@ import * as ecryptToken from '../ultils/encrypt'
 const LoginPhoneStep = () => {
     const [username, setUsername] = useState('');
     const [keycode, setKeycode] = useState('');
+    const [loading, setLoading] = useState(false);
     const navigateTo = useNavigate();
     const currentPath = localStorage.getItem('currentPath');
     useEffect(() => {
@@ -21,17 +22,34 @@ const LoginPhoneStep = () => {
         // Bây giờ bạn có thể làm gì đó với giá trị của username
     }, []);
 
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         // Chuyển hướng trở lại đường dẫn hiện tại sau khi đăng nhập thành công
         const data = {
             username: username,
             keycode: keycode,
-            provider: ''
+            provider: 'phone'
         }
-        console.log(data);
-        try {
+        setLoading(true);
+        window.confirmationResult
+          .confirm(data.keycode)
+          .then(async (res) => {
+            console.log(res);
+            //setUser(res.user);
+            setLoading(false);
+          })
+          .catch((err) => {
+            console.log(err);
+            setLoading(false);
+          });
 
+        // setup keycode vào database
+
+       await axios.post('http://localhost:8080/api/auth/set-keycode', data);
+
+        //console.log(data);
+        try {
             const result = await axios.post('http://localhost:8080/api/auth/login', data);
 
             // console.log(result.data.user.roles[0]);
@@ -47,7 +65,9 @@ const LoginPhoneStep = () => {
                     localStorage.setItem('currentPath', '');
                     navigateTo(`/dashboard/admin`);
                 } else {
-                    if (currentPath == null || currentPath == '') {
+                    if (currentPath == null || currentPath == '' || currentPath == '/login' 
+                    || currentPath == '/login-by-phone' 
+                    || currentPath == '/login-by-phone-submit') {
                         navigateTo('/');
                     } else {
                         localStorage.setItem('currentPath', '');
@@ -78,7 +98,7 @@ const LoginPhoneStep = () => {
                                 <h5 className='login__title_sup'>Booking appointment</h5>
                                 <div className='py-5 border-top border-dark border-2 mt-3'>
                                     {/* <h5 className='mb-2 text-black-50'>Step 2: Xác thực sms đã send qua điện thoại</h5> */}
-                                    <form onClick={handleSubmit}>
+                                    <form onSubmit={handleSubmit}>
                                         <input type="hidden" name="provider" value="phone" />
                                         <div className="mb-3">
                                             <input type="text" className="input__username"

@@ -1,30 +1,86 @@
 import React, { useState, useEffect } from 'react';
 
-import {useNavigate} from 'react-router-dom'; 
+import { useNavigate } from 'react-router-dom';
 import bg_login from '../../public/images/image-login.png';
 import { motion } from 'framer-motion';
+import { auth } from "../services/auth/firebase.config";
+import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
+import { toast, Toaster } from "react-hot-toast";
 import axios from 'axios';
+import getUserData from '../route/CheckRouters/token/Token';
+import ecryptToken from '../ultils/encrypt';
 
-//import * as authService from '../../src/services/API/authService';
+import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/style.css";
+
+//import { toast, Toaster } from "react-hot-toast";
 
 const LoginPhone = () => {
-
+    //console.log(getUserData);
     const [username, setUsername] = useState('');
-    const provider ='phone';
-    
-    const navigateTo  = useNavigate();
+    const [loading, setLoading] = useState(false);
+    const provider = 'phone';
+    const currentPath = localStorage.getItem('currentPath');
+    const navigateTo = useNavigate();
+
+
+    function onCaptchVerify() {
+        if (!window.recaptchaVerifier) {
+            window.recaptchaVerifier = new RecaptchaVerifier(auth,
+                "recaptcha-container",
+                {
+                    size: "invisible",
+                    callback: () => {
+                        console.log('recaptcha resolved..')
+                    }
+                }
+            );
+        }
+    }
+
 
     const handleSendOtp = async (event) => {
         event.preventDefault()
         const data = {
             username: username,
             provider: provider
-        }     
+        }
         try {
+            const result = await axios.post('http://localhost:8080/api/auth/send-otp', data);
+            console.log(result);
+            if (result && result.data) {
+                onCaptchVerify();
+                const appVerifier = window.recaptchaVerifier;
+                const formatPh = "+84" + username.slice(1);
+                console.log(formatPh);
+                signInWithPhoneNumber(auth, formatPh, appVerifier)
+                    .then((confirmationResult) => {
+                        window.confirmationResult = confirmationResult;
+                        setLoading(false);
+                        //setShowOTP(true);
+                        toast.success("OTP sended successfully!", {
+                            position: "top-right"
+                        });
+                        navigateTo(`/login-by-phone-submit?username=${data.username}`);
+                    })
+                    .catch((error) => {
+                        //console.log(error);
+                        setLoading(false);
+                    });
+               
+            } else {
+                const checkToken = await axios.post('http://localhost:8080/api/auth/check-refresh-token', data);
+                console.log(checkToken.data.accessToken);
+                if (checkToken.data.accessToken == null) {// nếu checkToken khác null thì add lại sessionStorage 
+                    toast.error("Không tìm thấy user!", {
+                        position: "bottom-right"
+                    });
 
-            const result =  await axios.post('http://localhost:8080/api/auth/send-otp', data);              
-            if(result && result.data){
-                navigateTo(`/login-by-phone-submit?username=${username}`);
+                } else {
+                    sessionStorage.setItem('Token', ecryptToken.encryptToken(JSON.stringify(checkToken.data)));
+                    navigateTo(`/`);
+                    window.location.reload()
+                }
             }
 
         } catch (error) {
@@ -34,6 +90,7 @@ const LoginPhone = () => {
 
     return (
         <>
+            <div className='float-end'><Toaster toastOptions={{ duration: 4000 }} /></div>
             <div className='container mt-5'>
                 <div className="row">
                     <div className="col-md-6">
@@ -49,17 +106,17 @@ const LoginPhone = () => {
                                 <h5 className='login__title_sup'>Booking appointment</h5>
                                 <div className='py-5 border-top border-dark border-2 mt-3'>
                                     {/* <h5 className='mb-3 text-black-50'>Step 1: Nhập số điện thoại</h5> */}
-
-                                    <form onClick={handleSendOtp}>
-                                        <input type="hidden" name="provider" value="phone" />
+                                    <div id="recaptcha-container"></div>
+                                    <form onSubmit={handleSendOtp}>
                                         <div className="mb-3">
-                                            <input 
-                                                className="input__username" 
+                                            <input
+                                                className="input__username"
                                                 id="input__phone"
                                                 placeholder="Enter your phone: +84123456789"
                                                 value={username}
                                                 onChange={(e) => setUsername(e.target.value)}
-                                              />
+                                            />
+                                            {/* <PhoneInput country={"vn"} value={username} onChange={(e) => setUsername(e.target.value)} /> */}
                                         </div>
                                         <div className="mb-4">
                                             <motion.div whileTap={{ scale: 0.8 }}>
@@ -70,7 +127,6 @@ const LoginPhone = () => {
                                 </div>
 
                                 <div className='mt-xl-5'>
-
                                     <p>Quay về trang login. <a hrefh="/login" className='text-decoration-none ms-2'>Back to login</a></p>
                                 </div>
                             </div>
