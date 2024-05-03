@@ -7,10 +7,7 @@
   padding: 0;
   box-sizing: border-box !important;
 }
-a{
-  text-decoration: none;
-  color: black;
-}
+
 html, body {
   scroll-behavior: smooth;
   width: 100%;
@@ -92,6 +89,15 @@ body {
 
 section {
   margin: 50px 0;
+}
+
+.toaster {
+  position: fixed;
+  right: 10px;
+  bottom: 30px;
+  width: 300px;
+  height: auto;
+  z-index: 100px;
 }
 
 .doctor__list {

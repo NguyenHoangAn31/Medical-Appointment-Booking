@@ -12,4 +12,11 @@ public class Authentication {
     private final String accessToken;
     private final String refreshToken;
     public final LocalDateTime expireAt;
+
+    public Authentication() {
+        user = this.getUser();
+        accessToken = this.getAccessToken();
+        refreshToken = this.getRefreshToken();
+        expireAt = this.getExpireAt();
+    }
 }

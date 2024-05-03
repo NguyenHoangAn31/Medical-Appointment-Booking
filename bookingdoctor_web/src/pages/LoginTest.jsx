@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { auth } from "../services/auth/firebase.config";
 import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
+import { toast, Toaster } from "react-hot-toast";
 
 import {useNavigate} from 'react-router-dom'; 
 import bg_login from '../../public/images/image-login.png';
@@ -9,8 +10,6 @@ import axios from 'axios';
 
 
 const LoginTest = () => {
-
-    const [otp, setOtp] = useState("");
     const [username, setUsername] = useState("");
     const [loading, setLoading] = useState(false);
     const [showOTP, setShowOTP] = useState(false);
@@ -45,7 +44,9 @@ const LoginTest = () => {
             window.confirmationResult = confirmationResult;
             setLoading(false);
             setShowOTP(true);
-           //toast.success("OTP sended successfully!");
+            toast.success("OTP sended successfully!",  {
+                position: "top-right"
+              });
           })
           .catch((error) => {
             console.log(error);
@@ -56,6 +57,7 @@ const LoginTest = () => {
   return (
     <>
     <div className='container mt-5'>
+    <div><Toaster className='toaster' toastOptions={{ duration: 4000 }} /></div>
         <div className="row">
             <div className="col-md-6">
                 <div className="col-12">
@@ -92,7 +94,6 @@ const LoginTest = () => {
                         </div>
 
                         <div className='mt-xl-5'>
-
                             <p>Quay về trang login. <a hrefh="/login" className='text-decoration-none ms-2'>Back to login</a></p>
                         </div>
                     </div>

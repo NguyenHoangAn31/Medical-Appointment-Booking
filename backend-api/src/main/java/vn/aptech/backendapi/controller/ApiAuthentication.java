@@ -44,7 +44,12 @@ public class ApiAuthentication {
 //    @PostMapping("/sign-in")
 //    public ResponseEntity<String> signIn(@@RequestBody )
 
-
+    @PostMapping(value = "/check-refresh-token", produces = MediaType.APPLICATION_JSON_VALUE)
+    public  ResponseEntity<Authentication> checkToken(@RequestBody AuthenticationWithUsernameAndKeycode body){
+            String username = body.getUsername();
+            var session = service.checkToken(username);
+        return ResponseEntity.ok(session);
+    }
 
     @PostMapping(value = "/send-otp", produces = MediaType.APPLICATION_JSON_VALUE)
 
@@ -54,40 +59,49 @@ public class ApiAuthentication {
         Optional<User> userOptional = userService.findByEmailOrPhone(username);
         if(userOptional.isPresent() && userOptional.get().getProvider().equals(provider)){
             Optional<RefreshToken> refreshTokenOptional = refreshTokenRepository.findRefreshTokenByUsername(username);
+            System.out.println("Tìm thấy user");
+            //System.out.println(refreshTokenOptional.isPresent());
             if (refreshTokenOptional.isPresent()) {
+                System.out.println("Tìm thấy token");
                 RefreshToken refreshToken = refreshTokenOptional.get();
+                //System.out.println(refreshToken);
                 LocalDateTime expiredAt = refreshToken.getExpiredAt();
                 LocalDateTime now = LocalDateTime.now();
-                // Kiểm tra tính hợp lệ của token
+                // check tính hợp lệ của token
                 if (now.isBefore(expiredAt)) {
-                    return ResponseEntity.ok(true); // Token chưa hết hạn, không thực hiện gửi OTP
+                    return ResponseEntity.ok(false); // Token chưa hết hạn, no thực hiện gửi OTP
                 } else {
-                    refreshTokenRepository.delete(refreshToken);
-                    return ResponseEntity.ok(false); // Token đã hết hạn, thực hiện đăng nhập
-                }
-            } else {
-                String otp = RandomStringUtils.randomNumeric(6);
-                // String otp ="";
-                if (userOptional.isPresent()) {
-                    User user = userOptional.get();
-                    if(provider.equals("phone")){
-                        user.setKeyCode(otp);
-                        userService.save(user);
-                    }
-                    return ResponseEntity.ok(true);
-                } else {
-                    return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                            .body(false); // Không tìm thấy người dùng
+                    refreshToken.setAvailable(true);
+                    refreshTokenRepository.save(refreshToken);
+                    return ResponseEntity.ok(true); // Token đã hết hạn, thực hiện login
                 }
             }
-        }else{
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(false);
+           else {
+                System.out.println("Token not found");
+                return ResponseEntity.ok(true); // User not found
+            }
         }
+        else{
+            System.out.println("Không tìm thấy user");
+            return ResponseEntity.ok(false);
+        }
+
     }
 
-   // public ResponseEntit
-
+    @PostMapping(value = "/set-keycode")
+    public void setKeyCode(@RequestBody AuthenticationWithUsernameAndKeycode body){
+        String username = body.getUsername();
+        String keycode = body.getKeycode();
+        String provider = body.getProvider();
+        Optional<User> userOptional = userService.findByEmailOrPhone(username);
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            if(provider.equals(user.getProvider())){
+                user.setKeyCode(keycode);
+                userService.save(user);
+            }
+        }
+    }
 
 }
 

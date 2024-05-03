@@ -21,7 +21,6 @@ import * as encrypt from '../../../ultils/encrypt';
           }else{
             getUserData = result;
           } 
-        //getUserData = JSON.parse(encrypt.decryptToken(TokenReult));
     }
 
 export default getUserData;
