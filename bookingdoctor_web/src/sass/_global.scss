@@ -43,6 +43,35 @@
         border: 2px solid #ff61ba;
     }
 }
+
+.input__keycode-total{
+    display: flex;
+    justify-content: center;
+}
+
+.input__keycode{
+    width: 50px;
+    height: 50px;
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    font-size: 18px;
+    margin-left: 5px;
+    margin-right: 5px;
+    &::placeholder{
+        font-style: italic;
+        font-size: 14px;
+        font-weight: 400;
+        color: #CECECE;
+    }
+    &:focus{
+        border: 2px solid #ff61ba;
+    }
+}
+
+
 .btn__submit{
     width: 100%;
     padding: 10px 20px;

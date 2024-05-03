@@ -114,6 +114,7 @@ const DashBoardLayout = ({ children }) => {
     const handleLogout = () => {
         sessionStorage.removeItem("Token");
         navigate("/");
+        window.location.reload();
     }
 
     const [selectedKeys, setSelectedKeys] = useState("/");

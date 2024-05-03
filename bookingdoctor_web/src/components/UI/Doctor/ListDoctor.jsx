@@ -46,7 +46,7 @@ const ListDoctor = () => {
                                     <span className="doctor__list_department">Khoa: {doctor.department.name}</span>
                                     <div className="doctor__list_icon">
                                         <Link to={`/doctor/${doctor.id}`}>
-                                            <GoArrowUpRight />
+                                            <GoArrowUpRight className='list__icon-rowup' />
                                         </Link>
                                     </div>
                                 </div>
