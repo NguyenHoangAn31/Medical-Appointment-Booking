@@ -10,4 +10,6 @@ public interface WorkingService {
     Optional<WorkingDto> findById(int id);
     WorkingDto save(WorkingDto dto);
     boolean deleteById(int id);
+    // Hien Create 30/4/2024
+    List<WorkingDto> findByDoctorId(int doctorId);
 }

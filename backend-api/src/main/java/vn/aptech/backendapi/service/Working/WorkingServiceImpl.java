@@ -28,6 +28,13 @@ public class WorkingServiceImpl implements WorkingService {
     @Autowired
     private ModelMapper mapper;
 
+    // Hien Create 30/4/2024
+    @Override
+    public List<WorkingDto> findByDoctorId(int doctorId) {
+        List<Working> workings = workingRepository.findByDoctorId(doctorId);
+        return workings.stream().map(this::toDto).collect(Collectors.toList());
+    }
+
     private WorkingDto toDto(Working s) {
         WorkingDto w = mapper.map(s, WorkingDto.class);
         w.setDoctor_id(s.getDoctor().getId());

@@ -73,7 +73,17 @@ public class DoctorServiceImpl implements DoctorService{
             return Optional.empty(); // Trả về Optional rỗng nếu không tìm thấy Doctor
         }
     }
+    // Hien Create 30/4/2024
+    @Override
+    public List<DoctorDto> findRelatedDoctors(String departmentName) {
+        // Truy vấn danh sách bác sĩ có cùng chuyên khoa
+        List<Doctor> doctors = doctorRepository.findByDepartmentName(departmentName);
 
+        // Chuyển đổi danh sách bác sĩ sang DoctorDto
+        return doctors.stream()
+                .map(doctor -> mapper.map(doctor, DoctorDto.class))
+                .collect(Collectors.toList());
+    }
 
 
 }

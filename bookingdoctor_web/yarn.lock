@@ -1460,14 +1460,11 @@
     "@firebase/logger" "0.4.1"
     "@firebase/util" "1.9.5"
     tslib "^2.1.0"
-se/app-types@0.9.1":
 
 "@firebase/app-types@0.9.1", "@firebase/app-types@0.x":
-
   version "0.9.1"
   resolved "https://registry.npmjs.org/@firebase/app-types/-/app-types-0.9.1.tgz"
   integrity sha512-nFGqTYsnDFn1oXf1tCwPAc+hQPxyvBT/QB7qDjwK+IDYThOn63nGhzdUTXxVD9Ca8gUY/e5PQMngeo0ZW/E3uQ==
-
 
 "@firebase/app@0.10.1", "@firebase/app@0.x":
   version "0.10.1"
@@ -4350,7 +4347,6 @@ data-view-byte-offset@^1.0.0:
     es-errors "^1.3.0"
     is-data-view "^1.0.1"
 
-
 dayjs@^1.11.10, "dayjs@>= 1.x":
   version "1.11.11"
   resolved "https://registry.npmjs.org/dayjs/-/dayjs-1.11.11.tgz"
@@ -5792,8 +5788,7 @@ he@^1.2.0:
 
 highlight-words-core@^1.2.0:
   version "1.2.2"
-  resolved "https://registry.yarnpkg.com/highlight-words-core/-/highlight-words-core-1.2.2.tgz#1eff6d7d9f0a22f155042a00791237791b1eeaaa"
-
+  resolved "https://registry.npmjs.org/highlight-words-core/-/highlight-words-core-1.2.2.tgz"
   integrity sha512-BXUKIkUuh6cmmxzi5OIbUJxrG8OAk2MqoL1DtO3Wo9D2faJg2ph5ntyuQeLqaHJmzER6H5tllCDA9ZnNe9BVGg==
 
 hoopy@^0.1.4:
@@ -7250,9 +7245,9 @@ memfs@^3.1.2, memfs@^3.4.3:
     fs-monkey "^1.0.4"
 
 memoize-one@^4.0.0:
-  version "4.1.0"
-  resolved "https://registry.yarnpkg.com/memoize-one/-/memoize-one-4.1.0.tgz#a2387c58c03fff27ca390c31b764a79addf3f906"
-  integrity sha512-2GApq0yI/b22J2j9rhbrAlsHb0Qcz+7yWxeLG8h+95sl1XPUgeLimQSOdur4Vw7cUhrBHwaUZxWFZueojqNRzA==
+  version "4.0.3"
+  resolved "https://registry.npmjs.org/memoize-one/-/memoize-one-4.0.3.tgz"
+  integrity sha512-QmpUu4KqDmX0plH4u+tf0riMc1KHE1+lw95cMrLlXQAFOx/xnBtwhZ52XJxd9X2O6kwKBqX32kmhbhlobD0cuw==
 
 merge-descriptors@1.0.1:
   version "1.0.1"
@@ -8949,7 +8944,6 @@ react-error-overlay@^6.0.11:
 
 react-highlight-words@^0.20.0:
   version "0.20.0"
-
   resolved "https://registry.npmjs.org/react-highlight-words/-/react-highlight-words-0.20.0.tgz"
   integrity sha512-asCxy+jCehDVhusNmCBoxDf2mm1AJ//D+EzDx1m5K7EqsMBIHdZ5G4LdwbSEXqZq1Ros0G0UySWmAtntSph7XA==
   dependencies:
