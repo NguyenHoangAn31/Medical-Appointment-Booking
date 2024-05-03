@@ -17,24 +17,7 @@ const publicRouters = [
     { path: '/login-by-gmail', component: Client.LoginGmail, layout: ClientLayout },
     { path: '/login-by-gmail-submit', component: Client.LoginGmailStep, layout: ClientLayout },
     { path: '/booking', component: Client.Booking, layout: ClientLayout },
-    { path: '/signup', component: Client.Signup, layout: ClientLayout },
-    { path: '/login-test', component: Client.LoginTest, layout: ClientLayout },
-      
-//     {path:'/',component:Client.Home,layout:ClientLayout},
-//     {path:'/home',component:Client.Home,layout:ClientLayout},
-//     {path:'/about',component:Client.About,layout:ClientLayout},
-//     {path:'/contact',component:Client.Contact,layout:ClientLayout},
-//     {path:'/service',component:Client.Service,layout:ClientLayout},
-//     {path:'/doctor',component:Client.Doctor,layout:ClientLayout},
-//     {path:'/doctordetail',component:Client.DoctorDetail,layout:ClientLayout},
-//     {path:'/login',component:Client.Login,layout:ClientLayout},
-//     {path:'/login-by-phone',component:Client.LoginPhone,layout:ClientLayout},
-//     {path:'/login-by-phone-submit',component:Client.LoginPhoneStep,layout:ClientLayout},
-//     {path:'/login-by-gmail',component:Client.LoginGmail,layout:ClientLayout},
-//     {path:'/login-by-gmail-submit',component:Client.LoginGmailStep,layout:ClientLayout},
-//     {path:'/booking',component:Client.Booking,layout:ClientLayout},
-//     {path:'/signup',component:Client.Signup,layout:ClientLayout},
-
+    { path: '/signup', component: Client.Signup, layout: ClientLayout },     
 ]
 
 const patientRouters = [

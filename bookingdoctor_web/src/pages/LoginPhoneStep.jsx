@@ -6,7 +6,7 @@ import bg_login from '../../public/images/image-login.png';
 import { motion } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
 import queryString from 'query-string';
-
+import { toast } from "react-hot-toast";
 import * as ecryptToken from '../ultils/encrypt'
 
 
@@ -25,7 +25,6 @@ const LoginPhoneStep = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        // Chuyển hướng trở lại đường dẫn hiện tại sau khi đăng nhập thành công
         const data = {
             username: username,
             keycode: keycode,
@@ -33,20 +32,20 @@ const LoginPhoneStep = () => {
         }
         setLoading(true);
         window.confirmationResult
-          .confirm(data.keycode)
-          .then(async (res) => {
-            console.log(res);
-            //setUser(res.user);
-            setLoading(false);
-          })
-          .catch((err) => {
-            console.log(err);
-            setLoading(false);
-          });
+            .confirm(data.keycode)
+            .then(async (res) => {
+                setLoading(false);
+            })
+            .catch((err) => {
+                toast.error("OTP is incorrect", {
+                    position: "bottom-right"
+                });
+                setLoading(false);
+            });
 
         // setup keycode vào database
 
-       await axios.post('http://localhost:8080/api/auth/set-keycode', data);
+        await axios.post('http://localhost:8080/api/auth/set-keycode', data);
 
         //console.log(data);
         try {
@@ -55,8 +54,6 @@ const LoginPhoneStep = () => {
             // console.log(result.data.user.roles[0]);
 
             if (result && result.data) {
-                // Lưu kết quả vào localStorage
-                // const userResult = result.data
                 sessionStorage.setItem('Token', ecryptToken.encryptToken(JSON.stringify(result.data)));
                 if (result.data.user.roles[0] === 'DOCTOR') {
                     localStorage.setItem('currentPath', '');
@@ -65,9 +62,9 @@ const LoginPhoneStep = () => {
                     localStorage.setItem('currentPath', '');
                     navigateTo(`/dashboard/admin`);
                 } else {
-                    if (currentPath == null || currentPath == '' || currentPath == '/login' 
-                    || currentPath == '/login-by-phone' 
-                    || currentPath == '/login-by-phone-submit') {
+                    if (currentPath == null || currentPath == '' || currentPath == '/login'
+                        || currentPath == '/login-by-phone'
+                        || currentPath == '/login-by-phone-submit') {
                         navigateTo('/');
                     } else {
                         localStorage.setItem('currentPath', '');
@@ -100,13 +97,15 @@ const LoginPhoneStep = () => {
                                     {/* <h5 className='mb-2 text-black-50'>Step 2: Xác thực sms đã send qua điện thoại</h5> */}
                                     <form onSubmit={handleSubmit}>
                                         <input type="hidden" name="provider" value="phone" />
-                                        <div className="mb-3">
-                                            <input type="text" className="input__username"
+                                        <div className="mb-5 input__keycode-total">
+                                            <input type="text" className="input__username" 
+                                            placeholder="Enter keycode"
                                                 id="input__phone"
-                                                placeholder="Enter keycode"
+                                                maxLength={6}
                                                 value={keycode}
                                                 onChange={(e) => setKeycode(e.target.value)}
                                             />
+                                            
                                         </div>
                                         <div className="mb-4">
                                             <motion.div whileTap={{ scale: 0.8 }}>

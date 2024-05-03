@@ -5,7 +5,7 @@ import bg_login from '../../public/images/image-login.png';
 import { motion } from 'framer-motion';
 import { auth } from "../services/auth/firebase.config";
 import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
-import { toast, Toaster } from "react-hot-toast";
+import { toast } from "react-hot-toast";
 import axios from 'axios';
 import getUserData from '../route/CheckRouters/token/Token';
 import ecryptToken from '../ultils/encrypt';
@@ -57,22 +57,20 @@ const LoginPhone = () => {
                     .then((confirmationResult) => {
                         window.confirmationResult = confirmationResult;
                         setLoading(false);
-                        //setShowOTP(true);
                         toast.success("OTP sended successfully!", {
                             position: "top-right"
                         });
                         navigateTo(`/login-by-phone-submit?username=${data.username}`);
                     })
                     .catch((error) => {
-                        //console.log(error);
                         setLoading(false);
                     });
                
             } else {
                 const checkToken = await axios.post('http://localhost:8080/api/auth/check-refresh-token', data);
                 console.log(checkToken.data.accessToken);
-                if (checkToken.data.accessToken == null) {// nếu checkToken khác null thì add lại sessionStorage 
-                    toast.error("Không tìm thấy user!", {
+                if (checkToken.data.accessToken == null) { 
+                    toast.error("User not found or please try again with gmail!", {
                         position: "bottom-right"
                     });
 
@@ -90,7 +88,7 @@ const LoginPhone = () => {
 
     return (
         <>
-            <div className='float-end'><Toaster toastOptions={{ duration: 4000 }} /></div>
+            {/* <div className='float-end'><Toaster toastOptions={{ duration: 4000 }} /></div> */}
             <div className='container mt-5'>
                 <div className="row">
                     <div className="col-md-6">
