@@ -34,6 +34,13 @@ public class WorkingController {
     @Autowired
     private ModelMapper mapper;
 
+    // Hien Create 30/4/2024
+    @GetMapping(value = "/doctor/{doctorId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<WorkingDto>> findByDoctorId(@PathVariable("doctorId") int doctorId) {
+        List<WorkingDto> workings = workingService.findByDoctorId(doctorId);
+        return ResponseEntity.ok(workings);
+    }
+
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<WorkingDto> findById(@PathVariable("id") int id) {

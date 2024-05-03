@@ -8,4 +8,6 @@ import java.util.Optional;
 public interface DoctorService {
     List<DoctorDto> findAll();
     Optional<DoctorDto> findById(int id);
+    //Hien Create 30/4/2024
+    List<DoctorDto> findRelatedDoctors(String departmentName);
 }

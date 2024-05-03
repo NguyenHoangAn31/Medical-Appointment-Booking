@@ -37,5 +37,11 @@ public class DoctorController {
             return ResponseEntity.notFound().build();
         }
     }
+    //Hien Create 30/4/2024
+    @GetMapping(value = "/relatedDoctors/{departmentName}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<DoctorDto>> findRelatedDoctors(@PathVariable("departmentName") String departmentName) {
+        List<DoctorDto> relatedDoctors = doctorService.findRelatedDoctors(departmentName);
+        return ResponseEntity.ok(relatedDoctors);
+    }
 
 }
