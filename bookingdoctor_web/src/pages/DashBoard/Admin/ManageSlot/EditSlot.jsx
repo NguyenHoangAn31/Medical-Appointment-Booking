@@ -1,15 +1,16 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import {
   Button,
   Form,
   Input,
+  Space,
   TimePicker,
 } from 'antd';
 import { Link, useParams } from 'react-router-dom';
 import { LeftOutlined } from '@ant-design/icons';
 import { findSlotById } from '../../../../services/API/slotService';
 import { updateSlot } from '../../../../services/API/slotService';
-import openAlert from '../../../../components/Layouts/DashBoard/openAlert';
+import { AlertContext } from '../../../../components/Layouts/DashBoard';
 
 
 const layout = {
@@ -20,8 +21,16 @@ const layout = {
     span: 16,
   },
 };
+const tailLayout = {
+  wrapperCol: {
+    offset: 8,
+    span: 16,
+  },
+};
 
 function EditSlot() {
+  // thông báo
+  const Alert = useContext(AlertContext);
   // lấy id từ url
   const { id } = useParams();
 
@@ -32,12 +41,8 @@ function EditSlot() {
 
   const { name } = slot;
 
-  // thông báo
-  const [openNotificationWithIcon, contextHolder] = openAlert();
-
   // hàm cập nhật giá trị cho đối tượng slot môi khi input thay đổi
   const onInputChange = (name, value) => {
-    console.log(value)
     setSlot({ ...slot, [name]: value });
   };
 
@@ -58,17 +63,16 @@ function EditSlot() {
       try {
         await updateSlot(id, slot);
         setInitialSlot(await findSlotById(id));
-        openNotificationWithIcon('success', 'Editing Slot Successfully', '')
+        Alert('success', 'Editing Slot Successfully', '')
       }
       catch (error) {
         console.log(error)
-        openNotificationWithIcon('error', 'Error Editing Slot', '')
+        Alert('error', 'Error Editing Slot', '')
       }
     }
   };
   return (
     <>
-      {contextHolder}
       {/* <Link to={`/dashboard/admin/manage-slot`}><LeftOutlined /> Back To Slot</Link> */}
       <h2>Edit Slot</h2>
 
@@ -89,15 +93,12 @@ function EditSlot() {
         </Form.Item>
 
 
-        <Form.Item
-          wrapperCol={{
-            offset: 6,
-            span: 16,
-          }}
-        >
-          <Button type="primary" htmlType="submit">
-            Submit
-          </Button>
+        <Form.Item {...tailLayout}>
+          <Space>
+            <Button type="primary" htmlType="submit">
+              Submit
+            </Button>
+          </Space>
         </Form.Item>
       </Form>
     </>

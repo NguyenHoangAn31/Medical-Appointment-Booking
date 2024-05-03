@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import {
     Button,
     Form,
@@ -6,10 +6,11 @@ import {
     Space,
     TimePicker,
 } from 'antd';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { LeftOutlined } from '@ant-design/icons';
 import { addSlot } from '../../../../services/API/slotService';
-import openAlert from '../../../../components/Layouts/DashBoard/openAlert';
+import { AlertContext } from '../../../../components/Layouts/DashBoard';
+
 
 const layout = {
     labelCol: {
@@ -25,44 +26,48 @@ const tailLayout = {
         span: 16,
     },
 };
-function AddSlot() {
 
+function AddSlot() {
+    // thông báo
+    const Alert = useContext(AlertContext);
+
+    // chuyển trang
+    const navigate = useNavigate();
+
+    // tạo đối tượng slot
     const [slot, setSlot] = useState({
         name: '',
     });
 
     const [form] = Form.useForm();
 
-    //thông báo
-    const [openNotificationWithIcon, contextHolder] = openAlert();
-
     const onInputChange = (name, value) => {
         setSlot({ ...slot, [name]: value });
     };
+
     //reset field
     const onReset = () => {
         form.resetFields();
     };
 
-
+    // xử lí submit
     const handleFormSubmit = async () => {
         try {
             await addSlot(slot);
-            openNotificationWithIcon('success', 'Add New Slot Successfully', '')
+            Alert('success', 'Add New Slot Successfully', '')
+            navigate("/dashboard/admin/manage-slot");
+
         }
         catch (error) {
             console.log(error)
-            openNotificationWithIcon('error', 'Error Creating New Slot', '')
+            Alert('error', 'Error Creating New Slot', '')
 
         }
     };
     return (
         <>
-            {contextHolder}
-
             {/* <Link to={`/dashboard/admin/manage-slot`}><LeftOutlined /> Back To Slot</Link> */}
             <h2>Add New Slot</h2>
-
             <Form
                 {...layout}
                 form={form}
@@ -85,6 +90,8 @@ function AddSlot() {
                 >
                     <TimePicker format="HH:mm" onChange={(e) => onInputChange("name", e.format('HH:mm'))} />
                 </Form.Item>
+
+                
 
 
                 <Form.Item {...tailLayout}>

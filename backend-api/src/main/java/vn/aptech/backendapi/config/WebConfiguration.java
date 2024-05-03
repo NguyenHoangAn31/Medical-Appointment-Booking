@@ -1,6 +1,5 @@
 package vn.aptech.backendapi.config;
 
-
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.context.annotation.Bean;
@@ -17,12 +16,21 @@ import vn.aptech.backendapi.jwt.JWTImpl;
 @EnableWebMvc
 public class WebConfiguration implements WebMvcConfigurer {
 
+    // @Override
+    // public void addResourceHandlers(ResourceHandlerRegistry registry) {
+    // String staticFolder = "file:///" + System.getProperty("user.dir") +
+    // "/static/";
+    // registry.addResourceHandler("/static/**").addResourceLocations(staticFolder);
+    // WebMvcConfigurer.super.addResourceHandlers(registry);
+    // }
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        String staticFolder = "file:///" + System.getProperty("user.dir") + "/static/";
-        registry.addResourceHandler("/static/**").addResourceLocations(staticFolder);
+        registry.addResourceHandler("/images/**")
+                .addResourceLocations("classpath:/static/images/");
         WebMvcConfigurer.super.addResourceHandlers(registry);
+
     }
+
     @Bean
     public ModelMapper modelMapper() {
         ModelMapper modelMapper = new ModelMapper();
@@ -47,8 +55,9 @@ public class WebConfiguration implements WebMvcConfigurer {
                 .allowedHeaders("*")
                 .allowedMethods("*");
     }
+
     @Bean
-    JWT jwt(){
+    JWT jwt() {
         return new JWTImpl();
     }
 
