@@ -147,6 +147,7 @@ section {
   left: 0;
   top: 70px;
   border-radius: 50px;
+  box-shadow: var(--boxShadow);
 }
 
 .doctor__list_image {
@@ -154,6 +155,7 @@ section {
   position: absolute;
   left: -50px;
   top: 0;
+  overflow: hidden;
 }
 
 .doctor__list_background_title {
@@ -232,11 +234,11 @@ section {
 .doctor__detail_header .doctor__detail_header_right {
   text-align: center;
 }
-.doctor__detail_header .doctor__detail_header_right h1 {
+.doctor__detail_header .doctor__detail_header_right h2 {
   font-family: "Comfortaa", sans-serif;
   color: blue;
   font-weight: 900;
-  font-size: 60px;
+  font-size: 40px;
 }
 .doctor__detail_header .doctor__detail_header_right h3 {
   font-family: "Comfortaa", sans-serif;
