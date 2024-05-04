@@ -1,10 +1,5 @@
-
-// Hien create: 28/4/2024
-
-// eslint-disable-next-line no-unused-vars
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-// eslint-disable-next-line no-unused-vars
 import { Link } from 'react-router-dom';
 import { GoArrowUpRight } from "react-icons/go";
 

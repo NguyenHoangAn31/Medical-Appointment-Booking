@@ -24,6 +24,7 @@ public class DoctorDto {
     private Department department;
     //private User user;
     private List<WorkingDto> workings;
+    private List<QualificationDto> qualifications;
 
 
 

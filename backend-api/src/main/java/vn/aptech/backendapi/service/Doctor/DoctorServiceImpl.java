@@ -4,8 +4,10 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import vn.aptech.backendapi.dto.DoctorDto;
+import vn.aptech.backendapi.dto.QualificationDto;
 import vn.aptech.backendapi.dto.WorkingDto;
 import vn.aptech.backendapi.entities.Doctor;
+import vn.aptech.backendapi.entities.Qualification;
 import vn.aptech.backendapi.entities.Working;
 import vn.aptech.backendapi.repository.DoctorRepository;
 
@@ -51,6 +53,15 @@ public class DoctorServiceImpl implements DoctorService{
         return workingDto;
     }
 
+    private QualificationDto mapToQualificationDto(Qualification qualification) {
+        QualificationDto qualificationDto = new QualificationDto();
+        qualificationDto.setId(qualification.getId());
+        qualificationDto.setDegreeName(qualification.getDegreeName());
+        qualificationDto.setUniversityName(qualification.getUniversityName());
+        qualificationDto.setCourse(qualificationDto.getCourse());
+        return qualificationDto;
+    }
+
     public List<DoctorDto> findAll(){
         return doctorRepository.findAll().stream().map(this::toDto).toList();
     }
@@ -64,9 +75,13 @@ public class DoctorServiceImpl implements DoctorService{
             List<WorkingDto> workingList = doctor.getWorkings().stream()
                     .map(this::mapToWorkingDto)
                     .collect(Collectors.toList());
+            List<QualificationDto> qualificationList = doctor.getQualifications().stream()
+                    .map(this::mapToQualificationDto)
+                    .collect(Collectors.toList());
 
             DoctorDto doctorDto = mapToDoctorDto(doctor);
             doctorDto.setWorkings(workingList);
+            doctorDto.setQualifications(qualificationList);
 
             return Optional.of(doctorDto);
         } else {
