@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,12 +29,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import vn.aptech.backendapi.dto.DepartmentDto;
 import vn.aptech.backendapi.service.Department.DepartmentService;
+import vn.aptech.backendapi.service.File.FileService;
 
 @RestController
 @RequestMapping(value = "/api/department")
 public class DepartmentController {
 
-    private final String UPLOAD_DIR = Paths.get("src/main/resources/static/images/department/").toString();
+    // private final String UPLOAD_DIR =
+    // Paths.get("src/main/resources/static/images/department/").toString();
+    @Autowired
+    private FileService fileService;
 
     @Autowired
     private DepartmentService departmentService;
@@ -60,16 +63,15 @@ public class DepartmentController {
     public ResponseEntity<?> deleteById(@PathVariable("id") int id) throws IOException {
         Optional<DepartmentDto> result = departmentService.findById(id);
         if (result.get().getIcon() != null || result.get().getIcon().length() != 0) {
-            String fullPath = UPLOAD_DIR + "\\" + result.get().getIcon();
-            Path filePath = Paths.get(fullPath);
-            Files.delete(filePath);
+            fileService.deleteFile("department", result.get().getIcon());
         }
         boolean deleted = departmentService.deleteById(id);
         if (deleted) {
-            return ResponseEntity.ok().build();
+        return ResponseEntity.ok().build();
         } else {
-            return ResponseEntity.notFound().build();
+        return ResponseEntity.notFound().build();
         }
+
     }
 
     @PostMapping(value = "/create", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -81,22 +83,7 @@ public class DepartmentController {
         DepartmentDto departmentDto = objectMapper.readValue(department, DepartmentDto.class);
         // xử lý hình ảnh
 
-        Path uploadPath = Paths.get(UPLOAD_DIR);
-        if (!Files.exists(uploadPath)) {
-            Files.createDirectories(uploadPath);
-        }
-        byte[] bytes = photo.getBytes();
-        String fileExtension = FilenameUtils.getExtension(photo.getOriginalFilename());
-        String uuidFileName = UUID.randomUUID().toString() + "." + fileExtension;
-        Path path = Paths.get(UPLOAD_DIR).resolve(uuidFileName);
-
-        try {
-            Files.write(path, bytes);
-            departmentDto.setIcon(uuidFileName);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
+        departmentDto.setIcon(fileService.uploadFile("department",photo));
         DepartmentDto result = departmentService.save(departmentDto);
         if (result != null) {
             return ResponseEntity.ok(result); // Return the created SlotDto
@@ -116,30 +103,15 @@ public class DepartmentController {
 
         // xử lý DepartmentDto
         ObjectMapper objectMapper = new ObjectMapper();
-        DepartmentDto departmentDto = objectMapper.readValue(department, DepartmentDto.class);
+        DepartmentDto departmentDto = objectMapper.readValue(department,
+                DepartmentDto.class);
         // xử lý hình ảnh
         if (photo != null) {
             // nếu ảnh tồn tại thì xóa
             if (departmentDto.getIcon() != null) {
-                String fullPath = UPLOAD_DIR + "\\" + departmentDto.getIcon();
-                Path filePath = Paths.get(fullPath);
-                Files.delete(filePath);
+                fileService.deleteFile("department", departmentDto.getIcon());
             }
-            Path uploadPath = Paths.get(UPLOAD_DIR);
-            if (!Files.exists(uploadPath)) {
-                Files.createDirectories(uploadPath);
-            }
-            byte[] bytes = photo.getBytes();
-            String fileExtension = FilenameUtils.getExtension(photo.getOriginalFilename());
-            String uuidFileName = UUID.randomUUID().toString() + "." + fileExtension;
-            Path path = Paths.get(UPLOAD_DIR).resolve(uuidFileName);
-
-            try {
-                Files.write(path, bytes);
-                departmentDto.setIcon(uuidFileName);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            departmentDto.setIcon(fileService.uploadFile( "department",photo));
 
         }
         departmentDto.setId(id);
