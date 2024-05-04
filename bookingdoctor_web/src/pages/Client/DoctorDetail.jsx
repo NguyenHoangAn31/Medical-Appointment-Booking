@@ -8,6 +8,7 @@ import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 import { FaUserDoctor } from "react-icons/fa6";
+import DoctorItem from '../../components/Card/DoctorItem';
 
 // eslint-disable-next-line react/prop-types
 const DoctorDetail = () => {
@@ -26,6 +27,7 @@ const DoctorDetail = () => {
       const response = await axios.get(`http://localhost:8080/api/doctor/${id}`);
       const doctor = response.data;
       setDoctor(doctor);
+      console.log(doctor);
       // Gọi fetchRelateds khi đã lấy được thông tin bác sĩ
       fetchRelateds(doctor.department.name);
     } catch (error) {
@@ -52,8 +54,12 @@ const DoctorDetail = () => {
       const randomDoctors = relatedDoctorsData.sort(() => 0.5 - Math.random()).slice(0, 4);
       setRelateds(randomDoctors);
     } catch (error) {
-      console.error('Error fetching related doctors:', error);
+      //console.error('Error fetching related doctors:', error);
     }
+  };
+
+  const formatPriceToCurrency = (price) => {
+    return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(price);
   };
 
   if (!doctor) {
@@ -61,7 +67,7 @@ const DoctorDetail = () => {
   }
   return (
     <>
-      <div className="doctor__detail_background">
+      <div className="doctor__detail_background container">
         <div className="row bg-white doctor__detail_header">
           <div className="col-md-6 doctor__detail_header_left">
             <img
@@ -73,8 +79,9 @@ const DoctorDetail = () => {
             />
           </div>
           <div className="col-md-6 doctor__detail_header_right">
-            <h1>{doctor.title} {doctor.fullName}</h1>
-            <h3>Chuyên khoa: {doctor.department.name}</h3>
+            <h2>{doctor.title} {doctor.fullName}</h2>
+            <h4>Chuyên khoa: {doctor.department.name}</h4>
+            <h5>Giá Khám bệnh: {formatPriceToCurrency(doctor.price)}</h5>
             <a href="" className='btn btn-primary'> ĐẶT KHÁM </a>
           </div>
         </div>
@@ -106,6 +113,8 @@ const DoctorDetail = () => {
                   <strong>{startWorkYear} - {endWorkYear}: </strong>
                   <br />
                   {working.company}
+                  <br />
+                  {working.address}
                 </li>
               );
             })}
@@ -116,23 +125,7 @@ const DoctorDetail = () => {
             <span className='doctor__detail_list_title'><FaUserDoctor />&nbsp;&nbsp;&nbsp;XEM THÊM CÁC BÁC SĨ CÙNG CHUYÊN KHOA&nbsp;&nbsp;&nbsp;<FaUserDoctor /></span>
             {relateds.map((related, index) => (
               <div className="col-md-3" key={index}>
-                <div className="card doctor__detail_list_card">
-                  {/* <img src="..." className="card-img-top" alt="..."> */}
-                  <img
-                    src={related.gender === 'Male'
-                      ? "../../../../public/images/doctors/2.png"
-                      : "../../../../public/images/doctors/6.png"}
-                    alt=""
-                    className="card-img-top"
-                  />
-                  <div className="card-body">
-                    <h5 className="card-title">
-                      <Link to={`/doctor/${related.id}`} className='card-title_link'>
-                        {related.title} {related.fullName}
-                      </Link>
-                    </h5>
-                  </div>
-                </div>
+                <DoctorItem item={related} key={index} />
               </div>
             ))}
           </div>

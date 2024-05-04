@@ -16,5 +16,4 @@ public class WorkingDto {
     private String endWork;
     private byte status;
     private int doctor_id;
-
 }
