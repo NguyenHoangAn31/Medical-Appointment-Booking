@@ -176,8 +176,7 @@ const ManageDepartment = () => {
       width: '16.666%',
       render: (_, { icon }) => {
         return (
-          <img src={"http://localhost:8080/images/department/" + icon} width="150" alt="" />
-        );
+          icon ? <img src={"http://localhost:8080/images/department/" + icon} width="150" alt="" /> : <></>);
       },
 
     },
