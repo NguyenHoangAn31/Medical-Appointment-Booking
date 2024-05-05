@@ -1,7 +1,7 @@
 import React, { useEffect, useState, createContext, useContext } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import getUserData from '../../../route/CheckRouters/token/Token';
-
+import { getAuth, signOut } from "firebase/auth";
 
 import {
     MenuFoldOutlined,
@@ -119,6 +119,12 @@ const DashBoardLayout = ({ children }) => {
     // xử lý logout
     const handleLogout = () => {
         sessionStorage.removeItem("Token");
+        const auth = getAuth();
+        signOut(auth).then(() => {
+        // Sign-out successful.
+        }).catch((error) => {
+        // An error happened.
+        });
         navigate("/");
         window.location.reload();
     }

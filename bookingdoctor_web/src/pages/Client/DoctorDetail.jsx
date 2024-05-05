@@ -28,6 +28,8 @@ const DoctorDetail = () => {
       const doctor = response.data;
       setDoctor(doctor);
       console.log(doctor);
+      console.log(doctor.workings);
+      console.log(doctor.qualifications);
       // Gọi fetchRelateds khi đã lấy được thông tin bác sĩ
       fetchRelateds(doctor.department.name);
     } catch (error) {

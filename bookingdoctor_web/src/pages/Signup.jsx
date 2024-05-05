@@ -1,42 +1,168 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
+//import ecryptToken from '../ultils/encrypt';
+import { auth } from "../services/auth/firebase.config";
+import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
+import { toast } from "react-hot-toast";
 
 const Signup = () => {
+  const [fullname, setFullname] = useState('');
+  const [username, setUsername] = useState('');
+  const [keycode, setKeycode] = useState('');
+  const [showOTP, setShowOTP] = useState(false);
+  //const navigateTo = useNavigate();
+  const provider = 'phone';
+  const role = 1;
+  const status = 1;
+
+  const data = {
+    fullName: fullname,
+    phone: username,
+    email: "",
+    keyCode: keycode,
+    provider: provider,
+    roleId: role,
+    status: status
+  }
+// hàm check cachar
+  function onCaptchVerify() {
+    if (!window.recaptchaVerifier) {
+        window.recaptchaVerifier = new RecaptchaVerifier(auth,
+            "recaptcha-container",
+            {
+                size: "invisible",
+                callback: () => {
+                    console.log('recaptcha resolved..')
+                }
+            }
+        );
+    }
+}
+
+
+
+const handleSignup = async () => {
+  
+  window.confirmationResult
+    .confirm(keycode)
+    .then(async (res) => {
+      try {
+        console.log(data);
+        const result = await axios.post(`http://localhost:8080/api/user/register`, data);
+        if(result){
+          toast.success("Register successfully!", {
+              position: "top-right"
+          });
+          navigator('/');
+          window.location.reload();
+        }
+      } catch (error) {
+        
+      }
+      
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+    
+
+  
+}
+const hanldeSendOtp = async () => {
+  const result = await axios.get(`http://localhost:8080/api/user/search/${username}`);
+  if(result && result.data == true) {
+    toast.error("Phone đã đăng ký! Vui lòng đăng nhập hoặc đăng ký số phone mới", {
+                  position: "bottom-right"
+              });
+  }else{
+    toast.success("Phone chưa đăng ký!", {
+                  position: "top-right"
+              });
+    onCaptchVerify();
+    const appVerifier = window.recaptchaVerifier;
+    const formatPh = "+84" + username.slice(1);
+    signInWithPhoneNumber(auth, formatPh, appVerifier)
+        .then((confirmationResult) => {
+            window.confirmationResult = confirmationResult;
+            toast.success("OTP sended successfully!", {
+                position: "top-right"
+            });
+            setShowOTP(true)
+        })
+        .catch((error) => {
+        });
+    }
+    
+  }
+
+
+
   return (
     <div className='container mt-5'>
-    <div className="row">
-      <div className="col-md-5">
+      <div className="row">
+        <div className="col-md-5">
           <div className="col-12">
             <div className="text-center justify-content-center px-5 mt-xxl-5">
-                <h3 className='login__title'>Sign up</h3>
-                <h5 className='login__title_sup'>Booking appointment</h5>
+              <h3 className='login__title'>Sign up</h3>
+              <h5 className='login__title_sup'>Booking appointment</h5>
+              <div id="recaptcha-container"></div>
+              {showOTP ? (
+                <>
+                  <div className="mb-3">
+                    <input type="text" className="input__username"
+                      id="input__phone" placeholder="Enter your keycode"
+                      value={keycode}
+                      onChange={(e) => setKeycode(e.target.value)} />
+                  </div>
+                  <div className="mb-4">
+                    <motion.div whileTap={{ scale: 0.8 }} onClick={handleSignup}>
+                      <button type='submit' className='btn__submit'>Sign up</button>
+                    </motion.div>
+                  </div>
+                </>
+              ) : (
+                <>
                 
-                <div className='d-flex flex-column py-5 border-top border-dark border-2 mt-3'>
-                  <motion.div whileTap={{scale: 0.8}}>
-                    <Link to="/login-by-phone" className='btn__login'>Đăng ký bằng phone</Link>
-                  </motion.div>
-                  <p className='text-center my-3'>Or</p>
-                  <motion.div whileTap={{scale: 0.8}}>
-                    <Link to="/login-by-gmail" className='btn__login'>Đăng ký bằng gmail</Link>
-                  </motion.div>                  
-                </div>
-                <div className='mt-xl-5'>
-                    <p>Bạn đã có tài khoản? <Link to="/login" className='text-decoration-none ms-2'>Đăng nhập</Link></p>
-                </div>
+                  <div className="mb-3">
+                    <input type="text" className="input__username"
+                      id="input__phone" placeholder="Enter your fullname"
+                      value={fullname}
+                      onChange={(e) => setFullname(e.target.value)}
+                    />
+                  </div>
+                  <div className="mb-3">
+                    <input type="gmail" className="input__username"
+                      id="input__phone" placeholder="Enter your phone number"
+                      value={username}
+                      onChange={(e) => setUsername(e.target.value)}
+                    />
+                  </div>
+                  <div className="mb-4">
+                    <motion.div whileTap={{ scale: 0.8 }} onClick={hanldeSendOtp}>
+                      <button type='submit' className='btn__submit' >Send code via SMS</button>
+                    </motion.div>
+                  </div>
+                  
+                </>
+              )}
+              <div className='mt-xl-5'>
+                <p>Bạn đã có tài khoản? <Link to="/login" className='text-decoration-none ms-2'>Đăng nhập</Link></p>
+              </div>
 
             </div>
           </div>
-      </div>
-      <div className="col-md-1"></div>
-      <div className="col-md-6">
+        </div>
+        <div className="col-md-1"></div>
+        <div className="col-md-6">
           <div className="col-12">
-              <img src="/images/bg_signup.png" alt="" className='img-fluid' />
+            <img src="/images/bg_signup.png" alt="" className='img-fluid' />
           </div>
+        </div>
       </div>
+
     </div>
-    
-  </div>
   )
 }
 

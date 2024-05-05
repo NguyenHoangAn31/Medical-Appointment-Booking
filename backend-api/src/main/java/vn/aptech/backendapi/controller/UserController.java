@@ -2,27 +2,27 @@ package vn.aptech.backendapi.controller;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import vn.aptech.backendapi.dto.UserDto;
+import vn.aptech.backendapi.dto.UserDtoCreate;
+import vn.aptech.backendapi.entities.User;
 import vn.aptech.backendapi.service.User.UserService;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping(value = "/api/user")
+@RequestMapping(value = "/api/user", produces = MediaType.APPLICATION_JSON_VALUE)
 public class UserController {
     @Autowired
     private UserService userService;
 
     @Autowired
     private ModelMapper mapper;
-
-
 
     @GetMapping
     public ResponseEntity<List<UserDto>> findAll() {
@@ -40,6 +40,22 @@ public class UserController {
         } else {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @GetMapping(value = "/search/{username}")
+    public ResponseEntity<Boolean> findByUsername(@PathVariable("username") String username){
+        Optional<User> result = userService.findByEmailOrPhone(username);
+        if (result.isPresent()) {
+            return ResponseEntity.ok(true);
+        } else {
+            return ResponseEntity.ok(false);
+        }
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<UserDtoCreate> registerNewUser(@RequestBody UserDtoCreate user) throws URISyntaxException {
+        UserDtoCreate createdUser = userService.registerNewUser(user);
+        return ResponseEntity.created(new URI("/api/users/" + createdUser.getId())).body(createdUser);
     }
 
 }

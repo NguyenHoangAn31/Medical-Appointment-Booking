@@ -5,6 +5,7 @@ import getUserData from '../../../../route/CheckRouters/token/Token';
 import { BiBell, BiHeart, BiLogIn, BiCalendarCheck, BiSolidUserRectangle    } from "react-icons/bi";
 //import * as patientService from '../../../../services/API/patientService';
 import axios from 'axios';
+import { getAuth, signOut } from "firebase/auth";
 
 
 const Header = () => {
@@ -15,6 +16,8 @@ const Header = () => {
   const [isMenuVisible, setIsMenuVisible] = useState(false);
 
 
+
+  
   useEffect(() => {
     const fecthApi = async () => {
       try {
@@ -52,6 +55,12 @@ const Header = () => {
 
   const handleSignOut = () => {
     sessionStorage.removeItem('Token');
+    const auth = getAuth();
+    signOut(auth).then(() => {
+      // Sign-out successful.
+    }).catch((error) => {
+      // An error happened.
+    });
     history('/');
     window.location.reload();
   }
@@ -97,7 +106,7 @@ const Header = () => {
                       <li><a href=""></a><BiSolidUserRectangle/> Profile</li>
                       <li><a href=""></a><BiCalendarCheck /> Booking</li>
                       <li><a href=""></a><BiHeart /> Fauvorite</li>
-                      <li onClick={handleSignOut}><a ></a><BiLogIn /> Sign out</li>
+                      <li onClick={handleSignOut}><a ><BiLogIn /> Sign out</a></li>
                     </ul>
                     )}
                   {/* <div  className="login">Sign out</div> */}
