@@ -50,7 +50,8 @@ public class SecurityConfiguration {
         PublicRoutes.PublicRoutesManager.publicRoutes().add(HttpMethod.POST,"/api/auth/**").injectOn(http);
         PublicRoutes.PublicRoutesManager.publicRoutes().add(HttpMethod.GET,"/api/doctor/**").injectOn(http);
         PublicRoutes.PublicRoutesManager.publicRoutes().add(HttpMethod.GET,"/api/patient/**").injectOn(http);
-        PublicRoutes.PublicRoutesManager.publicRoutes().add(HttpMethod.GET,"api/user").injectOn(http);
+        PublicRoutes.PublicRoutesManager.publicRoutes().add(HttpMethod.GET,"api/user/**").injectOn(http);
+        PublicRoutes.PublicRoutesManager.publicRoutes().add(HttpMethod.POST,"api/user/**").injectOn(http);
         PublicRoutes.PublicRoutesManager.publicRoutes().add(HttpMethod.GET,"/api/slot/**").injectOn(http);
         PublicRoutes.PublicRoutesManager.publicRoutes().add(HttpMethod.POST,"/api/slot/**").injectOn(http);
         PublicRoutes.PublicRoutesManager.publicRoutes().add(HttpMethod.PUT,"/api/slot/**").injectOn(http);
