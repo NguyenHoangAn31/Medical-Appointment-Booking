@@ -35,8 +35,6 @@ import vn.aptech.backendapi.service.File.FileService;
 @RequestMapping(value = "/api/department")
 public class DepartmentController {
 
-    // private final String UPLOAD_DIR =
-    // Paths.get("src/main/resources/static/images/department/").toString();
     @Autowired
     private FileService fileService;
 
@@ -62,14 +60,17 @@ public class DepartmentController {
     @DeleteMapping(value = "/delete/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> deleteById(@PathVariable("id") int id) throws IOException {
         Optional<DepartmentDto> result = departmentService.findById(id);
-        if (result.get().getIcon() != null || result.get().getIcon().length() != 0) {
-            fileService.deleteFile("department", result.get().getIcon());
-        }
+        String pathIcon = result.get().getIcon();
         boolean deleted = departmentService.deleteById(id);
         if (deleted) {
-        return ResponseEntity.ok().build();
+            if (pathIcon != null) {
+                fileService.deleteFile("department", pathIcon);
+            }
+        }
+        if (deleted) {
+            return ResponseEntity.ok().build();
         } else {
-        return ResponseEntity.notFound().build();
+            return ResponseEntity.notFound().build();
         }
 
     }
@@ -83,7 +84,7 @@ public class DepartmentController {
         DepartmentDto departmentDto = objectMapper.readValue(department, DepartmentDto.class);
         // xử lý hình ảnh
 
-        departmentDto.setIcon(fileService.uploadFile("department",photo));
+        departmentDto.setIcon(fileService.uploadFile("department", photo));
         DepartmentDto result = departmentService.save(departmentDto);
         if (result != null) {
             return ResponseEntity.ok(result); // Return the created SlotDto
@@ -111,7 +112,7 @@ public class DepartmentController {
             if (departmentDto.getIcon() != null) {
                 fileService.deleteFile("department", departmentDto.getIcon());
             }
-            departmentDto.setIcon(fileService.uploadFile( "department",photo));
+            departmentDto.setIcon(fileService.uploadFile("department", photo));
 
         }
         departmentDto.setId(id);

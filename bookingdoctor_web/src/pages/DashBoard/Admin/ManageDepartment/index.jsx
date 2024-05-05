@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
-import { PlusOutlined, SearchOutlined } from '@ant-design/icons';
+import { DeleteOutlined, EditOutlined, PlusOutlined, SearchOutlined } from '@ant-design/icons';
 import { Button, Input, Popconfirm, Space, Spin, Table, Tag } from 'antd';
 import Highlighter from 'react-highlight-words';
 import { getAllDepartment, deleteDepartment } from '../../../../services/API/departmentService';
@@ -10,14 +10,32 @@ import { AlertContext } from '../../../../components/Layouts/DashBoard';
 const ManageDepartment = () => {
   // thông báo
   const Alert = useContext(AlertContext);
+  // useState cho mảng dữ liệu departments
+  const [departments, setDepartments] = useState([]);
+  // useState clear search , sort
+  const [filteredInfo, setFilteredInfo] = useState({});
+  const [sortedInfo, setSortedInfo] = useState({});
   // useState cho search
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
   const searchInput = useRef(null);
+  
+  // xửa lý filetr and sort
+  const handleChange = (pagination, filters, sorter) => {
+    console.log('Various parameters', pagination, filters, sorter);
+    setFilteredInfo(filters);
+    setSortedInfo(sorter);
+  };
+  const clearFilters = () => {
+    setFilteredInfo({});
+  };
+  const clearAll = () => {
+    setFilteredInfo({});
+    setSortedInfo({});
+  };
 
 
-  // useState cho mảng dữ liệu departments
-  const [departments, setDepartments] = useState([]);
+
   // tải dữ liệu và gán vào departments thông qua hàm setDepartments
   const loadDepartments = async () => {
     const fetchedDepartments = await getAllDepartment();
@@ -39,11 +57,13 @@ const ManageDepartment = () => {
       loadDepartments();
       Alert('success', 'Deletete Department Successfully', '')
     } catch (error) {
-      Alert('error', 'Something Went Wrong', '')
+      Alert('warning', 'This Department Is Active', '')
       console.log(error)
     }
 
   };
+
+
 
 
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
@@ -149,25 +169,35 @@ const ManageDepartment = () => {
         text
       ),
   });
+
+
   const columns = [
     {
       title: 'Id',
       dataIndex: 'id',
       key: 'id',
       width: '16.666%',
-      ...getColumnSearchProps('id'),
+      // sort 
+      filteredValue: filteredInfo.id || null,
       sorter: (a, b) => a.id - b.id,
+      sortOrder: sortedInfo.columnKey === 'id' ? sortedInfo.order : null,
+      ellipsis: true,
+      // search
+      ...getColumnSearchProps(  'id'),
+
     },
     {
       title: 'Name',
       dataIndex: 'name',
       key: 'name',
       width: '16.666%',
+      filteredValue: filteredInfo.name || null,
+      sorter: (a, b) => a.name.localeCompare(b.name),
+      sortOrder: sortedInfo.columnKey === 'name' ? sortedInfo.order : null,
+      ellipsis: true,
+      // search
       ...getColumnSearchProps('name'),
-      sorter: (a, b) => {
-        return a.name.localeCompare(b.name);
-      },
-      sortDirections: ['descend', 'ascend']
+
     },
     {
       title: 'Image',
@@ -176,7 +206,7 @@ const ManageDepartment = () => {
       width: '16.666%',
       render: (_, { icon }) => {
         return (
-          icon ? <img src={"http://localhost:8080/images/department/" + icon} width="150" alt="" /> : <></>);
+          icon ? <img src={"http://localhost:8080/images/department/" + icon} width="150" alt="" /> : null);
       },
 
     },
@@ -184,13 +214,35 @@ const ManageDepartment = () => {
       title: 'Address',
       dataIndex: 'url',
       key: 'url',
-      width: '16.666%'
+      width: '16.666%',
+      filteredValue: filteredInfo.url || null,
+      sorter: (a, b) => a.url.localeCompare(b.url),
+      sortOrder: sortedInfo.columnKey === 'url' ? sortedInfo.order : null,
+      ellipsis: true,
+      // search
+      ...getColumnSearchProps('url'),
+
+
     },
     {
       title: 'Status',
       dataIndex: 'status',
       key: 'status',
       width: '16.666%',
+      filters: [
+        {
+          text: 'Active',
+          value: 1,
+        },
+        {
+          text: 'Not Active',
+          value: 0,
+        },
+      ],
+      filteredValue: filteredInfo.status || null,
+      onFilter: (value, record) => record.status == value,
+      filterSearch: true,
+
       render: (_, { status }) => {
         let color = status ? 'green' : 'volcano';
         let title = status ? 'Active' : 'Not Active'
@@ -206,27 +258,45 @@ const ManageDepartment = () => {
       title: 'Action',
       dataIndex: 'operation',
       render: (_, record) => (
-        <>
+        <div style={{ display: 'flex' }}>
           <Link style={{ marginRight: '16px', color: 'blue' }}
-            to={`/dashboard/admin/manage-department/edit/${record.id}`}>Edit</Link>
+            to={`/dashboard/admin/manage-department/edit/${record.id}`}>
+            <Button type="primary" icon={<EditOutlined />} >
+              Edit
+            </Button>
+          </Link>
           {departments.length >= 1 ? (
             <Popconfirm title="Sure to delete?" onConfirm={() => delete_Department(record.id)}>
-              <span style={{ color: 'red' }}>Delete</span>
+              <Button type="primary" danger icon={<DeleteOutlined />}>Delete</Button>
             </Popconfirm>
           ) : null}
-        </>
+        </div>
       ),
     },
   ];
   return (
     <>
-      {departments.length == 0 ? <Spinner /> : <><Link to="/dashboard/admin/manage-department/create">
-        <Button type="primary" icon={<PlusOutlined />} style={{ float: 'right', marginBottom: '15px' }}>
-          Add New Department
-        </Button>
-      </Link><Table columns={columns} dataSource={departments} /></>}
+      {departments.length == 0 ? <Spinner /> : <>
+        <Space
+          style={{
+            marginBottom: 16,
+            width: '100%',
+            justifyContent: 'space-between'
+          }}
+        >
+          <Space>
+            <Button onClick={clearFilters}>Clear filters and search</Button>
+            <Button onClick={clearAll}>Clear All</Button>
+          </Space>
 
+          <Link to="/dashboard/admin/manage-department/create">
+            <Button type="primary" icon={<PlusOutlined />} style={{backgroundColor: '#52c41a'}}>
+              Add New Department
+            </Button>
+          </Link>
+        </Space>
 
+        <Table columns={columns} dataSource={departments} onChange={handleChange} /></>}
     </>
   )
 };

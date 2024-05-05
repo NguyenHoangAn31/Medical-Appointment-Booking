@@ -3,6 +3,7 @@ package vn.aptech.backendapi.service.File;
 import java.nio.file.Paths;
 import java.util.UUID;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -14,18 +15,20 @@ import org.springframework.web.multipart.MultipartFile;
 public class FileService {
     private final String UPLOAD_DIR = Paths.get("src/main/resources/static/images/").toString();
 
-    public String uploadFile(String folderName , MultipartFile file) throws IOException {
+    public String uploadFile(String folderName, MultipartFile file) throws IOException {
         Path uploadPath = Paths.get(UPLOAD_DIR).resolve(folderName);
 
         if (!Files.exists(uploadPath)) {
             Files.createDirectories(uploadPath);
         }
 
-        byte[] bytes = file.getBytes();
         String fileExtension = FilenameUtils.getExtension(file.getOriginalFilename());
         String uuidFileName = UUID.randomUUID().toString() + "." + fileExtension;
         Path path = Paths.get(uploadPath.toString()).resolve(uuidFileName);
-        Files.write(path, bytes);
+
+        try (OutputStream os = Files.newOutputStream(path)) {
+            os.write(file.getBytes());
+        }
         return uuidFileName;
 
     }

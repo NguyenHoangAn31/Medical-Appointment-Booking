@@ -61,7 +61,7 @@ function EditDepartment() {
   // xét giá trị cho department
   const loadDepartment = async () => {
     setDepartment(await findDepartmentById(id));
-    console.log(department.icon)
+    console.log(department)
 
   };
 
@@ -85,8 +85,6 @@ function EditDepartment() {
       await updateDepartment(id, formData);
       Alert('success', 'Editing Department Successfully', '')
       navigate("/dashboard/admin/manage-department");
-      window.location.reload();
-
     }
     catch (error) {
       console.log(error)

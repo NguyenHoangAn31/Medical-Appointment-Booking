@@ -16,19 +16,12 @@ import vn.aptech.backendapi.jwt.JWTImpl;
 @EnableWebMvc
 public class WebConfiguration implements WebMvcConfigurer {
 
-    // @Override
-    // public void addResourceHandlers(ResourceHandlerRegistry registry) {
-    // String staticFolder = "file:///" + System.getProperty("user.dir") +
-    // "/static/";
-    // registry.addResourceHandler("/static/**").addResourceLocations(staticFolder);
-    // WebMvcConfigurer.super.addResourceHandlers(registry);
-    // }
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/images/**")
-                .addResourceLocations("classpath:/static/images/");
-        WebMvcConfigurer.super.addResourceHandlers(registry);
-
+    String staticFolder = "file:///" + System.getProperty("user.dir") +
+    "/src/main/resources/static/images/";
+    registry.addResourceHandler("/images/**").addResourceLocations(staticFolder);
+    WebMvcConfigurer.super.addResourceHandlers(registry);
     }
 
     @Bean
