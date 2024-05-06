@@ -18,7 +18,7 @@ public class User extends BaseEntity {
     private int id;
     private String email;
     private String phone;
-    @Column(name="fullname")
+    @Column(name="fullname")   
     private String fullName;
     @ManyToMany(cascade = CascadeType.DETACH)
     @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))

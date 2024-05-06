@@ -67,7 +67,7 @@ public class WorkingController {
         
         WorkingDto result = workingService.save(dto);
         if (result != null) {
-            return ResponseEntity.ok(result); // Return the created SlotDto
+            return ResponseEntity.ok(result); 
         } else {
             return ResponseEntity.notFound().build();
         }

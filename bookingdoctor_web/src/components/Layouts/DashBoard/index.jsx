@@ -73,8 +73,8 @@ if (getUserData != null) {
                 icon: <QuestionCircleOutlined />,
             },
             {
-                label: "Manage New",
-                key: "/dashboard/admin/manage-new",
+                label: "Manage News",
+                key: "/dashboard/admin/manage-news",
                 icon: <FormOutlined />,
             }
         )
@@ -153,9 +153,11 @@ const DashBoardLayout = ({ children }) => {
                     style={{
                         position: 'fixed',
                         height: '100vh',
+                        zIndex:999,
+                        overflow:'auto'
                     }}
                 >
-                    <div style={{ textAlign: 'center', color: 'white', fontSize: '45px', margin: '10px' }}>
+                    <div style={{ textAlign: 'center', color: 'white', fontSize: '45px', margin: '20px 0' }}>
                         <div style={{ width: 60, height: 60, display: 'flex', margin: 'auto', backgroundColor: 'black', justifyContent: 'center', alignItems: 'center', borderRadius: '50%' }}>
                             <FireFilled />
                         </div>
@@ -220,7 +222,7 @@ const DashBoardLayout = ({ children }) => {
                                         borderRadius: '50%'
                                     }}
                                 />
-                                <span>example@gmail.com</span>
+                                <span>{getUserData.user.email}</span>
 
                             </div>
 
@@ -273,7 +275,7 @@ const ToggleThemeButton = ({ toggleTheme }) => {
         <div style={{
             bottom: 17,
             left: 17,
-            position: 'absolute'
+            position: 'fixed'
         }} >
             <Button onClick={toggleTheme}>
                 <BulbOutlined />
