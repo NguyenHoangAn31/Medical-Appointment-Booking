@@ -41,8 +41,6 @@ const Signup = () => {
     }
 }
 
-
-
 const handleSignup = async () => {
   
   window.confirmationResult

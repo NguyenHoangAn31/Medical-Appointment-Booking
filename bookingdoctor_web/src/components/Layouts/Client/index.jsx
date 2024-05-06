@@ -8,7 +8,6 @@ function ClientLayout({children}) {
             <div className='float-end'><Toaster toastOptions={{ duration: 4000 }} /></div>
             <Header/>
             <div className='main-app'>
-                
                 <div className='content'>{children}</div>
             </div>
             <Footer/>
