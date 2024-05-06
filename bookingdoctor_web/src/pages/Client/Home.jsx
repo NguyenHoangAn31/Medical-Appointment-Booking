@@ -1,6 +1,6 @@
 import React, {useEffect} from 'react'
 
-import { SeachHome } from '../../components/UI/Home'
+import { SeachHome, ImageHome, HomeService } from '../../components/UI/Home'
 import { useNavigate } from "react-router-dom"
 
 import getUserData from '../../route/CheckRouters/token/Token'
@@ -26,6 +26,8 @@ const Home = () => {
   return (
     <>
       <SeachHome />
+      <ImageHome />
+      <HomeService />
     </>
   )
 }

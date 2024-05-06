@@ -515,4 +515,151 @@ nav .nav-link:hover {
   background-color: #fff;
   color: #000;
   border: 1px solid #000000;
+}
+
+.doctor__star {
+  display: flex;
+  justify-content: end;
+  align-items: center;
+  color: #f9e400;
+  font-size: 18px;
+}
+
+.doctor__name {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.doctor_image {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  overflow: hidden;
+  box-shadow: var(--boxShadow);
+}
+
+.home_booking {
+  width: 100%;
+  border-radius: 20px;
+  text-align: center;
+  box-shadow: var(--boxShadow);
+  position: relative;
+  left: -30px;
+  padding-top: 20px;
+  padding-bottom: 15px;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+.home_booking .home__booking_image {
+  width: 60px;
+  height: 60px;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  box-shadow: var(--boxShadow);
+  position: absolute;
+  top: -20%;
+  left: 38%;
+  background-color: #fff;
+}
+.home_booking .booking_desc {
+  margin-top: 30px;
+}
+.home_booking .booking_desc .home__booking_name {
+  font-size: 14px;
+}
+.home_booking .booking_desc .home__booking_department {
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.55);
+}
+.home_booking .booking_desc .home_booking_button {
+  background-color: #FBAD10;
+  padding: 10px 0;
+  border-radius: 15px;
+  color: #fff;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.card__list {
+  width: 100%;
+  background-color: #FFF0D8;
+  padding: 15px;
+  border-radius: 20px;
+  box-shadow: var(--boxShadow);
+}
+.card__list .card__list_image {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+.card__list .card__list_image .img_doctor {
+  width: 40px;
+  height: 40px;
+  border: 1.5px solid #fff;
+  border-radius: 50%;
+  background-color: #fff;
+}
+.card__list .card__list_number {
+  font-size: 22px;
+  font-weight: bolder;
+  margin-top: 20px;
+}
+.card__list h5 {
+  font-size: 15px;
+}
+
+.doctor__team {
+  width: 100%;
+  height: 300px;
+  overflow: hidden;
+  position: relative;
+  border-radius: 50px;
+  box-shadow: var(--boxShadow);
+}
+.doctor__team img {
+  width: 100%;
+  height: 300px;
+  border-radius: 50px;
+}
+.doctor__team .doctor__team_desc {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: absolute;
+  z-index: 100px;
+  left: 25px;
+  bottom: 15px;
+}
+.doctor__team .doctor__team_desc .title {
+  color: #fff;
+}
+.doctor__team .doctor__team_desc .phone {
+  color: #fff;
+}
+.doctor__team .doctor__team_desc .button {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  background-color: #000;
+  color: #fff;
+  font-size: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1.5px solid #fff;
+  margin-left: 30px;
+}
+
+.doctor__khambenh {
+  width: 100%;
+  height: 300px;
+  border-radius: 50px;
+  box-shadow: var(--boxShadow);
+}
+.doctor__khambenh img {
+  width: 100%;
+  height: 300px;
+  border-radius: 50px;
+  -o-object-fit: cover;
+     object-fit: cover;
 }/*# sourceMappingURL=App.css.map */
