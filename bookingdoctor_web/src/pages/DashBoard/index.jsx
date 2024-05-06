@@ -11,7 +11,11 @@ export {default as AddSlot} from './Admin/ManageSlot/AddSlot';
 export {default as EditSlot} from './Admin/ManageSlot/EditSlot'
 export {default as ManageAppointment} from './Admin/ManageAppointment';
 export {default as ManageFeedback} from './Admin/ManageFeedback';
-export {default as ManageNew} from './Admin/ManageNew';
+export {default as ManageNews} from './Admin/ManageNews';
+export {default as AddNews} from './Admin/ManageNews/AddNews';
+export {default as EditNews} from './Admin/ManageNews/EditNews';
+export {default as DetailNews} from './Admin/ManageNews/DetailNews';
+
 
 export {default as DashboardDoctor} from './Doctor/DashboardDoctor';
 export {default as ProfileDoctor} from './Doctor/ProfileDoctor';

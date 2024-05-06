@@ -46,7 +46,10 @@ const adminRouters = [
     { path: '/dashboard/admin/manage-slot/edit/:id', component: DashBoard.EditSlot, layout: DashBoardLayout },
     { path: '/dashboard/admin/manage-appointment', component: DashBoard.ManageAppointment, layout: DashBoardLayout },
     { path: '/dashboard/admin/manage-feedback', component: DashBoard.ManageFeedback, layout: DashBoardLayout },
-    { path: '/dashboard/admin/manage-new', component: DashBoard.ManageNew, layout: DashBoardLayout }
+    { path: '/dashboard/admin/manage-news', component: DashBoard.ManageNews, layout: DashBoardLayout },
+    { path: '/dashboard/admin/manage-news/create', component: DashBoard.AddNews, layout: DashBoardLayout },
+    { path: '/dashboard/admin/manage-news/edit/:id', component: DashBoard.EditNews, layout: DashBoardLayout },
+    { path: '/dashboard/admin/manage-news/detail/:id', component: DashBoard.DetailNews, layout: DashBoardLayout }
 ]
 
 export { publicRouters, patientRouters, doctorRouters, adminRouters }

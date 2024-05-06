@@ -50,7 +50,7 @@ function EditDepartment() {
   // state cho icon
   const [icon, setIcon] = useState(null);
 
-  const { name, status, url } = department;
+  const { name , url } = department;
 
 
   // gọi hàm loadDepartments 1 lần
@@ -95,7 +95,11 @@ function EditDepartment() {
   return (
     <>
       {/* <Link to={`/dashboard/admin/manage-department`}><LeftOutlined /> Back To Department</Link> */}
-      <h2>Edit Department</h2>
+      
+      <h2>Edit Department - {department.status != null ?
+        department.status == 0 ? <span style={{ color: 'red' }}>Not Active</span> : <span style={{ color: 'rgb(82, 196, 26)' }}>Active</span>
+        : <></>
+      }</h2>
 
       <Form
         {...layout}
@@ -108,14 +112,16 @@ function EditDepartment() {
       >
 
         <Form.Item label="Name">
-          <Input value={name} onChange={(e) => onInputChangeForDepartment('name', e.target.value)} />
+          <Input value={name} onChange={(e) => onInputChangeForDepartment('name', e.target.value)} required/>
         </Form.Item>
 
         <Form.Item label="URL">
-          <Input value={url} onChange={(e) => onInputChangeForDepartment('url', e.target.value)} />
+          <Input value={url} onChange={(e) => onInputChangeForDepartment('url', e.target.value)} required/>
         </Form.Item>
 
-        <Form.Item label="Status" name="status">
+
+
+        <Form.Item label="Select Status" name="status">
           <Select placeholder="Select Status" onChange={(e) => onInputChangeForDepartment('status', e)} >
             <Select.Option value="1">Active</Select.Option>
             <Select.Option value="0">Not Active</Select.Option>
@@ -127,7 +133,7 @@ function EditDepartment() {
             <Image
               width={200}
               src={"http://localhost:8080/images/department/" + department.icon}
-            /></Form.Item>: <></>
+            /></Form.Item> : <></>
         }
         <Form.Item label="Select Image" valuePropName="fileList" getValueFromEvent={normFile}>
           <Upload beforeUpload={() => false} listType="picture-card" maxCount={1} onChange={(e) => onInputChangeForIcon(e.file)}>
