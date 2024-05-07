@@ -3,7 +3,7 @@ import * as request from "../../ultils/request";
 export const getAllDepartment = async () => {
     try {
         const response = await request.get('department/all');
-        return response
+        return response;
     } catch (error) {
         console.log(error);
         throw error;
