@@ -259,7 +259,7 @@ const ManageNews = () => {
       title: 'Action',
       dataIndex: 'operation',
       render: (_, record) => (
-        <div style={{ display: 'flex' , justifyContent:'center'}}>
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
           <Link style={{ marginRight: '16px' }}
             to={`/dashboard/admin/manage-news/detail/${record.id}`}>
             <Button type="primary" icon={<EyeOutlined />} >
@@ -277,7 +277,7 @@ const ManageNews = () => {
               </Link>
               {news.length >= 1 ? (
                 <Popconfirm title="Sure to delete?" onConfirm={() => delete_News(record.id)}>
-                  <Button type="primary" danger icon={<DeleteOutlined />}>Delete</Button>
+                  <Button type="primary" disabled={record.status} danger icon={<DeleteOutlined />}>Delete</Button>
                 </Popconfirm>
               ) : null}
             </> : null
@@ -289,27 +289,26 @@ const ManageNews = () => {
   ];
   return (
     <>
-      {news.length == 0 ? <Spinner /> : <>
-        <Space
-          style={{
-            marginBottom: 16,
-            width: '100%',
-            justifyContent: 'space-between'
-          }}
-        >
-          <Space>
-            <Button onClick={clearFilters}>Clear filters and search</Button>
-            <Button onClick={clearAll}>Clear All</Button>
-          </Space>
-
-          <Link to="/dashboard/admin/manage-news/create">
-            <Button type="primary" icon={<PlusOutlined />} style={{ backgroundColor: '#52c41a' }}>
-              Add New News
-            </Button>
-          </Link>
+      <Space
+        style={{
+          marginBottom: 16,
+          width: '100%',
+          justifyContent: 'space-between'
+        }}
+      >
+        <Space>
+          <Button onClick={clearFilters}>Clear filters and search</Button>
+          <Button onClick={clearAll}>Clear All</Button>
         </Space>
 
-        <Table columns={columns} dataSource={news} onChange={handleChange} /></>}
+        <Link to="/dashboard/admin/manage-news/create">
+          <Button type="primary" icon={<PlusOutlined />} style={{ backgroundColor: '#52c41a' }}>
+            Add New News
+          </Button>
+        </Link>
+      </Space>
+
+        <Table columns={columns} dataSource={news} onChange={handleChange} />
     </>
   )
 };

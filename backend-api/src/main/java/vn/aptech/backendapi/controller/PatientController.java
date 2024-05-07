@@ -30,5 +30,15 @@ public class PatientController {
             return ResponseEntity.notFound().build();
         }
     }
+    //writed by An in 5/6
+    @GetMapping("/patientid/{patientId}")
+    public ResponseEntity<PatientDto> findByPatientId(@PathVariable("patientId") int patientId){
+        Optional<PatientDto> result = patientService.getPatientByPatientId(patientId);
+        if (result.isPresent()) {
+            return ResponseEntity.ok(result.get());
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
 
 }

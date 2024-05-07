@@ -5,7 +5,11 @@ import lombok.*;
 
 import java.util.List;
 
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Getter
+@Setter
 public class UserDto {
     private  int id;
     private  String email;

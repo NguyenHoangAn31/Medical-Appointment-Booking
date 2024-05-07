@@ -11,6 +11,7 @@ import vn.aptech.backendapi.dto.WorkingDto;
 import vn.aptech.backendapi.entities.Doctor;
 import vn.aptech.backendapi.entities.Medical;
 import vn.aptech.backendapi.entities.Partient;
+import vn.aptech.backendapi.repository.MedicalRepository;
 import vn.aptech.backendapi.repository.PartientRepository;
 
 import java.util.List;
@@ -19,8 +20,10 @@ import java.util.stream.Collectors;
 
 @Service
 public class PatientServiceImpl implements PatientService {
-
-
+    // writed by An in 5/6
+    @Autowired
+    private MedicalRepository medicalRepository;
+    // end
     @Autowired
     private PartientRepository partientRepository;
     @Autowired
@@ -66,4 +69,22 @@ public class PatientServiceImpl implements PatientService {
         }
     }
 
+
+
+    // writed by An in 5/6
+    private MedicalDto toMedicalDto(Medical m){
+        MedicalDto dto = mapper.map(m, MedicalDto.class);
+        return dto;
+    }
+    private PatientDto toPatientDto(Partient p) {
+        PatientDto dto = mapper.map(p, PatientDto.class);
+        dto.setMedicals(medicalRepository.findByPartientId(p.getId()).stream().map(this::toMedicalDto).collect(Collectors.toList()));
+        return dto;
+    }
+    @Override
+    public Optional<PatientDto> getPatientByPatientId(int patientId) {
+        Optional<Partient> result = partientRepository.findById(patientId);
+        return result.map(this::toPatientDto);
+    }
+    // end
 }

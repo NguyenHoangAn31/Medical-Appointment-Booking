@@ -34,11 +34,11 @@ public class DoctorServiceImpl implements DoctorService{
         doctorDto.setFullName(doctor.getFullName());
         doctorDto.setTitle(doctor.getTitle());
         doctorDto.setGender(doctor.getGender());
-        doctorDto.setBirthday(doctor.getBirthday());
+        doctorDto.setBirthday(doctor.getBirthday().toString());
         doctorDto.setAddress(doctor.getAddress());
         doctorDto.setImage(doctor.getImage());
         doctorDto.setPrice(doctor.getPrice());
-        doctorDto.setDepartment(doctor.getDepartment());
+        doctorDto.setDepartment(doctor.getDepartment().getName());
         // Không gán WorkingDto ở đây vì sẽ gán sau trong findById
         return doctorDto;
     }
@@ -50,6 +50,7 @@ public class DoctorServiceImpl implements DoctorService{
         workingDto.setAddress(working.getAddress());
         workingDto.setStartWork(working.getStartWork().toString());
         workingDto.setEndWork(working.getEndWork().toString());
+        workingDto.setDoctor_id(working.getDoctor().getId());
         return workingDto;
     }
 

@@ -52,11 +52,11 @@ if (getUserData != null) {
                 key: "/dashboard/admin/manage-department",
                 icon: <HomeOutlined />,
             },
-            {
-                label: "Manage Slot",
-                key: "/dashboard/admin/manage-slot",
-                icon: <FieldTimeOutlined />,
-            },
+            // {
+            //     label: "Manage Slot",
+            //     key: "/dashboard/admin/manage-slot",
+            //     icon: <FieldTimeOutlined />,
+            // },
             {
                 label: "Manage Appointment",
                 key: "/dashboard/admin/manage-appointment",
