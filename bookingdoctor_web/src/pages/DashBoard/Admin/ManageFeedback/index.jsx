@@ -185,7 +185,7 @@ const ManageFeedback = () => {
       width: '10.666%',
       render: (_, { image }) => {
         return (
-          image ? <img src={"http://localhost:8080/images/doctor/" + image} width="150" alt="" /> : null);
+          image ? <img src={"http://localhost:8080/images/doctors/" + image} width="75" alt="" /> : null);
       },
 
     },
@@ -212,8 +212,18 @@ const ManageFeedback = () => {
       sorter: (a, b) => a.gender.localeCompare(b.gender),
       sortOrder: sortedInfo.columnKey === 'gender' ? sortedInfo.order : null,
       ellipsis: true,
-      // search
-      ...getColumnSearchProps('gender'),
+      filters: [
+        {
+          text: 'Male',
+          value: 'Male',
+        },
+        {
+          text: 'Female',
+          value: 'Female',
+        },
+      ],
+      onFilter: (value, record) => record.gender == value,
+      filterSearch: true,
     },
     {
       title: 'Rate',
