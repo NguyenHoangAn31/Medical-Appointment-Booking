@@ -17,6 +17,9 @@ body {
   font-family: "Popins", sans-serif;
   font-size: 16px;
 }
+::-webkit-scrollbar {
+  display: none;
+}
 
 :root {
   --boxShadow: #000000 1px 4px 20px -14px;
