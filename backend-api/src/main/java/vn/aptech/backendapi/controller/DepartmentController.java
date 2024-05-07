@@ -13,6 +13,7 @@ import java.nio.file.Files;
 
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -60,6 +61,10 @@ public class DepartmentController {
     @DeleteMapping(value = "/delete/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> deleteById(@PathVariable("id") int id) throws IOException {
         Optional<DepartmentDto> result = departmentService.findById(id);
+        int status = result.get().getStatus();
+        if (status == 1) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Department is Active");
+        }
         String pathIcon = result.get().getIcon();
         boolean deleted = departmentService.deleteById(id);
         if (deleted) {

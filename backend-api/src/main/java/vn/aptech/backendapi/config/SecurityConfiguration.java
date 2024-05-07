@@ -68,6 +68,10 @@ public class SecurityConfiguration {
         PublicRoutes.PublicRoutesManager.publicRoutes().add(HttpMethod.POST,"/api/news/**").injectOn(http);
         PublicRoutes.PublicRoutesManager.publicRoutes().add(HttpMethod.PUT,"/api/news/**").injectOn(http);
         PublicRoutes.PublicRoutesManager.publicRoutes().add(HttpMethod.DELETE,"/api/news/**").injectOn(http);
+        PublicRoutes.PublicRoutesManager.publicRoutes().add(HttpMethod.GET,"/api/feedback/**").injectOn(http);
+        PublicRoutes.PublicRoutesManager.publicRoutes().add(HttpMethod.POST,"/api/feedback/**").injectOn(http);
+        PublicRoutes.PublicRoutesManager.publicRoutes().add(HttpMethod.PUT,"/api/feedback/**").injectOn(http);
+        PublicRoutes.PublicRoutesManager.publicRoutes().add(HttpMethod.DELETE,"/api/feedback/**").injectOn(http);
         http.csrf(AbstractHttpConfigurer::disable)
                 .securityMatcher("/api/**")
                 .authorizeHttpRequests(req->req.anyRequest().authenticated())

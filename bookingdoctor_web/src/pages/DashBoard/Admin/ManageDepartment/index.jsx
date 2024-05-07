@@ -19,7 +19,7 @@ const ManageDepartment = () => {
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
   const searchInput = useRef(null);
-  
+
   // xửa lý filetr and sort
   const handleChange = (pagination, filters, sorter) => {
     console.log('Various parameters', pagination, filters, sorter);
@@ -57,7 +57,7 @@ const ManageDepartment = () => {
       loadDepartments();
       Alert('success', 'Deletete Department Successfully', '')
     } catch (error) {
-      Alert('warning', 'This Department Is Active', '')
+      Alert('warning', 'something Went Wrong', '')
       console.log(error)
     }
 
@@ -183,7 +183,7 @@ const ManageDepartment = () => {
       sortOrder: sortedInfo.columnKey === 'id' ? sortedInfo.order : null,
       ellipsis: true,
       // search
-      ...getColumnSearchProps(  'id'),
+      ...getColumnSearchProps('id'),
 
     },
     {
@@ -200,7 +200,7 @@ const ManageDepartment = () => {
 
     },
     {
-      title: 'Image',
+      title: 'Icon',
       dataIndex: 'icon',
       key: 'icon',
       width: '16.666%',
@@ -267,7 +267,7 @@ const ManageDepartment = () => {
           </Link>
           {departments.length >= 1 ? (
             <Popconfirm title="Sure to delete?" onConfirm={() => delete_Department(record.id)}>
-              <Button type="primary" danger icon={<DeleteOutlined />}>Delete</Button>
+              <Button type="primary" disabled={record.status} danger icon={<DeleteOutlined />}>Delete</Button>
             </Popconfirm>
           ) : null}
         </div>
@@ -276,27 +276,27 @@ const ManageDepartment = () => {
   ];
   return (
     <>
-      {departments.length == 0 ? <Spinner /> : <>
-        <Space
-          style={{
-            marginBottom: 16,
-            width: '100%',
-            justifyContent: 'space-between'
-          }}
-        >
-          <Space>
-            <Button onClick={clearFilters}>Clear filters and search</Button>
-            <Button onClick={clearAll}>Clear All</Button>
-          </Space>
-
-          <Link to="/dashboard/admin/manage-department/create">
-            <Button type="primary" icon={<PlusOutlined />} style={{backgroundColor: '#52c41a'}}>
-              Add New Department
-            </Button>
-          </Link>
+      <Space
+        style={{
+          marginBottom: 16,
+          width: '100%',
+          justifyContent: 'space-between'
+        }}
+      >
+        <Space>
+          <Button onClick={clearFilters}>Clear filters and search</Button>
+          <Button onClick={clearAll}>Clear All</Button>
         </Space>
 
-        <Table columns={columns} dataSource={departments} onChange={handleChange} /></>}
+        <Link to="/dashboard/admin/manage-department/create">
+          <Button type="primary" icon={<PlusOutlined />} style={{ backgroundColor: '#52c41a' }}>
+            Add New Department
+          </Button>
+        </Link>
+      </Space>
+
+
+      <Table columns={columns} dataSource={departments} onChange={handleChange} />
     </>
   )
 };

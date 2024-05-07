@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -48,6 +49,7 @@ public class NewController {
             return ResponseEntity.notFound().build();
         }
     }
+
     @GetMapping(value = "/find_for_update/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<NewsCreateDto> findByIdForUpdate(@PathVariable("id") int id) {
         Optional<NewsCreateDto> result = newsService.findByIdForUpdate(id);
@@ -61,6 +63,10 @@ public class NewController {
     @DeleteMapping(value = "/delete/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> deleteById(@PathVariable("id") int id) throws IOException {
         Optional<NewsDto> result = newsService.findById(id);
+        int status = result.get().getStatus();
+        if (status == 1) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("News is Active");
+        }
         String pathImage = result.get().getImage();
         boolean deleted = newsService.deleteById(id);
         if (deleted) {
@@ -98,7 +104,7 @@ public class NewController {
     public ResponseEntity<NewsCreateDto> updateTutorial(@PathVariable("id") int id,
             @RequestParam(name = "image", required = false) MultipartFile photo,
             @RequestParam("news") String news) throws IOException {
-                System.out.println(news);
+        System.out.println(news);
 
         // xử lý NewsCreateDto
         ObjectMapper objectMapper = new ObjectMapper();

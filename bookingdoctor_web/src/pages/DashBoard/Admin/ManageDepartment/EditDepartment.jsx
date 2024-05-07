@@ -129,13 +129,13 @@ function EditDepartment() {
         </Form.Item>
 
         {department.icon ?
-          <Form.Item label="Image">
+          <Form.Item label="Icon">
             <Image
               width={200}
               src={"http://localhost:8080/images/department/" + department.icon}
             /></Form.Item> : <></>
         }
-        <Form.Item label="Select Image" valuePropName="fileList" getValueFromEvent={normFile}>
+        <Form.Item label="Select Icon" valuePropName="fileList" getValueFromEvent={normFile}>
           <Upload beforeUpload={() => false} listType="picture-card" maxCount={1} onChange={(e) => onInputChangeForIcon(e.file)}>
             <button
               style={{

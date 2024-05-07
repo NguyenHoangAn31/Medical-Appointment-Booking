@@ -206,7 +206,7 @@ const ManageSlot = () => {
   ];
   return (
     <>
-      {slots.length == 0 ? <Spinner /> : <> <Space
+      <Space
         style={{
           marginBottom: 16,
           width: '100%',
@@ -222,7 +222,7 @@ const ManageSlot = () => {
             Add New Slot
           </Button>
         </Link>
-      </Space><Table columns={columns} dataSource={slots} onChange={handleChange} /></>}
+      </Space><Table columns={columns} dataSource={slots} onChange={handleChange} />
     </>
   )
 };
