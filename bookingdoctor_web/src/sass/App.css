@@ -120,7 +120,8 @@ body {
 }
 
 section {
-  margin: 50px 0;
+  margin-top: 50px;
+  margin-bottom: 60px;
 }
 
 .toaster {
@@ -130,6 +131,90 @@ section {
   width: 300px;
   height: auto;
   z-index: 100px;
+}
+
+.main__title {
+  font-size: 30px;
+  font-weight: bold;
+  color: #000af7;
+  position: relative;
+}
+.main__title::after {
+  position: absolute;
+  content: "";
+  width: 50%;
+  height: 4px;
+  bottom: -20%;
+  left: 0;
+  background-color: #ff61ba;
+}
+.main__title::before {
+  position: absolute;
+  content: "";
+  width: 60%;
+  height: 4px;
+  bottom: -5%;
+  left: 0;
+  background-color: #ff61ba;
+}
+
+.slick-slide {
+  height: auto !important;
+}
+
+.slick-dots {
+  bottom: -45px !important;
+}
+
+.slick-dots li button:before {
+  font-size: 20px;
+}
+
+.card__department {
+  width: 90%;
+  height: 200px;
+  border-radius: 20px;
+  box-shadow: var(--boxShadow);
+  background-color: #fff;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid #e8e1e1;
+}
+.card__department .card__department_img {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background-color: #fff;
+  margin-bottom: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: var(--boxShadow);
+}
+.card__department .card__department_img .image__icon {
+  width: 50px;
+}
+.card__department .card__department_name {
+  font-size: 16px;
+  font-weight: bolder;
+}
+
+.btn__service {
+  padding: 10px 30px;
+  background-color: #fff;
+  border-radius: 10px;
+  color: #000af7;
+  cursor: pointer;
+  margin-right: 30px;
+}
+
+.slick-prev:before,
+.slick-next:before {
+  color: #fff !important;
 }
 
 .doctor__list {
