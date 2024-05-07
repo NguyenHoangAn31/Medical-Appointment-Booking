@@ -131,7 +131,7 @@ function EditDepartment() {
         {department.icon ?
           <Form.Item label="Icon">
             <Image
-              width={200}
+              width={100}
               src={"http://localhost:8080/images/department/" + department.icon}
             /></Form.Item> : <></>
         }

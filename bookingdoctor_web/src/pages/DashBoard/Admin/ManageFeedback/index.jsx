@@ -1,17 +1,18 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
-import { DeleteOutlined, EditOutlined, PlusOutlined, SearchOutlined } from '@ant-design/icons';
-import { Button, Input, Popconfirm, Space, Spin, Table, Tag } from 'antd';
+import { DeleteOutlined, EditOutlined, EyeOutlined, PlusOutlined, SearchOutlined } from '@ant-design/icons';
+import { Button, Input, Popconfirm, Rate, Space, Spin, Table, Tag } from 'antd';
 import Highlighter from 'react-highlight-words';
-import { getAllDepartment, deleteDepartment } from '../../../../services/API/departmentService';
 import { Link } from 'react-router-dom';
+import { getAllFeedback } from '../../../../services/API/feedbackService';
 import Spinner from '../../../../components/Spinner';
 import { AlertContext } from '../../../../components/Layouts/DashBoard';
+import getUserData from '../../../../route/CheckRouters/token/Token';
 
-const ManageDepartment = () => {
+const ManageFeedback = () => {
   // thông báo
   const Alert = useContext(AlertContext);
-  // useState cho mảng dữ liệu departments
-  const [departments, setDepartments] = useState([]);
+  // useState cho mảng dữ liệu feedback
+  const [feedbacks, setFeedbacks] = useState([]);
   // useState clear search , sort
   const [filteredInfo, setFilteredInfo] = useState({});
   const [sortedInfo, setSortedInfo] = useState({});
@@ -36,33 +37,24 @@ const ManageDepartment = () => {
 
 
 
-  // tải dữ liệu và gán vào departments thông qua hàm setDepartments
-  const loadDepartments = async () => {
-    const fetchedDepartments = await getAllDepartment();
-    // thêm key vào mỗi department
-    const departmentsWithKeys = fetchedDepartments.map((department, index) => ({
-      ...department,
+  // tải dữ liệu và gán vào feedback thông qua hàm setFeedback
+  const loadFeedbacks = async () => {
+    const fetchedFeedback = await getAllFeedback();
+    // thêm key vào mỗi feedback
+    const feedbackWithKeys = fetchedFeedback.map((feedback, index) => ({
+      ...feedback,
       key: index.toString(),
     }));
-    setDepartments(departmentsWithKeys);
+    setFeedbacks(feedbackWithKeys);
   };
   // thực hiện load dữ liệu 1 lần 
   useEffect(() => {
-    loadDepartments();
+    loadFeedbacks();
   }, []);
-  // xóa record và reload lại và gọi lại hàm reload dữ liệu
-  const delete_Department = async (id) => {
-    try {
-      await deleteDepartment(id);
-      loadDepartments();
-      Alert('success', 'Deletete Department Successfully', '')
-    } catch (error) {
-      Alert('warning', 'something Went Wrong', '')
-      console.log(error)
-    }
+  
 
-  };
 
+  console.log(feedbacks)
 
 
 
@@ -176,7 +168,7 @@ const ManageDepartment = () => {
       title: 'Id',
       dataIndex: 'id',
       key: 'id',
-      width: '16.666%',
+      width: '10.666%',
       // sort 
       filteredValue: filteredInfo.id || null,
       sorter: (a, b) => a.id - b.id,
@@ -187,89 +179,77 @@ const ManageDepartment = () => {
 
     },
     {
-      title: 'Name',
-      dataIndex: 'name',
-      key: 'name',
-      width: '16.666%',
-      filteredValue: filteredInfo.name || null,
-      sorter: (a, b) => a.name.localeCompare(b.name),
-      sortOrder: sortedInfo.columnKey === 'name' ? sortedInfo.order : null,
-      ellipsis: true,
-      // search
-      ...getColumnSearchProps('name'),
-
-    },
-    {
-      title: 'Icon',
-      dataIndex: 'icon',
-      key: 'icon',
-      width: '16.666%',
-      render: (_, { icon }) => {
+      title: 'Image',
+      dataIndex: 'image',
+      key: 'image',
+      width: '10.666%',
+      render: (_, { image }) => {
         return (
-          icon ? <img src={"http://localhost:8080/images/department/" + icon} width="50" alt="" /> : null);
+          image ? <img src={"http://localhost:8080/images/doctor/" + image} width="150" alt="" /> : null);
       },
 
     },
     {
-      title: 'Address',
-      dataIndex: 'url',
-      key: 'url',
+      title: 'Name',
+      dataIndex: 'fullName',
+      key: 'fullName',
       width: '16.666%',
-      filteredValue: filteredInfo.url || null,
-      sorter: (a, b) => a.url.localeCompare(b.url),
-      sortOrder: sortedInfo.columnKey === 'url' ? sortedInfo.order : null,
+      filteredValue: filteredInfo.fullName || null,
+      sorter: (a, b) => a.fullName.localeCompare(b.fullName),
+      sortOrder: sortedInfo.columnKey === 'fullName' ? sortedInfo.order : null,
       ellipsis: true,
       // search
-      ...getColumnSearchProps('url'),
-
+      ...getColumnSearchProps('fullName'),
 
     },
+    
     {
-      title: 'Status',
-      dataIndex: 'status',
-      key: 'status',
+      title: 'Gender',
+      dataIndex: 'gender',
+      key: 'gender',
       width: '16.666%',
-      filters: [
-        {
-          text: 'Active',
-          value: 1,
-        },
-        {
-          text: 'Not Active',
-          value: 0,
-        },
-      ],
-      filteredValue: filteredInfo.status || null,
-      onFilter: (value, record) => record.status == value,
-      filterSearch: true,
-
-      render: (_, { status }) => {
-        let color = status ? 'green' : 'volcano';
-        let title = status ? 'Active' : 'Not Active'
+      filteredValue: filteredInfo.gender || null,
+      sorter: (a, b) => a.gender.localeCompare(b.gender),
+      sortOrder: sortedInfo.columnKey === 'gender' ? sortedInfo.order : null,
+      ellipsis: true,
+      // search
+      ...getColumnSearchProps('gender'),
+    },
+    {
+      title: 'Rate',
+      dataIndex: 'rate',
+      key: 'rate',
+      // width: '15.666%',
+      // sort 
+      filteredValue: filteredInfo.rate || null,
+      sorter: (a, b) => a.rate - b.rate,
+      sortOrder: sortedInfo.columnKey === 'rate' ? sortedInfo.order : null,
+      ellipsis: true,
+      // search
+      ...getColumnSearchProps('rate'),
+      render: (_, { rate }) => {
+        
         return (
-          <Tag color={color} key={title}>
-            {title ? title.toUpperCase() : ''}
-          </Tag>
+          <Rate count={5} disabled defaultValue={rate}/>
         );
       },
+
     },
 
     {
       title: 'Action',
       dataIndex: 'operation',
       render: (_, record) => (
-        <div style={{ display: 'flex' }}>
-          <Link style={{ marginRight: '16px', color: 'blue' }}
-            to={`/dashboard/admin/manage-department/edit/${record.id}`}>
-            <Button type="primary" icon={<EditOutlined />} >
-              Edit
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <Link style={{ marginRight: '16px' }}
+            to={`/dashboard/admin/manage-feedback/detail/${record.id}`}>
+            <Button type="primary" icon={<EyeOutlined />} >
+              Detail
             </Button>
           </Link>
-          {departments.length >= 1 ? (
-            <Popconfirm title="Sure to delete?" onConfirm={() => delete_Department(record.id)}>
-              <Button type="primary" disabled={record.status} danger icon={<DeleteOutlined />}>Delete</Button>
-            </Popconfirm>
-          ) : null}
+
+          
+
         </div>
       ),
     },
@@ -288,15 +268,14 @@ const ManageDepartment = () => {
           <Button onClick={clearAll}>Clear All</Button>
         </Space>
 
-        <Link to="/dashboard/admin/manage-department/create">
+        {/* <Link to="/dashboard/admin/manage-news/create">
           <Button type="primary" icon={<PlusOutlined />} style={{ backgroundColor: '#52c41a' }}>
-            Add New Department
+            Add New News
           </Button>
-        </Link>
+        </Link> */}
       </Space>
 
-
-      <Table columns={columns} dataSource={departments} onChange={handleChange} />
+        <Table columns={columns} dataSource={feedbacks} onChange={handleChange} />
     </>
   )
 };
@@ -304,4 +283,4 @@ const ManageDepartment = () => {
 
 
 
-export default ManageDepartment;
+export default ManageFeedback;
