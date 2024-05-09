@@ -46,7 +46,7 @@ const adminRouters = [
     { path: '/dashboard/admin/manage-slot/edit/:id', component: DashBoard.EditSlot, layout: DashBoardLayout },
     { path: '/dashboard/admin/manage-appointment', component: DashBoard.ManageAppointment, layout: DashBoardLayout },
     { path: '/dashboard/admin/manage-feedback', component: DashBoard.ManageFeedback, layout: DashBoardLayout },
-    { path: '/dashboard/admin/manage-feedback/detail/:id', component: DashBoard.Detail, layout: DashBoardLayout },
+    { path: '/dashboard/admin/manage-feedback/detail', component: DashBoard.Detail, layout: DashBoardLayout },
     { path: '/dashboard/admin/manage-news', component: DashBoard.ManageNews, layout: DashBoardLayout },
     { path: '/dashboard/admin/manage-news/create', component: DashBoard.AddNews, layout: DashBoardLayout },
     { path: '/dashboard/admin/manage-news/edit/:id', component: DashBoard.EditNews, layout: DashBoardLayout },

@@ -15,6 +15,7 @@ import { findNewsByIdForUpdate } from '../../../../services/API/news';
 import { updateNews } from '../../../../services/API/news';
 import { AlertContext } from '../../../../components/Layouts/DashBoard';
 import getUserData from '../../../../route/CheckRouters/token/Token';
+import Spinner from '../../../../components/Spinner';
 
 const layout = {
   labelCol: {
@@ -46,17 +47,9 @@ function EditNews() {
   const { id } = useParams();
 
   // khởi tạo đối tượng news
-  const [news, setNews] = useState({
-    title: '',
-    content: '',
-    url: '',
-    status: '',
-    user_id: ''
-  });
+  const [news, setNews] = useState({});
   // state cho image
   const [image, setImage] = useState(null);
-
-  const { title, content, url } = news;
 
 
   // gọi hàm loadNews 1 lần
@@ -102,80 +95,79 @@ function EditNews() {
   };
   return (
     <>
-      {/* <Link to={`/dashboard/admin/manage-news`}><LeftOutlined /> Back To News</Link> */}
-
-      <h2>Edit News - {news.status != null ?
+      {Object.keys(news).length == 0 ? <Spinner /> : <><h2>Edit News - {news.status != null ?
         news.status == 0 ? <span style={{ color: 'red' }}>Not Active</span> : <span style={{ color: 'rgb(82, 196, 26)' }}>Active</span>
         : <></>
       }</h2>
 
-      <Form
-        {...layout}
-        name="control-hooks"
-        onFinish={handleFormSubmit}
-        style={{
-          maxWidth: 600,
-          marginTop: '45px'
-        }}
-      >
+        <Form
+          {...layout}
+          name="control-hooks"
+          onFinish={handleFormSubmit}
+          style={{
+            maxWidth: 600,
+            marginTop: '45px'
+          }}
+        >
 
-        <Form.Item label="URL">
-          <Input value={url} onChange={(e) => onInputChangeForNews('url', e.target.value)} required />
-        </Form.Item>
+          <Form.Item label="URL">
+            <Input value={news.url} onChange={(e) => onInputChangeForNews('url', e.target.value)} required />
+          </Form.Item>
 
-        <Form.Item label="Title">
-          <Input value={title} onChange={(e) => onInputChangeForNews('title', e.target.value)} required />
-        </Form.Item>
+          <Form.Item label="Title">
+            <Input value={news.title} onChange={(e) => onInputChangeForNews('title', e.target.value)} required />
+          </Form.Item>
 
-        <Form.Item label="Content">
-          <Input value={content} onChange={(e) => onInputChangeForNews('content', e.target.value)} required />
-        </Form.Item>
+          <Form.Item label="Content">
+            <Input value={news.content} onChange={(e) => onInputChangeForNews('content', e.target.value)} required />
+          </Form.Item>
 
 
 
-        <Form.Item label="Select Status" name="status">
-          <Select placeholder="Select Status" onChange={(e) => onInputChangeForNews('status', e)} >
-            <Select.Option value="1">Show</Select.Option>
-            <Select.Option value="0">Hide</Select.Option>
-          </Select>
-        </Form.Item>
+          <Form.Item label="Select Status" name="status">
+            <Select placeholder="Select Status" onChange={(e) => onInputChangeForNews('status', e)} >
+              <Select.Option value="1">Show</Select.Option>
+              <Select.Option value="0">Hide</Select.Option>
+            </Select>
+          </Form.Item>
 
-        {news.image ?
-          <Form.Item label="Image">
-            <Image
-              width={200}
-              src={"http://localhost:8080/images/news/" + news.image}
-            /></Form.Item> : <></>
-        }
-        <Form.Item label="Select Image" valuePropName="fileList" getValueFromEvent={normFile}>
-          <Upload beforeUpload={() => false} listType="picture-card" maxCount={1} onChange={(e) => onInputChangeForImage(e.file)}>
-            <button
-              style={{
-                border: 0,
-                background: 'none',
-              }}
-              type="button"
-            >
-              <PlusOutlined />
-              <div
+          {news.image ?
+            <Form.Item label="Image">
+              <Image
+                width={200}
+                src={"http://localhost:8080/images/news/" + news.image}
+              /></Form.Item> : <></>
+          }
+          <Form.Item label="Select Image" valuePropName="fileList" getValueFromEvent={normFile}>
+            <Upload beforeUpload={() => false} listType="picture-card" maxCount={1} onChange={(e) => onInputChangeForImage(e.file)}>
+              <button
                 style={{
-                  marginTop: 8,
+                  border: 0,
+                  background: 'none',
                 }}
+                type="button"
               >
-                Upload
-              </div>
-            </button>
-          </Upload>
-        </Form.Item>
+                <PlusOutlined />
+                <div
+                  style={{
+                    marginTop: 8,
+                  }}
+                >
+                  Upload
+                </div>
+              </button>
+            </Upload>
+          </Form.Item>
 
-        <Form.Item {...tailLayout}>
-          <Space>
-            <Button type="primary" htmlType="submit">
-              Submit
-            </Button>
-          </Space>
-        </Form.Item>
-      </Form>
+          <Form.Item {...tailLayout}>
+            <Space>
+              <Button type="primary" htmlType="submit">
+                Submit
+              </Button>
+            </Space>
+          </Form.Item>
+        </Form></>}
+
     </>
   )
 }

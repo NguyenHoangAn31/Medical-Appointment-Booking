@@ -21,7 +21,7 @@ public class DoctorDto {
     private String address; // Địa chỉ
     private String image; // Image
     private Double price;
-    private String department;
+    private Department department;
     //private User user;
     private List<WorkingDto> workings;
     private List<QualificationDto> qualifications;

@@ -38,7 +38,7 @@ public class DoctorServiceImpl implements DoctorService{
         doctorDto.setAddress(doctor.getAddress());
         doctorDto.setImage(doctor.getImage());
         doctorDto.setPrice(doctor.getPrice());
-        doctorDto.setDepartment(doctor.getDepartment().getName());
+        doctorDto.setDepartment(doctor.getDepartment());
         // Không gán WorkingDto ở đây vì sẽ gán sau trong findById
         return doctorDto;
     }

@@ -17,6 +17,7 @@ body {
   font-family: "Popins", sans-serif;
   font-size: 16px;
 }
+
 ::-webkit-scrollbar {
   display: none;
 }
@@ -750,4 +751,91 @@ nav .nav-link:hover {
   border-radius: 50px;
   -o-object-fit: cover;
      object-fit: cover;
+}
+
+.feedback_detail {
+  padding: 0 40px;
+}
+.feedback_detail .timeline {
+  border-left: 1px solid hsl(0, 0%, 90%);
+  position: relative;
+  list-style: none;
+}
+.feedback_detail .timeline .timeline-item {
+  position: relative;
+}
+.feedback_detail .timeline .timeline-item:after {
+  position: absolute;
+  display: block;
+  top: 0;
+  background-color: hsl(0, 0%, 90%);
+  left: -38px;
+  border-radius: 50%;
+  height: 11px;
+  width: 11px;
+  content: "";
+}
+.feedback_detail .rating_user {
+  width: 90%;
+  margin: auto;
+}
+.feedback_detail .rating_user .side {
+  float: left;
+  width: 15%;
+  margin-top: 10px;
+}
+.feedback_detail .rating_user .middle {
+  margin-top: 10px;
+  float: left;
+  width: 70%;
+}
+.feedback_detail .rating_user .right {
+  text-align: right;
+}
+.feedback_detail .rating_user .row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+.feedback_detail .rating_user .bar-container {
+  width: 100%;
+  background-color: #f1f1f1;
+  text-align: center;
+  color: #f1f1f1;
+}
+.feedback_detail .rating_user .bar-5 {
+  height: 18px;
+  background-color: #04AA6D;
+}
+.feedback_detail .rating_user .bar-4 {
+  height: 18px;
+  background-color: #2196F3;
+}
+.feedback_detail .rating_user .bar-3 {
+  height: 18px;
+  background-color: #00bcd4;
+}
+.feedback_detail .rating_user .bar-2 {
+  height: 18px;
+  background-color: #ff9800;
+}
+.feedback_detail .rating_user .bar-1 {
+  height: 18px;
+  background-color: #f44336;
+}
+.feedback_detail .feedback .image_patient,
+.feedback_detail .feedback .option {
+  flex-grow: 1;
+}
+.feedback_detail .feedback .comment_patient {
+  flex-grow: 10;
+}
+.feedback_detail .feedback .option {
+  cursor: pointer;
+  font-weight: bold;
+  text-align: end;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
+  align-self: end;
 }/*# sourceMappingURL=App.css.map */

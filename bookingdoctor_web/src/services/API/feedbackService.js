@@ -10,9 +10,32 @@ export const getAllFeedback = async () => {
     }
 };
 
+
+
 export const detailFeedback = async (id) => {
     try {
-        await request.remove(`feedback/${id}`);
+        const response = await request.get(`feedback/${id}`);
+        return response;
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+}
+
+export const changeStatusFeedback = async (id,stauts) => {
+    try {
+        const response = await request.put(`feedback/changestatus/${id}/${stauts}`);
+        return response
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+};
+
+export const deleteFeedback = async (id) => {
+    try {
+        const response = await request.remove(`feedback/delete/${id}`);
+        return response
     } catch (error) {
         console.log(error);
         throw error;
