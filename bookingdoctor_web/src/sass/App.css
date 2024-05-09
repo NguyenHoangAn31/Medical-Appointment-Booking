@@ -124,8 +124,9 @@ body {
 }
 
 section {
-  margin-top: 50px;
+  margin-top: 60px;
   margin-bottom: 60px;
+  padding: 30px 0;
 }
 
 .toaster {
@@ -242,7 +243,7 @@ section {
 .doctor__list_image {
   height: 360px;
   position: absolute;
-  left: -50px;
+  left: 2%;
   top: 0;
   overflow: hidden;
 }
@@ -699,7 +700,7 @@ nav .nav-link:hover {
 
 .doctor__team {
   width: 100%;
-  height: 300px;
+  height: 350px;
   overflow: hidden;
   position: relative;
   border-radius: 50px;
@@ -707,7 +708,7 @@ nav .nav-link:hover {
 }
 .doctor__team img {
   width: 100%;
-  height: 300px;
+  height: 350px;
   border-radius: 50px;
 }
 .doctor__team .doctor__team_desc {
@@ -741,17 +742,18 @@ nav .nav-link:hover {
 
 .doctor__khambenh {
   width: 100%;
-  height: 300px;
+  height: 350px;
   border-radius: 50px;
   box-shadow: var(--boxShadow);
 }
 .doctor__khambenh img {
   width: 100%;
-  height: 300px;
+  height: 350px;
   border-radius: 50px;
   -o-object-fit: cover;
      object-fit: cover;
 }
+
 
 .feedback_detail {
   padding: 0 40px;
@@ -838,4 +840,244 @@ nav .nav-link:hover {
      -moz-user-select: none;
           user-select: none;
   align-self: end;
+}
+.card__info {
+  background-color: #03B8C9;
+  padding: 30px;
+  border-radius: 40px;
+}
+.card__info .card__info_header {
+  padding-bottom: 40px;
+  border-bottom: 1.5px solid #fff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #fff;
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 15px;
+}
+.card__info .card__info_header .header__image {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  overflow: hidden;
+  box-shadow: var(--boxShadow);
+  background-color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.card__info .card__info_header .header__image img {
+  width: 40px;
+  height: 40px;
+}
+.card__info .card__info_body .body__desc {
+  font-size: 13px;
+  text-align: justify;
+}
+
+.main__doctor {
+  font-size: 25px;
+  font-weight: bolder;
+  text-align: center;
+  margin-top: 30px;
+}
+
+.title__float-left {
+  display: flex;
+  flex-direction: column;
+}
+.title__float-left p {
+  font-size: 24px;
+  font-weight: bolder;
+  text-align: justify;
+  padding: 60px 30px 0 0;
+  margin-bottom: 150px;
+}
+.title__float-left .btn__readmore {
+  border: 1px solid #000;
+  width: 100px;
+  height: 40px;
+  font-size: 12px;
+  text-align: center;
+  line-height: 40px;
+  text-decoration: none;
+  color: #000;
+  border-radius: 10px;
+  cursor: pointer;
+}
+.title__float-left .btn__readmore:hover {
+  background-color: #000af7;
+  color: #fff;
+  border: #000af7;
+}
+
+.title__float-right {
+  display: flex;
+  flex-direction: column;
+}
+.title__float-right h6 {
+  font-size: 30px;
+  font-weight: bold;
+  text-align: left;
+  padding: 60px 30px 0 0;
+}
+.title__float-right p {
+  font-size: 16px;
+  font-weight: 400;
+  text-align: justify;
+  padding-top: 30px;
+  padding-bottom: 30px;
+  padding-left: 0;
+  padding-right: 30px;
+  margin-bottom: 50px;
+  color: rgba(0, 0, 0, 0.52);
+}
+.title__float-right .btn__readmore {
+  border: 1px solid #000;
+  width: 100px;
+  height: 40px;
+  font-size: 12px;
+  text-align: center;
+  line-height: 40px;
+  text-decoration: none;
+  color: #000;
+  border-radius: 10px;
+  cursor: pointer;
+}
+.title__float-right .btn__readmore:hover {
+  background-color: #000af7;
+  color: #fff;
+  border: #000af7;
+}
+
+.card__list_call {
+  position: relative;
+}
+.card__list_call .btn__drawer {
+  width: 50px;
+  height: 50px;
+  border: 1px solid #000;
+  border-radius: 50%;
+  background-color: #fff;
+  box-shadow: var(--boxShadow);
+  font-size: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: 12%;
+  right: 15px;
+}
+.card__list_call .img__card {
+  width: 100%;
+  height: auto;
+}
+.card__list_call .card__list_info {
+  position: absolute;
+  bottom: -18%;
+  right: 20%;
+  width: 380px;
+  height: 250px;
+  background-color: #fff;
+  box-shadow: var(--boxShadow);
+  border-radius: 60px;
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+}
+.card__list_call .card__list_info .card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+.card__list_call .card__list_info .card__header .title {
+  font-size: 16px;
+  font-weight: bold;
+  text-align: left;
+}
+.card__list_call .card__list_info .card__body_doctor {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.card__list_call .card__list_info .card__body_doctor .image_doctor {
+  width: 50px;
+  height: 50px;
+  box-shadow: var(--boxShadow);
+  border-radius: 50%;
+  overflow: hidden;
+}
+.card__list_call .card__list_info .card__body_doctor .infor_doctor {
+  display: flex;
+  flex-direction: column;
+}
+.card__list_call .card__list_info .card__body_doctor .infor_doctor .name {
+  font-size: 14px;
+  font-weight: bold;
+  margin-top: 10px;
+}
+.card__list_call .card__list_info .card__body_doctor .infor_doctor .experiat {
+  font-size: 10px;
+  font-weight: bold;
+  color: rgba(0, 0, 0, 0.54);
+}
+.card__list_call .card__list_info .card__body_doctor .contact_icon {
+  width: 30%;
+  margin-left: 15px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 20px;
+}
+.card__list_call .card__list_info .card__body_doctor .contact_icon .btn__icon {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background-color: #FBAD10;
+  color: #fff;
+  font-size: 14px;
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.card__list_call .card__list_info .card__body_doctor .contact_icon .btn__icon img {
+  width: 20px;
+  height: 20px;
+}
+
+.image__care_old {
+  width: 100%;
+  height: auto;
+  border-radius: 30px;
+  box-shadow: var(--boxShadow);
+  overflow: hidden;
+}
+
+.card__doctor_care_old {
+  width: 250px;
+  height: auto;
+  border-radius: 30px;
+  box-shadow: var(--boxShadow);
+  position: absolute;
+  left: -25%;
+  top: 85%;
+  z-index: 100;
+  background-color: #fff;
+  padding: 30px 20px;
+}
+.card__doctor_care_old .title {
+  font-weight: bold;
+  font-size: 16px;
+  text-align: center;
+}
+.card__doctor_care_old .card__visit {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 15px;
+
 }/*# sourceMappingURL=App.css.map */

@@ -1,6 +1,10 @@
 import React, {useEffect} from 'react'
 
-import { SeachHome, ImageHome, HomeService, HomeAbout } from '../../components/UI/Home'
+import { SeachHome, ImageHome, HomeService, 
+HomeAbout, HomeInfoweb, ListCall,
+  
+HomeDoctor, 
+HomeBooking} from '../../components/UI/Home'
 import { useNavigate } from "react-router-dom"
 
 import getUserData from '../../route/CheckRouters/token/Token'
@@ -29,6 +33,10 @@ const Home = () => {
       <ImageHome />
       <HomeService />
       <HomeAbout />
+      <HomeInfoweb />
+      <ListCall />
+      <HomeDoctor />
+      
     </>
   )
 }

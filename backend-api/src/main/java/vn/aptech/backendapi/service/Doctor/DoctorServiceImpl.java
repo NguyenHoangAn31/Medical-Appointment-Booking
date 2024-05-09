@@ -34,12 +34,11 @@ public class DoctorServiceImpl implements DoctorService{
         doctorDto.setFullName(doctor.getFullName());
         doctorDto.setTitle(doctor.getTitle());
         doctorDto.setGender(doctor.getGender());
-        doctorDto.setBirthday(doctor.getBirthday().toString());
+        doctorDto.setBirthday(doctor.getBirthday());
         doctorDto.setAddress(doctor.getAddress());
         doctorDto.setImage(doctor.getImage());
         doctorDto.setPrice(doctor.getPrice());
         doctorDto.setDepartment(doctor.getDepartment());
-        // Không gán WorkingDto ở đây vì sẽ gán sau trong findById
         return doctorDto;
     }
 
@@ -64,7 +63,7 @@ public class DoctorServiceImpl implements DoctorService{
     }
 
     public List<DoctorDto> findAll(){
-        return doctorRepository.findAll().stream().map(this::toDto).toList();
+        return doctorRepository.findAll().stream().map(this::mapToDoctorDto).toList();
     }
 
     public Optional<DoctorDto> findById(int doctorId) {
@@ -91,9 +90,9 @@ public class DoctorServiceImpl implements DoctorService{
     }
     // Hien Create 30/4/2024
     @Override
-    public List<DoctorDto> findRelatedDoctors(String departmentName) {
+    public List<DoctorDto> findDoctorsByDepartmentId(int departmentId) {
         // Truy vấn danh sách bác sĩ có cùng chuyên khoa
-        List<Doctor> doctors = doctorRepository.findByDepartmentName(departmentName);
+        List<Doctor> doctors = doctorRepository.findDoctorsByDepartmentId(departmentId);
 
         // Chuyển đổi danh sách bác sĩ sang DoctorDto
         return doctors.stream()

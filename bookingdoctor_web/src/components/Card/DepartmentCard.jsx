@@ -1,12 +1,13 @@
 import React from 'react'
 import { motion } from 'framer-motion';
 
+
 const DepartmentCard = (props) => {
     const { id, name, icon, url} = props.item;
   return (
         <motion.div to={`/services/${id}`} className='card__department'>
             <div className='card__department_img'>
-                <img src={"/images/departments/"+ icon}alt="" className='img-fluid image__icon' />
+                <img src={"http://localhost:8080/images/department/"+ icon} alt="" className='img-fluid image__icon' />
             </div>
             <div className='card__department_name'>
                 {name}
