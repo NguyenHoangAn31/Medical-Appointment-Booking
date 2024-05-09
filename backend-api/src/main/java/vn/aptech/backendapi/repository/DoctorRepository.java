@@ -9,5 +9,5 @@ import java.util.Optional;
 
 public interface DoctorRepository extends JpaRepository<Doctor, Integer> {
     // Hien Create 30/4/2024
-    List<Doctor> findByDepartmentName(String departmentName);
+    List<Doctor> findDoctorsByDepartmentId(int id);
 }
