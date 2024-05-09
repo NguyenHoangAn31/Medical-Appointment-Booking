@@ -1,5 +1,6 @@
 package vn.aptech.backendapi.controller;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -21,8 +22,10 @@ public class DoctorController {
     @Autowired
     private DoctorService doctorService;
 
+    @Autowired
+    private ModelMapper mapper;
+
     @GetMapping(value = "/all", produces = MediaType.APPLICATION_JSON_VALUE)
-    //@PreAuthorize("hasAnyAuthority('ADMIN')")
     public ResponseEntity<List<DoctorDto>> findAll() {
         List<DoctorDto> result = doctorService.findAll();
         return ResponseEntity.ok(result);
@@ -38,9 +41,9 @@ public class DoctorController {
         }
     }
     //Hien Create 30/4/2024
-    @GetMapping(value = "/relatedDoctors/{departmentName}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<DoctorDto>> findRelatedDoctors(@PathVariable("departmentName") String departmentName) {
-        List<DoctorDto> relatedDoctors = doctorService.findRelatedDoctors(departmentName);
+    @GetMapping(value = "/related-doctor/{departmentId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<DoctorDto>> findRDoctorsByDepartment(@PathVariable("departmentId") int departmentId) {
+        List<DoctorDto> relatedDoctors = doctorService.findDoctorsByDepartmentId(departmentId);
         return ResponseEntity.ok(relatedDoctors);
     }
 

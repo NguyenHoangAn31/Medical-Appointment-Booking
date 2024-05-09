@@ -11,9 +11,7 @@ const DoctorItem = (props) => {
             <div className="doctor__list_background"></div>
             {/* <img src="../../../../public/images/doctors/2.png" alt="" className="doctor__list_image" /> */}
             <img
-                src={gender === 'Male'
-                    ? "../../../../public/images/doctors/2.png"
-                    : "../../../../public/images/doctors/6.png"}
+                src={"http://localhost:8080/images/doctors/" + image}
                 alt=""
                 className="doctor__list_image"
             />

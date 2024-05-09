@@ -12,11 +12,6 @@ const HomeService = () => {
     // tải dữ liệu và gán vào departments thông qua hàm setDepartments
   const loadDepartments = async () => {
     const fetchedDepartments = await department.getAllDepartment();
-    // thêm key vào mỗi department
-    // const departmentsWithKeys = fetchedDepartments.map((department, index) => ({
-    //   ...department,
-    //   key: index.toString(),
-    // }));
     setDepartments(fetchedDepartments);
   };
   // thực hiện load dữ liệu 1 lần 
@@ -64,7 +59,7 @@ const HomeService = () => {
     return (
         <section className='container'>
            <div className='d-flex justify-content-between align-items-center mb-5'>
-                <h1 className='main__title' >Services</h1>
+                <h1 className='main__title' >Our Services</h1>
                 <a className='btn__service' href='/service'>See all</a>
            </div>
             <div className='slider-container'>

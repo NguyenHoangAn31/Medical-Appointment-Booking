@@ -46,32 +46,59 @@ public class SecurityConfiguration {
     @Bean
     @Order(1)
     public SecurityFilterChain api(HttpSecurity http) throws Exception {
-        // Khai báo route ở đây
-        PublicRoutes.PublicRoutesManager.publicRoutes().add(HttpMethod.POST,"/api/auth/**").injectOn(http);
+
         PublicRoutes.PublicRoutesManager.publicRoutes().add(HttpMethod.GET,"/api/doctor/**").injectOn(http);
         PublicRoutes.PublicRoutesManager.publicRoutes().add(HttpMethod.GET,"/api/patient/**").injectOn(http);
         PublicRoutes.PublicRoutesManager.publicRoutes().add(HttpMethod.GET,"api/user/**").injectOn(http);
-        PublicRoutes.PublicRoutesManager.publicRoutes().add(HttpMethod.POST,"api/user/**").injectOn(http);
-        PublicRoutes.PublicRoutesManager.publicRoutes().add(HttpMethod.GET,"/api/slot/**").injectOn(http);
-        PublicRoutes.PublicRoutesManager.publicRoutes().add(HttpMethod.POST,"/api/slot/**").injectOn(http);
-        PublicRoutes.PublicRoutesManager.publicRoutes().add(HttpMethod.PUT,"/api/slot/**").injectOn(http);
-        PublicRoutes.PublicRoutesManager.publicRoutes().add(HttpMethod.DELETE,"/api/slot/**").injectOn(http);
         PublicRoutes.PublicRoutesManager.publicRoutes().add(HttpMethod.GET,"/api/department/**").injectOn(http);
-        PublicRoutes.PublicRoutesManager.publicRoutes().add(HttpMethod.POST,"/api/department/**").injectOn(http);
-        PublicRoutes.PublicRoutesManager.publicRoutes().add(HttpMethod.PUT,"/api/department/**").injectOn(http);
-        PublicRoutes.PublicRoutesManager.publicRoutes().add(HttpMethod.DELETE,"/api/department/**").injectOn(http);
+        PublicRoutes.PublicRoutesManager.publicRoutes().add(HttpMethod.GET,"/api/slot/**").injectOn(http);
         PublicRoutes.PublicRoutesManager.publicRoutes().add(HttpMethod.GET,"/api/working/**").injectOn(http);
-        PublicRoutes.PublicRoutesManager.publicRoutes().add(HttpMethod.POST,"/api/working/**").injectOn(http);
-        PublicRoutes.PublicRoutesManager.publicRoutes().add(HttpMethod.PUT,"/api/working/**").injectOn(http);
-        PublicRoutes.PublicRoutesManager.publicRoutes().add(HttpMethod.DELETE,"/api/working/**").injectOn(http);
         PublicRoutes.PublicRoutesManager.publicRoutes().add(HttpMethod.GET,"/api/news/**").injectOn(http);
-        PublicRoutes.PublicRoutesManager.publicRoutes().add(HttpMethod.POST,"/api/news/**").injectOn(http);
-        PublicRoutes.PublicRoutesManager.publicRoutes().add(HttpMethod.PUT,"/api/news/**").injectOn(http);
-        PublicRoutes.PublicRoutesManager.publicRoutes().add(HttpMethod.DELETE,"/api/news/**").injectOn(http);
         PublicRoutes.PublicRoutesManager.publicRoutes().add(HttpMethod.GET,"/api/feedback/**").injectOn(http);
+
+
+//        // Khai báo route ở đây
+//        // route GET
+//        PublicRoutes.PublicRoutesManager.publicRoutes()
+//                .add(HttpMethod.GET,"/api/doctor/**", "/api/patient/**", "api/user/**",
+//                        "/api/department/**", "/api/slot/**", "/api/working/**", "/api/news/**",
+//                        "/api/feedback/**")
+//                .injectOn(http);
+
+
+
+        // route POST
+        PublicRoutes.PublicRoutesManager.publicRoutes().add(HttpMethod.POST,"/api/auth/**").injectOn(http);
+        PublicRoutes.PublicRoutesManager.publicRoutes().add(HttpMethod.POST,"api/user/**").injectOn(http);
+        PublicRoutes.PublicRoutesManager.publicRoutes().add(HttpMethod.POST,"/api/slot/**").injectOn(http);
+        PublicRoutes.PublicRoutesManager.publicRoutes().add(HttpMethod.POST,"/api/department/**").injectOn(http);
+        PublicRoutes.PublicRoutesManager.publicRoutes().add(HttpMethod.POST,"/api/working/**").injectOn(http);
+        PublicRoutes.PublicRoutesManager.publicRoutes().add(HttpMethod.POST,"/api/news/**").injectOn(http);
         PublicRoutes.PublicRoutesManager.publicRoutes().add(HttpMethod.POST,"/api/feedback/**").injectOn(http);
+
+
+
+
+
+        // route PUT
+        PublicRoutes.PublicRoutesManager.publicRoutes().add(HttpMethod.PUT,"/api/slot/**").injectOn(http);
+        PublicRoutes.PublicRoutesManager.publicRoutes().add(HttpMethod.PUT,"/api/department/**").injectOn(http);
+        PublicRoutes.PublicRoutesManager.publicRoutes().add(HttpMethod.PUT,"/api/working/**").injectOn(http);
         PublicRoutes.PublicRoutesManager.publicRoutes().add(HttpMethod.PUT,"/api/feedback/**").injectOn(http);
+        PublicRoutes.PublicRoutesManager.publicRoutes().add(HttpMethod.PUT,"/api/news/**").injectOn(http);
+
+
+
+
+
+        // router DELETE
+        PublicRoutes.PublicRoutesManager.publicRoutes().add(HttpMethod.DELETE,"/api/slot/**").injectOn(http);
+        PublicRoutes.PublicRoutesManager.publicRoutes().add(HttpMethod.DELETE,"/api/department/**").injectOn(http);
+        PublicRoutes.PublicRoutesManager.publicRoutes().add(HttpMethod.DELETE,"/api/working/**").injectOn(http);
+        PublicRoutes.PublicRoutesManager.publicRoutes().add(HttpMethod.DELETE,"/api/news/**").injectOn(http);
         PublicRoutes.PublicRoutesManager.publicRoutes().add(HttpMethod.DELETE,"/api/feedback/**").injectOn(http);
+
+
         http.csrf(AbstractHttpConfigurer::disable)
                 .securityMatcher("/api/**")
                 .authorizeHttpRequests(req->req.anyRequest().authenticated())
