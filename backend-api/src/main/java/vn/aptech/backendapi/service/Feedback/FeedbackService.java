@@ -10,4 +10,8 @@ public interface FeedbackService {
     FeedbackCreateDto save(FeedbackCreateDto dto);
     List<FeedbackShowDto> findAll();
     FeedbackDetail feedbackDetail(int doctorId);
+    boolean deleteById(int id);
+    boolean changeStatus(int id,int status);
+
 }
+

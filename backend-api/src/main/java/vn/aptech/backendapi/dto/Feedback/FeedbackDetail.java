@@ -12,5 +12,5 @@ import vn.aptech.backendapi.dto.DoctorDto;
 @Getter
 public class FeedbackDetail {
     private DoctorDto doctor;
-    private List<FeedbackDto> feebackList;
+    private List<FeedbackDto> feedbackList;
 }

@@ -54,8 +54,7 @@ const ManageFeedback = () => {
   
 
 
-  console.log(feedbacks)
-
+console.log(feedbacks)
 
 
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
@@ -168,7 +167,7 @@ const ManageFeedback = () => {
       title: 'Id',
       dataIndex: 'id',
       key: 'id',
-      width: '10.666%',
+      width: '8%',
       // sort 
       filteredValue: filteredInfo.id || null,
       sorter: (a, b) => a.id - b.id,
@@ -182,10 +181,10 @@ const ManageFeedback = () => {
       title: 'Image',
       dataIndex: 'image',
       key: 'image',
-      width: '10.666%',
+      width: '9%',
       render: (_, { image }) => {
         return (
-          image ? <img src={"http://localhost:8080/images/doctors/" + image} width="75" alt="" /> : null);
+          image ? <img src={"http://localhost:8080/images/doctors/" + image} width="50" alt="" /> : null);
       },
 
     },
@@ -193,7 +192,7 @@ const ManageFeedback = () => {
       title: 'Name',
       dataIndex: 'fullName',
       key: 'fullName',
-      width: '16.666%',
+      width: '15%',
       filteredValue: filteredInfo.fullName || null,
       sorter: (a, b) => a.fullName.localeCompare(b.fullName),
       sortOrder: sortedInfo.columnKey === 'fullName' ? sortedInfo.order : null,
@@ -207,9 +206,8 @@ const ManageFeedback = () => {
       title: 'Gender',
       dataIndex: 'gender',
       key: 'gender',
-      width: '16.666%',
+      width: '10%',
       filteredValue: filteredInfo.gender || null,
-      sorter: (a, b) => a.gender.localeCompare(b.gender),
       sortOrder: sortedInfo.columnKey === 'gender' ? sortedInfo.order : null,
       ellipsis: true,
       filters: [
@@ -226,33 +224,39 @@ const ManageFeedback = () => {
       filterSearch: true,
     },
     {
-      title: 'Rate',
-      dataIndex: 'rate',
-      key: 'rate',
-      // width: '15.666%',
+      title: 'Birthday',
+      dataIndex: 'birthday',
+      key: 'birthday',
+      width: '15%',
       // sort 
-      filteredValue: filteredInfo.rate || null,
-      sorter: (a, b) => a.rate - b.rate,
-      sortOrder: sortedInfo.columnKey === 'rate' ? sortedInfo.order : null,
+      filteredValue: filteredInfo.birthday || null,
+      sorter: (a, b) => a.birthday.localeCompare(b.birthday),
+      sortOrder: sortedInfo.columnKey === 'birthday' ? sortedInfo.order : null,
       ellipsis: true,
       // search
-      ...getColumnSearchProps('rate'),
-      render: (_, { rate }) => {
-        
-        return (
-          <Rate count={5} disabled defaultValue={rate}/>
-        );
-      },
-
+      ...getColumnSearchProps('birthday'),
     },
 
+    {
+      title: 'Address',
+      dataIndex: 'address',
+      key: 'address',
+      width: '25%',
+      filteredValue: filteredInfo.address || null,
+      sorter: (a, b) => a.address.localeCompare(b.address),
+      sortOrder: sortedInfo.columnKey === 'address' ? sortedInfo.order : null,
+      ellipsis: true,
+      // search
+      ...getColumnSearchProps('address'),
+    },
     {
       title: 'Action',
       dataIndex: 'operation',
       render: (_, record) => (
         <div style={{ display: 'flex', justifyContent: 'center' }}>
           <Link style={{ marginRight: '16px' }}
-            to={`/dashboard/admin/manage-feedback/detail/${record.id}`}>
+            to={`/dashboard/admin/manage-feedback/detail?id=${record.id}&rate=${record.rate}`}>
+
             <Button type="primary" icon={<EyeOutlined />} >
               Detail
             </Button>
@@ -277,12 +281,6 @@ const ManageFeedback = () => {
           <Button onClick={clearFilters}>Clear filters and search</Button>
           <Button onClick={clearAll}>Clear All</Button>
         </Space>
-
-        {/* <Link to="/dashboard/admin/manage-news/create">
-          <Button type="primary" icon={<PlusOutlined />} style={{ backgroundColor: '#52c41a' }}>
-            Add New News
-          </Button>
-        </Link> */}
       </Space>
 
         <Table columns={columns} dataSource={feedbacks} onChange={handleChange} />

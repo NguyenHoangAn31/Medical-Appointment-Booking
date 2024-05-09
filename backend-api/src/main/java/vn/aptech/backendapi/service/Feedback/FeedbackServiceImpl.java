@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.swing.text.html.Option;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -73,8 +75,34 @@ public class FeedbackServiceImpl implements FeedbackService {
     public FeedbackDetail feedbackDetail(int doctorId){
         FeedbackDetail f = new FeedbackDetail();
         f.setDoctor(doctorService.findById((doctorId)).get());
-        f.setFeebackList(findList(doctorId));
+        f.setFeedbackList(findList(doctorId));
         return f;
+    }
+
+
+    @Override
+    public boolean deleteById(int id) {
+        try {
+            feedbackRepository.deleteById(id);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+
+    public boolean changeStatus(int id,int status){
+        Feedback f = feedbackRepository.findById(id).get();
+        boolean newStatus = (status == 1) ? false : true; 
+        f.setStatus(newStatus);
+        try {
+            feedbackRepository.save(f);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     @Override
