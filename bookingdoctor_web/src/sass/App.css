@@ -825,10 +825,10 @@ nav .nav-link:hover {
 }
 .feedback_detail .feedback .image_patient,
 .feedback_detail .feedback .option {
-  flex-grow: 1;
+  width: 10%;
 }
 .feedback_detail .feedback .comment_patient {
-  flex-grow: 10;
+  width: 80%;
 }
 .feedback_detail .feedback .option {
   cursor: pointer;
