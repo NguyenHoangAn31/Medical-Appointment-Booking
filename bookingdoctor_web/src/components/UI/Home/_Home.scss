@@ -364,6 +364,24 @@
       }
 }
 
+.btn__read__more{
+    border: 1px solid #000;
+        width: 100px;
+        height: 40px;
+        font-size: 12px;
+        text-align: center;
+        line-height: 40px;
+        text-decoration: none;
+        color: #000;
+        border-radius: 10px;
+        cursor: pointer;
+        &:hover{
+            background-color: #000af7;
+            color: #fff;
+            border: #000af7;
+        }
+}
+
 .card__list_call{
     position: relative;
     .btn__drawer{
@@ -462,43 +480,167 @@
 }
 
 
-
-
-.image__care_old{
+.doctor_old{
     width: 100%;
-    height: auto;
-    border-radius: 30px;
-    box-shadow: var(--boxShadow);
-    overflow: hidden;
+    img{
+        width: 240px;
+        height: 200px;
+        border-radius: 30px;
+        box-shadow: var(--boxShadow);
+    }
 }
 
-
-.card__doctor_care_old{
-    width: 250px;
+.card__doctor_care{
+    position: relative;
+    bottom: 25px;
+    left: -25%;
+    width: 220px;
     height: auto;
     border-radius: 30px;
-    box-shadow: var(--boxShadow);
-    position: absolute;
-    left: -25%;
-    top: 85%;
-    z-index: 100;
     background-color: #fff;
+    box-shadow: var(--boxShadow);
     padding: 30px 20px;
     .title{
-        font-weight: bold;
         font-size: 16px;
-        text-align: center;
+        font-weight: bold;text-align: center;
     }
     .card__visit{
         display: flex;
-        justify-content: space-between;
-        align-items: center;
         margin-top: 15px;
-        // .card__visit_image{
-        //     width: 40px;
-        //     height: 40px;
-        //     border-radius: 50%;
-        //     box-shadow: var(--boxShadow);
-        // }
+        border-bottom: 1px solid rgba(0, 0, 0, 0.58);
+       .card__visit_image{
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        box-shadow: var(--boxShadow);
+        overflow: hidden;
+        margin-right: 10px;
+       }
+       .doctor_info{
+        display: flex;
+        flex-direction: column;
+        .name{
+            font-size: 13px;
+            font-weight: bold;
+        }
+        .experience{
+            font-size: 11px;
+            font-weight: 300;
+            color: rgba(0, 0, 0, 0.54);
+        }
+       }
+        
+    }
+    .doctor_contact{
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        gap: 10px;
+        margin-top: 10px;
+        .country{
+            font-size: 12px;
+            font-weight: 700;
+        }
+        .phone{
+            font-size: 12px;
+            font-weight: 700;
+            color: rgba(0, 0, 0, 0.58);;
+        }
+    }
+
+    .btn__book_visit{
+        padding: 10px 40px;
+        font-size: 16px;
+        font-weight: bold;
+        text-align: center;
+        line-height: 40px;
+        text-decoration: none;
+        color: #fff;
+        border-radius: 5px;
+        cursor: pointer;
+        background-color: #FBAD10;
+    }
+}
+
+.btn__service{
+    padding: 15px 40px;
+    background-color: #FBAD10;
+    text-decoration: none;
+    color: #fff;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+
+
+// css download
+
+.home__download{
+    padding-left: 40px;
+    margin-top: 200px;
+    .download_title{
+        font-size: 32px;
+        font-weight: bold !important;
+        margin-bottom: 20px;
+    }
+    .download_desc{
+        font-size: 16px;
+        font-weight: medium;
+        text-align: justify;
+        color: rgba(0, 0, 0, 0.7);
+    }
+    .icon__download{
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        gap: 20px;
+        .img_icon{
+            width: 190px;
+            height: 65px;
+        }
+    }
+}
+
+.subscribe{
+    width: 90%;
+    height: 240px;
+    margin: 0 auto;
+    background-color: #000AF7;
+    border-radius: 30px;
+    text-align: center;
+    padding-top: 40px;
+    color: #fff;
+    .title{
+        font-size: 25px;
+        font-weight: bold;
+        margin-bottom: 40px;
+    }
+    .form__subscribe{
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        //align-items: center;
+        .input__subscribe{
+            width: 245px;
+            height: 45px;
+            border-radius: 15px;
+            outline: none;
+            border: none;
+            padding-left: 15px;
+            background-color: rgba(255, 255, 255);
+            font-size: 14px;
+            line-height: 45px;
+        }
+        .btn__subscribe{
+                width: 245px;
+                height: 45px;
+                border-radius: 15px;
+                outline: none;
+                border: none;
+                padding-left: 10px;
+                background-color: #000;
+                font-size: 14px;
+                line-height: 45px;
+        }
     }
 }
