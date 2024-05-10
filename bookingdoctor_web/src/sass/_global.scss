@@ -101,25 +101,16 @@ section{
 .main__title{
     font-size: 30px;
     font-weight: bold;
-    color: #000af7;
+    color: #000;
     position: relative;
     &::after{
         position: absolute;
         content: '';
         width: 50%;
         height: 4px;
-        bottom: -20%;
-        left: 0;
-        background-color: #ff61ba;
-    }
-    &::before{
-        position: absolute;
-        content: '';
-        width: 60%;
-        height: 4px;
         bottom: -5%;
         left: 0;
-        background-color: #ff61ba;
+        background-color: #000;
     }
 }
 .slick-slide{
@@ -181,20 +172,3 @@ section{
      color: #fff !important;
   }
 
-// .btn__readmore{
-//     border: 1px solid #000;
-//     width: 100px;
-//     height: 40px;
-//     font-size: 12px;
-//     text-align: center;
-//     line-height: 40px;
-//     text-decoration: none;
-//     color: #000;
-//     border-radius: 10px;
-//     cursor: pointer;
-//     &:hover{
-//         background-color: #000af7;
-//         color: #fff;
-//         border: #000af7;
-//     }
-//   }

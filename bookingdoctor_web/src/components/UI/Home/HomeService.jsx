@@ -4,6 +4,8 @@ import "slick-carousel/slick/slick.css"
 import "slick-carousel/slick/slick-theme.css"
 import * as department from '../../../services/API/departmentService';
 import DepartmentCard from '../../Card/DepartmentCard';
+import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 
 const HomeService = () => {
 
@@ -60,7 +62,9 @@ const HomeService = () => {
         <section className='container'>
            <div className='d-flex justify-content-between align-items-center mb-5'>
                 <h1 className='main__title' >Our Services</h1>
-                <a className='btn__service' href='/service'>See all</a>
+                <motion.div whileTap={{scale: 0.8}}>
+                    <Link className='btn__service' to={'/service'}>See all</Link>
+                </motion.div>
            </div>
             <div className='slider-container'>
                 <Slider {...settings}>

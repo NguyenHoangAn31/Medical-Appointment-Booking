@@ -45,7 +45,7 @@ public class AuthenticationWithUsernameAndKeycodeService {
         var accessToken = jwt.encode(user.getId(), user.getAuthorities(), expiredAt, TOKEN_SECRET);
         // tao refresh token
         refreshTokenRepository.disableOldRefreshTokenFromUser(user.getId());
-        RefreshToken refresh = new RefreshToken(user, 1);
+        RefreshToken refresh = new RefreshToken(user, 5);
         refreshTokenRepository.save(refresh);
 
         Authentication auth = new Authentication(new UserInformation(user), accessToken, refresh.getCode(), expiredAt);
