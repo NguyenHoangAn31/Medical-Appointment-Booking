@@ -1,19 +1,20 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { DeleteOutlined, EditOutlined, EyeOutlined, PlusOutlined, SearchOutlined } from '@ant-design/icons';
-import { Button, Input, Popconfirm, Space, Spin, Switch, Table, Tag } from 'antd';
+import { Button, Input, Popconfirm, Rate, Space, Spin, Switch, Table, Tag } from 'antd';
 import Highlighter from 'react-highlight-words';
-import { getAllNews, deleteNews } from '../../../../services/API/news';
-import { changeStatus } from '../../../../services/API/changeStatus';
 import { Link } from 'react-router-dom';
+import { getAllPatient } from '../../../../services/API/patientService';
 import Spinner from '../../../../components/Spinner';
 import { AlertContext } from '../../../../components/Layouts/DashBoard';
 import getUserData from '../../../../route/CheckRouters/token/Token';
+import { formatDate } from '../../../../ultils/formatDate';
+import { changeStatus } from '../../../../services/API/changeStatus';
 
-const ManageNews = () => {
+const ManagePatient = () => {
   // thông báo
   const Alert = useContext(AlertContext);
-  // useState cho mảng dữ liệu news
-  const [news, setNews] = useState([]);
+  // useState cho mảng dữ liệu patients
+  const [patients, setPatients] = useState([]);
   // useState clear search , sort
   const [filteredInfo, setFilteredInfo] = useState({});
   const [sortedInfo, setSortedInfo] = useState({});
@@ -38,44 +39,34 @@ const ManageNews = () => {
 
 
 
-  // tải dữ liệu và gán vào news thông qua hàm setnews
-  const loadNews = async () => {
-    const fetchedNews = await getAllNews();
-    // thêm key vào mỗi news
-    const newsWithKeys = fetchedNews.map((news, index) => ({
-      ...news,
+  // tải dữ liệu và gán vào patients thông qua hàm setPatients
+  const loadPatients = async () => {
+    const fetchedPatients = await getAllPatient();
+    // thêm key vào mỗi patient
+    const patientWithKeys = fetchedPatients.map((patient, index) => ({
+      ...patient,
       key: index.toString(),
     }));
-    setNews(newsWithKeys);
+    setPatients(patientWithKeys);
   };
   // thực hiện load dữ liệu 1 lần 
   useEffect(() => {
-    loadNews();
+    loadPatients();
   }, []);
-  // xóa record và reload lại và gọi lại hàm reload dữ liệu
-  const delete_News = async (id) => {
-    try {
-      await deleteNews(id);
-      loadNews();
-      Alert('success', 'Deletete News Successfully', '')
-    } catch (error) {
-      Alert('warning', 'This News Is Active', '')
-      console.log(error)
-    }
 
-  };
-
-  // thay đổi trạng thái
   const handlechangeStatus = async (id, status) => {
     try {
-      await changeStatus('news',id, status);
-      Alert('success', 'Change Status Feedback Successfully', '')
-      loadNews();
+      await changeStatus('patient',id, status);
+      Alert('success', 'Change Status Patient Successfully', '')
+      loadPatients();
     } catch (error) {
       Alert('error', 'Something Went Wrong', '')
       console.log(error)
     }
   };
+
+
+
 
 
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
@@ -188,7 +179,7 @@ const ManageNews = () => {
       title: 'Id',
       dataIndex: 'id',
       key: 'id',
-      width: '10.666%',
+      width: '10%',
       // sort 
       filteredValue: filteredInfo.id || null,
       sorter: (a, b) => a.id - b.id,
@@ -199,55 +190,84 @@ const ManageNews = () => {
 
     },
     {
-      title: 'Creator',
-      dataIndex: 'creator_email',
-      key: 'creator_email',
-      width: '16.666%',
-      filteredValue: filteredInfo.creator_email || null,
-      sorter: (a, b) => a.creator_email.localeCompare(b.creator_email),
-      sortOrder: sortedInfo.columnKey === 'creator_email' ? sortedInfo.order : null,
-      ellipsis: true,
-      // search
-      ...getColumnSearchProps('creator_email'),
-
-    },
-    {
       title: 'Image',
       dataIndex: 'image',
       key: 'image',
-      width: '16.666%',
+      width: '9%',
       render: (_, { image }) => {
         return (
-          image ? <img src={"http://localhost:8080/images/news/" + image} width="75" alt="" /> : null);
+          image ? <img src={"http://localhost:8080/images/patients/" + image} alt="" style={{width:'50px',height:'50px',borderRadius:'50%',objectFit:'cover'}} /> : null);
       },
 
     },
     {
-      title: 'URL',
-      dataIndex: 'url',
-      key: 'url',
-      width: '16.666%',
-      filteredValue: filteredInfo.url || null,
-      sorter: (a, b) => a.url.localeCompare(b.url),
-      sortOrder: sortedInfo.columnKey === 'url' ? sortedInfo.order : null,
+      title: 'Name',
+      dataIndex: 'fullName',
+      key: 'fullName',
+      width: '15%',
+      filteredValue: filteredInfo.fullName || null,
+      sorter: (a, b) => a.fullName.localeCompare(b.fullName),
+      sortOrder: sortedInfo.columnKey === 'fullName' ? sortedInfo.order : null,
       ellipsis: true,
       // search
-      ...getColumnSearchProps('url'),
-
+      ...getColumnSearchProps('fullName'),
 
     },
+
+    {
+      title: 'Gender',
+      dataIndex: 'gender',
+      key: 'gender',
+      width: '10%',
+      filteredValue: filteredInfo.gender || null,
+      sortOrder: sortedInfo.columnKey === 'gender' ? sortedInfo.order : null,
+      ellipsis: true,
+      filters: [
+        {
+          text: 'Male',
+          value: 'Male',
+        },
+        {
+          text: 'Female',
+          value: 'Female',
+        },
+      ],
+      onFilter: (value, record) => record.gender == value,
+      filterSearch: true,
+    },
+    {
+      title: 'Birthday',
+      dataIndex: 'birthday',
+      key: 'birthday',
+      width: '15%',
+      // sort 
+      filteredValue: filteredInfo.birthday || null,
+      sorter: (a, b) => a.birthday.localeCompare(b.birthday),
+      sortOrder: sortedInfo.columnKey === 'birthday' ? sortedInfo.order : null,
+      ellipsis: true,
+      // search
+      ...getColumnSearchProps('birthday'),
+      render: (_, { birthday }) => {
+        return (
+          <>
+            {formatDate(birthday)}
+          </>
+        )
+      }
+    },
+
     {
       title: 'Status',
       dataIndex: 'status',
       key: 'status',
-      width: '10.666%',
+      width: '16.666%',
       filters: [
         {
-          text: 'Show',
+          text: 'Active',
           value: 1,
         },
         {
-          text: 'Hide',
+          text: 'Not Active',
           value: 0,
         },
       ],
@@ -267,35 +287,32 @@ const ManageNews = () => {
           </>
         );
       }
+      // render: (_, { status }) => {
+      //   let color = status ? 'green' : 'volcano';
+      //   let title = status ? 'Active' : 'Not Active'
+      //   return (
+      //     <Tag color={color} key={title}>
+      //       {title ? title.toUpperCase() : ''}
+      //     </Tag>
+      //   );
+      // },
     },
 
     {
       title: 'Action',
       dataIndex: 'operation',
+      width:'10%',
       render: (_, record) => (
         <div style={{ display: 'flex', justifyContent: 'center' }}>
           <Link style={{ marginRight: '16px' }}
-            to={`/dashboard/admin/manage-news/detail?id=${record.id}`}>
+            to={`/dashboard/admin/manage-patient/detail?id=${record.id}`}>
+
             <Button type="primary" icon={<EyeOutlined />} >
-              View
+              Detail
             </Button>
           </Link>
 
-          {
-            record.creator_id == getUserData.user.id ? <>
-              <Link style={{ marginRight: '16px' }}
-                to={`/dashboard/admin/manage-news/edit?id=${record.id}`}>
-                <Button type="primary" icon={<EditOutlined />} style={{ backgroundColor: 'orange' }}>
-                  Edit
-                </Button>
-              </Link>
-              {news.length >= 1 ? (
-                <Popconfirm title="Sure to delete?" onConfirm={() => delete_News(record.id)}>
-                  <Button type="primary" disabled={record.status} danger icon={<DeleteOutlined />}>Delete</Button>
-                </Popconfirm>
-              ) : null}
-            </> : null
-          }
+
 
         </div>
       ),
@@ -314,15 +331,9 @@ const ManageNews = () => {
           <Button onClick={clearFilters}>Clear filters and search</Button>
           <Button onClick={clearAll}>Clear All</Button>
         </Space>
-
-        <Link to="/dashboard/admin/manage-news/create">
-          <Button type="primary" icon={<PlusOutlined />} style={{ backgroundColor: '#52c41a' }}>
-            Add New News
-          </Button>
-        </Link>
       </Space>
 
-      {news.length != 0?<Table style={{userSelect:'none'}} columns={columns} dataSource={news} onChange={handleChange} />:<Spinner/>}
+      {patients.length != 0?<Table columns={columns} dataSource={patients} onChange={handleChange} />:<Spinner/>}
     </>
   )
 };
@@ -330,4 +341,4 @@ const ManageNews = () => {
 
 
 
-export default ManageNews;
+export default ManagePatient;

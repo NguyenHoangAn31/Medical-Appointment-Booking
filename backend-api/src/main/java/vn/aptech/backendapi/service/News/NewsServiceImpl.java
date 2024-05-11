@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import vn.aptech.backendapi.dto.News.NewsCreateDto;
 import vn.aptech.backendapi.dto.News.NewsDto;
+import vn.aptech.backendapi.entities.Feedback;
 import vn.aptech.backendapi.entities.News;
 import vn.aptech.backendapi.entities.User;
 import vn.aptech.backendapi.repository.NewsRepository;
@@ -73,6 +74,20 @@ public class NewsServiceImpl implements NewsService {
     public boolean deleteById(int id) {
         try {
             newsRepository.deleteById(id);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    @Override
+    public boolean changeStatus(int id,int status){
+        News f = newsRepository.findById(id).get();
+        boolean newStatus = (status == 1) ? false : true; 
+        f.setStatus(newStatus);
+        try {
+            newsRepository.save(f);
             return true;
         } catch (Exception e) {
             e.printStackTrace();

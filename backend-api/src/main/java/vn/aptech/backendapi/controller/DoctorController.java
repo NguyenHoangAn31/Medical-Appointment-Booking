@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import vn.aptech.backendapi.dto.DoctorDto;
@@ -47,10 +48,22 @@ public class DoctorController {
         return ResponseEntity.ok(relatedDoctors);
     }
 
+
+    // writed by An in 5/11
+    @PutMapping(value = "/changestatus/{id}/{status}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> changeStatusDoctor(@PathVariable("id") int id,@PathVariable("status") int status) {
+        boolean changed = doctorService.changeStatus(id,status);
+        if (changed) {
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+
     @GetMapping(value = "/star/{doctorId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<DoctorDto>> findRDoctorsStar(@PathVariable("doctorId") int doctorId) {
         List<DoctorDto> starDoctors = doctorService.findDoctorsByDepartmentId(doctorId);
         return ResponseEntity.ok(relatedDoctors);
+
     }
 
 }

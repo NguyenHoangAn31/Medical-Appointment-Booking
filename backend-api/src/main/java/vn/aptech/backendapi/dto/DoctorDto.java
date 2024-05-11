@@ -16,10 +16,11 @@ public class DoctorDto {
     private String fullName;
     private String title; //Chức danh
     private String gender; // giới tính
-    private LocalDate birthday; // ngày sinh
+    private String birthday; // ngày sinh
     private String address; // Địa chỉ
     private String image; // Image
     private Double price;
+    private int status;
     private Department department;
     //private User user;
     private List<WorkingDto> workings;

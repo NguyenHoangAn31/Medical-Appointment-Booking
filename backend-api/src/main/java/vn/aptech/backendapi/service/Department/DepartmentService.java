@@ -10,4 +10,6 @@ public interface DepartmentService {
     Optional<DepartmentDto> findById(int id);
     DepartmentDto save(DepartmentDto dto);
     boolean deleteById(int id);
+    boolean changeStatus(int id,int status);
+
 }

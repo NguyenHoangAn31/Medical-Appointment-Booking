@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import vn.aptech.backendapi.dto.DoctorDto;
 import vn.aptech.backendapi.dto.QualificationDto;
 import vn.aptech.backendapi.dto.WorkingDto;
+import vn.aptech.backendapi.entities.Department;
 import vn.aptech.backendapi.entities.Doctor;
 import vn.aptech.backendapi.entities.Qualification;
 import vn.aptech.backendapi.entities.Working;
@@ -34,7 +35,7 @@ public class DoctorServiceImpl implements DoctorService{
         doctorDto.setFullName(doctor.getFullName());
         doctorDto.setTitle(doctor.getTitle());
         doctorDto.setGender(doctor.getGender());
-        doctorDto.setBirthday(doctor.getBirthday());
+        doctorDto.setBirthday(doctor.getBirthday().toString());
         doctorDto.setAddress(doctor.getAddress());
         doctorDto.setImage(doctor.getImage());
         doctorDto.setPrice(doctor.getPrice());
@@ -63,7 +64,7 @@ public class DoctorServiceImpl implements DoctorService{
     }
 
     public List<DoctorDto> findAll(){
-        return doctorRepository.findAll().stream().map(this::mapToDoctorDto).toList();
+        return doctorRepository.findAll().stream().map(this::toDto).toList();
     }
 
     public Optional<DoctorDto> findById(int doctorId) {
@@ -98,6 +99,21 @@ public class DoctorServiceImpl implements DoctorService{
         return doctors.stream()
                 .map(doctor -> mapper.map(doctor, DoctorDto.class))
                 .collect(Collectors.toList());
+    }
+
+    // writed by An in 5/11
+    @Override
+    public boolean changeStatus(int id,int status){
+        Doctor d = doctorRepository.findById(id).get();
+        boolean newStatus = (status == 1) ? false : true; 
+        d.setStatus(newStatus);
+        try {
+            doctorRepository.save(d);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
 

@@ -190,7 +190,7 @@ const ManageSlot = () => {
       render: (_, record) => (
         <div style={{ display: 'flex' }}>
           <Link style={{ marginRight: '16px', color: 'blue' }}
-            to={`/dashboard/admin/manage-slot/edit/${record.id}`}>
+            to={`/dashboard/admin/manage-slot/edit?id=${record.id}`}>
             <Button type="primary" icon={<EditOutlined />} >
               Edit
             </Button>
@@ -222,7 +222,7 @@ const ManageSlot = () => {
             Add New Slot
           </Button>
         </Link>
-      </Space><Table columns={columns} dataSource={slots} onChange={handleChange} />
+      </Space><Table columns={columns} style={{userSelect:'none'}} dataSource={slots} onChange={handleChange} />
     </>
   )
 };
