@@ -48,6 +48,7 @@ public class DoctorController {
         return ResponseEntity.ok(relatedDoctors);
     }
 
+
     // writed by An in 5/11
     @PutMapping(value = "/changestatus/{id}/{status}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> changeStatusDoctor(@PathVariable("id") int id,@PathVariable("status") int status) {
@@ -57,6 +58,12 @@ public class DoctorController {
         } else {
             return ResponseEntity.notFound().build();
         }
+
+    @GetMapping(value = "/star/{doctorId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<DoctorDto>> findRDoctorsStar(@PathVariable("doctorId") int doctorId) {
+        List<DoctorDto> starDoctors = doctorService.findDoctorsByDepartmentId(doctorId);
+        return ResponseEntity.ok(relatedDoctors);
+
     }
 
 }

@@ -14,9 +14,7 @@ public class Feedback extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-
     private double rate;
-
     private String comment;
     @ManyToOne
     @JoinColumn(name = "doctor_id", referencedColumnName = "id")
