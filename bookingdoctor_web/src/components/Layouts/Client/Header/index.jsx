@@ -87,13 +87,19 @@ const Header = () => {
               <li className="nav-item">
                 <Link to="/doctor" className="nav-link">For Doctor</Link>
               </li>
+              <li className="nav-item">
+                <Link to="/blog" className="nav-link">Blog</Link>
+              </li>
+              <li className="nav-item">
+                <Link to="/contact" className="nav-link">Contact us</Link>
+              </li>
             </ul>
             <motion.div whileTap={{ scale: 0.8 }}>
               {getUserData != null ? (
                 <div className='icon_login'>
                     <div>
                       {user && user.image != null ? (
-                        <img src={"/image" + user.image} alt="" id='user-login' onClick={handleMenuToggle} className='img__icon_login img-fluid' />
+                        <img src={"http://localhost:8080/images/patients/" + user.image} alt="" id='user-login' onClick={handleMenuToggle} className='img__icon_login img-fluid' />
                       ) : (
                         <img src="/images/login_default.jpg" alt="asds" id='user-login' onClick={handleMenuToggle} className='img__icon_login img-fluid' />
                       )                                   

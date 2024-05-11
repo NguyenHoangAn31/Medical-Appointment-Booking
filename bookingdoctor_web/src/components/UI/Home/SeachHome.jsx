@@ -21,7 +21,7 @@ const SeachHome = () => {
                         <div className="col-12 mb-lg-5">
 
                             <form action="#" className='form__search'>
-                                <input type="text" name="input_search" className='search__home' placeholder='Search Sysptoms / Doctor / Clinics' />
+                                <input type="text" name="input_search" className='search__home' placeholder='Search Doctor' />
                                 <button type='submit' className='btn__search_home'>Search</button>
                             </form>
                         </div>

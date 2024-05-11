@@ -6,3 +6,5 @@ export {default as HomeInfoweb} from './HomeInfoweb';
 export {default as ListCall} from './ListCall';
 export {default as HomeDoctor} from './HomeDoctor';
 export {default as HomeBooking} from './HomeBooking';
+export {default as HomeBlog} from './HomeBlog';
+export {default as Download} from './Download';

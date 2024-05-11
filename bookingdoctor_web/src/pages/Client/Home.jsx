@@ -4,7 +4,9 @@ import { SeachHome, ImageHome, HomeService,
 HomeAbout, HomeInfoweb, ListCall,
   
 HomeDoctor, 
-HomeBooking} from '../../components/UI/Home'
+HomeBooking,
+Download,
+HomeBlog} from '../../components/UI/Home'
 import { useNavigate } from "react-router-dom"
 
 import getUserData from '../../route/CheckRouters/token/Token'
@@ -36,6 +38,8 @@ const Home = () => {
       <HomeInfoweb />
       <ListCall />
       <HomeDoctor />
+      <HomeBlog />
+      <Download />
       
     </>
   )
