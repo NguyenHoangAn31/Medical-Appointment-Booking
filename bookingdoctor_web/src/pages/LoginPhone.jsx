@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import bg_login from '../../public/images/image-login.png';
 import { motion } from 'framer-motion';
-import { auth } from "../services/auth/firebase.config";
+// import { auth } from "../services/auth/firebase.config";
 import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
 import { toast } from "react-hot-toast";
 import axios from 'axios';
