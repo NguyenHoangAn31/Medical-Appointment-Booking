@@ -10,3 +10,26 @@ export const getPatientByUserId = async (userId) => {
 }
 
 export default {getPatientByUserId}
+
+
+
+//writed by An in 5/11
+export const getAllPatient = async () => {
+    try {
+        const response = await request.get('patient/all');
+        return response
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+};
+
+export const detailPatient = async (id) => {
+    try {
+        const response = await request.get(`patient/${id}`);
+        return response;
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+}

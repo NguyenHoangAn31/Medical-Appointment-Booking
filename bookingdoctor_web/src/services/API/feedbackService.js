@@ -22,15 +22,6 @@ export const detailFeedback = async (id) => {
     }
 }
 
-export const changeStatusFeedback = async (id,stauts) => {
-    try {
-        const response = await request.put(`feedback/changestatus/${id}/${stauts}`);
-        return response
-    } catch (error) {
-        console.log(error);
-        throw error;
-    }
-};
 
 export const deleteFeedback = async (id) => {
     try {

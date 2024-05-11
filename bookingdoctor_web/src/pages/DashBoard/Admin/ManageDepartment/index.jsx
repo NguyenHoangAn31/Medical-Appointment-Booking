@@ -1,8 +1,9 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { DeleteOutlined, EditOutlined, PlusOutlined, SearchOutlined } from '@ant-design/icons';
-import { Button, Input, Popconfirm, Space, Spin, Table, Tag } from 'antd';
+import { Button, Input, Popconfirm, Space, Spin, Switch, Table, Tag } from 'antd';
 import Highlighter from 'react-highlight-words';
 import { getAllDepartment, deleteDepartment } from '../../../../services/API/departmentService';
+import { changeStatus } from '../../../../services/API/changeStatus';
 import { Link } from 'react-router-dom';
 import Spinner from '../../../../components/Spinner';
 import { AlertContext } from '../../../../components/Layouts/DashBoard';
@@ -60,9 +61,21 @@ const ManageDepartment = () => {
       Alert('warning', 'something Went Wrong', '')
       console.log(error)
     }
-
   };
 
+  // thay đổi trạng thái
+  const handlechangeStatus = async (id, status) => {
+    try {
+      await changeStatus('department',id, status);
+      Alert('success', 'Change Status Feedback Successfully', '')
+
+      loadDepartments();
+    } catch (error) {
+      Alert('error', 'Something Went Wrong', '')
+
+      console.log(error)
+    }
+  };
 
 
 
@@ -176,7 +189,7 @@ const ManageDepartment = () => {
       title: 'Id',
       dataIndex: 'id',
       key: 'id',
-      width: '16.666%',
+      width: '11%',
       // sort 
       filteredValue: filteredInfo.id || null,
       sorter: (a, b) => a.id - b.id,
@@ -190,7 +203,7 @@ const ManageDepartment = () => {
       title: 'Name',
       dataIndex: 'name',
       key: 'name',
-      width: '16.666%',
+      width: '16%',
       filteredValue: filteredInfo.name || null,
       sorter: (a, b) => a.name.localeCompare(b.name),
       sortOrder: sortedInfo.columnKey === 'name' ? sortedInfo.order : null,
@@ -203,7 +216,7 @@ const ManageDepartment = () => {
       title: 'Icon',
       dataIndex: 'icon',
       key: 'icon',
-      width: '16.666%',
+      width: '16%',
       render: (_, { icon }) => {
         return (
           icon ? <img src={"http://localhost:8080/images/department/" + icon} width="50" alt="" /> : null);
@@ -214,7 +227,7 @@ const ManageDepartment = () => {
       title: 'Address',
       dataIndex: 'url',
       key: 'url',
-      width: '16.666%',
+      width: '16%',
       filteredValue: filteredInfo.url || null,
       sorter: (a, b) => a.url.localeCompare(b.url),
       sortOrder: sortedInfo.columnKey === 'url' ? sortedInfo.order : null,
@@ -228,7 +241,7 @@ const ManageDepartment = () => {
       title: 'Status',
       dataIndex: 'status',
       key: 'status',
-      width: '16.666%',
+      width: '16%',
       filters: [
         {
           text: 'Active',
@@ -243,25 +256,40 @@ const ManageDepartment = () => {
       onFilter: (value, record) => record.status == value,
       filterSearch: true,
 
-      render: (_, { status }) => {
-        let color = status ? 'green' : 'volcano';
-        let title = status ? 'Active' : 'Not Active'
+      render: (_, { status, id }) => {
         return (
-          <Tag color={color} key={title}>
-            {title ? title.toUpperCase() : ''}
-          </Tag>
+          <>
+            {status ? <Switch
+              defaultChecked
+              onChange={() => handlechangeStatus(id, status)}
+            /> : <Switch
+              onChange={() => handlechangeStatus(id, status)}
+            />}
+          </>
         );
-      },
+      }
+
+
+      // render: (_, { status }) => {
+      //   let color = status ? 'green' : 'volcano';
+      //   let title = status ? 'Active' : 'Not Active'
+      //   return (
+      //     <Tag color={color} key={title}>
+      //       {title ? title.toUpperCase() : ''}
+      //     </Tag>
+      //   );
+      // },
     },
 
     {
       title: 'Action',
+      width: '16%',
       dataIndex: 'operation',
       render: (_, record) => (
         <div style={{ display: 'flex' }}>
           <Link style={{ marginRight: '16px', color: 'blue' }}
-            to={`/dashboard/admin/manage-department/edit/${record.id}`}>
-            <Button type="primary" icon={<EditOutlined />} >
+            to={`/dashboard/admin/manage-department/edit?id=${record.id}`}>
+            <Button type="primary" icon={<EditOutlined />} style={{ backgroundColor: 'orange' }} >
               Edit
             </Button>
           </Link>
@@ -296,7 +324,7 @@ const ManageDepartment = () => {
       </Space>
 
 
-      <Table columns={columns} dataSource={departments} onChange={handleChange} />
+      {departments.length != 0?<Table style={{userSelect:'none'}} columns={columns} dataSource={departments} onChange={handleChange} />:<Spinner/>}
     </>
   )
 };

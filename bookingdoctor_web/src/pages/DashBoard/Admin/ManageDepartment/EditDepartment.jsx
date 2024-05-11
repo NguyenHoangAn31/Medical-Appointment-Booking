@@ -9,7 +9,7 @@ import {
   TimePicker,
   Upload,
 } from 'antd';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { LeftOutlined, PlusOutlined, SoundTwoTone } from '@ant-design/icons';
 import { findDepartmentById } from '../../../../services/API/departmentService';
 import { updateDepartment } from '../../../../services/API/departmentService';
@@ -44,7 +44,9 @@ function EditDepartment() {
   // thông báo
   const Alert = useContext(AlertContext);
   // lấy id từ url
-  const { id } = useParams();
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const id = queryParams.get("id");
 
   // khởi tạo đối tượng department
   const [department, setDepartment] = useState({});
@@ -117,12 +119,12 @@ function EditDepartment() {
 
 
 
-          <Form.Item label="Select Status" name="status">
+          {/* <Form.Item label="Select Status" name="status">
             <Select placeholder="Select Status" onChange={(e) => onInputChangeForDepartment('status', e)} >
               <Select.Option value="1">Active</Select.Option>
               <Select.Option value="0">Not Active</Select.Option>
             </Select>
-          </Form.Item>
+          </Form.Item> */}
 
           {department.icon ?
             <Form.Item label="Icon">

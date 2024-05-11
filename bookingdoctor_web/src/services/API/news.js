@@ -53,3 +53,6 @@ export const updateNews = async (id,news) => {
     }
 };
 
+
+
+

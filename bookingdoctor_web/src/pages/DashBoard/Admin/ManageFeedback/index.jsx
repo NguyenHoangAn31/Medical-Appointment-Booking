@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 import { getAllFeedback } from '../../../../services/API/feedbackService';
 import Spinner from '../../../../components/Spinner';
 import { AlertContext } from '../../../../components/Layouts/DashBoard';
-import getUserData from '../../../../route/CheckRouters/token/Token';
+import { formatDate } from '../../../../ultils/formatDate';
 
 const ManageFeedback = () => {
   // thông báo
@@ -54,8 +54,7 @@ const ManageFeedback = () => {
   
 
 
-console.log(feedbacks)
-
+  console.log(feedbacks)
 
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
     confirm();
@@ -235,6 +234,13 @@ console.log(feedbacks)
       ellipsis: true,
       // search
       ...getColumnSearchProps('birthday'),
+      render: (_, { birthday }) => {
+        return (
+          <>
+            {formatDate(birthday)}
+          </>
+        )
+      }
     },
 
     {
@@ -283,7 +289,7 @@ console.log(feedbacks)
         </Space>
       </Space>
 
-        <Table columns={columns} dataSource={feedbacks} onChange={handleChange} />
+        {feedbacks.length != 0?<Table style={{userSelect:'none'}} columns={columns} dataSource={feedbacks} onChange={handleChange} />:<Spinner/>}
     </>
   )
 };

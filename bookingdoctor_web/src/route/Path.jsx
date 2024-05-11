@@ -37,20 +37,22 @@ const adminRouters = [
     { path: '/dashboard/admin/profile', component: DashBoard.ProfileAdmin, layout: DashBoardLayout },
     { path: '/dashboard/admin/manage-schedule', component: DashBoard.Schedule, layout: DashBoardLayout },
     { path: '/dashboard/admin/manage-patient', component: DashBoard.ManagePatient, layout: DashBoardLayout },
+    { path: '/dashboard/admin/manage-patient/detail', component: DashBoard.PatientDetail, layout: DashBoardLayout },
     { path: '/dashboard/admin/manage-doctor', component: DashBoard.ManageDoctor, layout: DashBoardLayout },
+    { path: '/dashboard/admin/manage-doctor/detail', component: DashBoard.DoctorDetail, layout: DashBoardLayout },
     { path: '/dashboard/admin/manage-department', component: DashBoard.ManageDepartment, layout: DashBoardLayout },
     { path: '/dashboard/admin/manage-department/create', component: DashBoard.AddDepartment, layout: DashBoardLayout },
-    { path: '/dashboard/admin/manage-department/edit/:id', component: DashBoard.EditDepartment, layout: DashBoardLayout },
+    { path: '/dashboard/admin/manage-department/edit', component: DashBoard.EditDepartment, layout: DashBoardLayout },
     { path: '/dashboard/admin/manage-slot', component: DashBoard.ManageSlot, layout: DashBoardLayout },
     { path: '/dashboard/admin/manage-slot/create', component: DashBoard.AddSlot, layout: DashBoardLayout },
-    { path: '/dashboard/admin/manage-slot/edit/:id', component: DashBoard.EditSlot, layout: DashBoardLayout },
+    { path: '/dashboard/admin/manage-slot/edit', component: DashBoard.EditSlot, layout: DashBoardLayout },
     { path: '/dashboard/admin/manage-appointment', component: DashBoard.ManageAppointment, layout: DashBoardLayout },
     { path: '/dashboard/admin/manage-feedback', component: DashBoard.ManageFeedback, layout: DashBoardLayout },
-    { path: '/dashboard/admin/manage-feedback/detail', component: DashBoard.Detail, layout: DashBoardLayout },
+    { path: '/dashboard/admin/manage-feedback/detail', component: DashBoard.FeedbackDetail, layout: DashBoardLayout },
     { path: '/dashboard/admin/manage-news', component: DashBoard.ManageNews, layout: DashBoardLayout },
     { path: '/dashboard/admin/manage-news/create', component: DashBoard.AddNews, layout: DashBoardLayout },
-    { path: '/dashboard/admin/manage-news/edit/:id', component: DashBoard.EditNews, layout: DashBoardLayout },
-    { path: '/dashboard/admin/manage-news/detail/:id', component: DashBoard.DetailNews, layout: DashBoardLayout }
+    { path: '/dashboard/admin/manage-news/edit', component: DashBoard.EditNews, layout: DashBoardLayout },
+    { path: '/dashboard/admin/manage-news/detail', component: DashBoard.NewsDetail, layout: DashBoardLayout }
 ]
 
 export { publicRouters, patientRouters, doctorRouters, adminRouters }

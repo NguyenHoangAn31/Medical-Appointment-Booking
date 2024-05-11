@@ -54,9 +54,9 @@ public class FeedbackController {
         }
     }
 
-    @PutMapping(value = "/changestatus/{feedbackId}/{statusOfFeedback}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<FeedbackCreateDto> changeStatusFeedback(@PathVariable("feedbackId") int feedbackId,@PathVariable("statusOfFeedback") int statusOfFeedback) {
-        boolean changed = feedbackService.changeStatus(feedbackId,statusOfFeedback);
+    @PutMapping(value = "/changestatus/{id}/{status}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> changeStatusFeedback(@PathVariable("id") int id,@PathVariable("status") int status) {
+        boolean changed = feedbackService.changeStatus(id,status);
         if (changed) {
             return ResponseEntity.ok().build();
         } else {

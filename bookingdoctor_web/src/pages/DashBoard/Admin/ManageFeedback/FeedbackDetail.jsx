@@ -1,12 +1,14 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { useLocation, useParams } from 'react-router-dom';
-import { deleteFeedback, detailFeedback, changeStatusFeedback } from '../../../../services/API/feedbackService';
+import { deleteFeedback, detailFeedback } from '../../../../services/API/feedbackService';
+import { changeStatus } from '../../../../services/API/changeStatus';
 import { Badge, Dropdown, Rate, Space } from 'antd';
 import Spinner from '../../../../components/Spinner';
 import { DownOutlined } from '@ant-design/icons';
 import { AlertContext } from '../../../../components/Layouts/DashBoard';
+import { formatDate } from '../../../../ultils/formatDate';
 
-function Detail() {
+function FeedbackDetail() {
   const Alert = useContext(AlertContext);
 
   // lấy id và rate từ query
@@ -41,11 +43,11 @@ function Detail() {
   }
 
 
-  const changeStatus = async (id, status) => {
+  const handlechangeStatus = async (id, status) => {
     try {
-      await changeStatusFeedback(id, status);
+      await changeStatus('feedback',id, status);
       loadDetailFeedback();
-      Alert('success', 'ChangeStatus Feedback Successfully', '')
+      Alert('success', 'Change Status Feedback Successfully', '')
     } catch (error) {
       Alert('warning', 'Something Went Wrong', '')
       console.log(error)
@@ -64,7 +66,6 @@ function Detail() {
     }
 
   };
-
   return (
 
     <>
@@ -74,22 +75,27 @@ function Detail() {
           <div className='image text-center'>
             <img className='d-block pb-5 m-auto' src={"http://localhost:8080/images/doctors/" + detail.doctor.image} width="300" alt="" />
 
-            <Rate className="fs-3 mb-2" count={5} disabled defaultValue={rate} />
+            <Rate className="fs-3 mb-2" count={5} disabled defaultValue={Number(rate)} allowHalf />
             <p>Department : {detail.doctor.department['name']}</p>
           </div>
           <div className='information' style={{ width: '450px', maxWidth: '100%' }}>
             <h1 className='mb-5'>{detail.doctor.title + ' ' + detail.doctor.fullName}</h1>
             <p>Address : {detail.doctor.address}</p>
-            <p>Birthday : {detail.doctor.birthday}</p>
+            <p>Birthday : {formatDate(detail.doctor.birthday)}</p>
             <p>work history : </p>
-
-            <section className='mt-4'>
+            {/* <section className='qualifications'>
+              <p>qualifications : </p>
+              {detail.doctor.qualifications.map((value,index)=>{
+                <span>{value.universityName}</span>
+              })}
+            </section> */}
+            <section className='mt-4 workings'>
               <ul className="timeline">
                 {detail.doctor.workings.map((value, index) => {
                   return (
                     <li className="timeline-item mb-5">
                       <h6 className="fw-bold">{value.company}</h6>
-                      <p className="text-muted mb-2 fw-bold">{value.startWork} - {value.endWork}</p>
+                      <p className="text-muted mb-2 fw-bold">{formatDate(value.startWork)} - {formatDate(value.endWork)}</p>
                       <p className="text-muted">
                         {value.address}
                       </p>
@@ -165,13 +171,14 @@ function Detail() {
         <div className="feedback">
           {detail.feedbackList.map((value, index) => {
             return (
-              <Badge.Ribbon text={value.status?"Show":"Hide"} color={value.status?"null":"red"}>
+              <Badge.Ribbon text={value.status ? "Show" : "Hide"} color={value.status ? "null" : "red"}>
 
                 <div className="card_patient mb-5  d-flex gap-3">
                   <div className="image_patient">
                     <img className="rounded-circle object-fit-cover" src={"http://localhost:8080/images/patients/" + value.patient.image} alt="" width='75' height='75' />
                   </div>
                   <div className="comment_patient">
+                    <p className='mb-1'>{value.patient.fullName}</p>
                     <Rate className="fs-6 mb-2" count={5} disabled defaultValue={value.rate} />
                     <p className='pt-2'>{value.comment}</p>
                   </div>
@@ -181,7 +188,7 @@ function Detail() {
                         items: [
                           {
                             label: (
-                              <span onClick={() => changeStatus(value.id, value.status)}>
+                              <span onClick={() => handlechangeStatus(value.id, value.status)}>
                                 {value.status ? "Hide Comment" : "Show Comment"}
                               </span>
                             ),
@@ -218,4 +225,4 @@ function Detail() {
   )
 }
 
-export default Detail
+export default FeedbackDetail

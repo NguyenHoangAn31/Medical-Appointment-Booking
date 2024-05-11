@@ -128,4 +128,14 @@ public class NewController {
         return ResponseEntity.notFound().build();
 
     }
+
+    @PutMapping(value = "/changestatus/{id}/{status}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> changeStatusNews(@PathVariable("id") int id,@PathVariable("status") int status) {
+        boolean changed = newsService.changeStatus(id,status);
+        if (changed) {
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
 }

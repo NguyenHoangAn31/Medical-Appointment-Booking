@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import { findNewsById } from '../../../../services/API/news';
 
-function DetailNews() {
+function NewsDetail() {
 
   // lấy id từ url
-  const { id } = useParams();
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const id = queryParams.get("id");
 
   // gọi hàm loadNews 1 lần
   useEffect(() => {
@@ -40,4 +42,4 @@ function DetailNews() {
   )
 }
 
-export default DetailNews
+export default NewsDetail

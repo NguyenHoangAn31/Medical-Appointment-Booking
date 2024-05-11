@@ -20,9 +20,20 @@ import {
     FormOutlined,
     ProfileOutlined,
     ScheduleOutlined,
-    LogoutOutlined
+    LogoutOutlined,
+    DashboardTwoTone,
+    PlusSquareTwoTone,
+    MedicineBoxTwoTone,
+    IdcardTwoTone,
+    ShopTwoTone,
+    CreditCardTwoTone,
+    CalendarTwoTone,
+    HighlightTwoTone,
+    QuestionCircleTwoTone,
+    BellTwoTone,
+    CarryOutTwoTone
 } from '@ant-design/icons';
-import { Button, Breadcrumb, Layout, Menu, theme, Dropdown, Space } from 'antd';
+import { Button, Breadcrumb, Layout, Menu, theme, Dropdown, Space, Badge } from 'antd';
 import openAlert from '../../openAlert';
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -34,23 +45,23 @@ if (getUserData != null) {
         itemslist.push(
             {
                 label: "Dashboard",
-                icon: <DashboardOutlined />,
+                icon: <DashboardTwoTone twoToneColor='blue' />,
                 key: "/dashboard/admin",
             },
             {
                 label: "Manage Patient",
                 key: "/dashboard/admin/manage-patient",
-                icon: <MedicineBoxOutlined />,
+                icon: <MedicineBoxTwoTone twoToneColor='red' />,
             },
             {
                 label: "Manage Doctor",
                 key: "/dashboard/admin/manage-doctor",
-                icon: <UserOutlined />,
+                icon: <IdcardTwoTone twoToneColor='green' />,
             },
             {
                 label: "Manage Department",
                 key: "/dashboard/admin/manage-department",
-                icon: <HomeOutlined />,
+                icon: <ShopTwoTone twoToneColor='#c6c243' />,
             },
             // {
             //     label: "Manage Slot",
@@ -60,22 +71,22 @@ if (getUserData != null) {
             {
                 label: "Manage Appointment",
                 key: "/dashboard/admin/manage-appointment",
-                icon: <ShopOutlined />,
+                icon: <CreditCardTwoTone twoToneColor='purple' />,
             },
             {
                 label: "Manage Schedule",
                 key: "/dashboard/admin/manage-schedule",
-                icon: <ScheduleOutlined />,
+                icon: <CalendarTwoTone twoToneColor='#f081ff' />,
             },
             {
                 label: "Manage Feedback",
                 key: "/dashboard/admin/manage-feedback",
-                icon: <QuestionCircleOutlined />,
+                icon: <QuestionCircleTwoTone twoToneColor='#eb2f96' />,
             },
             {
                 label: "Manage News",
                 key: "/dashboard/admin/manage-news",
-                icon: <FormOutlined />,
+                icon: <HighlightTwoTone twoToneColor='#00fff6' />,
             }
         )
     }
@@ -115,15 +126,15 @@ const DashBoardLayout = ({ children }) => {
     const location = useLocation();
     const pathname = location.pathname;
     const paths = pathname.split('/').filter(path => path !== '');
-    const lastPath = paths[paths.length - 1];
+    const curentPath = paths.slice(2).join(' / ');
     // xử lý logout
     const handleLogout = () => {
         sessionStorage.removeItem("Token");
         const auth = getAuth();
         signOut(auth).then(() => {
-        // Sign-out successful.
+            // Sign-out successful.
         }).catch((error) => {
-        // An error happened.
+            // An error happened.
         });
         navigate("/");
         window.location.reload();
@@ -153,8 +164,8 @@ const DashBoardLayout = ({ children }) => {
                     style={{
                         position: 'fixed',
                         height: '100vh',
-                        zIndex:999,
-                        overflow:'auto'
+                        zIndex: 999,
+                        overflow: 'auto'
                     }}
                 >
                     <div style={{ textAlign: 'center', color: 'white', fontSize: '45px', margin: '20px 0' }}>
@@ -170,6 +181,9 @@ const DashBoardLayout = ({ children }) => {
                         }}
                         selectedKeys={[selectedKeys]}
                         items={itemslist}
+                        style={{
+                            userSelect: 'none'
+                        }}
                     ></Menu>
                     <ToggleThemeButton darkTheme={darkTheme} toggleTheme={toggleTheme} />
                 </Sider>
@@ -191,42 +205,119 @@ const DashBoardLayout = ({ children }) => {
                                 height: 64,
                             }}
                         />
-                        <Dropdown 
-                            menu={{
-                                items: [{
-                                    key: '1',
-                                    label: (
-                                        <Link to={role === "ADMIN" ? "/dashboard/admin/profile" : "/dashboard/doctor/profile"}>
-                                            <ProfileOutlined /> <span style={{ marginLeft: '7px' }}>Profile</span>
-                                        </Link>
-                                    ),
-                                },
-                                {
-                                    key: '2',
-                                    label: (
-                                        <span onClick={handleLogout}>
-                                            <LogoutOutlined /><span style={{ marginLeft: '7px' }}>Logout</span>
-                                        </span>
-                                    ),
-                                },],
-                            }}
-                            placement="bottom"
-                        >
-                            <div style={{ display: 'flex', float: 'right', alignItems: 'center', marginRight: '20px', gap: '7px' }}>
-                                <img
-                                    src="/images/dashboard/default_user.jpg"
-                                    alt=""
-                                    height="50"
-                                    width="50"
-                                    style={{
-                                        borderRadius: '50%'
-                                    }}
-                                />
-                                <span>{getUserData.user.email}</span>
+                        <div style={{ display: 'flex', float: 'right', alignItems: 'center', marginRight: '20px', gap: '25px', userSelect: 'none' }}>
 
-                            </div>
+                            <Dropdown
+                               
+                                menu={{
+                                    items: [
+                                        {
+                                            key: '1',
+                                            label: (
+                                                <a target="_blank" rel="noopener noreferrer" href="https://www.antgroup.com">
+                                                    1st menu item
+                                                </a>
+                                            ),
+                                        },
+                                        {
+                                            key: '2',
+                                            label: (
+                                                <a target="_blank" rel="noopener noreferrer" href="https://www.aliyun.com">
+                                                    2nd menu item
+                                                </a>
+                                            ),
+                                        },
+                                        {
+                                            key: '3',
+                                            label: (
+                                                <a target="_blank" rel="noopener noreferrer" href="https://www.luohanacademy.com">
+                                                    3rd menu item
+                                                </a>
+                                            ),
+                                        },
+                                    ]
+                                }}
+                                placement="bottomRight"
+                            >
+                                <Badge count={5}>
+                                    <BellTwoTone style={{ fontSize: '20px' }} />
+                                </Badge>
+                            </Dropdown>
 
-                        </Dropdown>
+
+                            <Dropdown
+                                menu={{
+                                    items: [
+                                        {
+                                            key: '1',
+                                            label: (
+                                                <a target="_blank" rel="noopener noreferrer" href="https://www.antgroup.com">
+                                                    1st menu item
+                                                </a>
+                                            ),
+                                        },
+                                        {
+                                            key: '2',
+                                            label: (
+                                                <a target="_blank" rel="noopener noreferrer" href="https://www.aliyun.com">
+                                                    2nd menu item
+                                                </a>
+                                            ),
+                                        },
+                                        {
+                                            key: '3',
+                                            label: (
+                                                <a target="_blank" rel="noopener noreferrer" href="https://www.luohanacademy.com">
+                                                    3rd menu item
+                                                </a>
+                                            ),
+                                        },
+                                    ]
+                                }}
+                                placement="bottomRight"
+                            >
+                                <Badge count={5}>
+                                    <CarryOutTwoTone style={{ fontSize: '20px' }} />
+                                </Badge>
+                            </Dropdown>
+
+                            <Dropdown
+                                menu={{
+                                    items: [{
+                                        key: '1',
+                                        label: (
+                                            <Link style={{ textDecoration: 'none', userSelect: 'none' }} to={role === "ADMIN" ? "/dashboard/admin/profile" : "/dashboard/doctor/profile"}>
+                                                <ProfileOutlined /> <span style={{ marginLeft: '7px' }}>Profile</span>
+                                            </Link>
+                                        ),
+                                    },
+                                    {
+                                        key: '2',
+                                        label: (
+                                            <span onClick={handleLogout} style={{ userSelect: 'none' }}>
+                                                <LogoutOutlined /><span style={{ marginLeft: '7px' }}>Logout</span>
+                                            </span>
+                                        ),
+                                    },],
+                                }}
+                                placement="bottom"
+                            >
+                                <div >
+                                    <img
+                                        src="/images/dashboard/default_user.jpg"
+                                        alt=""
+                                        height="50"
+                                        width="50"
+                                        style={{
+                                            borderRadius: '50%',
+                                            marginRight: '10px'
+                                        }}
+                                    />
+                                    <span>{getUserData.user.email}</span>
+
+                                </div>
+                            </Dropdown>
+                        </div>
                     </Header>
                     <Content
                         style={{
@@ -239,7 +330,7 @@ const DashBoardLayout = ({ children }) => {
                             }}
                         >
                             <Breadcrumb.Item>{role}</Breadcrumb.Item>
-                            <Breadcrumb.Item>{lastPath}</Breadcrumb.Item>
+                            <Breadcrumb.Item>{curentPath}</Breadcrumb.Item>
                         </Breadcrumb>
                         <div
                             style={{

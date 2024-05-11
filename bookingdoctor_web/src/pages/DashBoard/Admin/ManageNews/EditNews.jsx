@@ -1,4 +1,6 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 import {
   Button,
   Form,
@@ -9,7 +11,7 @@ import {
   TimePicker,
   Upload,
 } from 'antd';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { LeftOutlined, PlusOutlined, SoundTwoTone } from '@ant-design/icons';
 import { findNewsByIdForUpdate } from '../../../../services/API/news';
 import { updateNews } from '../../../../services/API/news';
@@ -44,7 +46,9 @@ function EditNews() {
   // thông báo
   const Alert = useContext(AlertContext);
   // lấy id từ url
-  const { id } = useParams();
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const id = queryParams.get("id");
 
   // khởi tạo đối tượng news
   const [news, setNews] = useState({});
@@ -114,22 +118,23 @@ function EditNews() {
             <Input value={news.url} onChange={(e) => onInputChangeForNews('url', e.target.value)} required />
           </Form.Item>
 
-          <Form.Item label="Title">
+          <Form.Item label="Title" >
             <Input value={news.title} onChange={(e) => onInputChangeForNews('title', e.target.value)} required />
           </Form.Item>
 
-          <Form.Item label="Content">
-            <Input value={news.content} onChange={(e) => onInputChangeForNews('content', e.target.value)} required />
+          <Form.Item label="Content" style={{margin:'50px 0'}}>
+            <ReactQuill value={news.content} theme="snow" onChange={(e) => onInputChangeForNews('content', e)} />
+
           </Form.Item>
 
 
 
-          <Form.Item label="Select Status" name="status">
+          {/* <Form.Item label="Select Status" name="status">
             <Select placeholder="Select Status" onChange={(e) => onInputChangeForNews('status', e)} >
               <Select.Option value="1">Show</Select.Option>
               <Select.Option value="0">Hide</Select.Option>
             </Select>
-          </Form.Item>
+          </Form.Item> */}
 
           {news.image ?
             <Form.Item label="Image">

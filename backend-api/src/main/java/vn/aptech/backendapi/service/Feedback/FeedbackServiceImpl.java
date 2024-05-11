@@ -91,7 +91,7 @@ public class FeedbackServiceImpl implements FeedbackService {
         }
     }
 
-
+    @Override
     public boolean changeStatus(int id,int status){
         Feedback f = feedbackRepository.findById(id).get();
         boolean newStatus = (status == 1) ? false : true; 
