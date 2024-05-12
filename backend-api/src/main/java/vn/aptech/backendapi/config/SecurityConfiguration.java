@@ -99,7 +99,7 @@ public class SecurityConfiguration {
         // PublicRoutes.PublicRoutesManager.publicRoutes().add(HttpMethod.DELETE,"/api/feedback/**").injectOn(http);
 
 
-        PublicRoutes.PublicRoutesManager.publicRoutes().add(HttpMethod.POST, "/api/auth").injectOn(http);
+        PublicRoutes.PublicRoutesManager.publicRoutes().add(HttpMethod.POST, "/api/auth/**").injectOn(http);
         http.csrf(AbstractHttpConfigurer::disable).securityMatcher("/api/**")
                 .authorizeHttpRequests(request -> {
                     request.requestMatchers("/api/slot/**").permitAll();

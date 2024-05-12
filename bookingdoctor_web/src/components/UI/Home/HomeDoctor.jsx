@@ -11,6 +11,7 @@ import { motion } from 'framer-motion';
 const HomeDoctor = () => {
 
     const [doctors, setDoctors] = useState([]);
+    console.log(doctors);
     useEffect(() => {
         fetchDoctors();
     }, []);

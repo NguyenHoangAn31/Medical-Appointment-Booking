@@ -20,7 +20,7 @@ public class DoctorDto {
     private String address; // Địa chỉ
     private String image; // Image
     private Double price;
-    private int status;
+    private Boolean status;
     private Department department;
     //private User user;
     private List<WorkingDto> workings;
