@@ -27,12 +27,14 @@ public class DoctorController {
     private ModelMapper mapper;
 
     @GetMapping(value = "/all", produces = MediaType.APPLICATION_JSON_VALUE)
+//    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     public ResponseEntity<List<DoctorDto>> findAll() {
         List<DoctorDto> result = doctorService.findAll();
         return ResponseEntity.ok(result);
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    //@PreAuthorize("hasAnyAuthority('ADMIN')")
     public ResponseEntity<DoctorDto> findById(@PathVariable("id") int id){
         Optional<DoctorDto> result = doctorService.findById(id);
         if (result.isPresent()) {
@@ -60,11 +62,11 @@ public class DoctorController {
             return ResponseEntity.notFound().build();
         }
     }
-    @GetMapping(value = "/star/{doctorId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<DoctorDto>> findRDoctorsStar(@PathVariable("doctorId") int doctorId) {
-        List<DoctorDto> starDoctors = doctorService.findDoctorsByDepartmentId(doctorId);
-        return ResponseEntity.ok(relatedDoctors);
-
-    }
+//    @GetMapping(value = "/star/{doctorId}", produces = MediaType.APPLICATION_JSON_VALUE)
+//    public ResponseEntity<List<DoctorDto>> findRDoctorsStar(@PathVariable("doctorId") int doctorId) {
+//        List<DoctorDto> starDoctors = doctorService.findDoctorsByDepartmentId(doctorId);
+//        return ResponseEntity.ok(relatedDoctors);
+//
+//    }
 
 }

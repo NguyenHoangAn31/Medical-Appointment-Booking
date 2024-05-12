@@ -39,6 +39,7 @@ public class DoctorServiceImpl implements DoctorService{
         doctorDto.setAddress(doctor.getAddress());
         doctorDto.setImage(doctor.getImage());
         doctorDto.setPrice(doctor.getPrice());
+        doctorDto.setStatus(doctor.isStatus());
         doctorDto.setDepartment(doctor.getDepartment());
         return doctorDto;
     }
@@ -64,7 +65,9 @@ public class DoctorServiceImpl implements DoctorService{
     }
 
     public List<DoctorDto> findAll(){
-        return doctorRepository.findAll().stream().map(this::toDto).toList();
+        return doctorRepository.findAll().stream().map(this::mapToDoctorDto
+
+        ).toList();
     }
 
     public Optional<DoctorDto> findById(int doctorId) {
