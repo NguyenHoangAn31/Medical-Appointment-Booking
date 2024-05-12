@@ -49,6 +49,7 @@ public class DoctorController {
     }
 
 
+
     // writed by An in 5/11
     @PutMapping(value = "/changestatus/{id}/{status}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> changeStatusDoctor(@PathVariable("id") int id,@PathVariable("status") int status) {
