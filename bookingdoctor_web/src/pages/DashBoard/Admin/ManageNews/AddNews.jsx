@@ -1,4 +1,7 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useState } from 'react';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
+
 import {
   Button,
   Form,
@@ -123,12 +126,11 @@ function AddNews() {
           <Input onChange={(e) => onInputChangeForNews('title', e.target.value)} />
         </Form.Item>
 
-        <Form.Item label="Content" rules={[
-          {
-            required: true,
-          },
-        ]} name="content">
-          <Input onChange={(e) => onInputChangeForNews('content', e.target.value)} />
+
+        <Form.Item label="Content" style={{margin:'50px 0'}} >
+
+          <ReactQuill theme="snow" onChange={(e) => onInputChangeForNews('content', e)} />
+
         </Form.Item>
 
 

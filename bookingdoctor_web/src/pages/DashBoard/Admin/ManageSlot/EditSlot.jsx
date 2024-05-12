@@ -6,7 +6,7 @@ import {
   Space,
   TimePicker,
 } from 'antd';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useLocation, useParams } from 'react-router-dom';
 import { LeftOutlined } from '@ant-design/icons';
 import { findSlotById } from '../../../../services/API/slotService';
 import { updateSlot } from '../../../../services/API/slotService';
@@ -32,7 +32,9 @@ function EditSlot() {
   // thông báo
   const Alert = useContext(AlertContext);
   // lấy id từ url
-  const { id } = useParams();
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const id = queryParams.get("id");
 
   // khởi tạo đối tượng slot
   const [slot, setSlot] = useState({ name: '' });

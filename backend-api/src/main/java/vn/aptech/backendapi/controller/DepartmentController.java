@@ -30,6 +30,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import vn.aptech.backendapi.dto.DepartmentDto;
+import vn.aptech.backendapi.dto.Feedback.FeedbackCreateDto;
 import vn.aptech.backendapi.service.Department.DepartmentService;
 import vn.aptech.backendapi.service.File.FileService;
 
@@ -43,6 +44,7 @@ public class DepartmentController {
     @Autowired
     private DepartmentService departmentService;
 
+    
     @GetMapping(value = "/all", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<DepartmentDto>> findAll() {
         List<DepartmentDto> result = departmentService.findAll();
@@ -130,5 +132,15 @@ public class DepartmentController {
         }
         return ResponseEntity.notFound().build();
 
+    }
+
+    @PutMapping(value = "/changestatus/{id}/{status}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> changeStatusDepartment(@PathVariable("id") int id,@PathVariable("status") int status) {
+        boolean changed = departmentService.changeStatus(id,status);
+        if (changed) {
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 }

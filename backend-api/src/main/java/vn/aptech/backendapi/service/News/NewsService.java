@@ -12,4 +12,5 @@ public interface NewsService {
     Optional<NewsCreateDto> findByIdForUpdate(int id);
     NewsCreateDto save(NewsCreateDto dto);
     boolean deleteById(int id);
+    boolean changeStatus(int id,int status);
 }
