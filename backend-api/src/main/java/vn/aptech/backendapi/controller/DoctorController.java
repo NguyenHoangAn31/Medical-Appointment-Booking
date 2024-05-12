@@ -58,7 +58,7 @@ public class DoctorController {
         } else {
             return ResponseEntity.notFound().build();
         }
-
+    }
     @GetMapping(value = "/star/{doctorId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<DoctorDto>> findRDoctorsStar(@PathVariable("doctorId") int doctorId) {
         List<DoctorDto> starDoctors = doctorService.findDoctorsByDepartmentId(doctorId);
