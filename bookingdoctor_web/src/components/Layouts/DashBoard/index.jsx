@@ -155,6 +155,7 @@ const DashBoardLayout = ({ children }) => {
         token: { colorBgContainer, borderRadiusLG },
     } = theme.useToken();
 
+
     return (
         <AlertContext.Provider value={openNotificationWithIcon}>
 
@@ -200,6 +201,7 @@ const DashBoardLayout = ({ children }) => {
                         style={{
                             background: colorBgContainer,
                             left: collapsed ? 106 : 276,
+                            transition: '.2s',
                             borderRadius: '10px',
                             overflow: 'hidden',
                             top: '14px',
@@ -231,9 +233,9 @@ const DashBoardLayout = ({ children }) => {
                             <div>
                                 <Breadcrumb style={{ float: 'left' }}>
                                     <Breadcrumb.Item>pages</Breadcrumb.Item>
-                                    <Breadcrumb.Item>{curentPath}</Breadcrumb.Item>
+                                    <Breadcrumb.Item>{curentPath != ''?curentPath:'Main Dashboard'}</Breadcrumb.Item>
                                 </Breadcrumb>
-                                <h1 style={{ clear: 'both' }}>{curentPath}</h1>
+                                <h1 style={{ clear: 'both' }}>{curentPath != ''?curentPath:'Main Dashboard'}</h1>
                             </div>
 
                         </div>
