@@ -2,6 +2,7 @@ export {default as DashboardAdmin} from './Admin/DashboardAdmin';
 export {default as ProfileAdmin} from './Admin/ManageProfile';
 export {default as ManageDoctor} from './Admin/ManageDoctor';
 export {default as DoctorDetail} from './Admin/ManageDoctor/DoctorDetail';
+export {default as EditDoctor} from './Admin/ManageDoctor/EditDoctor';
 export {default as ManagePatient} from './Admin/ManagePatient';
 export {default as PatientDetail} from './Admin/ManagePatient/PatientDetail';
 export {default as ManageSchedule} from './Admin/ManageSchedule';

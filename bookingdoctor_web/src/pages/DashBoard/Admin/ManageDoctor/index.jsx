@@ -56,7 +56,8 @@ const ManageDoctor = () => {
 
   const handlechangeStatus = async (id, status) => {
     try {
-      await changeStatus('doctor',id, status);
+      var convertStatus = status ? 1 : 0;
+      await changeStatus('doctor', id, convertStatus);
       Alert('success', 'Change Status Doctor Successfully', '')
       loadDoctors();
     } catch (error) {
@@ -260,7 +261,7 @@ const ManageDoctor = () => {
       title: 'Status',
       dataIndex: 'status',
       key: 'status',
-      width: '16.666%',
+      width: '11.666%',
       filters: [
         {
           text: 'Active',
@@ -300,19 +301,23 @@ const ManageDoctor = () => {
 
     {
       title: 'Action',
-      width:'10%',
+      width: '15%',
       dataIndex: 'operation',
       render: (_, record) => (
         <div style={{ display: 'flex', justifyContent: 'center' }}>
           <Link style={{ marginRight: '16px' }}
             to={`/dashboard/admin/manage-doctor/detail?id=${record.id}`}>
-
             <Button type="primary" icon={<EyeOutlined />} >
               Detail
             </Button>
           </Link>
 
-
+          <Link style={{ marginRight: '16px',}}
+            to={`/dashboard/admin/manage-doctor/edit?id=${record.id}`} >
+            <Button  type="primary" icon={<EditOutlined />} style={{ backgroundColor: 'orange' }}>
+              Edit
+            </Button>
+          </Link>
 
         </div>
       ),
@@ -333,7 +338,7 @@ const ManageDoctor = () => {
         </Space>
       </Space>
 
-      {doctors.length != 0?<Table style={{userSelect:'none'}} columns={columns} dataSource={doctors} onChange={handleChange} />:<Spinner/>}
+      {doctors.length != 0 ? <Table style={{ userSelect: 'none' }} columns={columns} dataSource={doctors} onChange={handleChange} /> : <Spinner />}
     </>
   )
 };

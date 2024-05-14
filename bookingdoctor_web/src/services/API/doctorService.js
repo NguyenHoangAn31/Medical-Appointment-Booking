@@ -23,3 +23,12 @@ export const detailDoctor = async (id) => {
 }
 
 
+export const updateDoctor = async (id,price,departmentid) => {
+    try {
+        const response = await request.put(`doctor/updatepriceanddepartment/${id}/${price}/${departmentid}`);
+        return response
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+};
