@@ -144,6 +144,10 @@ const DashBoardLayout = ({ children }) => {
 
     useEffect(() => {
         setSelectedKeys(pathname);
+        document.body.style.backgroundColor = '#f4f7fe';
+        return () => {
+            document.body.style.backgroundColor = '';
+        };
     }, [location.pathname]);
 
 
@@ -155,11 +159,10 @@ const DashBoardLayout = ({ children }) => {
         <AlertContext.Provider value={openNotificationWithIcon}>
 
             <Layout
-            style={{
-                backgroundColor:'#f4f7fe',
-                minHeight:'100vh',
-                paddingBottom:50
-            }}
+                style={{
+                    backgroundColor:'#f4f7fe',
+                    paddingBottom:'50px'
+                }}
             >
                 {contextHolder}
                 <Sider theme={darkTheme ? 'dark' : 'light'} width={250} trigger={null} collapsible collapsed={collapsed}
@@ -195,7 +198,6 @@ const DashBoardLayout = ({ children }) => {
                 <Layout style={{ marginLeft: collapsed ? 80 : 250, transition: '.2s', paddingTop: '115px' , backgroundColor:'#f4f7fe'}}>
                     <Header
                         style={{
-                            padding: 0,
                             background: colorBgContainer,
                             left: collapsed ? 106 : 276,
                             borderRadius: '10px',
@@ -231,7 +233,7 @@ const DashBoardLayout = ({ children }) => {
                                     <Breadcrumb.Item>pages</Breadcrumb.Item>
                                     <Breadcrumb.Item>{curentPath}</Breadcrumb.Item>
                                 </Breadcrumb>
-                                <h1 style={{clear:'both'}}>{curentPath}</h1>
+                                <h1 style={{ clear: 'both' }}>{curentPath}</h1>
                             </div>
 
                         </div>
