@@ -26,6 +26,7 @@ public class Doctor extends BaseEntity {
     private String address; // Địa chỉ
     private String image; // Image
     private Double price;
+    private String biography;
 
     private boolean status;
 
@@ -43,5 +44,7 @@ public class Doctor extends BaseEntity {
     @OneToMany(mappedBy = "doctor", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Qualification> qualifications;
 
+    @OneToMany(mappedBy = "doctor", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Feedback> feedbacks;
 
 }

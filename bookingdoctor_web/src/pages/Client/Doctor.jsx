@@ -29,9 +29,9 @@ const Doctor = () => {
                 <h1>List Doctor</h1>
                 <hr />
                 <div className="row">
-                {doctors.map((item) => (
+                {doctors.map((item, index) => (
                     <div className="col-md-3">
-                        <DoctorItem item={item} key={item.id} />
+                        <DoctorItem item={item} key={index} />
                     </div>
                 ))}
                 </div>
