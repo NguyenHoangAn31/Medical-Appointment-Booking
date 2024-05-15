@@ -74,14 +74,5 @@ public class DoctorController {
         return ResponseEntity.ok(result);
 
     }
-    // @GetMapping(value = "/star/{doctorId}", produces =
-    // MediaType.APPLICATION_JSON_VALUE)
-    // public ResponseEntity<List<DoctorDto>>
-    // findRDoctorsStar(@PathVariable("doctorId") int doctorId) {
-    // List<DoctorDto> starDoctors =
-    // doctorService.findDoctorsByDepartmentId(doctorId);
-    // return ResponseEntity.ok(relatedDoctors);
-    //
-    // }
 
 }

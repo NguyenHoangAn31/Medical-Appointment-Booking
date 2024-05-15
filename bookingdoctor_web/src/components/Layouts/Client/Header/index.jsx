@@ -23,7 +23,7 @@ const Header = () => {
       try {
         const userId = getUserData.user.id;
        const result =  await axios.get(`http://localhost:8080/api/patient/${userId}`);
-          console.log(result.data);
+          //console.log(result.data);
           setUser(result.data);
 ;;
       } catch (error) {
@@ -79,7 +79,7 @@ const Header = () => {
                 <Link to="/about" className="nav-link">About Us</Link>
               </li>
               <li className="nav-item">
-                <Link to="/booking" className="nav-link">Booking an appointment</Link>
+                <Link to="/booking" className="nav-link">Booking an Doctor</Link>
               </li>
               <li className="nav-item">
                 <Link to="/service" className="nav-link">Service</Link>

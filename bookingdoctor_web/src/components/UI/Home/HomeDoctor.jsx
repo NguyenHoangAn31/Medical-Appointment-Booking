@@ -24,7 +24,7 @@ const HomeDoctor = () => {
 
 
     const settings = {
-        dots: true,
+        dots: false,
         infinite: true,
         slidesToShow: 4,
         slidesToScroll: 5,

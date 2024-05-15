@@ -3,6 +3,7 @@ package vn.aptech.backendapi.dto.Feedback;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+import vn.aptech.backendapi.dto.DoctorDto;
 import vn.aptech.backendapi.dto.PatientDto;
 
 
@@ -13,6 +14,7 @@ public class FeedbackDto {
     private int id;
     private double rate;
     private String comment;
-    private PatientDto patient;
+    private int patientId;
+    private int doctorId;
     private byte status;
 }

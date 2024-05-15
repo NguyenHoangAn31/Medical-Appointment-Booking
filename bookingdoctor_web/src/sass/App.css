@@ -158,6 +158,10 @@ section {
   height: auto !important;
 }
 
+.slick-slide > div {
+  margin: 0 10px;
+}
+
 .slick-dots {
   bottom: -45px !important;
 }
@@ -1320,9 +1324,6 @@ nav .nav-link:hover {
 }
 .booking__list .card__body {
   margin-top: 20px;
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 10px;
 }
 .booking__list .card__body .card__doctor {
   width: 100%;
@@ -1330,26 +1331,34 @@ nav .nav-link:hover {
   background-color: #fff;
   border: 1px solid #e1e1e1;
   border-radius: 30px;
-  display: flex;
-  justify-content: flex-start;
-  gap: 20px;
   padding: 15px;
+  display: flex !important;
+  justify-content: flex-start;
+  gap: 15px;
+  align-items: center;
 }
 .booking__list .card__body .card__doctor .doctr_image {
   width: 80px;
   height: 80px;
   border-radius: 20px;
   box-shadow: var(--boxShadow);
-  padding: 5px;
+  padding: 0px 5px;
   background-color: #fff;
+  overflow: hidden;
+}
+.booking__list .card__body .card__doctor .doctr_image img {
+  max-width: 100%;
+  height: 100%;
 }
 .booking__list .card__body .card__doctor .doctr_info {
+  width: 50% !important;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  flex: 1;
 }
 .booking__list .card__body .card__doctor .doctr_info .name {
-  font-size: 16px;
+  font-size: 15px;
   font-weight: bold;
 }
 .booking__list .card__body .card__doctor .doctr_info .department {
@@ -1497,4 +1506,86 @@ nav .nav-link:hover {
   padding: 0 40px;
   color: #000;
   font-weight: bold;
+}
+
+.doctor__profile {
+  width: 100%;
+  height: 100%;
+  background-color: #fff;
+  border-radius: 30px;
+  box-shadow: var(--boxShadow);
+  margin-top: 20px;
+  padding: 50px 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+.doctor__profile .info__card {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  text-align: center;
+}
+.doctor__profile .info__card .img__doctor {
+  width: 200px;
+  height: 200px;
+  margin: 0 auto;
+  border-radius: 30px;
+  background-color: #fff;
+  box-shadow: var(--boxShadow);
+  overflow: hidden;
+}
+.doctor__profile .info__card .doctor_info {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.doctor__profile .info__card .doctor_info .name {
+  font-size: 20px;
+  font-weight: bold;
+}
+.doctor__profile .info__card .doctor_info .department {
+  color: rgba(0, 0, 0, 0.5);
+}
+.doctor__profile .info__card .doctor_contact {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  margin-top: 20px;
+}
+.doctor__profile .info__card .doctor_contact .contact_icon {
+  width: 60px;
+  height: 60px;
+  border: 1px solid rgb(217, 238, 83);
+  border-radius: 50%;
+  font-size: 22px;
+  background-color: rgba(217, 238, 83, 0.1);
+  color: #000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+.doctor__profile .info__card .doctor_contact .contact_icon:hover {
+  background-color: rgb(217, 238, 83);
+}
+.doctor__profile .biography {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+.doctor__profile .biography .title {
+  font-size: 22px;
+  font-weight: bold;
+  color: rgba(0, 0, 0, 0.7);
+}
+.doctor__profile .biography .content {
+  border: 1px solid rgb(217, 238, 83);
+  padding: 20px;
+  border-radius: 15px;
+}
+
+.slider-container .slick-slide {
+  margin-right: 10px; /* Thay đổi giá trị này để điều chỉnh khoảng cách giữa các thẻ */
 }/*# sourceMappingURL=App.css.map */
