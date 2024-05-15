@@ -3,10 +3,13 @@ package vn.aptech.backendapi.service.Doctor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import vn.aptech.backendapi.dto.DepartmentDto;
 import vn.aptech.backendapi.dto.DoctorDto;
 import vn.aptech.backendapi.dto.Feedback.FeedbackDto;
 import vn.aptech.backendapi.dto.QualificationDto;
 import vn.aptech.backendapi.dto.WorkingDto;
+
 import vn.aptech.backendapi.entities.*;
 import vn.aptech.backendapi.repository.DoctorRepository;
 
@@ -15,15 +18,18 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-
 @Service
-public class DoctorServiceImpl implements DoctorService{
+public class DoctorServiceImpl implements DoctorService {
 
     @Autowired
     private DoctorRepository doctorRepository;
 
     @Autowired
+    private DepartmentRepository departmentRepository;
+
+    @Autowired
     private ModelMapper mapper;
+
     private DoctorDto toDto(Doctor p) {
         return mapper.map(p, DoctorDto.class);
     }
@@ -140,6 +146,7 @@ public class DoctorServiceImpl implements DoctorService{
             return Optional.empty(); // Trả về Optional rỗng nếu không tìm thấy Doctor
         }
     }
+
     // Hien Create 30/4/2024
     @Override
     public List<DoctorDto> findDoctorsByDepartmentId(int departmentId) {
@@ -178,9 +185,9 @@ public class DoctorServiceImpl implements DoctorService{
 
     // writed by An in 5/11
     @Override
-    public boolean changeStatus(int id,int status){
+    public boolean changeStatus(int id, int status) {
         Doctor d = doctorRepository.findById(id).get();
-        boolean newStatus = (status == 1) ? false : true; 
+        boolean newStatus = (status == 1) ? false : true;
         d.setStatus(newStatus);
         try {
             doctorRepository.save(d);
@@ -191,6 +198,19 @@ public class DoctorServiceImpl implements DoctorService{
         }
     }
 
+    @Override
+    public DoctorDto updatePriceAndDepartment(int id, double price, int departmentId) {
+        Doctor d = doctorRepository.findById(id).get();
+        d.setPrice(price);
+        d.setDepartment(null);
+
+        if(departmentId > 0){
+            Optional<Department> department = departmentRepository.findById(departmentId);
+            department.ifPresent(de -> d.setDepartment(department.get())); 
+        }
+        doctorRepository.save(d);
+        return mapToDoctorDto(d);
+    }
 
 
 

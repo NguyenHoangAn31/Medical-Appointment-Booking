@@ -12,5 +12,6 @@ public interface DoctorService {
     List<DoctorDto> findDoctorsByDepartmentId(int departmentId);
     // writed by An in 5/11
     boolean changeStatus(int id,int status);
+    DoctorDto updatePriceAndDepartment(int id , double price , int departmentId);
 
 }

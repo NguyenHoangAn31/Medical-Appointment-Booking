@@ -110,8 +110,8 @@ export const AlertContext = createContext();
 
 
 const DashBoardLayout = ({ children }) => {
-    const [collapsed, setCollapsed] = useState(false);
-    const [darkTheme, setDarkTheme] = useState(false);
+    const [collapsed, setCollapsed] = useState(true);
+    const [darkTheme, setDarkTheme] = useState(true);
     const navigate = useNavigate();
 
 
@@ -144,6 +144,10 @@ const DashBoardLayout = ({ children }) => {
 
     useEffect(() => {
         setSelectedKeys(pathname);
+        document.body.style.backgroundColor = '#f4f7fe';
+        return () => {
+            document.body.style.backgroundColor = '';
+        };
     }, [location.pathname]);
 
 
@@ -151,12 +155,14 @@ const DashBoardLayout = ({ children }) => {
         token: { colorBgContainer, borderRadiusLG },
     } = theme.useToken();
 
+
     return (
         <AlertContext.Provider value={openNotificationWithIcon}>
 
             <Layout
                 style={{
-                    minHeight: '100vh',
+                    backgroundColor:'#f4f7fe',
+                    paddingBottom:'50px'
                 }}
             >
                 {contextHolder}
@@ -182,33 +188,62 @@ const DashBoardLayout = ({ children }) => {
                         selectedKeys={[selectedKeys]}
                         items={itemslist}
                         style={{
-                            userSelect: 'none'
+                            userSelect: 'none',
+                            border: 'none'
                         }}
                     ></Menu>
                     <ToggleThemeButton darkTheme={darkTheme} toggleTheme={toggleTheme} />
                 </Sider>
 
-                <Layout style={{ marginLeft: collapsed ? 80 : 250, transition: '.2s' }}>
+
+                <Layout style={{ marginLeft: collapsed ? 80 : 250, transition: '.2s', paddingTop: '115px' , backgroundColor:'#f4f7fe'}}>
                     <Header
                         style={{
-                            padding: 0,
                             background: colorBgContainer,
+                            left: collapsed ? 106 : 276,
+                            transition: '.2s',
+                            borderRadius: '10px',
+                            overflow: 'hidden',
+                            top: '14px',
+                            right: '26px',
+                            zIndex: 998,
+                            position: 'fixed',
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            height: '100px',
+                            padding: '10px',
+                            backgroundColor: 'transparent',
+                            backdropFilter: 'blur(10px)',
+
                         }}
                     >
-                        <Button
-                            type="text"
-                            icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-                            onClick={() => setCollapsed(!collapsed)}
-                            style={{
-                                fontSize: '16px',
-                                width: 64,
-                                height: 64,
-                            }}
-                        />
-                        <div style={{ display: 'flex', float: 'right', alignItems: 'center', marginRight: '20px', gap: '25px', userSelect: 'none' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+                            <Button
+                                type="text"
+                                icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+                                onClick={() => setCollapsed(!collapsed)}
+                                style={{
+                                    fontSize: '16px',
+                                    width: 64,
+                                    height: 64,
+                                    float: 'left'
+                                }}
+                            />
 
+                            <div>
+                                <Breadcrumb style={{ float: 'left' }}>
+                                    <Breadcrumb.Item>pages</Breadcrumb.Item>
+                                    <Breadcrumb.Item>{curentPath != ''?curentPath:'Main Dashboard'}</Breadcrumb.Item>
+                                </Breadcrumb>
+                                <h1 style={{ clear: 'both' }}>{curentPath != ''?curentPath:'Main Dashboard'}</h1>
+                            </div>
+
+                        </div>
+
+
+
+                        <div style={{ display: 'flex', float: 'right', alignItems: 'center', gap: '25px', userSelect: 'none', borderRadius: "50px", padding: "0 25px", backgroundColor: "white", height: '65px' }}>
                             <Dropdown
-                               
                                 menu={{
                                     items: [
                                         {
@@ -321,36 +356,28 @@ const DashBoardLayout = ({ children }) => {
                     </Header>
                     <Content
                         style={{
-                            margin: '0 16px',
+                            margin: '0 26px',
                         }}
                     >
-                        <Breadcrumb
-                            style={{
-                                margin: '16px 0',
-                            }}
-                        >
-                            <Breadcrumb.Item>{role}</Breadcrumb.Item>
-                            <Breadcrumb.Item>{curentPath}</Breadcrumb.Item>
-                        </Breadcrumb>
                         <div
                             style={{
                                 padding: 24,
                                 minHeight: 360,
                                 background: colorBgContainer,
-                                borderRadius: borderRadiusLG,
-                                position: 'relative'
+                                borderRadius: '10px',
                             }}
                         >
                             {children}
                         </div>
                     </Content>
-                    <Footer
+                    {/* <Footer
                         style={{
                             textAlign: 'center',
+                            backgroundColor:'rgb(244, 247, 254)'
                         }}
                     >
                         Ant Design ©{new Date().getFullYear()} Created by Ant UED
-                    </Footer>
+                    </Footer> */}
                 </Layout>
             </Layout>
         </AlertContext.Provider>
