@@ -116,6 +116,9 @@ section{
 .slick-slide{
     height: auto !important;
 }
+.slick-slide > div{
+    margin: 0 10px;
+}
 .slick-dots {
     bottom: -45px !important;
 }

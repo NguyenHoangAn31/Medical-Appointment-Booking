@@ -31,4 +31,7 @@ public class Partient extends BaseEntity {
 
     @OneToMany(mappedBy = "partient", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Medical> medicals;
+
+    @OneToMany(mappedBy = "partient", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Feedback> feedbacks;
 }

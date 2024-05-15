@@ -54,7 +54,7 @@ public class FeedbackServiceImpl implements FeedbackService {
     }
     private FeedbackDto toFeedbackDto(Feedback f) {
         FeedbackDto feedback = mapper.map(f, FeedbackDto.class);
-        feedback.setPatient(patientService.getPatientByPatientId(f.getPartient().getId()).get());
+        feedback.setPatientId(feedback.getPatientId());
         return feedback;
     }
 

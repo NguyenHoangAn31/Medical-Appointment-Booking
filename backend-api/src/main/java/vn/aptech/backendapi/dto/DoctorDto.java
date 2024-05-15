@@ -1,6 +1,7 @@
 package vn.aptech.backendapi.dto;
 
 import lombok.*;
+import vn.aptech.backendapi.dto.Feedback.FeedbackDto;
 import vn.aptech.backendapi.entities.Department;
 
 import java.time.LocalDate;
@@ -20,10 +21,12 @@ public class DoctorDto {
     private String address; // Địa chỉ
     private String image; // Image
     private Double price;
+    private String biography;
+    private Double rate;
     private Boolean status;
     private Department department;
-    //private User user;
     private List<WorkingDto> workings;
     private List<QualificationDto> qualifications;
+    private List<FeedbackDto> feedbackDtoList;
 
 }
