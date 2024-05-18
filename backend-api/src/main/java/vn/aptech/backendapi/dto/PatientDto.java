@@ -16,7 +16,7 @@ public class PatientDto {
     private  int id;
     private String fullName;
     private String gender; // giới tính
-    private String birthday; // ngày sinh
+    private LocalDate birthday; // ngày sinh
     private String address; // Địa chỉ
     private String image; // Image
     private int status;
