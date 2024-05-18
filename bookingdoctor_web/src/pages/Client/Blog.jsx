@@ -1,9 +1,40 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import NewsItem from '../../components/Card/NewsItem'; // Import component NewsItem
 
 const Blog = () => {
-  return (
-    <div>Blog</div>
-  )
-}
+  const [blogs, setBlogs] = useState([]);
 
-export default Blog
+  useEffect(() => {
+    fetchBlogs();
+  }, []);
+
+  const fetchBlogs = async () => {
+    try {
+      const response = await axios.get('http://localhost:8080/api/news/all');
+      const blogs = response.data;
+      console.log(blogs);
+      setBlogs(blogs);
+    } catch (error) {
+      console.error('Error fetching blogs:', error);
+    }
+  };
+
+  return (
+    <>
+      <div className="container mt-5">
+        <h1>List Blog</h1>
+        <hr />
+        <div className="row">
+          {blogs.map((item, index) => (
+            <div className="col-md-3" key={index}>
+              <NewsItem item={item} />
+            </div>
+          ))}
+        </div>
+      </div>
+    </>
+  );
+};
+
+export default Blog;

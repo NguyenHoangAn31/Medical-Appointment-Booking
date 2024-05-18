@@ -11,6 +11,7 @@ import vn.aptech.backendapi.dto.QualificationDto;
 import vn.aptech.backendapi.dto.WorkingDto;
 
 import vn.aptech.backendapi.entities.*;
+import vn.aptech.backendapi.repository.DepartmentRepository;
 import vn.aptech.backendapi.repository.DoctorRepository;
 
 import java.util.Comparator;
