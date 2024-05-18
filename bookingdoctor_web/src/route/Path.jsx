@@ -18,7 +18,7 @@ const publicRouters = [
     { path: '/login-by-gmail-submit', component: Client.LoginGmailStep, layout: ClientLayout },
     { path: '/booking', component: Client.Booking, layout: ClientLayout },
     { path: '/signup', component: Client.Signup, layout: ClientLayout },     
-    { path: '/blog', component: Client.Blog, layout: ClientLayout },     
+    { path: '/blog', component: Client.Blog, layout: ClientLayout },
 ]
 
 const patientRouters = [

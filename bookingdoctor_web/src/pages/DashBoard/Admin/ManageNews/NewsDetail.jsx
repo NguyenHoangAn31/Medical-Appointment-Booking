@@ -35,7 +35,9 @@ function NewsDetail() {
       <div style={{width:'75%',margin:'auto'}}>
         <h1 style={{ textAlign: 'center', marginTop: '50px' }}>{news.title}</h1>
         <img src={"http://localhost:8080/images/news/" + news.image} alt="" width='100%' />
-        <p>{news.content}</p>
+        <div dangerouslySetInnerHTML={{ __html: news.content }}>
+
+        </div>
       </div>
 
     </>
