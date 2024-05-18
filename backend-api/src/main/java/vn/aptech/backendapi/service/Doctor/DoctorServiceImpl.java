@@ -4,13 +4,11 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import vn.aptech.backendapi.dto.DepartmentDto;
-import vn.aptech.backendapi.dto.DoctorDto;
+import vn.aptech.backendapi.dto.*;
 import vn.aptech.backendapi.dto.Feedback.FeedbackDto;
-import vn.aptech.backendapi.dto.QualificationDto;
-import vn.aptech.backendapi.dto.WorkingDto;
 
 import vn.aptech.backendapi.entities.*;
+import vn.aptech.backendapi.repository.DepartmentRepository;
 import vn.aptech.backendapi.repository.DoctorRepository;
 
 import java.util.Comparator;
@@ -46,6 +44,7 @@ public class DoctorServiceImpl implements DoctorService {
         doctorDto.setBiography(doctor.getBiography());
         doctorDto.setPrice(doctor.getPrice());
         doctorDto.setStatus(doctor.isStatus());
+        doctorDto.setUserId(doctor.getUser().getId());
         doctorDto.setDepartment(doctor.getDepartment());
         return doctorDto;
     }
@@ -75,7 +74,16 @@ public class DoctorServiceImpl implements DoctorService {
         feedbackDto.setPatientId(feedback.getPartient().getId());
         feedbackDto.setComment(feedback.getComment());
         feedbackDto.setRate(feedback.getRate());
+        feedbackDto.setPatient(mapToPatientDto(feedback.getPartient()));
         return feedbackDto;
+    }
+
+    private PatientDto mapToPatientDto(Partient patient) {
+        PatientDto patientDto = new PatientDto();
+        patientDto.setId(patient.getId());
+        patientDto.setFullName(patient.getFullName());
+        patientDto.setImage(patient.getImage());
+        return patientDto;
     }
 
     public List<DoctorDto> findAll(){
@@ -83,11 +91,11 @@ public class DoctorServiceImpl implements DoctorService {
         doctors = doctors.stream()
                 .filter(Doctor::isStatus) // Giả sử trường status là isActive
                 .collect(Collectors.toList());
-        List<DoctorDto> doctorDtos = doctors.stream()
+        List<DoctorDto> doctorList = doctors.stream()
                 .map(this::mapToDoctorDto)
                 .collect(Collectors.toList());
 
-        for (DoctorDto doctorDto : doctorDtos) {
+        for (DoctorDto doctorDto : doctorList) {
             Doctor doctor = doctorRepository.findById(Integer.valueOf(doctorDto.getId())).orElse(null);
             if (doctor != null) {
                 List<WorkingDto> workingList = doctor.getWorkings().stream()
@@ -111,7 +119,79 @@ public class DoctorServiceImpl implements DoctorService {
                 doctorDto.setRate(totalRating);
             }
         }
-        return doctorDtos;
+        return doctorList;
+    }
+
+//    public List<DoctorDto> findIsActive(){
+//        List<Doctor> doctors = doctorRepository.findAll();
+//        doctors = doctors.stream()
+//                .filter(Doctor::isStatus) // Giả sử trường status là isActive
+//                .collect(Collectors.toList());
+//        List<DoctorDto> doctorDtos = doctors.stream()
+//                .map(this::mapToDoctorDto)
+//                .collect(Collectors.toList());
+//
+//        for (DoctorDto doctorDto : doctorDtos) {
+//            Doctor doctor = doctorRepository.findById(Integer.valueOf(doctorDto.getId())).orElse(null);
+//            if (doctor != null) {
+//                List<WorkingDto> workingList = doctor.getWorkings().stream()
+//                        .map(this::mapToWorkingDto)
+//                        .collect(Collectors.toList());
+//                List<QualificationDto> qualificationList = doctor.getQualifications().stream()
+//                        .map(this::mapToQualificationDto)
+//                        .collect(Collectors.toList());
+//                List<FeedbackDto> feedbackList = doctor.getFeedbacks().stream().map(this::mapToFeedbackDto)
+//                        .collect(Collectors.toList());
+//
+//                double totalRating = 0;
+//                if (!feedbackList.isEmpty()) {
+//                    totalRating = feedbackList.stream()
+//                            .mapToDouble(FeedbackDto::getRate)
+//                            .sum() / feedbackList.size();
+//                }
+//                doctorDto.setWorkings(workingList);
+//                doctorDto.setQualifications(qualificationList);
+//                doctorDto.setFeedbackDtoList(feedbackList);
+//                doctorDto.setRate(totalRating);
+//            }
+//        }
+//        return doctorDtos;
+//    }
+
+    public List<DoctorDto> searchDoctorsByName(String name){
+        List<Doctor> doctorDtos = doctorRepository.findDoctorsByFullNameContaining(name);
+        doctorDtos = doctorDtos.stream()
+                .filter(Doctor::isStatus) // Giả sử trường status là isActive
+                .collect(Collectors.toList());
+        List<DoctorDto> doctorList = doctorDtos.stream()
+                .map(this::mapToDoctorDto)
+                .collect(Collectors.toList());
+
+        for (DoctorDto doctorDto : doctorList) {
+            Doctor doctor = doctorRepository.findById(Integer.valueOf(doctorDto.getId())).orElse(null);
+            if (doctor != null) {
+                List<WorkingDto> workingList = doctor.getWorkings().stream()
+                        .map(this::mapToWorkingDto)
+                        .collect(Collectors.toList());
+                List<QualificationDto> qualificationList = doctor.getQualifications().stream()
+                        .map(this::mapToQualificationDto)
+                        .collect(Collectors.toList());
+                List<FeedbackDto> feedbackList = doctor.getFeedbacks().stream().map(this::mapToFeedbackDto)
+                        .collect(Collectors.toList());
+
+                double totalRating = 0;
+                if (!feedbackList.isEmpty()) {
+                    totalRating = feedbackList.stream()
+                            .mapToDouble(FeedbackDto::getRate)
+                            .sum() / feedbackList.size();
+                }
+                doctorDto.setWorkings(workingList);
+                doctorDto.setQualifications(qualificationList);
+                doctorDto.setFeedbackDtoList(feedbackList);
+                doctorDto.setRate(totalRating);
+            }
+        }
+        return doctorList;
     }
 
     public Optional<DoctorDto> findById(int doctorId) {
@@ -146,6 +226,8 @@ public class DoctorServiceImpl implements DoctorService {
             return Optional.empty(); // Trả về Optional rỗng nếu không tìm thấy Doctor
         }
     }
+
+
 
     // Hien Create 30/4/2024
     @Override

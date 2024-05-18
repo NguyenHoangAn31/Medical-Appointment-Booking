@@ -27,7 +27,6 @@ public class Doctor extends BaseEntity {
     private String image; // Image
     private Double price;
     private String biography;
-
     private boolean status;
 
     @ManyToOne

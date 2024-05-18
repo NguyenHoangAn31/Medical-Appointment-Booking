@@ -31,8 +31,10 @@ const Booking = () => {
   const [activeDoctorIndex, setActiveDoctorIndex] = useState(0);
   const [services, setServices] = useState([]);
   const [doctors, setDoctors] = useState([]);
+  const [doctor, setDoctor] = useState([]);
   const [days, setDays] = useState([]);
-  const [doctorId, setDoctorId] = useState('');
+  const [doctorId, setDoctorId] = useState();
+  const [searchName, setSearchName] = useState('');
   //console.log(doctors)
   // Khởi tạo state cho ngày
   const [day, setDay] = useState(`${currentMonth}, ${currentYear}`);
@@ -44,6 +46,16 @@ const Booking = () => {
   const loadDoctors = async () => {
     const fetchedDoctors = await axios.get('http://localhost:8080/api/doctor/all');
     setDoctors(fetchedDoctors.data);
+    //console.log(fetchedDoctors.data)
+    const id = fetchedDoctors.data[0].id;
+    setActiveDoctorIndex(fetchedDoctors.data[0].id);
+    try {
+      const fetchedDoctor = await axios.get('http://localhost:8080/api/doctor/' + id);
+      setDoctor(fetchedDoctor.data)
+      console.log(fetchedDoctor.data)
+    } catch (error) {
+
+    }
   };
 
   const loadDayDefaults = () => {
@@ -60,15 +72,14 @@ const Booking = () => {
       // Thứ, 0 là Chủ Nhật, 1 là Thứ Hai, ..., 6 là Thứ Bảy
       const tenThu = daysOfWeekNames[ngay.getDay()];
       cacNgayTrongTuan.push({ ngayOfMonth, thang, nam, tenThu, i });
-      if(ngay.toDateString() === ngayHienTai.toDateString()){
+      if (ngay.toDateString() === ngayHienTai.toDateString()) {
         activeDayIndex = i;
       }
     }
     setActiveDayIndex(activeDayIndex);
     setDays(cacNgayTrongTuan);
-   // console.log(cacNgayTrongTuan)
+    // console.log(cacNgayTrongTuan)
   }
-  // Hàm tìm slot của bác sỹ khám bệnh
 
   // thực hiện load dữ liệu 1 lần 
   useEffect(() => {
@@ -83,12 +94,15 @@ const Booking = () => {
     loadDayDefaults();
   }, []);
 
+
+  // Hàm tìm department của bác sỹ khám bệnh
   const handleClick = async (index) => {
+    setDoctorId(index);
     setActiveIndex(index);
     try {
       const fetchedDoctorDepartment = await axios.get('http://localhost:8080/api/doctor/related-doctor/' + index);
       setDoctors(fetchedDoctorDepartment.data)
-      console.log(fetchedDoctorDepartment.data)
+      //console.log(fetchedDoctorDepartment.data)
     } catch (error) {
 
     }
@@ -96,13 +110,43 @@ const Booking = () => {
   const handleDayClick = async (index) => {
     setActiveDayIndex(index);
   }
+
+  // Tìm dữ liệu của 1 bác sỹ
   const handleDoctorClick = async (index) => {
     setActiveDoctorIndex(index);
+    try {
+      const fetchedDoctor = await axios.get('http://localhost:8080/api/doctor/' + index);
+      setDoctor(fetchedDoctor.data)
+    } catch (error) {
+
+    }
   }
 
+  const handleSearch = async (event) => {
+      setSearchName(event.target.value);
+      if (event.target.value) {
+        const response = await axios.get(`http://localhost:8080/api/doctor/search?name=${event.target.value}`);
+        setDoctors(response.data);
+      }
+  }
   const handleSubmitBook = () => {
 
   }
+
+  const RatingStar = ({ rating }) => {
+    const fullStar = '★';
+    const emptyStar = '☆';
+
+    const stars = Array(5)
+      .fill(emptyStar)
+      .map((star, index) => index < rating ? fullStar : emptyStar);
+
+    return (
+      <div>
+        {stars.join(' ')}
+      </div>
+    );
+  };
 
   const settings = {
     dots: false,
@@ -121,7 +165,9 @@ const Booking = () => {
               <div className="col-12">
                 <div className='booking__search'>
                   <MdSearch className='booking__search-icon' />
-                  <input type="text" placeholder='Search doctor, services' className='booking__search-input' />
+                  <input type="text" placeholder='Search doctor' className='booking__search-input'
+                  name='searchName'
+                  onChange={handleSearch} />
                 </div>
               </div>
               <div className="col-12">
@@ -133,7 +179,7 @@ const Booking = () => {
                   <div className='services'>
                     {services.map((item) => (
                       <div key={item.id} className={`service__item ${activeIndex === item.id ? 'active' : ''}`} onClick={() => handleClick(item.id)}>
-                        <img src="/images/departments/pediatrics.png" alt="" className='service__item-img' />
+                        <img src={"http://localhost:8080/images/department/"+ item.icon} alt="" className='service__item-img' />
                         <div className='service__item-name'>{item.name}</div>
                       </div>
                     ))}
@@ -147,12 +193,12 @@ const Booking = () => {
                         {doctors.map((item) => (
                           <div className={`card__doctor ${activeDoctorIndex === item.id ? 'active' : ''}`} key={item.id} onClick={() => handleDoctorClick(item.id)}>
                             <div className='doctr_image'>
-                              <img src={`http://localhost:8080/images/doctors/` + item.image} alt="" className='img-fluid' />
+                              <img src={"http://localhost:8080/images/doctors/" + item.image} alt="" className='img-fluid' />
                             </div>
                             <div className='doctr_info'>
                               <div>
-                                <div className='name'>Dr. {item.fullName}</div>
-                                <div className='department'>{item.department.name}</div>
+                                <div className='name'>{item.title} {item.fullName}</div>
+                                <div className='department'>{item.department?.name}</div>
                               </div>
                               <div className='icon'><MdOutlineStarPurple500 className='icon_item' /> {item.rate}</div>
                             </div>
@@ -260,10 +306,10 @@ const Booking = () => {
         <div className="col-md-5">
           <div className='doctor__profile'>
             <div className='info__card'>
-              <img src="/images/doctors/1.png" alt="" className='img__doctor' />
+              <img src={`http://localhost:8080/images/doctors/${doctor.image}` } alt="" className='img__doctor' />
               <div className="doctor_info">
-                <div className='name'>Dr. Liza Martin</div>
-                <div className='department'>Cardiologist</div>
+                <div className='name'>{doctor.title} {doctor.fullName}</div>
+                <div className='department'>{doctor.department?.name}</div>
               </div>
               <div className='doctor_contact'>
                 <div className='contact_icon'>
@@ -279,10 +325,37 @@ const Booking = () => {
             </div>
             <div className="biography">
               <div className="title">Biography</div>
-              <div className="content">
-                Lorem ipsum dolor sit, amet consectetur adipisicing elit. Nulla deserunt voluptates laudantium ad debitis dicta sed totam nihil, laboriosam alias,
-                ea incidunt nemo tempore vel voluptatum fuga. Voluptatibus, omnis facilis! <a href="#">Read more</a>
-              </div>
+              {doctor.biography && doctor.biography ? (
+                <div className="content">
+                  {doctor.biography} <a href="#">Read more</a>
+                </div>
+              ) : (
+                <p>Thông tin đang cập nhật</p>
+              )}
+            </div>
+            <div className="feedback">
+              <div className="title">Feedback</div>
+              {doctor.feedbackDtoList && doctor.feedbackDtoList ? (
+                  doctor.feedbackDtoList.slice(0, 2).map((item) => (
+                    <div className="feedback_content" key={item.id}>
+                      <div className='feedback__title'>
+                        <img src={`http://localhost:8080/images/patients/${item.patient.image}` } alt="" className='img-fluid' />
+                        <div className='name__rate'>
+                          <div className='name'>{item.patient.fullName}</div>
+                          <div className='rate'>
+                            <RatingStar rating={item.rate} className='icon' />
+                            <div>({item.rate})</div>
+                          </div>
+                        </div>
+                      </div>
+                      <div className='feedback__content'>
+                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quia culpa illo corrupti ipsam hic, ratione nihil saepe labore qui</p>
+                      </div>
+                    </div>
+                  ))
+              ) : (
+                <p>Thông tin đang cập nhật</p>
+              )}
             </div>
           </div>
         </div>

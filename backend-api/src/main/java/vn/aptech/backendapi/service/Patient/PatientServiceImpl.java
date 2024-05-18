@@ -38,7 +38,7 @@ public class PatientServiceImpl implements PatientService {
         patientDto.setId(partient.getId());
         patientDto.setFullName(partient.getFullName());
         patientDto.setGender(partient.getGender());
-        patientDto.setBirthday(partient.getBirthday().toString());
+        patientDto.setBirthday(partient.getBirthday());
         patientDto.setAddress(partient.getAddress());
         patientDto.setImage(partient.getImage());
         // patientDto.setMedicals(partient.getMedicals());

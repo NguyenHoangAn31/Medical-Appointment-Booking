@@ -14,4 +14,6 @@ public interface DoctorService {
     boolean changeStatus(int id,int status);
     DoctorDto updatePriceAndDepartment(int id , double price , int departmentId);
 
+    List<DoctorDto> searchDoctorsByName(String name);
+
 }
