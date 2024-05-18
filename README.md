@@ -67,6 +67,32 @@ Doctor
             11: Dashboard: An làm
 
 App:
-Partient: Khoa - An
+Partient: Khoa - Chương
+    Home: Khoa
+    Login: Khoa
+    Sign-up: Khoa
+    Blog: Chương
+    DoctorDetail: Hiển
+    Booking: Khoa
+        Feedback: Khoa
+    Search: Khoa
+    Profile: Khoa
+    Favourite: Khoa
+Doctor: Hiển - An
+    Schedule: An
+    profile: Hiển
+    Appointment: An
+        Feedback: An
+    Patient: Hien
+    View Doctor: Hien
 
-    Doctor: Hiển - Chương
+
+Nhiệm vụ tuần tới:
+1: Báo cáo review 1: 20/25/2024
+    - PowerPoint: Chương: 19/05/2024.
+    - Sơ đồ tuần tự: Hiển
+    - Báo cáo requiment: Tự của ai người đó sửa
+    - Vẽ hoàn thiện UseCase Admin: An
+    - Hoàn thiện Các entity. 
+2: Hoàn thành web: 26/05/2024.
+

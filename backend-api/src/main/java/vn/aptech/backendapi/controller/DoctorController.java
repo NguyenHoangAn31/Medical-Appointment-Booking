@@ -5,13 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import vn.aptech.backendapi.dto.DoctorDto;
 import vn.aptech.backendapi.service.Doctor.DoctorService;
 
@@ -32,6 +26,12 @@ public class DoctorController {
     // @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     public ResponseEntity<List<DoctorDto>> findAll() {
         List<DoctorDto> result = doctorService.findAll();
+        return ResponseEntity.ok(result);
+    }
+    @GetMapping(value = "/search", produces = MediaType.APPLICATION_JSON_VALUE)
+    // @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
+    public ResponseEntity<List<DoctorDto>> searchDoctorsByName(@RequestParam String name) {
+        List<DoctorDto> result = doctorService.searchDoctorsByName(name);
         return ResponseEntity.ok(result);
     }
 
