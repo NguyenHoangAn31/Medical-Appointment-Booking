@@ -10,6 +10,15 @@ export const getAllDoctor = async () => {
     }
 };
 
+export const getAllDoctorWithStatus = async () => {
+    try {
+        const response = await request.get('doctor/allwithallstatus');
+        return response
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+};
 
 
 export const detailDoctor = async (id) => {

@@ -58,4 +58,15 @@ public class UserController {
         return ResponseEntity.created(new URI("/api/users/" + createdUser.getId())).body(createdUser);
     }
 
+    // writed by An in 5/19
+    @PutMapping(value = "/update/{id}",produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<UserDto> updateUser(@PathVariable("id") int id , @RequestBody UserDto user) throws URISyntaxException {
+        Optional<UserDto> result = userService.updateUser(user);
+        if (result.isPresent()) {
+            return ResponseEntity.ok(result.get());
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+
+    }
 }

@@ -45,7 +45,7 @@ function FeedbackDetail() {
 
   const handlechangeStatus = async (id, status) => {
     try {
-      await changeStatus('feedback',id, status);
+      await changeStatus('feedback', id, status);
       loadDetailFeedback();
       Alert('success', 'Change Status Feedback Successfully', '')
     } catch (error) {
@@ -66,6 +66,8 @@ function FeedbackDetail() {
     }
 
   };
+
+
   return (
 
     <>
@@ -171,11 +173,19 @@ function FeedbackDetail() {
         <div className="feedback">
           {detail.feedbackList.map((value, index) => {
             return (
-              <Badge.Ribbon text={value.status ? "Show" : "Hide"} color={value.status ? "null" : "red"}>
-
+              <Badge.Ribbon
+                key={value.id}  // Thêm key tại đây
+                text={value.status ? "Show" : "Hide"}
+                color={value.status ? "null" : "red"}
+              >
                 <div className="card_patient mb-5  d-flex gap-3">
                   <div className="image_patient">
-                    <img className="rounded-circle object-fit-cover" src={"http://localhost:8080/images/patients/" + value.patient.image} alt="" width='75' height='75' />
+                    <img className="rounded-circle object-fit-cover"
+                      src={"http://localhost:8080/images/patients/" + value.patient.image}
+                      alt=""
+                      width='75'
+                      height='75'
+                    />
                   </div>
                   <div className="comment_patient">
                     <p className='mb-1'>{value.patient.fullName}</p>
@@ -183,7 +193,8 @@ function FeedbackDetail() {
                     <p className='pt-2'>{value.comment}</p>
                   </div>
                   <div className="option">
-                    <Dropdown placement="bottomRight"
+                    <Dropdown
+                      placement="bottomRight"
                       menu={{
                         items: [
                           {
@@ -211,13 +222,12 @@ function FeedbackDetail() {
                         </Space>
                       </span>
                     </Dropdown>
-
                   </div>
                 </div>
               </Badge.Ribbon>
-
             )
           })}
+
         </div>
       </div>}
 

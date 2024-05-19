@@ -54,9 +54,13 @@ public class DoctorController {
     }
 
     // writed by An in 5/11
+    @GetMapping(value = "/allwithallstatus", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<DoctorDto>> findAllWithStatu() {
+        List<DoctorDto> result = doctorService.findAllWithAllStatus();
+        return ResponseEntity.ok(result);
+    }
     @PutMapping(value = "/changestatus/{id}/{status}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> changeStatusDoctor(@PathVariable("id") int id, @PathVariable("status") int status) {
-        System.out.println("alo alo");
         boolean changed = doctorService.changeStatus(id, status);
         if (changed) {
             return ResponseEntity.ok().build();

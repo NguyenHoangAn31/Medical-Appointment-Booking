@@ -21,4 +21,6 @@ public interface UserService {
     //UserDto registerNewUser(String email, String phone, String fullName, String keyCode, String provider,boolean status, String role);
 
     UserDtoCreate registerNewUser(UserDtoCreate userDtoCreate);
+
+    Optional<UserDto> updateUser(UserDto dto);
 }

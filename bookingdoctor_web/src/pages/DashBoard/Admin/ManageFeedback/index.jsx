@@ -53,9 +53,6 @@ const ManageFeedback = () => {
   }, []);
   
 
-
-  console.log(feedbacks)
-
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
     confirm();
     setSearchText(selectedKeys[0]);

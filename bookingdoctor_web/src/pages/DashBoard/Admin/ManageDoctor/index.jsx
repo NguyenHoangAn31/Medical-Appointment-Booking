@@ -3,7 +3,7 @@ import { DeleteOutlined, EditOutlined, EyeOutlined, PlusOutlined, SearchOutlined
 import { Button, Input, Popconfirm, Rate, Space, Spin, Switch, Table, Tag } from 'antd';
 import Highlighter from 'react-highlight-words';
 import { Link } from 'react-router-dom';
-import { getAllDoctor } from '../../../../services/API/doctorService';
+import { getAllDoctorWithStatus } from '../../../../services/API/doctorService';
 import Spinner from '../../../../components/Spinner';
 import { AlertContext } from '../../../../components/Layouts/DashBoard';
 import getUserData from '../../../../route/CheckRouters/token/Token';
@@ -41,7 +41,7 @@ const ManageDoctor = () => {
 
   // tải dữ liệu và gán vào doctors thông qua hàm setDoctors
   const loadDoctors = async () => {
-    const fetchedDoctors = await getAllDoctor();
+    const fetchedDoctors = await getAllDoctorWithStatus();
     // thêm key vào mỗi doctor
     const doctorWithKeys = fetchedDoctors.map((doctor, index) => ({
       ...doctor,
@@ -65,8 +65,6 @@ const ManageDoctor = () => {
       console.log(error)
     }
   };
-
-
 
 
 

@@ -13,6 +13,7 @@ public interface DoctorService {
     // writed by An in 5/11
     boolean changeStatus(int id,int status);
     DoctorDto updatePriceAndDepartment(int id , double price , int departmentId);
+    List<DoctorDto> findAllWithAllStatus();
 
     List<DoctorDto> searchDoctorsByName(String name);
 
