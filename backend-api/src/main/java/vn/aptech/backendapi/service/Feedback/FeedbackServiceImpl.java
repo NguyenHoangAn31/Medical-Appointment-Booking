@@ -10,8 +10,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-
-import vn.aptech.backendapi.dto.Feedback.FeedbackCreateDto;
 import vn.aptech.backendapi.dto.Feedback.FeedbackDetail;
 import vn.aptech.backendapi.dto.Feedback.FeedbackDto;
 import vn.aptech.backendapi.dto.Feedback.FeedbackShowDto;
@@ -40,45 +38,48 @@ public class FeedbackServiceImpl implements FeedbackService {
     @Autowired
     private DoctorService doctorService;
 
-    private FeedbackShowDto toShowDto(Doctor d){
+    private FeedbackShowDto toShowDto(Doctor d) {
         FeedbackShowDto feedback = mapper.map(d, FeedbackShowDto.class);
         feedback.setDepartment(d.getDepartment().getName());
         feedback.setRate(feedbackRepository.averageRateByDoctorId(d.getId()));
         return feedback;
     }
-    private FeedbackCreateDto toCreateDto(Feedback f) {
-        FeedbackCreateDto feedback = mapper.map(f, FeedbackCreateDto.class);
-        feedback.setDoctor_id(f.getDoctor().getId());
-        feedback.setPatient_id(f.getPartient().getId());
-        return feedback;
-    }
-    private FeedbackDto toFeedbackDto(Feedback f) {
+
+    private FeedbackDto toCreateDto(Feedback f) {
         FeedbackDto feedback = mapper.map(f, FeedbackDto.class);
-        feedback.setPatientId(feedback.getPatientId());
+        feedback.setDoctorId(f.getDoctor().getId());
+        feedback.setPatientId(f.getPartient().getId());
         return feedback;
     }
 
+    private FeedbackDto toFeedbackDto(Feedback f) {
+        FeedbackDto feedback = mapper.map(f, FeedbackDto.class);
+        feedback.setPatientId(f.getPartient().getId());
+        feedback.setDoctorId(f.getDoctor().getId());
+        feedback.setPatient(patientService.getPatientByPatientId(f.getPartient().getId()).get());
+
+        return feedback;
+    }
 
     @Override
     public List<FeedbackShowDto> findAll() {
         List<Doctor> doctor = doctorRepository.findAll();
         return doctor.stream().map(this::toShowDto)
-        .collect(Collectors.toList());
+                .collect(Collectors.toList());
     }
-    
 
     public List<FeedbackDto> findList(int doctorId) {
         List<Feedback> result = feedbackRepository.findListByDoctorId(doctorId);
         return result.stream().map(this::toFeedbackDto).collect(Collectors.toList());
     }
+
     @Override
-    public FeedbackDetail feedbackDetail(int doctorId){
+    public FeedbackDetail feedbackDetail(int doctorId) {
         FeedbackDetail f = new FeedbackDetail();
         f.setDoctor(doctorService.findById((doctorId)).get());
         f.setFeedbackList(findList(doctorId));
         return f;
     }
-
 
     @Override
     public boolean deleteById(int id) {
@@ -92,9 +93,9 @@ public class FeedbackServiceImpl implements FeedbackService {
     }
 
     @Override
-    public boolean changeStatus(int id,int status){
+    public boolean changeStatus(int id, int status) {
         Feedback f = feedbackRepository.findById(id).get();
-        boolean newStatus = (status == 1) ? false : true; 
+        boolean newStatus = (status == 1) ? false : true;
         f.setStatus(newStatus);
         try {
             feedbackRepository.save(f);
@@ -106,15 +107,15 @@ public class FeedbackServiceImpl implements FeedbackService {
     }
 
     @Override
-    public FeedbackCreateDto save(FeedbackCreateDto dto) {
+    public FeedbackDto save(FeedbackDto dto) {
         Feedback f = mapper.map(dto, Feedback.class);
-        if (dto.getDoctor_id() > 0) {
-            Optional<Doctor> d = doctorRepository.findById(dto.getDoctor_id());
+        if (dto.getDoctorId() > 0) {
+            Optional<Doctor> d = doctorRepository.findById(dto.getDoctorId());
             d.ifPresent(doctor -> f.setDoctor(mapper.map(d, Doctor.class)));
         }
-        if(dto.getPatient_id() > 0){
-            Optional<Partient> p = partientRepository.findById(dto.getPatient_id());
-            p.ifPresent(partient -> f.setPartient(mapper.map(p, Partient.class))); 
+        if (dto.getPatientId() > 0) {
+            Optional<Partient> p = partientRepository.findById(dto.getPatientId());
+            p.ifPresent(partient -> f.setPartient(mapper.map(p, Partient.class)));
         }
         Feedback result = feedbackRepository.save(f);
         return toCreateDto(result);

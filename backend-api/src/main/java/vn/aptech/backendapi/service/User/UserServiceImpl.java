@@ -3,6 +3,8 @@ package vn.aptech.backendapi.service.User;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import vn.aptech.backendapi.dto.SlotDto;
 import vn.aptech.backendapi.dto.UserDto;
 import vn.aptech.backendapi.dto.UserDtoCreate;
 import vn.aptech.backendapi.entities.Role;
@@ -32,7 +34,7 @@ public class UserServiceImpl implements UserService {
         userDto.setPhone(user.getPhone());
         userDto.setFullName(user.getFullName());
         userDto.setProvider(user.getProvider());
-        userDto.setRoles(null);
+        userDto.setRoles(user.getAuthorities());
         return userDto;
     }
 
@@ -68,4 +70,16 @@ public class UserServiceImpl implements UserService {
         User savedUser = userRepository.save(user);
         return mapper.map(savedUser, UserDtoCreate.class);
     }
+
+    // writed by An in 5/19
+    public Optional<UserDto> updateUser(UserDto dto) {
+        return userRepository.findById(dto.getId()).map(user -> {
+            user.setFullName(dto.getFullName());
+            user.setEmail(dto.getEmail());
+            user.setPhone(dto.getPhone());
+            userRepository.save(user); 
+            return toDto(user);
+        });
+    }
+
 }
