@@ -16,17 +16,19 @@ public class Schedule extends  BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-
-    @Column(name="day_work")
-    private LocalDate dayWorking;
-
-    @ManyToOne
-    @JoinColumn(name="slot_id", referencedColumnName = "id")
-    private Slot slot;
-
     @ManyToOne
     @JoinColumn(name = "doctor_id", referencedColumnName = "id")
     private Doctor doctor;
+
+    @ManyToOne
+    @JoinColumn(name="clinic_id", referencedColumnName = "id")
+    private ClinicSchedule clinicSchedule;
+
+//    private String starTime;
+//    private String endTime;
+    @ManyToOne
+    @JoinColumn(name="slot_id", referencedColumnName = "id")
+    private Slot slot;
 
     private boolean status;
 
