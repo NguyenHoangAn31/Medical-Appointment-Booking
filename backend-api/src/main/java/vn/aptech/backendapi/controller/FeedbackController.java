@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import vn.aptech.backendapi.dto.Feedback.FeedbackCreateDto;
 import vn.aptech.backendapi.dto.Feedback.FeedbackDetail;
+import vn.aptech.backendapi.dto.Feedback.FeedbackDto;
 import vn.aptech.backendapi.dto.Feedback.FeedbackShowDto;
 import vn.aptech.backendapi.service.Feedback.FeedbackService;
 
@@ -45,8 +45,8 @@ public class FeedbackController {
     }
 
     @PostMapping(value = "/create", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<FeedbackCreateDto> Create(@RequestBody FeedbackCreateDto dto) {
-        FeedbackCreateDto result = feedbackService.save(dto);
+    public ResponseEntity<FeedbackDto> Create(@RequestBody FeedbackDto dto) {
+        FeedbackDto result = feedbackService.save(dto);
         if (result != null) {
             return ResponseEntity.ok(result);
         } else {
@@ -65,7 +65,7 @@ public class FeedbackController {
     }
 
     @DeleteMapping(value = "/delete/{feedbackId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<FeedbackCreateDto> delteFeedback(@PathVariable("feedbackId") int feedbackId) {
+    public ResponseEntity<FeedbackDto> delteFeedback(@PathVariable("feedbackId") int feedbackId) {
         boolean deleted = feedbackService.deleteById(feedbackId);
         if (deleted) {
             return ResponseEntity.ok().build();

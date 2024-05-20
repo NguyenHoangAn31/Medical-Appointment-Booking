@@ -68,6 +68,7 @@ public class DoctorServiceImpl implements DoctorService {
         qualificationDto.setCourse(qualificationDto.getCourse());
         return qualificationDto;
     }
+
     private FeedbackDto mapToFeedbackDto(Feedback feedback) {
         FeedbackDto feedbackDto = new FeedbackDto();
         feedbackDto.setId(feedback.getId());
@@ -86,7 +87,7 @@ public class DoctorServiceImpl implements DoctorService {
         return patientDto;
     }
 
-    public List<DoctorDto> findAll(){
+    public List<DoctorDto> findAll() {
         List<Doctor> doctors = doctorRepository.findAll();
         doctors = doctors.stream()
                 .filter(Doctor::isStatus) // Giả sử trường status là isActive
@@ -105,7 +106,7 @@ public class DoctorServiceImpl implements DoctorService {
                         .map(this::mapToQualificationDto)
                         .collect(Collectors.toList());
                 List<FeedbackDto> feedbackList = doctor.getFeedbacks().stream().map(this::mapToFeedbackDto)
-                                .collect(Collectors.toList());
+                        .collect(Collectors.toList());
 
                 double totalRating = 0;
                 if (!feedbackList.isEmpty()) {
@@ -280,20 +281,24 @@ public class DoctorServiceImpl implements DoctorService {
         }
     }
 
+    public List<DoctorDto> findAllWithAllStatus() {
+        List<Doctor> doctor = doctorRepository.findAll();
+        return doctor.stream().map(this::toDto)
+                .collect(Collectors.toList());
+    }
+
     @Override
     public DoctorDto updatePriceAndDepartment(int id, double price, int departmentId) {
         Doctor d = doctorRepository.findById(id).get();
         d.setPrice(price);
         d.setDepartment(null);
 
-        if(departmentId > 0){
+        if (departmentId > 0) {
             Optional<Department> department = departmentRepository.findById(departmentId);
-            department.ifPresent(de -> d.setDepartment(department.get())); 
+            department.ifPresent(de -> d.setDepartment(department.get()));
         }
         doctorRepository.save(d);
         return mapToDoctorDto(d);
     }
-
-
 
 }

@@ -14,9 +14,6 @@ public class Appointment extends BaseEntity  {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-//    @ManyToOne
-//    @JoinColumn(name="doctor_id", referencedColumnName = "id")
-//    private Doctor doctor;
 
     @ManyToOne
     @JoinColumn(name="partient_id", referencedColumnName = "id")

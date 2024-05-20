@@ -31,7 +31,9 @@ import {
     HighlightTwoTone,
     QuestionCircleTwoTone,
     BellTwoTone,
-    CarryOutTwoTone
+    CarryOutTwoTone,
+    SettingOutlined,
+    SettingTwoTone
 } from '@ant-design/icons';
 import { Button, Breadcrumb, Layout, Menu, theme, Dropdown, Space, Badge } from 'antd';
 import openAlert from '../../openAlert';
@@ -161,8 +163,8 @@ const DashBoardLayout = ({ children }) => {
 
             <Layout
                 style={{
-                    backgroundColor:'#f4f7fe',
-                    paddingBottom:'50px'
+                    backgroundColor: '#f4f7fe',
+                    paddingBottom: '50px'
                 }}
             >
                 {contextHolder}
@@ -196,7 +198,7 @@ const DashBoardLayout = ({ children }) => {
                 </Sider>
 
 
-                <Layout style={{ marginLeft: collapsed ? 80 : 250, transition: '.2s', paddingTop: '115px' , backgroundColor:'#f4f7fe'}}>
+                <Layout style={{ marginLeft: collapsed ? 80 : 250, transition: '.2s', paddingTop: '115px', backgroundColor: '#f4f7fe' }}>
                     <Header
                         style={{
                             background: colorBgContainer,
@@ -233,9 +235,9 @@ const DashBoardLayout = ({ children }) => {
                             <div>
                                 <Breadcrumb style={{ float: 'left' }}>
                                     <Breadcrumb.Item>pages</Breadcrumb.Item>
-                                    <Breadcrumb.Item>{curentPath != ''?curentPath:'Main Dashboard'}</Breadcrumb.Item>
+                                    <Breadcrumb.Item>{curentPath != '' ? curentPath : 'Main Dashboard'}</Breadcrumb.Item>
                                 </Breadcrumb>
-                                <h1 style={{ clear: 'both' }}>{curentPath != ''?curentPath:'Main Dashboard'}</h1>
+                                <h1 style={{ clear: 'both' }}>{curentPath != '' ? curentPath : 'Main Dashboard'}</h1>
                             </div>
 
                         </div>
@@ -337,21 +339,24 @@ const DashBoardLayout = ({ children }) => {
                                 }}
                                 placement="bottom"
                             >
-                                <div >
-                                    <img
-                                        src="/images/dashboard/default_user.jpg"
-                                        alt=""
-                                        height="50"
-                                        width="50"
-                                        style={{
-                                            borderRadius: '50%',
-                                            marginRight: '10px'
-                                        }}
-                                    />
-                                    <span>{getUserData.user.email}</span>
+                                <SettingTwoTone style={{ fontSize: '20px' }} />
 
-                                </div>
+
                             </Dropdown>
+                            <div >
+                                <img
+                                    src="/images/dashboard/default_user.jpg"
+                                    alt=""
+                                    height="50"
+                                    width="50"
+                                    style={{
+                                        borderRadius: '50%',
+                                        marginRight: '10px'
+                                    }}
+                                />
+                                <span>{getUserData.user.email}</span>
+
+                            </div>
                         </div>
                     </Header>
                     <Content
@@ -363,7 +368,8 @@ const DashBoardLayout = ({ children }) => {
                             style={{
                                 padding: 24,
                                 minHeight: 360,
-                                background: colorBgContainer,
+                                position: 'relative',
+                                background: (curentPath != '' && curentPath != 'profile') ? colorBgContainer : 'none',
                                 borderRadius: '10px',
                             }}
                         >

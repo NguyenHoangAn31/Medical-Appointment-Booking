@@ -68,7 +68,6 @@ const ManagePatient = () => {
 
 
 
-
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
     confirm();
     setSearchText(selectedKeys[0]);
@@ -250,7 +249,7 @@ const ManagePatient = () => {
       render: (_, { birthday }) => {
         return (
           <>
-            {formatDate(birthday)}
+            {formatDate(birthday.join('-'))}
           </>
         )
       }
