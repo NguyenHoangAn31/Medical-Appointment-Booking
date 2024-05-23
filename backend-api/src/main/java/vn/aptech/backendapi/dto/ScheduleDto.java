@@ -1,17 +1,17 @@
 package vn.aptech.backendapi.dto;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import vn.aptech.backendapi.entities.Doctor;
-import vn.aptech.backendapi.entities.Slot;
-
-import java.time.LocalDate;
-
+import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+@Data
+@Getter
+@Setter
 public class ScheduleDto {
+
     private int id;
-    private LocalDate dayWorking;
-    private Slot slot;
-    private Doctor doctor;
+    private DoctorDto doctorDto;
+    private int department_id;
+    private SlotDto slot;
     private boolean status;
+
 }

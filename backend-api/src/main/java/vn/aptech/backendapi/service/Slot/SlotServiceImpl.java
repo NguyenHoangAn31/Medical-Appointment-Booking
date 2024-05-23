@@ -21,7 +21,8 @@ public class SlotServiceImpl implements SlotService {
   private ModelMapper mapper;
 
   private SlotDto toDto(Slot s) {
-    return mapper.map(s, SlotDto.class);
+    SlotDto dto = mapper.map(s, SlotDto.class);
+    return dto;
   }
 
   public List<SlotDto> findAll() {

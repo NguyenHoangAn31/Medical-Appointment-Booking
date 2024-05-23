@@ -14,9 +14,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import vn.aptech.backendapi.dto.Feedback.FeedbackDetail;
+import vn.aptech.backendapi.dto.DoctorDto;
 import vn.aptech.backendapi.dto.Feedback.FeedbackDto;
-import vn.aptech.backendapi.dto.Feedback.FeedbackShowDto;
+import vn.aptech.backendapi.service.Doctor.DoctorService;
 import vn.aptech.backendapi.service.Feedback.FeedbackService;
 
 @RestController
@@ -25,18 +25,20 @@ public class FeedbackController {
     @Autowired
     private FeedbackService feedbackService;
 
+    @Autowired
+    private DoctorService doctorService;
 
 
     @GetMapping(value = "/all", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<FeedbackShowDto>> findAll() {
-        List<FeedbackShowDto> result = feedbackService.findAll();
+    public ResponseEntity<List<DoctorDto>> findAll() {
+        List<DoctorDto> result = doctorService.findAll();
         return ResponseEntity.ok(result);
     }
 
 
     @GetMapping(value = "/{doctorId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<FeedbackDetail> findByDoctorId(@PathVariable("doctorId") int doctorId) {
-        FeedbackDetail result = feedbackService.feedbackDetail(doctorId);
+    public ResponseEntity<DoctorDto> findByDoctorId(@PathVariable("doctorId") int doctorId) {
+        DoctorDto result = feedbackService.feedbackDetail(doctorId);
         if (result != null) {
             return ResponseEntity.ok(result);
         } else {

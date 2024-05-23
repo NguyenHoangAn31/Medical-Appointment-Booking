@@ -36,7 +36,9 @@ const doctorRouters = [
 const adminRouters = [
     { path: '/dashboard/admin', component: DashBoard.DashboardAdmin, layout: DashBoardLayout },
     { path: '/dashboard/admin/profile', component: DashBoard.ProfileAdmin, layout: DashBoardLayout },
-    { path: '/dashboard/admin/manage-schedule', component: DashBoard.Schedule, layout: DashBoardLayout },
+    { path: '/dashboard/admin/manage-user', component: DashBoard.ManageUser, layout: DashBoardLayout },
+    { path: '/dashboard/admin/manage-schedule', component: DashBoard.ManageSchedule, layout: DashBoardLayout },
+    { path: '/dashboard/admin/manage-schedule/detail', component: DashBoard.ScheduleDetail, layout: DashBoardLayout },
     { path: '/dashboard/admin/manage-patient', component: DashBoard.ManagePatient, layout: DashBoardLayout },
     { path: '/dashboard/admin/manage-patient/detail', component: DashBoard.PatientDetail, layout: DashBoardLayout },
     { path: '/dashboard/admin/manage-doctor', component: DashBoard.ManageDoctor, layout: DashBoardLayout },
