@@ -8,6 +8,8 @@ export {default as ProfilePatient} from './ProfilePatient';
 export {default as Schedule} from './Schedule';
 export {default as Booking} from './Booking';
 export {default as Blog} from './Blog';
+export {default as BlogDetail} from './BlogDetail';
+
 export {default as CheckOut} from './CheckOut';
 export {default as Login} from '../Login';
 export {default as LoginPhone} from '../LoginPhone';
