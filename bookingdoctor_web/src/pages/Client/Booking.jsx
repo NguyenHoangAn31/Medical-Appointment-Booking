@@ -91,10 +91,15 @@ const Booking = () => {
       minViewMode: "months", // Chế độ hiển thị tối thiểu là tháng
       autoclose: true // Tự động đóng khi chọn xong
     });
-    loadDoctors();
-    loadDepartments();
-    loadDayDefaults();
-    loadSlots();
+    // loadDoctors();
+    // loadDepartments();
+    // loadDayDefaults();
+    // loadSlots();
+    const initializeData = async () => {
+      await Promise.all([loadDoctors(), loadDepartments(), loadDayDefaults(), loadSlots()]);
+    };
+
+    initializeData();
   }, []);
 
 
@@ -175,6 +180,7 @@ const Booking = () => {
       setDoctors(response.data);
     }
   }
+  console.log(doctors)
   const handleSlotClick = (slotId, id, slotName) => {
     setSlotId(slotId);
     setScheduleId(id);
