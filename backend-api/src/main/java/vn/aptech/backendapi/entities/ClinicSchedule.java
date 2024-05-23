@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.List;
 
 
 @Data
@@ -22,4 +23,5 @@ public class ClinicSchedule extends BaseEntity {
     private String starTime;
     private String endTime;
     private Boolean status;
+
 }

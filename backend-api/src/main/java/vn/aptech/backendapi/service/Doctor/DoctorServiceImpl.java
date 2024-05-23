@@ -122,43 +122,6 @@ public class DoctorServiceImpl implements DoctorService {
         }
         return doctorList;
     }
-
-//    public List<DoctorDto> findIsActive(){
-//        List<Doctor> doctors = doctorRepository.findAll();
-//        doctors = doctors.stream()
-//                .filter(Doctor::isStatus) // Giả sử trường status là isActive
-//                .collect(Collectors.toList());
-//        List<DoctorDto> doctorDtos = doctors.stream()
-//                .map(this::mapToDoctorDto)
-//                .collect(Collectors.toList());
-//
-//        for (DoctorDto doctorDto : doctorDtos) {
-//            Doctor doctor = doctorRepository.findById(Integer.valueOf(doctorDto.getId())).orElse(null);
-//            if (doctor != null) {
-//                List<WorkingDto> workingList = doctor.getWorkings().stream()
-//                        .map(this::mapToWorkingDto)
-//                        .collect(Collectors.toList());
-//                List<QualificationDto> qualificationList = doctor.getQualifications().stream()
-//                        .map(this::mapToQualificationDto)
-//                        .collect(Collectors.toList());
-//                List<FeedbackDto> feedbackList = doctor.getFeedbacks().stream().map(this::mapToFeedbackDto)
-//                        .collect(Collectors.toList());
-//
-//                double totalRating = 0;
-//                if (!feedbackList.isEmpty()) {
-//                    totalRating = feedbackList.stream()
-//                            .mapToDouble(FeedbackDto::getRate)
-//                            .sum() / feedbackList.size();
-//                }
-//                doctorDto.setWorkings(workingList);
-//                doctorDto.setQualifications(qualificationList);
-//                doctorDto.setFeedbackDtoList(feedbackList);
-//                doctorDto.setRate(totalRating);
-//            }
-//        }
-//        return doctorDtos;
-//    }
-
     public List<DoctorDto> searchDoctorsByName(String name){
         List<Doctor> doctorDtos = doctorRepository.findDoctorsByFullNameContaining(name);
         doctorDtos = doctorDtos.stream()

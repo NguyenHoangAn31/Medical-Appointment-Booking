@@ -212,11 +212,6 @@ section {
   margin-right: 30px;
 }
 
-.slick-prev:before,
-.slick-next:before {
-  color: #fff !important;
-}
-
 .doctor__list {
   width: 100%;
   height: auto; /* Thay đổi từ 372px thành auto */
@@ -1914,6 +1909,9 @@ small.redtext {
   border: 1px solid rgba(117, 172, 255, 0.8);
   color: #4f8eec;
 }
+.booking__date .body_date .hour_item.disabled {
+  opacity: 0.5;
+}
 
 .footer_date {
   width: 100%;
@@ -1945,6 +1943,10 @@ small.redtext {
   padding: 0 40px;
   color: #000;
   font-weight: bold;
+  cursor: pointer;
+}
+.footer_date .date_view .btn__booking-appointment:hover {
+  background-color: rgb(221, 255, 0);
 }
 
 .doctor__profile {
@@ -2077,4 +2079,21 @@ small.redtext {
 
 .slider-container .slick-slide {
   margin-right: 10px; /* Thay đổi giá trị này để điều chỉnh khoảng cách giữa các thẻ */
+}
+
+.modal__payment {
+  width: 400px;
+  height: 300px;
+  border-radius: 15px;
+  z-index: 100px;
+  background-color: #fff;
+  box-shadow: var(--boxShadow);
+}
+
+#myTab .nav-link {
+  color: #111;
+}
+#myTab .nav-link.active {
+  background-color: #160efb;
+  color: #fff;
 }/*# sourceMappingURL=App.css.map */

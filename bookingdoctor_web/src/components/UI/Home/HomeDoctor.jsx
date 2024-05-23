@@ -11,7 +11,6 @@ import { motion } from 'framer-motion';
 const HomeDoctor = () => {
 
     const [doctors, setDoctors] = useState([]);
-    console.log(doctors);
     useEffect(() => {
         fetchDoctors();
     }, []);
@@ -28,7 +27,7 @@ const HomeDoctor = () => {
         infinite: true,
         slidesToShow: 4,
         slidesToScroll: 5,
-        autoplay: false,
+        autoplay: true,
         // initialSlide: 0,
         responsive: [
             {
@@ -66,7 +65,7 @@ const HomeDoctor = () => {
                 <div className='col-md-12 mb-5'>
                     <div className='main__doctor'>You can find trusted doctor around the globe</div>
                 </div>
-                <div className='col-md-12 slider-container mb-5'>
+                <div className='col-md-12 mb-5'>
                     <Slider {...settings}>
                         {doctors.map((item) => (
                             <DoctorItem
@@ -77,7 +76,7 @@ const HomeDoctor = () => {
                         )}
                     </Slider>
                 </div>
-                <div className='col-md-12 mt-5 text-center'>
+                <div className='col-md-12 mt-3 text-center'>
                     <motion.div whileTap={{scale: 0.8}}>
                         <Link className='btn__service' to={'/service'}>See all</Link>
                     </motion.div>
