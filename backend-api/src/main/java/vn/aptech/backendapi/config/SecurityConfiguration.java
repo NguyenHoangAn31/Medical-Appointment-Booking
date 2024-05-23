@@ -60,6 +60,7 @@ public class SecurityConfiguration {
                     request.requestMatchers("/api/doctor/**").permitAll();
                     request.requestMatchers("/api/patient/**").permitAll();
                     request.requestMatchers("/api/schedules/**").permitAll()
+                    request.requestMatchers("/api/clinic/**").permitAll()
                             .anyRequest().authenticated();
                 })
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

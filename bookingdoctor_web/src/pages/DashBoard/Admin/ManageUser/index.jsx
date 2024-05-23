@@ -1,18 +1,18 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { DeleteOutlined, EditOutlined, EyeOutlined, PlusOutlined, SearchOutlined } from '@ant-design/icons';
-import { Button, Input, Popconfirm, Rate, Space, Spin, Table, Tag } from 'antd';
+import { Button, Input, Popconfirm, Rate, Space, Spin, Switch, Table, Tag } from 'antd';
 import Highlighter from 'react-highlight-words';
 import { Link } from 'react-router-dom';
-import { getAllFeedback } from '../../../../services/API/feedbackService';
 import Spinner from '../../../../components/Spinner';
 import { AlertContext } from '../../../../components/Layouts/DashBoard';
 import { formatDate } from '../../../../ultils/formatDate';
+import { getAllUser } from '../../../../services/API/userService';
 
-const ManageFeedback = () => {
+const ManageUser = () => {
   // thông báo
   const Alert = useContext(AlertContext);
-  // useState cho mảng dữ liệu feedback
-  const [feedbacks, setFeedbacks] = useState([]);
+  // useState cho mảng dữ liệu users
+  const [users, setUsers] = useState([]);
   // useState clear search , sort
   const [filteredInfo, setFilteredInfo] = useState({});
   const [sortedInfo, setSortedInfo] = useState({});
@@ -36,22 +36,23 @@ const ManageFeedback = () => {
   };
 
 
-
-  // tải dữ liệu và gán vào feedback thông qua hàm setFeedback
-  const loadFeedbacks = async () => {
-    const fetchedFeedback = await getAllFeedback();
-    // thêm key vào mỗi feedback
-    const feedbackWithKeys = fetchedFeedback.map((feedback, index) => ({
-      ...feedback,
+  // tải dữ liệu và gán vào users thông qua hàm setUsers
+  const loadUsers = async () => {
+    const fetchedUsers = await getAllUser();
+    // thêm key vào mỗi user
+    const userWithKeys = fetchedUsers.map((user, index) => ({
+      ...user,
       key: index.toString(),
     }));
-    setFeedbacks(feedbackWithKeys);
+    setUsers(userWithKeys);
   };
   // thực hiện load dữ liệu 1 lần 
   useEffect(() => {
-    loadFeedbacks();
+    loadUsers();
   }, []);
-  
+
+
+
 
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
     confirm();
@@ -163,7 +164,7 @@ const ManageFeedback = () => {
       title: 'Id',
       dataIndex: 'id',
       key: 'id',
-      width: '8%',
+      width: '5%',
       // sort 
       filteredValue: filteredInfo.id || null,
       sorter: (a, b) => a.id - b.id,
@@ -174,113 +175,82 @@ const ManageFeedback = () => {
 
     },
     {
-      title: 'Image',
-      dataIndex: 'image',
-      key: 'image',
-      width: '9%',
-      render: (_, { image }) => {
-        return (
-          image ? <img src={"http://localhost:8080/images/doctors/" + image} width="50" alt="" /> : null);
-      },
-
+      title: 'Email',
+      dataIndex: 'email',
+      key: 'email',
+      width: '15%',
+      filteredValue: filteredInfo.email || null,
+      sorter: (a, b) => a.email.localeCompare(b.email),
+      sortOrder: sortedInfo.columnKey === 'email' ? sortedInfo.order : null,
+      ellipsis: true,
+      // search
+      ...getColumnSearchProps('email'),
     },
     {
       title: 'Name',
       dataIndex: 'fullName',
       key: 'fullName',
-      width: '15%',
+      width: '13%',
       filteredValue: filteredInfo.fullName || null,
       sorter: (a, b) => a.fullName.localeCompare(b.fullName),
       sortOrder: sortedInfo.columnKey === 'fullName' ? sortedInfo.order : null,
       ellipsis: true,
       // search
       ...getColumnSearchProps('fullName'),
+    },
+    {
+      title: 'Role',
+      dataIndex: 'roles',
+      key: 'roles',
+      width: '10%',
+      filters: [
+        {
+          text: 'User',
+          value: 'USER',
+        },
+        {
+          text: 'Doctor',
+          value: 'DOCTOR',
+        },
+        {
+          text: 'Admin',
+          value: 'ADMIN',
+        },
+      ],
+      filteredValue: filteredInfo.roles || null,
+      onFilter: (value, record) => record.roles[0] == value,
+    },
+    {
+      title: 'Provider',
+      dataIndex: 'provider',
+      key: 'provider',
+      width: '10%',
+      filters: [
+        {
+          text: 'Gmail',
+          value: 'gmail',
+        },
+        {
+          text: 'Phone',
+          value: 'phone',
+        },
+      ],
+      filteredValue: filteredInfo.provider || null,
+      onFilter: (value, record) => record.provider == value,
 
-    },
-    // {
-    //   title: 'Gender',
-    //   dataIndex: 'gender',
-    //   key: 'gender',
-    //   width: '10%',
-    //   filteredValue: filteredInfo.gender || null,
-    //   sortOrder: sortedInfo.columnKey === 'gender' ? sortedInfo.order : null,
-    //   ellipsis: true,
-    //   filters: [
-    //     {
-    //       text: 'Male',
-    //       value: 'Male',
-    //     },
-    //     {
-    //       text: 'Female',
-    //       value: 'Female',
-    //     },
-    //   ],
-    //   onFilter: (value, record) => record.gender == value,
-    //   filterSearch: true,
-    // },
-    {
-      title: 'Birthday',
-      dataIndex: 'birthday',
-      key: 'birthday',
-      width: '15%',
-      // sort 
-      filteredValue: filteredInfo.rate || null,
-      sorter: (a, b) => a.birthday.localeCompare(b.birthday),
-      sortOrder: sortedInfo.columnKey === 'birthday' ? sortedInfo.order : null,
-      ellipsis: true,
-      // search
-      ...getColumnSearchProps('birthday'),
-      render: (_, { birthday }) => {
-        return (
-          <>
-            {formatDate(birthday)}
-          </>
-        )
-      }
-    },
-    {
-      title: 'Address',
-      dataIndex: 'address',
-      key: 'address',
-      width: '25%',
-      filteredValue: filteredInfo.address || null,
-      sorter: (a, b) => a.rate - b.rate,
-      sortOrder: sortedInfo.columnKey === 'address' ? sortedInfo.order : null,
-      ellipsis: true,
-      // search
-      ...getColumnSearchProps('address'),
-    },
-    {
-      title: 'Rate',
-      dataIndex: 'rate',
-      key: 'rate',
-      width: '13%',
-      filteredValue: filteredInfo.rate || null,
-      sorter: (a, b) => a.rate - b.rate,
-      sortOrder: sortedInfo.columnKey === 'rate' ? sortedInfo.order : null,
-      ellipsis: true,
-      // search
-      ...getColumnSearchProps('rate'),
-      render: (_, { rate }) => {
-        return (
-          <Rate className="fs-6 mb-2" count={5} disabled defaultValue={Number(rate)} allowHalf />
-        );
-      },
     },
     {
       title: 'Action',
+      width: '10%',
       dataIndex: 'operation',
       render: (_, record) => (
         <div style={{ display: 'flex', justifyContent: 'center' }}>
           <Link style={{ marginRight: '16px' }}
-            to={`/dashboard/admin/manage-feedback/detail?id=${record.id}&rate=${record.rate}`}>
-
+            to={`/dashboard/admin/manage-user/detail?id=${record.id}`}>
             <Button type="primary" icon={<EyeOutlined />} >
               Detail
             </Button>
           </Link>
-
-          
 
         </div>
       ),
@@ -299,9 +269,20 @@ const ManageFeedback = () => {
           <Button onClick={clearFilters}>Clear filters and search</Button>
           <Button onClick={clearAll}>Clear All</Button>
         </Space>
+
+        <div className='d-flex gap-3'>
+          <Button type="primary" icon={<PlusOutlined />} style={{ backgroundColor: '#52c41a' }}>
+            Add New Doctor
+          </Button>
+          <Button type="primary" icon={<PlusOutlined />} style={{ backgroundColor: '#52c41a' }}>
+            Add New Admin
+          </Button>
+        </div>
+
+
       </Space>
 
-        {feedbacks.length != 0?<Table style={{userSelect:'none'}} columns={columns} dataSource={feedbacks} onChange={handleChange} />:<Spinner/>}
+      {users.length != 0 ? <Table style={{ userSelect: 'none' }} columns={columns} dataSource={users} onChange={handleChange} /> : <Spinner />}
     </>
   )
 };
@@ -309,4 +290,4 @@ const ManageFeedback = () => {
 
 
 
-export default ManageFeedback;
+export default ManageUser;
