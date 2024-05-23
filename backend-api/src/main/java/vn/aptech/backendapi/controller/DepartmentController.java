@@ -83,7 +83,7 @@ public class DepartmentController {
     }
 
     @PostMapping(value = "/create", produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasAnyAuthority('ADMIN')")
+    // @PreAuthorize("hasAnyAuthority('ADMIN')")
     public ResponseEntity<DepartmentDto> Create(@RequestParam("icon") MultipartFile photo,
             @RequestParam("department") String department) throws IOException {
 

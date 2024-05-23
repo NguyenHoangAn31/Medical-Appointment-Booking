@@ -283,7 +283,7 @@ public class DoctorServiceImpl implements DoctorService {
 
     public List<DoctorDto> findAllWithAllStatus() {
         List<Doctor> doctor = doctorRepository.findAll();
-        return doctor.stream().map(this::toDto)
+        return doctor.stream().map(this::mapToDoctorDto)
                 .collect(Collectors.toList());
     }
 

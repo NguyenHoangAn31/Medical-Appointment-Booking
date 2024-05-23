@@ -1660,6 +1660,10 @@ small.redtext {
   margin-left: -20px;
 }
 
+.react-calendar__month-view__days__day {
+  color: red;
+}
+
 .booking__search {
   width: 100%;
   padding: 30px 0;

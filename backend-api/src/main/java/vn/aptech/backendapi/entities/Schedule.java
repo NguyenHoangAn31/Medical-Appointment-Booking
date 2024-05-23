@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
 
 @Data
 @NoArgsConstructor
@@ -24,8 +23,10 @@ public class Schedule extends  BaseEntity {
     @JoinColumn(name="clinic_id", referencedColumnName = "id")
     private ClinicSchedule clinicSchedule;
 
-//    private String starTime;
-//    private String endTime;
+    @ManyToOne
+    @JoinColumn(name = "department_id", referencedColumnName = "id")
+    private Department department;
+
     @ManyToOne
     @JoinColumn(name="slot_id", referencedColumnName = "id")
     private Slot slot;

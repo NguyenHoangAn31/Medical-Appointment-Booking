@@ -1,5 +1,7 @@
 package vn.aptech.backendapi.entities;
 
+import java.time.LocalTime;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -14,5 +16,7 @@ public class Slot {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    private String name;
+    private LocalTime startTime;
+    private LocalTime endTime;
+
 }
