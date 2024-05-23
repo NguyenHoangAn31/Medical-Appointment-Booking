@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { MdSearch, MdOutlineStarPurple500, MdCalendarMonth, MdOutlinePhoneInTalk } from "react-icons/md";
 import { BiCommentDots, BiSolidVideo } from "react-icons/bi";
-//import * as department from '../../services/API/departmentService';
-// import ServiceItem from '../../components/Card/ServiceItem';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css';
@@ -12,12 +10,11 @@ import "slick-carousel/slick/slick.css"
 import "slick-carousel/slick/slick-theme.css"
 import $ from 'jquery';
 import { startOfWeek, addDays, format } from 'date-fns';
+import getUserData from '../../route/CheckRouters/token/Token'
+import Payment from '../../components/Card/Payment';
 
 const Booking = () => {
   const currentDate = new Date();
-  // Lấy tháng hiện tại
-  // const currentMonth = currentDate.getMonth() + 1; // Tháng bắt đầu từ 0 nên cần cộng thêm 1
-  //const currentMonth = String(currentDate.getMonth() + 1).padStart(2, '0');
   const months = [
     "January", "February", "March", "April", "May", "June",
     "July", "August", "September", "October", "November", "December"
@@ -29,15 +26,23 @@ const Booking = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [activeDayIndex, setActiveDayIndex] = useState(0);
   const [activeDoctorIndex, setActiveDoctorIndex] = useState(0);
+  const [activeHourIndex, setActiveHourIndex] = useState(0);
   const [services, setServices] = useState([]);
   const [doctors, setDoctors] = useState([]);
   const [doctor, setDoctor] = useState([]);
   const [days, setDays] = useState([]);
   const [doctorId, setDoctorId] = useState();
   const [searchName, setSearchName] = useState('');
-  //console.log(doctors)
+  const [slots, setSlots] = useState([]);
+  const [schedules, setSchedules] = useState([]);
+  const [scheduleId, setScheduleId] = useState(0);
+  const [slotId, setSlotId] = useState(0);
+  const [slotName, setSlotName] = useState('');
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalData, setModalData] = useState(null);
   // Khởi tạo state cho ngày
   const [day, setDay] = useState(`${currentMonth}, ${currentYear}`);
+  const [daySelected, setDaySelected] = useState('');
   const loadDepartments = async () => {
     const fetchedDepartments = await axios.get('http://localhost:8080/api/department/all');
     setServices(fetchedDepartments.data);
@@ -46,13 +51,11 @@ const Booking = () => {
   const loadDoctors = async () => {
     const fetchedDoctors = await axios.get('http://localhost:8080/api/doctor/all');
     setDoctors(fetchedDoctors.data);
-    //console.log(fetchedDoctors.data)
     const id = fetchedDoctors.data[0].id;
-    setActiveDoctorIndex(fetchedDoctors.data[0].id);
+    setActiveDoctorIndex(id);
     try {
       const fetchedDoctor = await axios.get('http://localhost:8080/api/doctor/' + id);
       setDoctor(fetchedDoctor.data)
-      console.log(fetchedDoctor.data)
     } catch (error) {
 
     }
@@ -78,7 +81,6 @@ const Booking = () => {
     }
     setActiveDayIndex(activeDayIndex);
     setDays(cacNgayTrongTuan);
-    // console.log(cacNgayTrongTuan)
   }
 
   // thực hiện load dữ liệu 1 lần 
@@ -92,27 +94,71 @@ const Booking = () => {
     loadDoctors();
     loadDepartments();
     loadDayDefaults();
+    loadSlots();
   }, []);
 
 
   // Hàm tìm department của bác sỹ khám bệnh
-  const handleClick = async (index) => {
-    setDoctorId(index);
+  const handleServiceClick = async (index) => {
+
     setActiveIndex(index);
     try {
       const fetchedDoctorDepartment = await axios.get('http://localhost:8080/api/doctor/related-doctor/' + index);
       setDoctors(fetchedDoctorDepartment.data)
-      //console.log(fetchedDoctorDepartment.data)
     } catch (error) {
 
     }
   }
-  const handleDayClick = async (index) => {
+  const loadSlots = async () => {
+    try {
+      const fetchedSclots = await axios.get('http://localhost:8080/api/slot/all');
+      setSlots(fetchedSclots.data)
+    } catch (error) {
+
+    }
+  }
+  const handleDayClick = async (index, day) => {
+    if (doctorId == null) {
+      alert('Vui lòng chọn bác sỹ trước khi chọn ngày')
+      return;
+    }
+    const dayvalue = `${day.nam}-${String(day.thang).padStart(2, '0')}-${String(day.ngayOfMonth).padStart(2, '0')}`;
     setActiveDayIndex(index);
+    setDaySelected(dayvalue);
+    const data = {
+      doctorId: doctorId,
+      day: dayvalue
+    }
+    try {
+      const fetchedSlotByDoctorAndDay = await axios.get(`http://localhost:8080/api/schedules/doctor/${data.doctorId}/day/${data.day}`);
+      if (fetchedSlotByDoctorAndDay.status === 200) {
+        setSchedules(fetchedSlotByDoctorAndDay.data)
+      } else if (fetchedSlotByDoctorAndDay.status === 404) {
+        setSchedules([])
+      }
+
+    } catch (error) {
+      if (error.response && error.response.status === 404) {
+        setSchedules([]);
+      } else {
+        console.error('An error occurred:', error);
+      }
+    }
+  }
+  console.log(schedules)
+
+  const formatDate = (index) => {
+    return format(Date(index), 'dd MMMM, yyyy')
+  }
+
+  const isSlotAvailable = (slot) => {
+    const scheduleList = schedules;
+    return scheduleList.find(schedule => schedule.slotName === slot);
   }
 
   // Tìm dữ liệu của 1 bác sỹ
   const handleDoctorClick = async (index) => {
+    setDoctorId(index);
     setActiveDoctorIndex(index);
     try {
       const fetchedDoctor = await axios.get('http://localhost:8080/api/doctor/' + index);
@@ -123,13 +169,40 @@ const Booking = () => {
   }
 
   const handleSearch = async (event) => {
-      setSearchName(event.target.value);
-      if (event.target.value) {
-        const response = await axios.get(`http://localhost:8080/api/doctor/search?name=${event.target.value}`);
-        setDoctors(response.data);
-      }
+    setSearchName(event.target.value);
+    if (event.target.value) {
+      const response = await axios.get(`http://localhost:8080/api/doctor/search?name=${event.target.value}`);
+      setDoctors(response.data);
+    }
   }
+  const handleSlotClick = (slotId, id, slotName) => {
+    setSlotId(slotId);
+    setScheduleId(id);
+    setActiveHourIndex(slotId);
+    setSlotName(slotName);
+  }
+  console.log(doctor)
   const handleSubmitBook = () => {
+    if (!getUserData) {
+      alert('Vui lòng đăng nhập để sử dụng chức năng này!');
+      return;
+    } 
+    const data = {
+      patientId: getUserData.user.id,
+      patientName: getUserData.user.fullName,
+      doctorTitle: doctor.title,
+      doctorName: doctor.fullName,
+      scheduleId: scheduleId,
+      dayselect: formatDate(daySelected),
+      slotName: slotName,
+      price: doctor.price,
+      day: daySelected,
+      payment: '',
+      status: 'success',
+    }
+    console.log(data);
+    setModalData(data);
+    setIsModalOpen(true);
 
   }
 
@@ -166,8 +239,8 @@ const Booking = () => {
                 <div className='booking__search'>
                   <MdSearch className='booking__search-icon' />
                   <input type="text" placeholder='Search doctor' className='booking__search-input'
-                  name='searchName'
-                  onChange={handleSearch} />
+                    name='searchName'
+                    onChange={handleSearch} />
                 </div>
               </div>
               <div className="col-12">
@@ -178,8 +251,8 @@ const Booking = () => {
                   <h4 className='title'>Choose category</h4>
                   <div className='services'>
                     {services.map((item) => (
-                      <div key={item.id} className={`service__item ${activeIndex === item.id ? 'active' : ''}`} onClick={() => handleClick(item.id)}>
-                        <img src={"http://localhost:8080/images/department/"+ item.icon} alt="" className='service__item-img' />
+                      <div key={item.id} className={`service__item ${activeIndex === item.id ? 'active' : ''}`} onClick={() => handleServiceClick(item.id)}>
+                        <img src={"http://localhost:8080/images/department/" + item.icon} alt="" className='service__item-img' />
                         <div className='service__item-name'>{item.name}</div>
                       </div>
                     ))}
@@ -206,11 +279,8 @@ const Booking = () => {
                         )
                         )}
                       </Slider>
-
                     </div>
-
                   </div>
-
                 </div>
                 <div className="col-12">
                   <div className="booking__date">
@@ -229,7 +299,7 @@ const Booking = () => {
                     </div>
                     <div className='body_day'>
                       {days.map((day, i) => (
-                        <div key={i} className={`day_item ${activeDayIndex === i ? 'active' : ''}`} onClick={() => handleDayClick(i)}>
+                        <div key={i} className={`day_item ${activeDayIndex === i ? 'active' : ''}`} onClick={() => handleDayClick(i, day)}>
                           <span className='day-title'>{day.tenThu}</span>
                           <span className='day-number'>{day.ngayOfMonth}</span>
                         </div>
@@ -237,62 +307,24 @@ const Booking = () => {
                       )}
                     </div>
                     <div className="body_date">
-                      <div className='hour_item active'>
-                        <div>08:00</div>
-                      </div>
-                      <div className='hour_item'>
-                        <div>08:30</div>
-                      </div>
-                      <div className='hour_item'>
-                        <div>09:00</div>
-                      </div>
-                      <div className='hour_item'>
-                        <div>09:30</div>
-                      </div>
-                      <div className='hour_item'>
-                        <div>10:00</div>
-                      </div>
-                      <div className='hour_item'>
-                        <div>10:30</div>
-                      </div>
-                      <div className='hour_item'>
-                        <div>11:00</div>
-                      </div>
-                      <div className='hour_item'>
-                        <div>11:30</div>
-                      </div>
-                      <div className='hour_item'>
-                        <div>13:00</div>
-                      </div>
-                      <div className='hour_item'>
-                        <div>13:30</div>
-                      </div>
-                      <div className='hour_item'>
-                        <div>14:00</div>
-                      </div>
-                      <div className='hour_item'>
-                        <div>14:30</div>
-                      </div>
-                      <div className='hour_item'>
-                        <div>15:00</div>
-                      </div>
-                      <div className='hour_item'>
-                        <div>15:30</div>
-                      </div>
-                      <div className='hour_item'>
-                        <div>16:00</div>
-                      </div>
-                      <div className='hour_item'>
-                        <div>16:30</div>
-                      </div>
-                      <div className='hour_item'>
-                        <div>17:00</div>
-                      </div>
+                      {slots.map((slot, index) => {
+                        const matchedSchedule = isSlotAvailable(slot.name);
+                        return (
+                          <div
+                            key={index}
+                            className={`hour_item ${matchedSchedule ? '' : 'disabled'} ${activeHourIndex === slot.id ? 'active' : ''}`}
+                            onClick={() => matchedSchedule && handleSlotClick(slot.id, matchedSchedule.id, slot.name)}
+                            data-id="{matchedSchedule.id}"
+                          >
+                            <div>{slot.name}</div>
+                          </div>
+                        );
+                      })}
                     </div>
                     <div className="footer_date">
                       <div className="date_view">
-                        <div className='date_view_day'><span>9</span><span> November,</span><span> 2024</span> | <span className='hour'>09:30</span></div>
-                        <div className='btn__booking-appointment' onClick={handleSubmitBook}>
+                        <div className='date_view_day'><span>{formatDate(daySelected)}</span> | <span className='hour'>{slotName}</span></div>
+                        <div className='btn__booking-appointment' onClick={handleSubmitBook}  data-bs-toggle="modal" data-bs-target="#exampleModal">
                           Book
                         </div>
                       </div>
@@ -306,7 +338,7 @@ const Booking = () => {
         <div className="col-md-5">
           <div className='doctor__profile'>
             <div className='info__card'>
-              <img src={`http://localhost:8080/images/doctors/${doctor.image}` } alt="" className='img__doctor' />
+              <img src={`http://localhost:8080/images/doctors/${doctor.image}`} alt="" className='img__doctor' />
               <div className="doctor_info">
                 <div className='name'>{doctor.title} {doctor.fullName}</div>
                 <div className='department'>{doctor.department?.name}</div>
@@ -336,23 +368,23 @@ const Booking = () => {
             <div className="feedback">
               <div className="title">Feedback</div>
               {doctor.feedbackDtoList && doctor.feedbackDtoList ? (
-                  doctor.feedbackDtoList.slice(0, 2).map((item) => (
-                    <div className="feedback_content" key={item.id}>
-                      <div className='feedback__title'>
-                        <img src={`http://localhost:8080/images/patients/${item.patient.image}` } alt="" className='img-fluid' />
-                        <div className='name__rate'>
-                          <div className='name'>{item.patient.fullName}</div>
-                          <div className='rate'>
-                            <RatingStar rating={item.rate} className='icon' />
-                            <div>({item.rate})</div>
-                          </div>
+                doctor.feedbackDtoList.slice(0, 2).map((item) => (
+                  <div className="feedback_content" key={item.id}>
+                    <div className='feedback__title'>
+                      <img src={`http://localhost:8080/images/patients/${item.patient.image}`} alt="" className='img-fluid' />
+                      <div className='name__rate'>
+                        <div className='name'>{item.patient.fullName}</div>
+                        <div className='rate'>
+                          <RatingStar rating={item.rate} className='icon' />
+                          <div>({item.rate})</div>
                         </div>
                       </div>
-                      <div className='feedback__content'>
-                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quia culpa illo corrupti ipsam hic, ratione nihil saepe labore qui</p>
-                      </div>
                     </div>
-                  ))
+                    <div className='feedback__content'>
+                      <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quia culpa illo corrupti ipsam hic, ratione nihil saepe labore qui</p>
+                    </div>
+                  </div>
+                ))
               ) : (
                 <p>Thông tin đang cập nhật</p>
               )}
@@ -360,6 +392,7 @@ const Booking = () => {
           </div>
         </div>
       </div>
+      {isModalOpen && <Payment data={modalData} isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />}
     </section>
   )
 }

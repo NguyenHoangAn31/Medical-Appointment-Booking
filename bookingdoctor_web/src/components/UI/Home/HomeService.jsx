@@ -10,7 +10,7 @@ import { motion } from 'framer-motion';
 const HomeService = () => {
 
     const [departments, setDepartments] = useState([]);
-    console.log(departments);
+   // console.log(departments);
     // tải dữ liệu và gán vào departments thông qua hàm setDepartments
   const loadDepartments = async () => {
     const fetchedDepartments = await department.getAllDepartment();
@@ -26,7 +26,7 @@ const HomeService = () => {
         infinite: true,
         slidesToShow: 5,
         slidesToScroll: 5,
-        autoplay: false,
+        autoplay: true,
         // initialSlide: 0,
         responsive: [
             {
@@ -66,7 +66,7 @@ const HomeService = () => {
                     <Link className='btn__service' to={'/service'}>See all</Link>
                 </motion.div>
            </div>
-            <div className='slider-container'>
+            <div>
                 <Slider {...settings}>
                     {departments.map((item) => (
                         <DepartmentCard

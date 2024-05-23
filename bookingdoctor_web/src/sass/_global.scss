@@ -113,6 +113,9 @@ section{
         background-color: #000;
     }
 }
+// .slick-prev, .slick-next{
+//     background: #ff61ba !important;
+// }
 .slick-slide{
     height: auto !important;
 }
@@ -170,8 +173,8 @@ section{
     margin-right: 30px;
 }
 
-.slick-prev:before, 
-  .slick-next:before{
-     color: #fff !important;
-  }
+// .slick-prev:before, 
+//   .slick-next:before{
+//      color: #fff !important;
+//   }
 
