@@ -1,5 +1,6 @@
 package vn.aptech.backendapi.dto;
 
+
 import jakarta.persistence.Column;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -16,12 +17,17 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+
 public class ScheduleDto {
+
     private int id;
-    private int doctorId;
     private int clinicScheduleId;
     private LocalDate dayWorking;
     private int slotId;
     private String slotName;
+    private DoctorDto doctorDto;
+    private int department_id;
+    private SlotDto slot;
     private boolean status;
+
 }

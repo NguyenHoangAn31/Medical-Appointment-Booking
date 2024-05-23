@@ -1,9 +1,80 @@
-import React from 'react'
+import React, { useEffect, useRef, useState } from 'react';
+import Calendar from 'react-calendar';
+import { useNavigate } from 'react-router-dom';
+import 'react-calendar/dist/Calendar.css';
+import { findAllWorkDay } from '../../../../services/API/ClinicService';
+
 
 function ManageSchedule() {
+  const [value, setValue] = useState(new Date());
+  const [workDay, setWorkDay] = useState([]);
+  const [calendarRendered, setCalendarRendered] = useState(false);
+  const navigate = useNavigate();
+  const isFirstRender = useRef(true);
+
+  useEffect(() => {
+    if (!isFirstRender.current) {
+      setValue(new Date());
+    } else {
+      isFirstRender.current = false;
+    }
+  }, [calendarRendered]);
+
+
+  useEffect(() => {
+    const buttonList = document.querySelectorAll('.react-calendar__navigation>button');
+    buttonList.forEach(button => {
+      button.addEventListener('click', () => {
+        setCalendarRendered(false);
+      });
+    });
+    loadWorkDay();
+  }, []);
+
+  const loadWorkDay = async () => {
+    setWorkDay(await findAllWorkDay())
+  };
+
+
+  const formattedDates = workDay.map(dateString => {
+    const dateObj = new Date(dateString);
+    const options = { month: 'long', day: 'numeric', year: 'numeric' };
+    return dateObj.toLocaleDateString('en-US', options);
+  });
+
+
+  useEffect(() => {
+    const renderedDates = document.querySelectorAll('.react-calendar__month-view__days__day abbr');
+    renderedDates.forEach((dateElement) => {
+      const dateValue = dateElement.getAttribute('aria-label');
+      const buttonElement = dateElement.parentElement;
+      if (formattedDates.includes(dateValue)) {
+        buttonElement.style.color = '#7dff79';
+      }
+    });
+  }, [value,workDay]);
+
+
+
+  const handleChange = (newValue) => {
+    setValue(newValue);
+    const dateObj = new Date(newValue);
+    const year = dateObj.getFullYear();
+    const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+    const day = String(dateObj.getDate()).padStart(2, '0');
+
+    const formattedDate = `${year}-${month}-${day}`;
+
+    navigate(`/dashboard/admin/manage-schedule/detail?date=${formattedDate}`);
+  };
+
+
   return (
-    <h1>ManageSchedule</h1>
-  )
+    <div>
+      <Calendar onChange={handleChange} value={value} onActiveStartDateChange={() => setCalendarRendered(true)} />
+    </div>
+
+  );
 }
 
-export default ManageSchedule
+export default ManageSchedule;

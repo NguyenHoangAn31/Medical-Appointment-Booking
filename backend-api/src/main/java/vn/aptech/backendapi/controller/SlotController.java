@@ -51,27 +51,26 @@ public class SlotController {
         }
     }
 
-    @PostMapping(value = "/create", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<SlotDto> Create(@RequestBody SlotDto dto) {
-        System.out.println("ok");
-        SlotDto result = slotService.save(dto);
-        if (result != null) {
-            return ResponseEntity.ok(result); // Return the created SlotDto
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
+    // @PostMapping(value = "/create", produces = MediaType.APPLICATION_JSON_VALUE)
+    // public ResponseEntity<SlotDto> Create(@RequestBody SlotDto dto) {
+    //     System.out.println("ok");
+    //     SlotDto result = slotService.save(dto);
+    //     if (result != null) {
+    //         return ResponseEntity.ok(result); // Return the created SlotDto
+    //     } else {
+    //         return ResponseEntity.notFound().build();
+    //     }
+    // }
 
-    @PutMapping(value = "/update/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<SlotDto> updateTutorial(@PathVariable("id") int id, @RequestBody SlotDto dto) {
-        Optional<SlotDto> existingSlotOptional = slotService.findById(id);
-        if (existingSlotOptional.isPresent()) {
-            SlotDto existingSlot = existingSlotOptional.get();
-            existingSlot.setName(dto.getName());
-            SlotDto updatedSlot = slotService.save(existingSlot);
-            return ResponseEntity.ok(updatedSlot);
-        }
-        return ResponseEntity.notFound().build();
-
-    }
+    // @PutMapping(value = "/update/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    // public ResponseEntity<SlotDto> updateTutorial(@PathVariable("id") int id, @RequestBody SlotDto dto) {
+    //     Optional<SlotDto> existingSlotOptional = slotService.findById(id);
+    //     if (existingSlotOptional.isPresent()) {
+    //         SlotDto existingSlot = existingSlotOptional.get();
+    //         existingSlot.setName(dto.getName());
+    //         SlotDto updatedSlot = slotService.save(existingSlot);
+    //         return ResponseEntity.ok(updatedSlot);
+    //     }
+    //     return ResponseEntity.notFound().build();
+    // }
 }

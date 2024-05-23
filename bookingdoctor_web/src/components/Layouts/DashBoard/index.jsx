@@ -33,7 +33,8 @@ import {
     BellTwoTone,
     CarryOutTwoTone,
     SettingOutlined,
-    SettingTwoTone
+    SettingTwoTone,
+    ContactsTwoTone
 } from '@ant-design/icons';
 import { Button, Breadcrumb, Layout, Menu, theme, Dropdown, Space, Badge } from 'antd';
 import openAlert from '../../openAlert';
@@ -49,6 +50,11 @@ if (getUserData != null) {
                 label: "Dashboard",
                 icon: <DashboardTwoTone twoToneColor='blue' />,
                 key: "/dashboard/admin",
+            },
+            {
+                label: "Manage User",
+                icon: <ContactsTwoTone twoToneColor='#6699cc'/>,
+                key: "/dashboard/admin/manage-user",
             },
             {
                 label: "Manage Patient",
@@ -112,8 +118,8 @@ export const AlertContext = createContext();
 
 
 const DashBoardLayout = ({ children }) => {
-    const [collapsed, setCollapsed] = useState(true);
-    const [darkTheme, setDarkTheme] = useState(true);
+    const [collapsed, setCollapsed] = useState(false);
+    const [darkTheme, setDarkTheme] = useState(false);
     const navigate = useNavigate();
 
 

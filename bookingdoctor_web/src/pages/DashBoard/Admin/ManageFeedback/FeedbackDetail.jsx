@@ -29,15 +29,13 @@ function FeedbackDetail() {
   };
 
   // khởi tạo đối tượng detailFeedback
-  const [detail, setDetailFeedback] = useState({
-    doctor: {}, feedbackList: []
-  });
+  const [detail, setDetailFeedback] = useState({});
 
   function calculateRatingPercentage(myrate) {
-    const count = detail.feedbackList.reduce((total, feedback) => {
+    const count = detail.feedbackDtoList.reduce((total, feedback) => {
       return feedback.rate === myrate ? total + 1 : total;
     }, 0);
-    const totalFeedbacks = detail.feedbackList.length;
+    const totalFeedbacks = detail.feedbackDtoList.length;
     const percentage = (count / totalFeedbacks) * 100;
     return percentage.toFixed(2);
   }
@@ -67,23 +65,24 @@ function FeedbackDetail() {
 
   };
 
+  console.log(detail)
 
   return (
 
     <>
-      {detail.feedbackList.length == 0 ? <Spinner /> : <div className='feedback_detail'>
+      {Object.keys(detail).length == 0 ? <Spinner /> : <div className='feedback_detail'>
 
         <div className='doctor d-md-flex justify-content-around align-item-center'>
           <div className='image text-center'>
-            <img className='d-block pb-5 m-auto' src={"http://localhost:8080/images/doctors/" + detail.doctor.image} width="300" alt="" />
+            <img className='d-block pb-5 m-auto' src={"http://localhost:8080/images/doctors/" + detail.image} width="300" alt="" />
 
             <Rate className="fs-3 mb-2" count={5} disabled defaultValue={Number(rate)} allowHalf />
-            <p>Department : {detail.doctor.department['name']}</p>
+            <p>Department : {detail.department['name']}</p>
           </div>
           <div className='information' style={{ width: '450px', maxWidth: '100%' }}>
-            <h1 className='mb-5'>{detail.doctor.title + ' ' + detail.doctor.fullName}</h1>
-            <p>Address : {detail.doctor.address}</p>
-            <p>Birthday : {formatDate(detail.doctor.birthday)}</p>
+            <h1 className='mb-5'>{detail.title + ' ' + detail.fullName}</h1>
+            <p>Address : {detail.address}</p>
+            <p>Birthday : {formatDate(detail.birthday)}</p>
             <p>work history : </p>
             {/* <section className='qualifications'>
               <p>qualifications : </p>
@@ -93,7 +92,7 @@ function FeedbackDetail() {
             </section> */}
             <section className='mt-4 workings'>
               <ul className="timeline">
-                {detail.doctor.workings.map((value, index) => {
+                {detail.workings.map((value, index) => {
                   return (
                     <li className="timeline-item mb-5">
                       <h6 className="fw-bold">{value.company}</h6>
@@ -109,7 +108,7 @@ function FeedbackDetail() {
           </div>
         </div>
         <div className="rating_user mb-5 pb-5">
-          <p>{rate} average based on {detail.feedbackList ? detail.feedbackList.length : null} reviews.</p>
+          <p>{rate} average based on {detail.feedbackDtoList ? detail.feedbackDtoList.length : null} reviews.</p>
           <hr style={{ border: '3px', solid: '#f1f1f1' }} />
 
           <div className="row">
@@ -122,7 +121,7 @@ function FeedbackDetail() {
               </div>
             </div>
             <div className="side right">
-              <div>{detail.feedbackList.filter(feedback => feedback.rate === 5).length}</div>
+              <div>{detail.feedbackDtoList.filter(feedback => feedback.rate === 5).length}</div>
             </div>
             <div className="side">
               <div>4 star</div>
@@ -133,7 +132,7 @@ function FeedbackDetail() {
               </div>
             </div>
             <div className="side right">
-              <div>{detail.feedbackList.filter(feedback => feedback.rate === 4).length}</div>
+              <div>{detail.feedbackDtoList.filter(feedback => feedback.rate === 4).length}</div>
             </div>
             <div className="side">
               <div>3 star</div>
@@ -144,7 +143,7 @@ function FeedbackDetail() {
               </div>
             </div>
             <div className="side right">
-              <div>{detail.feedbackList.filter(feedback => feedback.rate === 3).length}</div>
+              <div>{detail.feedbackDtoList.filter(feedback => feedback.rate === 3).length}</div>
             </div>
             <div className="side">
               <div>2 star</div>
@@ -155,7 +154,7 @@ function FeedbackDetail() {
               </div>
             </div>
             <div className="side right">
-              <div>{detail.feedbackList.filter(feedback => feedback.rate === 2).length}</div>
+              <div>{detail.feedbackDtoList.filter(feedback => feedback.rate === 2).length}</div>
             </div>
             <div className="side">
               <div>1 star</div>
@@ -166,12 +165,12 @@ function FeedbackDetail() {
               </div>
             </div>
             <div className="side right">
-              <div>{detail.feedbackList.filter(feedback => feedback.rate === 1).length}</div>
+              <div>{detail.feedbackDtoList.filter(feedback => feedback.rate === 1).length}</div>
             </div>
           </div>
         </div>
         <div className="feedback">
-          {detail.feedbackList.map((value, index) => {
+          {detail.feedbackDtoList.map((value, index) => {
             return (
               <Badge.Ribbon
                 key={value.id}  // Thêm key tại đây

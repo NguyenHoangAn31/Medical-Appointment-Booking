@@ -10,9 +10,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import vn.aptech.backendapi.dto.Feedback.FeedbackDetail;
+import vn.aptech.backendapi.dto.DoctorDto;
 import vn.aptech.backendapi.dto.Feedback.FeedbackDto;
-import vn.aptech.backendapi.dto.Feedback.FeedbackShowDto;
 import vn.aptech.backendapi.entities.Doctor;
 import vn.aptech.backendapi.entities.Feedback;
 import vn.aptech.backendapi.entities.Partient;
@@ -38,13 +37,6 @@ public class FeedbackServiceImpl implements FeedbackService {
     @Autowired
     private DoctorService doctorService;
 
-    private FeedbackShowDto toShowDto(Doctor d) {
-        FeedbackShowDto feedback = mapper.map(d, FeedbackShowDto.class);
-        feedback.setDepartment(d.getDepartment().getName());
-        feedback.setRate(feedbackRepository.averageRateByDoctorId(d.getId()));
-        return feedback;
-    }
-
     private FeedbackDto toCreateDto(Feedback f) {
         FeedbackDto feedback = mapper.map(f, FeedbackDto.class);
         feedback.setDoctorId(f.getDoctor().getId());
@@ -61,24 +53,16 @@ public class FeedbackServiceImpl implements FeedbackService {
         return feedback;
     }
 
-    @Override
-    public List<FeedbackShowDto> findAll() {
-        List<Doctor> doctor = doctorRepository.findAll();
-        return doctor.stream().map(this::toShowDto)
-                .collect(Collectors.toList());
-    }
-
     public List<FeedbackDto> findList(int doctorId) {
         List<Feedback> result = feedbackRepository.findListByDoctorId(doctorId);
         return result.stream().map(this::toFeedbackDto).collect(Collectors.toList());
     }
 
     @Override
-    public FeedbackDetail feedbackDetail(int doctorId) {
-        FeedbackDetail f = new FeedbackDetail();
-        f.setDoctor(doctorService.findById((doctorId)).get());
-        f.setFeedbackList(findList(doctorId));
-        return f;
+    public DoctorDto feedbackDetail(int doctorId) {
+        DoctorDto d = doctorService.findById(doctorId).get();
+        d.setFeedbackDtoList(findList(doctorId));
+        return d;
     }
 
     @Override
