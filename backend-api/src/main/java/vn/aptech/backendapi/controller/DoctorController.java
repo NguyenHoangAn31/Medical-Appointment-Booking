@@ -55,7 +55,7 @@ public class DoctorController {
 
     // writed by An in 5/11
     @GetMapping(value = "/allwithallstatus", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<DoctorDto>> findAllWithStatu() {
+    public ResponseEntity<List<DoctorDto>> findAllWithStatus() {
         List<DoctorDto> result = doctorService.findAllWithAllStatus();
         return ResponseEntity.ok(result);
     }
