@@ -20,6 +20,8 @@ public class ClinicSchedule extends BaseEntity {
     private int id;
     @Column(name = "day_work", unique = true)
     private LocalDate dayWorking;
+    private String startDate;
+    private String endDate;
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;

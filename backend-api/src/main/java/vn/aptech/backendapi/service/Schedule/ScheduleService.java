@@ -7,8 +7,9 @@ import java.util.List;
 
 public interface ScheduleService {
 
+
     // Hàm tìm lịch theo doctorID
-    List<ScheduleDto> findByDoctorId(int doctorId);
+    List<ScheduleDto> findScheduleByDoctorId(int doctorId);
 
     // Hàm tìm lịch theo DayWorking
     List<ScheduleDto> findByDayWorking(LocalDate dayWorking);

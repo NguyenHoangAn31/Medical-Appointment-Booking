@@ -8,6 +8,7 @@ import vn.aptech.backendapi.dto.ScheduleDto;
 import vn.aptech.backendapi.dto.SlotDto;
 import vn.aptech.backendapi.entities.Schedule;
 import vn.aptech.backendapi.repository.ScheduleRepository;
+import vn.aptech.backendapi.service.Doctor.DoctorService;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -17,11 +18,17 @@ import java.util.stream.Collectors;
 public class ScheduleServiceImpl implements ScheduleService {
     @Autowired
     private ScheduleRepository scheduleRepository;
-
-    @Autowired
-    private ModelMapper mapper;
+//    @Autowired
+//    private DoctorService doctorService;
+//
+//    @Autowired
+//    private ModelMapper mapper;
 
     private ScheduleDto mapToScheduleDto(Schedule schedule) {
+        if (schedule == null) {
+            return null;
+        }
+
         if (schedule == null) {
             return null;
         }
@@ -42,7 +49,7 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     // Hàm tìm lịch theo doctorID
     @Override
-    public List<ScheduleDto> findByDoctorId(int doctorId) {
+    public List<ScheduleDto> findScheduleByDoctorId(int doctorId) {
         List<Schedule> schedules = scheduleRepository.findByDoctorId(doctorId);
         return schedules.stream()
                 .map(schedule -> mapToScheduleDto(schedule))

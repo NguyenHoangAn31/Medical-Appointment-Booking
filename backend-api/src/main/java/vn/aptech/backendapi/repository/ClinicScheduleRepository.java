@@ -23,5 +23,5 @@ public interface ClinicScheduleRepository extends JpaRepository<ClinicSchedule, 
     @Query(value = "SELECT * FROM clinic_schedules WHERE day_work = :day", nativeQuery = true)
     Optional<ClinicSchedule> findScheduleByDay(@Param("day") String day);
     
-  List<ClinicSchedule> findByDayWorking(LocalDate dayWorking);
+    List<ClinicSchedule> findByDayWorking(LocalDate dayWorking);
 }
