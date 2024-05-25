@@ -1774,6 +1774,7 @@ small.redtext {
   justify-content: flex-start;
   gap: 15px;
   align-items: center;
+  cursor: pointer;
 }
 .booking__list .card__body .card__doctor .doctr_image {
   width: 80px;

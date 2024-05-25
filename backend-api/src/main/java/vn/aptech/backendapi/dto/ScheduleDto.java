@@ -20,14 +20,20 @@ import java.util.List;
 
 public class ScheduleDto {
 
+//    private int id;
+//    private int clinicScheduleId;
+//    private String dayWorking;
+//    private DoctorDto doctorDto;
+//    private int departmentId;
+//    private SlotDto slot;
+//    private boolean status;
     private int id;
+    private int doctorId;
     private int clinicScheduleId;
     private LocalDate dayWorking;
+    private int departmentId;
     private int slotId;
     private String slotName;
-    private DoctorDto doctorDto;
-    private int department_id;
-    private SlotDto slot;
     private boolean status;
 
 }

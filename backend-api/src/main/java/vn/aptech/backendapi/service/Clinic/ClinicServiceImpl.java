@@ -44,11 +44,11 @@ public class ClinicServiceImpl implements ClinicService {
         ScheduleDto schedule = new ScheduleDto();
         schedule.setId(s.getId());
         schedule.setStatus(s.isStatus());
-        schedule.setDepartment_id(s.getDepartment().getId());
-        schedule.setSlot(mapper.map(s.getSlot(), SlotDto.class));
-        if (s.getDoctor() != null) {
-            schedule.setDoctorDto(doctorService.findById(s.getDoctor().getId()).get());
-        }
+        schedule.setDepartmentId(s.getDepartment().getId());
+//        schedule.setSlot(mapper.map(s.getSlot(), SlotDto.class));
+//        if (s.getDoctor() != null) {
+//            schedule.setDoctorDto(doctorService.findById(s.getDoctor().getId()).get());
+//        }
         return schedule;
     }
 

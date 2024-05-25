@@ -23,7 +23,7 @@ public class ScheduleController {
 
     @GetMapping(value = "/doctor/{doctorId}")
     public ResponseEntity<List<ScheduleDto>> findScheduleById(@PathVariable("doctorId") int doctorId) {
-        List<ScheduleDto> result = scheduleService.findByDoctorId(doctorId);
+        List<ScheduleDto> result = scheduleService.findScheduleByDoctorId(doctorId);
         if (!result.isEmpty()) {
             return ResponseEntity.ok(result);
         } else {

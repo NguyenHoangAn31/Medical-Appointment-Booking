@@ -12,6 +12,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class SlotDto {
-    private String startTime;
-    private String endTime;    
+    private int id;
+    private String name;
 }

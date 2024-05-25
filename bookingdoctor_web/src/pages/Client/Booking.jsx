@@ -60,28 +60,39 @@ const Booking = () => {
 
     }
   };
+  const startOfWeek = (date) => {
+    const day = date.getDay(); // Lấy ngày trong tuần, 0 là Chủ Nhật
+    const diff = day >= 1 ? day - 1 : 6; // Điều chỉnh để Thứ Hai là 0, Chủ Nhật là 6
+    return new Date(date.getFullYear(), date.getMonth(), date.getDate() - diff);
+  };
+
+  const addDays = (date, days) => {
+    const result = new Date(date);
+    result.setDate(result.getDate() + days);
+    return result;
+  };
 
   const loadDayDefaults = () => {
     const ngayHienTai = new Date(); // Ngày hiện tại
     const ngayDauTuan = startOfWeek(ngayHienTai); // Ngày đầu tiên của tuần hiện tại
-    const daysOfWeekNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    const daysOfWeekNames = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
     const cacNgayTrongTuan = [];
     let activeDayIndex = -1;
-    for (let i = 0; i < 7; i++) {
+
+    for (let i = 0; i < 7; i++) { // Bắt đầu từ 0 để bao gồm cả Thứ Hai
       const ngay = addDays(ngayDauTuan, i);
       const ngayOfMonth = ngay.getDate(); // Lấy ngày trong tháng
       const thang = ngay.getMonth() + 1; // Tháng tính từ 0, nên cần cộng thêm 1
       const nam = ngay.getFullYear(); // Năm
-      // Thứ, 0 là Chủ Nhật, 1 là Thứ Hai, ..., 6 là Thứ Bảy
-      const tenThu = daysOfWeekNames[ngay.getDay()];
+      const tenThu = daysOfWeekNames[i]; // Lấy tên Thứ từ mảng daysOfWeekNames
       cacNgayTrongTuan.push({ ngayOfMonth, thang, nam, tenThu, i });
       if (ngay.toDateString() === ngayHienTai.toDateString()) {
-        activeDayIndex = i;
+        activeDayIndex = i+2;
       }
     }
     setActiveDayIndex(activeDayIndex);
     setDays(cacNgayTrongTuan);
-  }
+  };
 
   // thực hiện load dữ liệu 1 lần 
   useEffect(() => {
@@ -91,10 +102,6 @@ const Booking = () => {
       minViewMode: "months", // Chế độ hiển thị tối thiểu là tháng
       autoclose: true // Tự động đóng khi chọn xong
     });
-    // loadDoctors();
-    // loadDepartments();
-    // loadDayDefaults();
-    // loadSlots();
     const initializeData = async () => {
       await Promise.all([loadDoctors(), loadDepartments(), loadDayDefaults(), loadSlots()]);
     };
@@ -105,7 +112,6 @@ const Booking = () => {
 
   // Hàm tìm department của bác sỹ khám bệnh
   const handleServiceClick = async (index) => {
-
     setActiveIndex(index);
     try {
       const fetchedDoctorDepartment = await axios.get('http://localhost:8080/api/doctor/related-doctor/' + index);
@@ -118,15 +124,18 @@ const Booking = () => {
     try {
       const fetchedSclots = await axios.get('http://localhost:8080/api/slot/all');
       setSlots(fetchedSclots.data)
+      console.log(fetchedSclots.data)
     } catch (error) {
 
     }
   }
+
   const handleDayClick = async (index, day) => {
     if (doctorId == null) {
       alert('Vui lòng chọn bác sỹ trước khi chọn ngày')
       return;
     }
+    setActiveHourIndex(0);
     const dayvalue = `${day.nam}-${String(day.thang).padStart(2, '0')}-${String(day.ngayOfMonth).padStart(2, '0')}`;
     setActiveDayIndex(index);
     setDaySelected(dayvalue);
@@ -150,7 +159,6 @@ const Booking = () => {
       }
     }
   }
-  console.log(schedules)
 
   const formatDate = (index) => {
     return format(Date(index), 'dd MMMM, yyyy')
@@ -180,19 +188,18 @@ const Booking = () => {
       setDoctors(response.data);
     }
   }
-  console.log(doctors)
   const handleSlotClick = (slotId, id, slotName) => {
     setSlotId(slotId);
     setScheduleId(id);
     setActiveHourIndex(slotId);
     setSlotName(slotName);
   }
-  console.log(doctor)
+  //console.log(doctor)
   const handleSubmitBook = () => {
     if (!getUserData) {
       alert('Vui lòng đăng nhập để sử dụng chức năng này!');
       return;
-    } 
+    }
     const data = {
       patientId: getUserData.user.id,
       patientName: getUserData.user.fullName,
@@ -206,7 +213,6 @@ const Booking = () => {
       payment: '',
       status: 'success',
     }
-    console.log(data);
     setModalData(data);
     setIsModalOpen(true);
 
@@ -238,7 +244,7 @@ const Booking = () => {
   return (
     <section className='container'>
       <div className="row">
-        <div className="col-md-7">
+        <div className="col-md-7 col-12">
           <div className="col-md-12">
             <div className="row">
               <div className="col-12">
@@ -330,7 +336,7 @@ const Booking = () => {
                     <div className="footer_date">
                       <div className="date_view">
                         <div className='date_view_day'><span>{formatDate(daySelected)}</span> | <span className='hour'>{slotName}</span></div>
-                        <div className='btn__booking-appointment' onClick={handleSubmitBook}  data-bs-toggle="modal" data-bs-target="#exampleModal">
+                        <div className='btn__booking-appointment' onClick={handleSubmitBook} data-bs-toggle="modal" data-bs-target="#exampleModal">
                           Book
                         </div>
                       </div>
@@ -341,7 +347,7 @@ const Booking = () => {
             </div>
           </div>
         </div>
-        <div className="col-md-5">
+        <div className="col-md-5 col-12">
           <div className='doctor__profile'>
             <div className='info__card'>
               <img src={`http://localhost:8080/images/doctors/${doctor.image}`} alt="" className='img__doctor' />
@@ -387,7 +393,7 @@ const Booking = () => {
                       </div>
                     </div>
                     <div className='feedback__content'>
-                      <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quia culpa illo corrupti ipsam hic, ratione nihil saepe labore qui</p>
+                      <p>{item.comment}</p>
                     </div>
                   </div>
                 ))
