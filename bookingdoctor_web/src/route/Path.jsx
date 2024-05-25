@@ -19,6 +19,7 @@ const publicRouters = [
     { path: '/booking', component: Client.Booking, layout: ClientLayout },
     { path: '/signup', component: Client.Signup, layout: ClientLayout },     
     { path: '/blog', component: Client.Blog, layout: ClientLayout },
+    { path: '/blog/:id', component: Client.BlogDetail, layout: ClientLayout },
 ]
 
 const patientRouters = [
