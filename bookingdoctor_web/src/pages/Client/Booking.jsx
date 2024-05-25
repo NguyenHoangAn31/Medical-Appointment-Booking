@@ -12,6 +12,7 @@ import $ from 'jquery';
 import { startOfWeek, addDays, format } from 'date-fns';
 import getUserData from '../../route/CheckRouters/token/Token'
 import Payment from '../../components/Card/Payment';
+import { formatDateFromJs } from '../../ultils/formatDate';
 
 const Booking = () => {
   const currentDate = new Date();
@@ -26,11 +27,12 @@ const Booking = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [activeDayIndex, setActiveDayIndex] = useState(0);
   const [activeDoctorIndex, setActiveDoctorIndex] = useState(0);
-  const [activeHourIndex, setActiveHourIndex] = useState(0);
+  const [activeHourIndex, setActiveHourIndex] = useState('');
   const [services, setServices] = useState([]);
   const [doctors, setDoctors] = useState([]);
   const [doctor, setDoctor] = useState([]);
   const [days, setDays] = useState([]);
+
   const [doctorId, setDoctorId] = useState();
   const [searchName, setSearchName] = useState('');
   const [slots, setSlots] = useState([]);
@@ -48,11 +50,12 @@ const Booking = () => {
     setServices(fetchedDepartments.data);
   };
 
+
   const loadDoctors = async () => {
     const fetchedDoctors = await axios.get('http://localhost:8080/api/doctor/all');
     setDoctors(fetchedDoctors.data);
     const id = fetchedDoctors.data[0].id;
-    setActiveDoctorIndex(id);
+    // setActiveDoctorIndex(id);
     try {
       const fetchedDoctor = await axios.get('http://localhost:8080/api/doctor/' + id);
       setDoctor(fetchedDoctor.data)
@@ -60,39 +63,36 @@ const Booking = () => {
 
     }
   };
-  const startOfWeek = (date) => {
-    const day = date.getDay(); // Lấy ngày trong tuần, 0 là Chủ Nhật
-    const diff = day >= 1 ? day - 1 : 6; // Điều chỉnh để Thứ Hai là 0, Chủ Nhật là 6
-    return new Date(date.getFullYear(), date.getMonth(), date.getDate() - diff);
-  };
-
-  const addDays = (date, days) => {
-    const result = new Date(date);
-    result.setDate(result.getDate() + days);
-    return result;
-  };
 
   const loadDayDefaults = () => {
     const ngayHienTai = new Date(); // Ngày hiện tại
     const ngayDauTuan = startOfWeek(ngayHienTai); // Ngày đầu tiên của tuần hiện tại
-    const daysOfWeekNames = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+    const daysOfWeekNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
     const cacNgayTrongTuan = [];
     let activeDayIndex = -1;
-
-    for (let i = 0; i < 7; i++) { // Bắt đầu từ 0 để bao gồm cả Thứ Hai
+    for (let i = 0; i < 7; i++) {
       const ngay = addDays(ngayDauTuan, i);
       const ngayOfMonth = ngay.getDate(); // Lấy ngày trong tháng
       const thang = ngay.getMonth() + 1; // Tháng tính từ 0, nên cần cộng thêm 1
       const nam = ngay.getFullYear(); // Năm
-      const tenThu = daysOfWeekNames[i]; // Lấy tên Thứ từ mảng daysOfWeekNames
+      // Thứ, 0 là Chủ Nhật, 1 là Thứ Hai, ..., 6 là Thứ Bảy
+      const tenThu = daysOfWeekNames[ngay.getDay()];
       cacNgayTrongTuan.push({ ngayOfMonth, thang, nam, tenThu, i });
       if (ngay.toDateString() === ngayHienTai.toDateString()) {
-        activeDayIndex = i+2;
+        activeDayIndex = i;
       }
     }
     setActiveDayIndex(activeDayIndex);
     setDays(cacNgayTrongTuan);
-  };
+
+  }
+
+
+
+
+
+
+
 
   // thực hiện load dữ liệu 1 lần 
   useEffect(() => {
@@ -102,16 +102,16 @@ const Booking = () => {
       minViewMode: "months", // Chế độ hiển thị tối thiểu là tháng
       autoclose: true // Tự động đóng khi chọn xong
     });
-    const initializeData = async () => {
-      await Promise.all([loadDoctors(), loadDepartments(), loadDayDefaults(), loadSlots()]);
-    };
-
-    initializeData();
+    loadDoctors();
+    loadDepartments();
+    loadDayDefaults();
+    loadSlots();
   }, []);
 
 
   // Hàm tìm department của bác sỹ khám bệnh
   const handleServiceClick = async (index) => {
+
     setActiveIndex(index);
     try {
       const fetchedDoctorDepartment = await axios.get('http://localhost:8080/api/doctor/related-doctor/' + index);
@@ -123,19 +123,36 @@ const Booking = () => {
   const loadSlots = async () => {
     try {
       const fetchedSclots = await axios.get('http://localhost:8080/api/slot/all');
-      setSlots(fetchedSclots.data)
-      console.log(fetchedSclots.data)
+      setSlots(fetchedSclots.data.map(item => {
+        const startHourMinute = item.startTime.split(":");
+        const startHour = parseInt(startHourMinute[0]);
+        const startMinute = startHourMinute[1];
+
+        const endHourMinute = item.endTime.split(":");
+        const endHour = parseInt(endHourMinute[0]);
+        const endMinute = endHourMinute[1];
+
+        // Define new name array based on conditions
+        const name = [
+          `${startHour}:${startMinute}`,
+          `${startHour + (startMinute === "00" ? 0 : 1)}:${startMinute === "00" ? "30" : "00"}`
+        ];
+
+        return {
+          id: item.id,
+          name: name
+        };
+      }))
     } catch (error) {
 
     }
   }
-
   const handleDayClick = async (index, day) => {
     if (doctorId == null) {
       alert('Vui lòng chọn bác sỹ trước khi chọn ngày')
       return;
     }
-    setActiveHourIndex(0);
+    setActiveHourIndex('');
     const dayvalue = `${day.nam}-${String(day.thang).padStart(2, '0')}-${String(day.ngayOfMonth).padStart(2, '0')}`;
     setActiveDayIndex(index);
     setDaySelected(dayvalue);
@@ -152,6 +169,8 @@ const Booking = () => {
       }
 
     } catch (error) {
+      console.log("error")
+
       if (error.response && error.response.status === 404) {
         setSchedules([]);
       } else {
@@ -165,19 +184,33 @@ const Booking = () => {
   }
 
   const isSlotAvailable = (slot) => {
-    const scheduleList = schedules;
-    return scheduleList.find(schedule => schedule.slotName === slot);
+    return schedules.find(schedule => schedule.slot.id === slot);
+    // return schedules.find(schedule => schedule.slot.startTime === slot);
   }
 
+  console.log(slots)
   // Tìm dữ liệu của 1 bác sỹ
   const handleDoctorClick = async (index) => {
+    var defaultDate = new Date();
     setDoctorId(index);
     setActiveDoctorIndex(index);
+    setActiveHourIndex('');
     try {
       const fetchedDoctor = await axios.get('http://localhost:8080/api/doctor/' + index);
       setDoctor(fetchedDoctor.data)
+      const fetchedSlotByDoctorAndDay = await axios.get(`http://localhost:8080/api/schedules/doctor/${index}/day/${daySelected==''?formatDateFromJs(defaultDate):daySelected}`);
+      console.log(fetchedSlotByDoctorAndDay.status);
+      if (fetchedSlotByDoctorAndDay.status === 200) {
+        setSchedules(fetchedSlotByDoctorAndDay.data);
+      }
     } catch (error) {
-
+      if (error.response && error.response.status === 404) {
+        console.log("404");
+        setSchedules([]);
+      } else {
+        // Handle other errors
+        console.error("An error occurred:", error);
+      }
     }
   }
 
@@ -188,13 +221,14 @@ const Booking = () => {
       setDoctors(response.data);
     }
   }
-  const handleSlotClick = (slotId, id, slotName) => {
-    setSlotId(slotId);
-    setScheduleId(id);
-    setActiveHourIndex(slotId);
-    setSlotName(slotName);
+  const handleSlotClick = (slotName, slotId) => {
+    setActiveHourIndex(slotName);
+    console.log(slotId)
+    // setSlotId(slotId);
+    // setScheduleId(id);
+    // setActiveHourIndex(slotId);
+    // setSlotName(slotName);
   }
-  //console.log(doctor)
   const handleSubmitBook = () => {
     if (!getUserData) {
       alert('Vui lòng đăng nhập để sử dụng chức năng này!');
@@ -213,6 +247,7 @@ const Booking = () => {
       payment: '',
       status: 'success',
     }
+    console.log(data);
     setModalData(data);
     setIsModalOpen(true);
 
@@ -241,10 +276,13 @@ const Booking = () => {
     slidesToScroll: 2
   };
 
+
+
+
   return (
     <section className='container'>
       <div className="row">
-        <div className="col-md-7 col-12">
+        <div className="col-md-7">
           <div className="col-md-12">
             <div className="row">
               <div className="col-12">
@@ -319,19 +357,37 @@ const Booking = () => {
                       )}
                     </div>
                     <div className="body_date">
+
                       {slots.map((slot, index) => {
-                        const matchedSchedule = isSlotAvailable(slot.name);
+                        const matchedSchedule = isSlotAvailable(slot.id);
+                        return (
+                          <>
+                            {Array.isArray(slot['name']) && slot['name'].map((value, idx) => (
+                              <div
+                                onClick={() => matchedSchedule && handleSlotClick(value, slot.id)}
+
+                                key={idx}
+                                className={`hour_item ${matchedSchedule ? '' : 'disabled'} ${activeHourIndex === value ? 'active' : ''}`}
+                              >{value}
+                              </div>
+                            ))}
+                          </>
+                        );
+                      })}
+
+                      {/* {slots.map((slot, index) => {
+                        const matchedSchedule = isSlotAvailable(slot.startTime);
                         return (
                           <div
                             key={index}
                             className={`hour_item ${matchedSchedule ? '' : 'disabled'} ${activeHourIndex === slot.id ? 'active' : ''}`}
-                            onClick={() => matchedSchedule && handleSlotClick(slot.id, matchedSchedule.id, slot.name)}
+                            onClick={() => matchedSchedule && handleSlotClick(slot.id, matchedSchedule.id, slot.startTime)}
                             data-id="{matchedSchedule.id}"
                           >
-                            <div>{slot.name}</div>
+                            <div>{slot.startTime}</div>
                           </div>
                         );
-                      })}
+                      })} */}
                     </div>
                     <div className="footer_date">
                       <div className="date_view">
@@ -347,7 +403,7 @@ const Booking = () => {
             </div>
           </div>
         </div>
-        <div className="col-md-5 col-12">
+        <div className="col-md-5">
           <div className='doctor__profile'>
             <div className='info__card'>
               <img src={`http://localhost:8080/images/doctors/${doctor.image}`} alt="" className='img__doctor' />
@@ -393,7 +449,7 @@ const Booking = () => {
                       </div>
                     </div>
                     <div className='feedback__content'>
-                      <p>{item.comment}</p>
+                      <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quia culpa illo corrupti ipsam hic, ratione nihil saepe labore qui</p>
                     </div>
                   </div>
                 ))

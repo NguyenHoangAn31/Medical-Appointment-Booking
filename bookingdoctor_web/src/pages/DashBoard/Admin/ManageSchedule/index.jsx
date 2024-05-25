@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Calendar from 'react-calendar';
 import { useNavigate } from 'react-router-dom';
-import 'react-calendar/dist/Calendar.css';
+// import 'react-calendar/dist/Calendar.css';
 import { findAllWorkDay } from '../../../../services/API/ClinicService';
 
 
@@ -70,7 +70,7 @@ function ManageSchedule() {
 
 
   return (
-    <div>
+    <div className='calendar'>
       <Calendar onChange={handleChange} value={value} onActiveStartDateChange={() => setCalendarRendered(true)} />
     </div>
 

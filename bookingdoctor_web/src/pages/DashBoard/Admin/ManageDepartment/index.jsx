@@ -189,7 +189,7 @@ const ManageDepartment = () => {
       title: 'Id',
       dataIndex: 'id',
       key: 'id',
-      width: '11%',
+      width: '8%',
       // sort 
       filteredValue: filteredInfo.id || null,
       sorter: (a, b) => a.id - b.id,
@@ -216,7 +216,7 @@ const ManageDepartment = () => {
       title: 'Icon',
       dataIndex: 'icon',
       key: 'icon',
-      width: '16%',
+      width: '10%',
       render: (_, { icon }) => {
         return (
           icon ? <img src={"http://localhost:8080/images/department/" + icon} width="50" alt="" /> : null);
@@ -227,7 +227,7 @@ const ManageDepartment = () => {
       title: 'Address',
       dataIndex: 'url',
       key: 'url',
-      width: '16%',
+      width: '26%',
       filteredValue: filteredInfo.url || null,
       sorter: (a, b) => a.url.localeCompare(b.url),
       sortOrder: sortedInfo.columnKey === 'url' ? sortedInfo.order : null,
@@ -241,7 +241,7 @@ const ManageDepartment = () => {
       title: 'Status',
       dataIndex: 'status',
       key: 'status',
-      width: '16%',
+      width: '10%',
       filters: [
         {
           text: 'Active',

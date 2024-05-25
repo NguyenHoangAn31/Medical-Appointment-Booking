@@ -8,5 +8,6 @@ import vn.aptech.backendapi.dto.ClinicDto;
 public interface ClinicService {
     List<String> findAllOnlyDay();
     Optional<ClinicDto> searchByDay(String day);
+    boolean updateSchedule(int scheduleId, int doctorId);
     
 }
