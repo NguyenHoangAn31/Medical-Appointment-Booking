@@ -271,7 +271,7 @@ const ManageUser = () => {
           <Link style={{ marginRight: '16px' }}
             to={`/dashboard/admin/manage-user/detail?id=${record.id}`}>
             <Button type="primary" icon={<EyeOutlined />} >
-              Detail
+              Information
             </Button>
           </Link>
 

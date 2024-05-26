@@ -307,7 +307,7 @@ const ManagePatient = () => {
             to={`/dashboard/admin/manage-patient/detail?id=${record.id}`}>
 
             <Button type="primary" icon={<EyeOutlined />} >
-              Detail
+              Information
             </Button>
           </Link>
 
