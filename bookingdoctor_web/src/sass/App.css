@@ -474,13 +474,14 @@ nav .nav-link:hover {
 .icon_login .dropdown__user li:hover {
   background-color: #f2f2f2;
 }
-.icon_login .dropdown__user li a {
-  color: #1d1617;
+.icon_login .dropdown__user li .user__link {
+  color: #3b3637;
   font-size: 18px;
   font-weight: 500;
+  text-decoration: none;
   cursor: pointer;
 }
-.icon_login .dropdown__user li a:hover {
+.icon_login .dropdown__user li .user__link:hover {
   color: #000af7;
 }
 

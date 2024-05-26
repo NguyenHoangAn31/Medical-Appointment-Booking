@@ -4,7 +4,7 @@ export {default as Contact} from './Contact';
 export {default as Doctor} from './Doctor';
 export {default as Service} from './Service';
 export {default as DoctorDetail} from './DoctorDetail';
-export {default as ProfilePatient} from './ProfilePatient';
+export {default as Account} from './Account';
 export {default as Schedule} from './Schedule';
 export {default as Booking} from './Booking';
 export {default as Blog} from './Blog';
