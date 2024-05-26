@@ -1,6 +1,6 @@
 import * as Client from '../pages/Client'
 import * as DashBoard from '../pages/DashBoard'
-import { ClientLayout, DashBoardLayout } from '../components/Layouts'
+import { AccountLayout, ClientLayout, DashBoardLayout } from '../components/Layouts'
 
 const publicRouters = [
     { path: '/', component: Client.Home, layout: ClientLayout },
@@ -23,7 +23,7 @@ const publicRouters = [
 ]
 
 const patientRouters = [
-    { path: '/profilepatient', component: Client.ProfilePatient, layout: ClientLayout },
+    { path: '/account', component: Client.Account, layout: AccountLayout },
     { path: '/checkout', component: Client.CheckOut, layout: ClientLayout }
 ]
 
