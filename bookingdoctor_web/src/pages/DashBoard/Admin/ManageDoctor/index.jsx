@@ -306,7 +306,7 @@ const ManageDoctor = () => {
           <Link style={{ marginRight: '16px' }}
             to={`/dashboard/admin/manage-doctor/detail?id=${record.id}`}>
             <Button type="primary" icon={<EyeOutlined />} >
-              Detail
+              Information
             </Button>
           </Link>
 

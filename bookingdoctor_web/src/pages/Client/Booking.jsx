@@ -111,7 +111,8 @@ const Booking = () => {
 
   // Hàm tìm department của bác sỹ khám bệnh
   const handleServiceClick = async (index) => {
-
+    setActiveDoctorIndex(0);
+    setSchedules([])
     setActiveIndex(index);
     try {
       const fetchedDoctorDepartment = await axios.get('http://localhost:8080/api/doctor/related-doctor/' + index);
@@ -188,7 +189,6 @@ const Booking = () => {
     // return schedules.find(schedule => schedule.slot.startTime === slot);
   }
 
-  console.log(slots)
   // Tìm dữ liệu của 1 bác sỹ
   const handleDoctorClick = async (index) => {
     var defaultDate = new Date();
@@ -198,7 +198,7 @@ const Booking = () => {
     try {
       const fetchedDoctor = await axios.get('http://localhost:8080/api/doctor/' + index);
       setDoctor(fetchedDoctor.data)
-      const fetchedSlotByDoctorAndDay = await axios.get(`http://localhost:8080/api/schedules/doctor/${index}/day/${daySelected==''?formatDateFromJs(defaultDate):daySelected}`);
+      const fetchedSlotByDoctorAndDay = await axios.get(`http://localhost:8080/api/schedules/doctor/${index}/day/${daySelected == '' ? formatDateFromJs(defaultDate) : daySelected}`);
       console.log(fetchedSlotByDoctorAndDay.status);
       if (fetchedSlotByDoctorAndDay.status === 200) {
         setSchedules(fetchedSlotByDoctorAndDay.data);
@@ -361,19 +361,20 @@ const Booking = () => {
                       {slots.map((slot, index) => {
                         const matchedSchedule = isSlotAvailable(slot.id);
                         return (
-                          <>
+                          <React.Fragment key={slot.id}> {/* Add a key to the outer element */}
                             {Array.isArray(slot['name']) && slot['name'].map((value, idx) => (
                               <div
                                 onClick={() => matchedSchedule && handleSlotClick(value, slot.id)}
-
-                                key={idx}
+                                key={`${slot.id}-${idx}`} // Ensure the key is unique by combining slot.id and idx
                                 className={`hour_item ${matchedSchedule ? '' : 'disabled'} ${activeHourIndex === value ? 'active' : ''}`}
-                              >{value}
+                              >
+                                {value}
                               </div>
                             ))}
-                          </>
+                          </React.Fragment>
                         );
                       })}
+
 
                       {/* {slots.map((slot, index) => {
                         const matchedSchedule = isSlotAvailable(slot.startTime);
