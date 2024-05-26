@@ -117,7 +117,7 @@ class _SignInScreenState extends State<SignInScreen> {
                         hintText: 'Phone number',
                         hintStyle: TextStyle(
                           color: Color(0xFF98A2B2),
-                          fontSize: 16,
+                          fontSize: 14,
                           fontFamily: 'Poppins',
                           fontWeight: FontWeight.w400,
                         ),
@@ -126,10 +126,10 @@ class _SignInScreenState extends State<SignInScreen> {
                         color: Colors.black,
                         fontSize: 14,
                         fontFamily: 'Poppins',
-                        fontWeight: FontWeight.w400,
+                        fontWeight: FontWeight.w600,
                       ),
                       keyboardType: TextInputType.phone,
-                      maxLength: 10,
+                      // maxLength: 10,
 
                     ),
                   ),
@@ -170,151 +170,7 @@ class _SignInScreenState extends State<SignInScreen> {
                         ),
                       ),
                     ),
-                    Container(
-                      width: 56,
-                      height: 56,
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                      decoration: ShapeDecoration(
-                        color: const Color(0xFFF2F4F7),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                      ),
-                      child: Align(
-                        alignment: Alignment.center,
-                        child: TextField(
-                          controller: _otpNumber02Controller,
-                          decoration: const InputDecoration(
-                            border: InputBorder.none,
-                          ),
-                          style: const TextStyle(
-                            color: Colors.black,
-                            fontSize: 14,
-                            fontFamily: 'Poppins',
-                            fontWeight: FontWeight.w400,
-                          ),
-                          keyboardType: TextInputType.phone,
-                          maxLength: 1, // Chỉ cho phép nhập 1 ký tự
-
-                        ),
-                      ),
-                    ),
-                    Container(
-                      width: 56,
-                      height: 56,
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                      decoration: ShapeDecoration(
-                        color: const Color(0xFFF2F4F7),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                      ),
-                      child: Align(
-                        alignment: Alignment.center,
-                        child: TextField(
-                          controller: _otpNumber03Controller,
-                          decoration: const InputDecoration(
-                            border: InputBorder.none,
-                          ),
-                          style: const TextStyle(
-                            color: Colors.black,
-                            fontSize: 14,
-                            fontFamily: 'Poppins',
-                            fontWeight: FontWeight.w400,
-                          ),
-                          keyboardType: TextInputType.phone,
-                          maxLength: 1, // Chỉ cho phép nhập 1 ký tự
-
-                        ),
-                      ),
-                    ),
-                    Container(
-                      width: 56,
-                      height: 56,
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                      decoration: ShapeDecoration(
-                        color: const Color(0xFFF2F4F7),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                      ),
-                      child: Align(
-                        alignment: Alignment.center,
-                        child: TextField(
-                          controller: _otpNumber04Controller,
-                          decoration: const InputDecoration(
-                            border: InputBorder.none,
-                          ),
-                          style: const TextStyle(
-                            color: Colors.black,
-                            fontSize: 14,
-                            fontFamily: 'Poppins',
-                            fontWeight: FontWeight.w400,
-                          ),
-                          keyboardType: TextInputType.phone,
-                          maxLength: 1, // Chỉ cho phép nhập 1 ký tự
-                          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                        ),
-                      ),
-                    ),
-                    Container(
-                      width: 56,
-                      height: 56,
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                      decoration: ShapeDecoration(
-                        color: const Color(0xFFF2F4F7),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                      ),
-                      child: Align(
-                        alignment: Alignment.center,
-                        child: TextField(
-                          controller: _otpNumber05Controller,
-                          decoration: const InputDecoration(
-                            border: InputBorder.none,
-                          ),
-                          style: const TextStyle(
-                            color: Colors.black,
-                            fontSize: 14,
-                            fontFamily: 'Poppins',
-                            fontWeight: FontWeight.w400,
-                          ),
-                          keyboardType: TextInputType.phone,
-                          maxLength: 1, // Chỉ cho phép nhập 1 ký tự
-                          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                        ),
-                      ),
-                    ),
-                    Container(
-                      width: 56,
-                      height: 56,
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                      decoration: ShapeDecoration(
-                        color: const Color(0xFFF2F4F7),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                      ),
-                      child: Align(
-                        alignment: Alignment.center,
-                        child: TextField(
-                          controller: _otpNumber06Controller,
-                          decoration: const InputDecoration(
-                            border: InputBorder.none,
-                          ),
-                          style: const TextStyle(
-                            color: Colors.black,
-                            fontSize: 14,
-                            fontFamily: 'Poppins',
-                            fontWeight: FontWeight.w400,
-                          ),
-                          keyboardType: TextInputType.phone,
-                          maxLength: 1, // Chỉ cho phép nhập 1 ký tự
-                          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                        ),
-                      ),
-                    ),
+                    
                   ],
                 ),
                 const SizedBox(height: 20),
