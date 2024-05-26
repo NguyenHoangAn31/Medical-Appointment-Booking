@@ -19,3 +19,12 @@ export const findScheduleByDay = async (date) => {
         throw error;
     }
 }
+
+export const updateSchedule = async (doctoId,scheduleId) => {
+    try {
+        await request.put(`clinic/updateschedule/${scheduleId}/${doctoId}`);
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+};

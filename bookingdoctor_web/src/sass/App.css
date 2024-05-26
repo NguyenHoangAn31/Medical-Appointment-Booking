@@ -1656,8 +1656,53 @@ small.redtext {
   margin-left: -20px;
 }
 
-.react-calendar__month-view__days__day {
+.calendar {
+  background: rgb(238, 174, 202);
+  background: radial-gradient(circle, rgb(238, 174, 202) 0%, rgb(148, 187, 233) 100%);
+  margin: -25px;
+  padding: 25px 35px;
+}
+.calendar .react-calendar__navigation {
+  text-align: center;
+  padding: 20px 0;
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+}
+.calendar .react-calendar__navigation button {
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
+  border: none;
+  background-color: white;
+  font-size: 40px;
+  flex-grow: 0 !important;
+  background-color: transparent;
+}
+.calendar .react-calendar__navigation .react-calendar__navigation__label {
+  pointer-events: none;
+}
+.calendar .react-calendar__month-view__days__day {
   color: red;
+  border-radius: 8px;
+  font-size: 23px;
+  background-color: rgba(234, 234, 234, 0.3);
+}
+.calendar .react-calendar__month-view__weekdays__weekday {
+  margin-bottom: 10px;
+  text-align: center;
+}
+.calendar .react-calendar__month-view__weekdays__weekday abbr {
+  text-decoration: none;
+  cursor: default;
+}
+.calendar .react-calendar__month-view__days {
+  gap: 5px;
+}
+.calendar .react-calendar__month-view__days button {
+  border: none;
+  height: 90px;
+  flex: 0 0 13.87% !important;
 }
 
 .booking__search {

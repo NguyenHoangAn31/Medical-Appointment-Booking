@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { DeleteOutlined, EditOutlined, EyeOutlined, PlusOutlined, SearchOutlined } from '@ant-design/icons';
-import { Button, Input, Popconfirm, Rate, Space, Spin, Switch, Table, Tag } from 'antd';
+import { Button, Checkbox, Form, Input, Modal, Popconfirm, Rate, Space, Spin, Switch, Table, Tag } from 'antd';
 import Highlighter from 'react-highlight-words';
 import { Link } from 'react-router-dom';
 import Spinner from '../../../../components/Spinner';
@@ -9,6 +9,29 @@ import { formatDate } from '../../../../ultils/formatDate';
 import { getAllUser } from '../../../../services/API/userService';
 
 const ManageUser = () => {
+
+  // modal
+  const [open, setOpen] = useState(false);
+  const showModal = () => {
+    setOpen(true);
+  };
+  const handleOk = () => {
+    setOpen(false);
+
+  };
+  const handleCancel = () => {
+    setOpen(false);
+  };
+
+
+  const onFinish = (values) => {
+    console.log('Success:', values);
+  };
+  const onFinishFailed = (errorInfo) => {
+    console.log('Failed:', errorInfo);
+  };
+
+
   // thông báo
   const Alert = useContext(AlertContext);
   // useState cho mảng dữ liệu users
@@ -271,12 +294,56 @@ const ManageUser = () => {
         </Space>
 
         <div className='d-flex gap-3'>
-          <Button type="primary" icon={<PlusOutlined />} style={{ backgroundColor: '#52c41a' }}>
-            Add New Doctor
-          </Button>
-          <Button type="primary" icon={<PlusOutlined />} style={{ backgroundColor: '#52c41a' }}>
-            Add New Admin
-          </Button>
+          <>
+            <Button  onClick={showModal} icon={<PlusOutlined />}>
+              Add New Admin
+            </Button>
+            <Button  onClick={showModal} icon={<PlusOutlined />}>
+              Add New Doctor
+            </Button>
+
+            <Modal
+              open={open}
+              title="Email Information"
+              onOk={handleOk}
+              onCancel={handleCancel}
+              footer={[
+                <Form
+                  name="basic"
+                  initialValues={{
+                    remember: true,
+                  }}
+                  onFinish={onFinish}
+                  onFinishFailed={onFinishFailed}
+                  autoComplete="off"
+                >
+                  <Form.Item
+                    label="Email"
+                    name="email"
+                    rules={[
+                      {
+                        required: true,
+                        message: 'Please input Email!',
+                      },
+                    ]}
+                  >
+                    <Input />
+                  </Form.Item>
+                  <Space>
+                    <Button key="back" onClick={handleCancel}>
+                      Cancel
+                    </Button>
+
+                    <Button type="primary" htmlType="submit">
+                      Send
+                    </Button>
+                  </Space>
+                </Form>
+              ]}
+            >
+            </Modal>
+
+          </>
         </div>
 
 
