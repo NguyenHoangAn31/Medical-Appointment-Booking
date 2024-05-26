@@ -372,6 +372,7 @@ const DashBoardLayout = ({ children }) => {
                     >
                         <div
                             style={{
+                                overflow:'hidden',
                                 padding: 24,
                                 minHeight: 360,
                                 position: 'relative',

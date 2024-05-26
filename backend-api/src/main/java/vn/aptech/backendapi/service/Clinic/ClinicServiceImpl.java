@@ -17,8 +17,12 @@ import vn.aptech.backendapi.dto.ScheduleDto;
 import vn.aptech.backendapi.dto.CustomSchedule;
 import vn.aptech.backendapi.dto.SlotDto;
 import vn.aptech.backendapi.entities.ClinicSchedule;
+import vn.aptech.backendapi.entities.Doctor;
+import vn.aptech.backendapi.entities.Partient;
 import vn.aptech.backendapi.entities.Schedule;
 import vn.aptech.backendapi.repository.ClinicScheduleRepository;
+import vn.aptech.backendapi.repository.DoctorRepository;
+import vn.aptech.backendapi.repository.ScheduleRepository;
 import vn.aptech.backendapi.service.Department.DepartmentService;
 import vn.aptech.backendapi.service.Doctor.DoctorService;
 import vn.aptech.backendapi.service.User.UserService;
@@ -40,15 +44,21 @@ public class ClinicServiceImpl implements ClinicService {
     @Autowired
     private DepartmentService departmentService;
 
+    @Autowired
+    private ScheduleRepository scheduleRepository;
+
+    @Autowired
+    private DoctorRepository doctorRepository;
+
     private ScheduleDto toScheduleDto(Schedule s) {
         ScheduleDto schedule = new ScheduleDto();
         schedule.setId(s.getId());
         schedule.setStatus(s.isStatus());
-        schedule.setDepartmentId(s.getDepartment().getId());
-//        schedule.setSlot(mapper.map(s.getSlot(), SlotDto.class));
-//        if (s.getDoctor() != null) {
-//            schedule.setDoctorDto(doctorService.findById(s.getDoctor().getId()).get());
-//        }
+        // schedule.setDepartment_id(s.getDepartment().getId());
+        schedule.setSlot(mapper.map(s.getSlot(), SlotDto.class));
+        if (s.getDoctor() != null) {
+            schedule.setDoctorDto(doctorService.findById(s.getDoctor().getId()).get());
+        }
         return schedule;
     }
 
@@ -71,7 +81,6 @@ public class ClinicServiceImpl implements ClinicService {
         List<CustomSchedule> customSchedules = c.getSchedules().stream()
                 .map(this::customSchedulesDto)
                 .collect(Collectors.toList());
-
 
         Set<DepartmentDto> seenDepartments = new HashSet<>();
 
@@ -104,4 +113,23 @@ public class ClinicServiceImpl implements ClinicService {
         return c.map(this::toDto);
 
     }
+
+    @Override
+    public boolean updateSchedule(int scheduleId, int doctorId) {
+        Optional<Schedule> scheduleOptional = scheduleRepository.findById(scheduleId);
+        Optional<Doctor> doctorOptional = doctorRepository.findById(doctorId);
+
+        System.out.println(scheduleId);
+        System.out.println(doctorId);
+        if (scheduleOptional.isPresent() && doctorOptional.isPresent()) {
+            Schedule schedule = scheduleOptional.get();
+            Doctor doctor = doctorOptional.get();
+            schedule.setDoctor(doctor);
+            scheduleRepository.save(schedule);
+            return true;
+        }
+
+        return false;
+    }
+
 }
