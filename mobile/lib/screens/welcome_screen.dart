@@ -45,6 +45,17 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
       child: const Stack(
         children: [
           Positioned(
+            left: 139,
+            top: 358,
+            child: SizedBox(
+              width: 96,
+              height: 96,
+              child: Image(
+                image: AssetImage('assets/images/logo.png'),
+              ),
+            ),
+          ),
+          Positioned(
             left: 159,
             top: 702,
             child: Column(
@@ -56,21 +67,10 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                   width: 56,
                   height: 56,
                   child: Image(
-                    image: AssetImage('assets/images/logo.png'),
+                    image: AssetImage('assets/images/Loading.png'),
                   ),
                 ),
               ],
-            ),
-          ),
-          Positioned(
-            left: 139,
-            top: 358,
-            child: SizedBox(
-              width: 96,
-              height: 96,
-              child: Image(
-                image: AssetImage('assets/images/logo.png'),
-              ),
             ),
           ),
         ],
