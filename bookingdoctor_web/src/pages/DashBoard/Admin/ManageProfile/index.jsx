@@ -36,7 +36,7 @@ function ProfileAdmin() {
   const handleUpdate = async () => {
     try {
       await updateUser(user.id, user);
-      Alert('success', 'Update Profile Successfully', '')
+        Alert('success', 'Update Profile Successfully', '')
 
     }
     catch (error) {

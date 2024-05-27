@@ -65,7 +65,7 @@ function ManageSchedule() {
 
     const formattedDate = `${year}-${month}-${day}`;
 
-    navigate(`/dashboard/admin/manage-schedule/detail?date=${formattedDate}`);
+    navigate(`/dashboard/admin/manage-schedule/detail?day=${formattedDate}`);
   };
 
 

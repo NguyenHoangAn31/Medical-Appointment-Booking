@@ -14,4 +14,6 @@ public interface ScheduleService {
     List<ScheduleDto> findByDayWorking(LocalDate dayWorking);
 
     List<ScheduleDto> findByDayWorkingAndDoctorId(LocalDate dayWorking, int doctorId);
+
+    void updateScheduleForAdmin(int clinicId , int departmentId , int slotId , int[] doctorList);
 }
