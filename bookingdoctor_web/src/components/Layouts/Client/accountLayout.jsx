@@ -1,33 +1,28 @@
 import React from 'react'
 import Footer from './Footer'
 import Header from './Header'
-import { Link} from "react-router-dom";
-import { BiBell, BiHeart, BiLogIn, BiCalendarCheck, BiSolidUserRectangle    } from "react-icons/bi";
+import { Link } from "react-router-dom";
+import { BiBell, BiHeart, BiLogIn, BiCalendarCheck, BiSolidUserRectangle } from "react-icons/bi";
+import { Toaster } from 'react-hot-toast';
 
-const accountLayout = (children) => {
+function AccountLayout({ children }) {
     return (
         <div>
+            <div className='float-end'><Toaster toastOptions={{ duration: 4000 }} /></div>
             <Header />
-            <div className='container mt-3'>
-                <div className="row">
-                    <div className="col-md-4">
-                        <div className='sidebar__account'>
-                            <ul>
-                                <li><Link to="" className='user__link'><BiBell /> Notication</Link></li>
-                                <li><Link to="/account" className='user__link'><BiSolidUserRectangle /> Profile</Link></li>
-                                <li><Link to="" className='user__link'><BiCalendarCheck /> Booking</Link></li>
-                                <li><Link to="" className='user__link'><BiHeart /> Fauvorite</Link></li>
-                                <li><a className='user__link'><BiLogIn /> Sign out</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div className="col-md-8">{children}</div>
+            <div className='main-app d-flex gap-5'>
+                <div>
+                    <ul>
+
+                        <li><Link to="/account" className='user__link'><BiSolidUserRectangle /> Profile</Link></li>
+                        <li><Link to="/checkout" className='user__link'><BiHeart /> Checkout</Link></li>
+                    </ul>
                 </div>
+                <div className='content'>{children}</div>
             </div>
             <Footer />
         </div>
-
-    )
+    );
 }
 
-export default accountLayout
+export default AccountLayout;
