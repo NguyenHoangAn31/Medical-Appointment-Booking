@@ -2,11 +2,10 @@ import React, { useContext, useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom';
 import { AlertContext } from '../../../../components/Layouts/DashBoard';
 import Spinner from '../../../../components/Spinner';
-import { findScheduleByDay } from '../../../../services/API/clinicService';
 import { getAllDoctorWithStatus } from '../../../../services/API/doctorService';
 
 import { Button, Select, Space, Tabs } from 'antd';
-import { updateScheduleForAdmin } from '../../../../services/API/scheduleService';
+import { findScheduleByDay, updateScheduleForAdmin } from '../../../../services/API/scheduleService';
 
 
 function ScheduleDetail() {

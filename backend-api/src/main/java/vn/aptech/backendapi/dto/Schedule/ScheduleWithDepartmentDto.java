@@ -13,8 +13,7 @@ import lombok.Setter;
 @Data
 @Getter
 @Setter
-public class ClinicScheduleDTO {
-    private int clinicId;
+public class ScheduleWithDepartmentDto {
     private String workday;
     private List<DepartmentWithSlotsDTO> departments;
 }

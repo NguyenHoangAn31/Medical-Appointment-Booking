@@ -15,5 +15,4 @@ public class DoctorDtoForSchedule {
     private int id;
     private String fullName;
     private String image;
-    // private int schedultId;
 }
