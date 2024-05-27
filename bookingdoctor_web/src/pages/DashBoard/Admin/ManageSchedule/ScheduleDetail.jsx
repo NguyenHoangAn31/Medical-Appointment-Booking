@@ -2,99 +2,107 @@ import React, { useContext, useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom';
 import { AlertContext } from '../../../../components/Layouts/DashBoard';
 import Spinner from '../../../../components/Spinner';
-import { findScheduleByDay, updateSchedule } from '../../../../services/API/ClinicService';
+import { findScheduleByDay } from '../../../../services/API/clinicService';
 import { getAllDoctorWithStatus } from '../../../../services/API/doctorService';
 
-import { Button, Select, Tabs } from 'antd';
+import { Button, Select, Space, Tabs } from 'antd';
+import { updateScheduleForAdmin } from '../../../../services/API/scheduleService';
 
 
 function ScheduleDetail() {
-  const navigate = useNavigate();
+
   // thông báo
   const Alert = useContext(AlertContext);
   // lấy date từ url
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
-  const date = queryParams.get("date");
+  const day = queryParams.get("day");
+
 
   // tabs
   const [tabPosition, setTabPosition] = useState('left');
 
-  const [schedule, setSchedule] = useState({});
+  const [clinic, setClinic] = useState({});
   const [doctors, setDoctors] = useState([]);
 
   useEffect(() => {
-    loadSchedule();
+    loadClinic();
     loadDoctors();
   }, []);
 
-  const loadSchedule = async () => {
-    setSchedule(await findScheduleByDay(date));
+  const loadClinic = async () => {
+    setClinic(await findScheduleByDay(day));
   };
   const loadDoctors = async () => {
-    setDoctors(await getAllDoctorWithStatus());
+    var doctorList = await getAllDoctorWithStatus();
+    doctorList
+      .forEach(doctor => {
+        doctor.value = doctor.id;
+        doctor.label = doctor.fullName
+      })
+    setDoctors(doctorList);
   };
 
-  // assign doctor
-  const handleChange = async (doctor_id, schedule_id) => {
+  const handleChange = async (clinicId, departmentId, slotId, value) => {
     try {
-      await updateSchedule(doctor_id, schedule_id);
-      loadSchedule();
-      Alert('success', 'Updating Scheudle Successfully', '')
-    }
-    catch (error) {
+      await updateScheduleForAdmin(clinicId, departmentId, slotId, value)
+      loadClinic()
+      Alert('success', 'Update Schedule Successfully', '')
+
+    } catch (error) {
       console.log(error)
-      Alert('error', 'Error Editing Scheudle', '')
+      Alert('error', 'Error Update Schedule', '')
+
     }
+
   };
 
-  console.log(schedule.schedules)
 
-  return !Object.keys(schedule).length ? (
+
+
+  return !Object.keys(clinic).length != 0 ? (
     <Spinner />
   ) : (
     <>
-      <h1>Creator</h1>
-      <p>{schedule.user.email}</p>
-      <p>{schedule.user.fullName}</p>
-      <p>work day : {schedule.dayWorking}</p>
-      <h1>List Departments</h1>
+      <h1 className='mb-5'>Work Day : {day}</h1>
       <Tabs
         tabPosition={tabPosition}
 
-        defaultActiveKey={schedule.schedules.length}
+        defaultActiveKey={null}
         centered
-        items={schedule.schedules.map((deptValue, i) => {
+        items={clinic.departments.map((deptValue, i) => {
           const id = String(i + 1);
           return {
-            label: <div className='d-flex gap-3'><img src={"http://localhost:8080/images/department/" + deptValue.departmentDto.icon} width='20' />{deptValue.departmentDto.name} ({schedule.schedules[i].schedules.filter(item => item.doctorDto !== null).length}/{schedule.schedules[i].schedules.length})</div>,
+            label: <div className='d-flex gap-3'><img src={"http://localhost:8080/images/department/" + deptValue.icon} width='20' />{deptValue.name}   </div>,
             key: id,
-            children: deptValue.schedules.map((scheduleValue, scheduleIndex) => (
-              <div key={scheduleIndex} className='d-flex align-items-center justify-content-between' style={{ maxWidth: 600, height: 100 }}>
+            children: deptValue.slots.map((slot, slotIndex) => (
+              <div key={slotIndex} className='d-flex align-items-center justify-content-between' style={{ maxWidth: 800 }}>
                 <div style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
-                  <span>{scheduleValue.slot.startTime} : {scheduleValue.slot.endTime} </span>
-                  {scheduleValue.doctorDto ? <>
-                    <img src={"http://localhost:8080/images/doctors/" + scheduleValue.doctorDto.image} alt="" style={{ width: 50, height: 50, objectFit: 'cover', borderRadius: '50%', objectPosition: 'top' }} />
-                    <span>{scheduleValue.doctorDto.fullName}</span>
+                  <span>{slot.startTime} : {slot.endTime} </span>
+                  {slot.doctorsForSchedules ? <>
+                    {slot.doctorsForSchedules.map((doctor, doctorIndex) => (
+                      <div key={doctorIndex}>
+                        <img src={"http://localhost:8080/images/doctors/" + doctor.image} alt="" style={{ width: 50, height: 50, objectFit: 'cover', borderRadius: '50%', objectPosition: 'top' }} />
+                      </div>
+                    ))}
                   </> : null}
                 </div>
 
                 <Select
-                  mode="tags"
-                  style={{
-                    width: '50%',
-                  }}
-                  placeholder="Select Doctor"
-                  onBlur={(value) => {
-                    handleChange(value, scheduleValue.id);
-                  }} options={doctors
-                    .filter(doctor => doctor.department.id == deptValue.departmentDto.id)
-                    .map(doctor => ({
-                      label: <div className='d-flex gap-3 align-items-center'>
-                        {/* <img src={"http://localhost:8080/images/doctors/" + doctor.image} alt="" style={{ width: 50, height: 50, objectFit: 'cover', borderRadius: '50%', objectPosition: 'top', background: 'white' }} /> */}
-                        <span>{doctor.fullName}</span></div>,
-                      value: doctor.id
-                    }))}
+                  mode="multiple"
+                  style={{ width: '50%' }}
+                  placeholder="select doctor"
+                  defaultValue={slot.doctorsForSchedules.map(doctor => doctor.id.toString())}
+                  onChange={(value) => handleChange(clinic.clinicId, deptValue.id, slot.slotId, value)}
+                  options={doctors.filter(doctor => doctor.department.id == deptValue.id)}
+                  optionRender={(option) => (
+                    <Space>
+                      <span role="img" aria-label={option.data.fullName}>
+                        {option.data.fullName}
+                      </span>
+                      {option.data.birthday}
+                    </Space>
+                  )}
                 />
               </div>
             )),
@@ -102,7 +110,6 @@ function ScheduleDetail() {
         })}
       />
     </>
-
   );
 }
 

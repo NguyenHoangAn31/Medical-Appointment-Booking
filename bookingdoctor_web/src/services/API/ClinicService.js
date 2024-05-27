@@ -10,21 +10,12 @@ export const findAllWorkDay = async () => {
     }
 }
 
-export const findScheduleByDay = async (date) => {
+export const findScheduleByDay = async (day) => {
     try {
-        const response = await request.get(`clinic/work_day/${date}`);
+        const response = await request.get(`clinic/schedulebyday/${day}`);
         return response;
     } catch (error) {
         console.log(error);
         throw error;
     }
 }
-
-export const updateSchedule = async (doctoId,scheduleId) => {
-    try {
-        await request.put(`clinic/updateschedule/${scheduleId}/${doctoId}`);
-    } catch (error) {
-        console.log(error);
-        throw error;
-    }
-};

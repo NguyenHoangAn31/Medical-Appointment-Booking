@@ -15,7 +15,7 @@ public class ScheduleDto {
     private int id;
     private int clinicScheduleId;
     private String dayWorking;
-    private DoctorDto doctorDto;
+    private int doctorId;
     private SlotDto slot;
     private boolean status;
 
