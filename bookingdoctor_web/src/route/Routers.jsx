@@ -27,7 +27,7 @@ const Routers = () => {
           const Layout = route.layout || Fragment;
           const Page = route.component;
           return <Route key={index} path={route.path} element={<Layout><Page /></Layout>} />;
-        })}
+        })} 
       </Route>
 
       <Route element={<AdminRouters />}>

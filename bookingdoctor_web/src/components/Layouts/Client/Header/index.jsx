@@ -110,8 +110,9 @@ const Header = () => {
                       <li><Link to=""  className='user__link'>Hello! {user.fullName}</Link></li>
                       <li><Link to=""  className='user__link'><BiBell /> Notication</Link></li>
                       <li><Link to="/account"  className='user__link'><BiSolidUserRectangle/> Profile</Link></li>
-                      <li><Link to="" className='user__link'><BiCalendarCheck /> Booking</Link></li>
+                      <li><Link to="/" className='user__link'><BiCalendarCheck /> Booking</Link></li>
                       <li><Link to="" className='user__link'><BiHeart /> Fauvorite</Link></li>
+                      <li><Link to="/checkout" className='user__link'><BiHeart /> Checkout</Link></li>
                       <li onClick={handleSignOut}><a  className='user__link'><BiLogIn /> Sign out</a></li>
                     </ul>
                     )}
