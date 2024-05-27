@@ -41,7 +41,7 @@ public class ScheduleServiceImpl implements ScheduleService {
     private DoctorRepository doctorRepository;
 
     @Autowired
-    private ModelMapper mapper;
+    private ModelMapper mapper; 
 
     private ScheduleDto mapToScheduleDto(Schedule schedule) {
         if (schedule == null) {
