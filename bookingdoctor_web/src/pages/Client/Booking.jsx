@@ -112,7 +112,9 @@ const Booking = () => {
   // Hàm tìm department của bác sỹ khám bệnh
   const handleServiceClick = async (index) => {
     setActiveDoctorIndex(0);
-    setSchedules([])
+    setSchedules([]);
+    setActiveHourIndex('');
+    setDoctorId(null)
     setActiveIndex(index);
     try {
       const fetchedDoctorDepartment = await axios.get('http://localhost:8080/api/doctor/related-doctor/' + index);
@@ -185,7 +187,7 @@ const Booking = () => {
   }
 
   const isSlotAvailable = (slot) => {
-    return schedules.find(schedule => schedule.slot.id === slot);
+    return schedules.find(slots => slots.id === slot);
     // return schedules.find(schedule => schedule.slot.startTime === slot);
   }
 
@@ -276,6 +278,7 @@ const Booking = () => {
     slidesToScroll: 2
   };
 
+  console.log(schedules)
 
 
 

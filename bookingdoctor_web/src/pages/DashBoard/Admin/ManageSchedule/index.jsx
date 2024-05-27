@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Calendar from 'react-calendar';
 import { useNavigate } from 'react-router-dom';
+import { findAllWorkDay } from '../../../../services/API/scheduleService';
 // import 'react-calendar/dist/Calendar.css';
-import { findAllWorkDay } from '../../../../services/API/ClinicService';
 
 
 function ManageSchedule() {
