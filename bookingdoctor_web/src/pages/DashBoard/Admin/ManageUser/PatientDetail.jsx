@@ -2,7 +2,7 @@ import React from 'react'
 
 function PatientDetail() {
   return (
-    <div>DetailPatient</div>
+    <div>PatientDetail</div>
   )
 }
 

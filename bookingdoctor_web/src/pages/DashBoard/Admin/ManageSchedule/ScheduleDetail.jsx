@@ -16,6 +16,7 @@ function ScheduleDetail() {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const day = queryParams.get("day");
+  const status = queryParams.get("status")
 
 
   // tabs
@@ -42,9 +43,9 @@ function ScheduleDetail() {
     setDoctors(doctorList);
   };
 
-  const handleChange = async (clinicId, departmentId, slotId, value) => {
+  const handleChange = async (departmentId, slotId, value) => {
     try {
-      await updateScheduleForAdmin(clinicId, departmentId, slotId, value)
+      await updateScheduleForAdmin(day, departmentId, slotId, value)
       loadClinic()
       Alert('success', 'Update Schedule Successfully', '')
 
@@ -63,10 +64,9 @@ function ScheduleDetail() {
     <Spinner />
   ) : (
     <>
-      <h1 className='mb-5'>Work Day : {day}</h1>
+      <h1 className='mb-5'>Work Day : {day} - {status == 1 ? <span className='text-success'>Active</span> : <span className='text-danger'>Finished</span>}</h1>
       <Tabs
         tabPosition={tabPosition}
-
         defaultActiveKey={null}
         centered
         items={clinic.departments.map((deptValue, i) => {
@@ -88,15 +88,17 @@ function ScheduleDetail() {
                 </div>
 
                 <Select
+                  disabled={status != 1}
                   mode="multiple"
                   style={{ width: '50%' }}
                   placeholder="select doctor"
                   defaultValue={slot.doctorsForSchedules.map(doctor => doctor.id.toString())}
-                  onChange={(value) => handleChange(clinic.clinicId, deptValue.id, slot.slotId, value)}
+                  onChange={(value) => handleChange(deptValue.id, slot.slotId, value)}
                   options={doctors.filter(doctor => doctor.department.id == deptValue.id)}
                   optionRender={(option) => (
                     <Space>
                       <span role="img" aria-label={option.data.fullName}>
+                      <img src={"http://localhost:8080/images/doctors/" + option.data.image} alt="" style={{ width: 30, height: 30, objectFit: 'cover', borderRadius: '50%', objectPosition: 'top' }} />
                         {option.data.fullName}
                       </span>
                       {option.data.birthday}
@@ -107,6 +109,7 @@ function ScheduleDetail() {
             )),
           };
         })}
+        
       />
     </>
   );

@@ -56,16 +56,16 @@ if (getUserData != null) {
                 icon: <ContactsTwoTone twoToneColor='#6699cc'/>,
                 key: "/dashboard/admin/manage-user",
             },
-            {
-                label: "Manage Patient",
-                key: "/dashboard/admin/manage-patient",
-                icon: <MedicineBoxTwoTone twoToneColor='red' />,
-            },
-            {
-                label: "Manage Doctor",
-                key: "/dashboard/admin/manage-doctor",
-                icon: <IdcardTwoTone twoToneColor='green' />,
-            },
+            // {
+            //     label: "Manage Patient",
+            //     key: "/dashboard/admin/manage-patient",
+            //     icon: <MedicineBoxTwoTone twoToneColor='red' />,
+            // },
+            // {
+            //     label: "Manage Doctor",
+            //     key: "/dashboard/admin/manage-doctor",
+            //     icon: <IdcardTwoTone twoToneColor='green' />,
+            // },
             {
                 label: "Manage Department",
                 key: "/dashboard/admin/manage-department",
@@ -164,6 +164,7 @@ const DashBoardLayout = ({ children }) => {
     } = theme.useToken();
 
 
+    console.log(curentPath)
     return (
         <AlertContext.Provider value={openNotificationWithIcon}>
 
@@ -376,7 +377,7 @@ const DashBoardLayout = ({ children }) => {
                                 padding: 24,
                                 minHeight: 360,
                                 position: 'relative',
-                                background: (curentPath != '' && curentPath != 'profile') ? colorBgContainer : 'none',
+                                background: (curentPath !== '' && curentPath !== 'profile' && curentPath !== 'manage-user / admindetail') ? colorBgContainer : 'none',
                                 borderRadius: '10px',
                             }}
                         >

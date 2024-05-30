@@ -2,16 +2,18 @@ package vn.aptech.backendapi.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import vn.aptech.backendapi.dto.SlotDto;
+import vn.aptech.backendapi.dto.CustomSlotWithScheduleDoctorId;
 import vn.aptech.backendapi.dto.Schedule.ScheduleWithDepartmentDto;
-
 import vn.aptech.backendapi.service.Schedule.ScheduleService;
 
 import java.time.LocalDate;
@@ -24,8 +26,8 @@ public class ScheduleController {
     private ScheduleService scheduleService;
 
     @GetMapping(value = "/getdays", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<String>> findAllOnlyDay() {
-        List<String> result = scheduleService.findAllOnlyDay();
+    public ResponseEntity<List<Object[]>> findAllOnlyDay() {
+        List<Object[]> result = scheduleService.findAllOnlyDay();
         return ResponseEntity.ok(result);
     }
 
@@ -35,19 +37,36 @@ public class ScheduleController {
         if (result != null) {
             return ResponseEntity.ok(result);
         } else {
-            return ResponseEntity.noContent().build(); // Trả về 204 No Content nếu không tìm thấy lịch
+            return ResponseEntity.noContent().build();
         }
     }
 
     @GetMapping(value = "/doctor/{doctorId}/day/{dayWorking}")
-    public ResponseEntity<List<SlotDto>> findByDayWorkingAndDoctorId(
+    public ResponseEntity<List<CustomSlotWithScheduleDoctorId>> findByDayWorkingAndDoctorId(
             @PathVariable("doctorId") int doctorId,
             @PathVariable("dayWorking") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dayWorking) {
-        List<SlotDto> result = scheduleService.findSlotsByDayAndDoctorId(dayWorking, doctorId);
+        List<CustomSlotWithScheduleDoctorId> result = scheduleService.findSlotsByDayAndDoctorId(dayWorking, doctorId);
         if (!result.isEmpty()) {
             return ResponseEntity.ok(result);
         } else {
             return ResponseEntity.notFound().build();
         }
     }
+
+    @PutMapping(value = "/updatelistschedule/{day}/{departmentId}/{slotId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> updateScheduleForAdmin(
+            @PathVariable("day") String day,
+            @PathVariable("departmentId") int departmentId,
+            @PathVariable("slotId") int slotId,
+
+            @RequestBody int[] doctorList) {
+        try {
+            scheduleService.updateScheduleForAdmin(LocalDate.parse(day), departmentId, slotId, doctorList);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Đã xảy ra lỗi khi cập nhật lịch: " + e.getMessage());
+        }
+    }
+
 }

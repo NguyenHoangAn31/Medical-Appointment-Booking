@@ -15,6 +15,104 @@ import Payment from '../../components/Card/Payment';
 import { formatDateFromJs } from '../../ultils/formatDate';
 
 const Booking = () => {
+  const slots = [
+    {
+      "id": 1,
+      "startTime": "08:00",
+    },
+    {
+      "id": 2,
+      "startTime": "08:30",
+    },
+    {
+      "id": 3,
+      "startTime": "09:00",
+    },
+    {
+      "id": 4,
+      "startTime": "09:30",
+    },
+    {
+      "id": 5,
+      "startTime": "10:00",
+    },
+    {
+      "id": 6,
+      "startTime": "10:30",
+    },
+    {
+      "id": 7,
+      "startTime": "11:00",
+    },
+    {
+      "id": 8,
+      "startTime": "11:30",
+    },
+    {
+      "id": 9,
+      "startTime": "13:00",
+    },
+    {
+      "id": 10,
+      "startTime": "13:30",
+    },
+    {
+      "id": 11,
+      "startTime": "14:00",
+    },
+    {
+      "id": 12,
+      "startTime": "14:30",
+    },
+    {
+      "id": 13,
+      "startTime": "15:00",
+    },
+    {
+      "id": 14,
+      "startTime": "15:30",
+    },
+    {
+      "id": 15,
+      "startTime": "16:00",
+    },
+    {
+      "id": 16,
+      "startTime": "16:30",
+    },
+    {
+      "id": 17,
+      "startTime": "18:00",
+    },
+    {
+      "id": 18,
+      "startTime": "18:30",
+    },
+    {
+      "id": 19,
+      "startTime": "19:00",
+    },
+    {
+      "id": 20,
+      "startTime": "19:30",
+    },
+    {
+      "id": 21,
+      "startTime": "20:00",
+    },
+    {
+      "id": 22,
+      "startTime": "20:30",
+    },
+    {
+      "id": 23,
+      "startTime": "21:00",
+    },
+    {
+      "id": 24,
+      "startTime": "21:30",
+    }
+  ]
   const currentDate = new Date();
   const months = [
     "January", "February", "March", "April", "May", "June",
@@ -35,10 +133,8 @@ const Booking = () => {
 
   const [doctorId, setDoctorId] = useState();
   const [searchName, setSearchName] = useState('');
-  const [slots, setSlots] = useState([]);
   const [schedules, setSchedules] = useState([]);
-  const [scheduleId, setScheduleId] = useState(0);
-  const [slotId, setSlotId] = useState(0);
+  const [scheduledoctorId, setScheduledoctorId] = useState('');
   const [slotName, setSlotName] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalData, setModalData] = useState(null);
@@ -63,6 +159,7 @@ const Booking = () => {
 
     }
   };
+
 
   const loadDayDefaults = () => {
     const ngayHienTai = new Date(); // Ngày hiện tại
@@ -90,10 +187,6 @@ const Booking = () => {
 
 
 
-
-
-
-
   // thực hiện load dữ liệu 1 lần 
   useEffect(() => {
     $('#datepicker').datepicker({
@@ -105,51 +198,27 @@ const Booking = () => {
     loadDoctors();
     loadDepartments();
     loadDayDefaults();
-    loadSlots();
   }, []);
 
 
   // Hàm tìm department của bác sỹ khám bệnh
   const handleServiceClick = async (index) => {
     setActiveDoctorIndex(0);
+    setDaySelected('')
     setSchedules([]);
     setActiveHourIndex('');
     setDoctorId(null)
+    setSlotName('')
     setActiveIndex(index);
     try {
       const fetchedDoctorDepartment = await axios.get('http://localhost:8080/api/doctor/related-doctor/' + index);
       setDoctors(fetchedDoctorDepartment.data)
+
     } catch (error) {
 
     }
   }
-  const loadSlots = async () => {
-    try {
-      const fetchedSclots = await axios.get('http://localhost:8080/api/slot/all');
-      setSlots(fetchedSclots.data.map(item => {
-        const startHourMinute = item.startTime.split(":");
-        const startHour = parseInt(startHourMinute[0]);
-        const startMinute = startHourMinute[1];
 
-        const endHourMinute = item.endTime.split(":");
-        const endHour = parseInt(endHourMinute[0]);
-        const endMinute = endHourMinute[1];
-
-        // Define new name array based on conditions
-        const name = [
-          `${startHour}:${startMinute}`,
-          `${startHour + (startMinute === "00" ? 0 : 1)}:${startMinute === "00" ? "30" : "00"}`
-        ];
-
-        return {
-          id: item.id,
-          name: name
-        };
-      }))
-    } catch (error) {
-
-    }
-  }
   const handleDayClick = async (index, day) => {
     if (doctorId == null) {
       alert('Vui lòng chọn bác sỹ trước khi chọn ngày')
@@ -182,18 +251,29 @@ const Booking = () => {
     }
   }
 
+
   const formatDate = (index) => {
     return format(Date(index), 'dd MMMM, yyyy')
   }
-
   const isSlotAvailable = (slot) => {
-    return schedules.find(slots => slots.id === slot);
-    // return schedules.find(schedule => schedule.slot.startTime === slot);
-  }
+    const foundSlot = schedules.find(slots => slots.startTime === slot);
+    if (foundSlot) {
+      if (foundSlot.status === 1) {
+        return { status: 'true', scheduledoctorId: foundSlot.scheduledoctorId };
+      } else {
+        return { status: 'booked' };
+      }
+    } else {
+      return { status: 'false' };
+    }
+  };
+
+
 
   // Tìm dữ liệu của 1 bác sỹ
   const handleDoctorClick = async (index) => {
     var defaultDate = new Date();
+    setDaySelected(formatDateFromJs(defaultDate))
     setDoctorId(index);
     setActiveDoctorIndex(index);
     setActiveHourIndex('');
@@ -201,13 +281,13 @@ const Booking = () => {
       const fetchedDoctor = await axios.get('http://localhost:8080/api/doctor/' + index);
       setDoctor(fetchedDoctor.data)
       const fetchedSlotByDoctorAndDay = await axios.get(`http://localhost:8080/api/schedules/doctor/${index}/day/${daySelected == '' ? formatDateFromJs(defaultDate) : daySelected}`);
-      console.log(fetchedSlotByDoctorAndDay.status);
       if (fetchedSlotByDoctorAndDay.status === 200) {
         setSchedules(fetchedSlotByDoctorAndDay.data);
+
+
       }
     } catch (error) {
       if (error.response && error.response.status === 404) {
-        console.log("404");
         setSchedules([]);
       } else {
         // Handle other errors
@@ -216,6 +296,7 @@ const Booking = () => {
     }
   }
 
+
   const handleSearch = async (event) => {
     setSearchName(event.target.value);
     if (event.target.value) {
@@ -223,38 +304,39 @@ const Booking = () => {
       setDoctors(response.data);
     }
   }
-  const handleSlotClick = (slotName, slotId) => {
-    setActiveHourIndex(slotName);
-    console.log(slotId)
-    // setSlotId(slotId);
-    // setScheduleId(id);
-    // setActiveHourIndex(slotId);
-    // setSlotName(slotName);
+  const handleSlotClick = (slot_Name, slot_Id, scheduledoctor_Id) => {
+    setActiveHourIndex(slot_Id);
+    setSlotName(slot_Name);
+    setScheduledoctorId(scheduledoctor_Id);
   }
+
+  console.log(schedules)
+
   const handleSubmitBook = () => {
     if (!getUserData) {
       alert('Vui lòng đăng nhập để sử dụng chức năng này!');
       return;
     }
+    else if (slotName == '') {
+      alert('Please select choose a slot !');
+      return;
+    }
     const data = {
-      patientId: getUserData.user.id,
-      patientName: getUserData.user.fullName,
-      doctorTitle: doctor.title,
-      doctorName: doctor.fullName,
-      scheduleId: scheduleId,
-      dayselect: formatDate(daySelected),
-      slotName: slotName,
+      doctorId:doctorId,
+      partientId: getUserData.user.id,
+      scheduledoctorId: scheduledoctorId,
+      clinicHours: slotName,
       price: doctor.price,
-      day: daySelected,
-      payment: '',
+      bookingDate: daySelected,
+      payment: 'null',
       status: 'success',
     }
-    console.log(data);
     setModalData(data);
     setIsModalOpen(true);
 
   }
 
+  console.log(daySelected)
   const RatingStar = ({ rating }) => {
     const fullStar = '★';
     const emptyStar = '☆';
@@ -278,9 +360,8 @@ const Booking = () => {
     slidesToScroll: 2
   };
 
-  console.log(schedules)
 
-
+  console.log(slotName)
 
   return (
     <section className='container'>
@@ -361,37 +442,36 @@ const Booking = () => {
                     </div>
                     <div className="body_date">
 
+
+
+
                       {slots.map((slot, index) => {
-                        const matchedSchedule = isSlotAvailable(slot.id);
+                        const matchedSchedule = isSlotAvailable(slot.startTime);
+                        let slotClass = 'hour_item';
+
+                        if (matchedSchedule.status === 'true') {
+                          slotClass += ' selectable';
+                        } else if (matchedSchedule.status === 'false') {
+                          slotClass += ' disabled';
+                        }
                         return (
-                          <React.Fragment key={slot.id}> {/* Add a key to the outer element */}
-                            {Array.isArray(slot['name']) && slot['name'].map((value, idx) => (
-                              <div
-                                onClick={() => matchedSchedule && handleSlotClick(value, slot.id)}
-                                key={`${slot.id}-${idx}`} // Ensure the key is unique by combining slot.id and idx
-                                className={`hour_item ${matchedSchedule ? '' : 'disabled'} ${activeHourIndex === value ? 'active' : ''}`}
-                              >
-                                {value}
-                              </div>
-                            ))}
-                          </React.Fragment>
+                          <div
+                            key={index}
+                            className={`${slotClass} ${activeHourIndex === slot.id ? 'active' : ''} position-relative`}
+                            onClick={() => matchedSchedule.status === 'true' && handleSlotClick(slot.startTime, slot.id, matchedSchedule.scheduledoctorId)}
+                            data-id={matchedSchedule === true ? matchedSchedule.id : null}
+                          >
+                            <div>{slot.startTime}</div>
+
+                            {matchedSchedule.status === 'booked' && (
+                              <span className="badge position-absolute" style={{ top: '1px', left: '-14px', rotate: '-39deg', background: 'red' }}>Booked</span>
+                            )}
+                          </div>
                         );
                       })}
 
 
-                      {/* {slots.map((slot, index) => {
-                        const matchedSchedule = isSlotAvailable(slot.startTime);
-                        return (
-                          <div
-                            key={index}
-                            className={`hour_item ${matchedSchedule ? '' : 'disabled'} ${activeHourIndex === slot.id ? 'active' : ''}`}
-                            onClick={() => matchedSchedule && handleSlotClick(slot.id, matchedSchedule.id, slot.startTime)}
-                            data-id="{matchedSchedule.id}"
-                          >
-                            <div>{slot.startTime}</div>
-                          </div>
-                        );
-                      })} */}
+
                     </div>
                     <div className="footer_date">
                       <div className="date_view">
@@ -464,7 +544,7 @@ const Booking = () => {
           </div>
         </div>
       </div>
-      {isModalOpen && <Payment data={modalData} isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />}
+      {isModalOpen && <Payment setSchedules={setSchedules} data={modalData} isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />}
     </section>
   )
 }

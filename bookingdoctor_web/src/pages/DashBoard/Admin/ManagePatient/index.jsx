@@ -39,6 +39,7 @@ const ManagePatient = () => {
 
 
 
+  console.log(patients)
   // tải dữ liệu và gán vào patients thông qua hàm setPatients
   const loadPatients = async () => {
     const fetchedPatients = await getAllPatient();
