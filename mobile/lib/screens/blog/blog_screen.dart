@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 
 class BlogScreen extends StatefulWidget {
@@ -11,6 +12,12 @@ class BlogScreen extends StatefulWidget {
 class _BlogScreenState extends State<BlogScreen> {
   @override
   Widget build(BuildContext context) {
-    return const Text("Blog Screen");
+    return const Scaffold(
+      body: Center(
+        child: Text('Blog Screen'),
+      ),
+      // bottomNavigationBar: BottomNavigationBarItem(
+      //     icon: Icon(Icons.home)),
+    );
   }
 }

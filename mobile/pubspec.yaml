@@ -31,14 +31,17 @@ dependencies:
   flutter:
     sdk: flutter
 
-
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.6
+  get: ^4.6.6
+  awesome_dialog: ^3.2.1
+  font_awesome_flutter: ^10.7.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
@@ -62,6 +65,16 @@ flutter:
   assets:
      - assets/images/logo.png
      - assets/images/Loading.png
+     - assets/images/doctor_01.png
+     - assets/images/login_default.jpg
+     - assets/images/dermatology.png
+     - assets/images/fetus.png
+     - assets/images/ophthalmology.png
+     - assets/images/pediatrics.png
+     - assets/images/rehabilitation.png
+     - assets/images/tooth.png
+     - assets/images/no_result_default.png
+
 
 
   # An image asset can refer to one or more resolution-specific "variants", see
