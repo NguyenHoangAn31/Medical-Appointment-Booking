@@ -59,6 +59,7 @@ const ManageUser = () => {
   };
 
 
+  console.log(users)
   // tải dữ liệu và gán vào users thông qua hàm setUsers
   const loadUsers = async () => {
     const fetchedUsers = await getAllUser();
@@ -213,7 +214,7 @@ const ManageUser = () => {
       title: 'Name',
       dataIndex: 'fullName',
       key: 'fullName',
-      width: '13%',
+      width: '10%',
       filteredValue: filteredInfo.fullName || null,
       sorter: (a, b) => a.fullName.localeCompare(b.fullName),
       sortOrder: sortedInfo.columnKey === 'fullName' ? sortedInfo.order : null,
@@ -225,7 +226,7 @@ const ManageUser = () => {
       title: 'Role',
       dataIndex: 'roles',
       key: 'roles',
-      width: '10%',
+      width: '8%',
       filters: [
         {
           text: 'User',
@@ -247,7 +248,7 @@ const ManageUser = () => {
       title: 'Provider',
       dataIndex: 'provider',
       key: 'provider',
-      width: '10%',
+      width: '8%',
       filters: [
         {
           text: 'Gmail',
@@ -266,17 +267,28 @@ const ManageUser = () => {
       title: 'Action',
       width: '10%',
       dataIndex: 'operation',
-      render: (_, record) => (
-        <div style={{ display: 'flex', justifyContent: 'center' }}>
-          <Link style={{ marginRight: '16px' }}
-            to={`/dashboard/admin/manage-user/detail?id=${record.id}`}>
-            <Button type="primary" icon={<EyeOutlined />} >
-              Information
-            </Button>
-          </Link>
+      render: (_, record) => {
+        let redirectUrl;
+        const role = record.roles[0];
+        if (role === 'ADMIN') {
+          redirectUrl = `/dashboard/admin/manage-user/admindetail?id=${record.id}`;
+        } else if (role === 'DOCTOR') {
+          redirectUrl = `/dashboard/admin/manage-user/doctordetail?id=${record.id}`;
+        } else if (role === 'USER') {
+          redirectUrl = `/dashboard/admin/manage-user/patientdetail?id=${record.id}`;
+        }
 
-        </div>
-      ),
+        return (
+          <div style={{ display: 'flex', justifyContent: 'center' }}>
+            <Link style={{ marginRight: '16px' }} to={redirectUrl}>
+              <Button type="primary" icon={<EyeOutlined />} >
+                Information
+              </Button>
+            </Link>
+          </div>
+        );
+      }
+
     },
   ];
   return (
@@ -295,10 +307,10 @@ const ManageUser = () => {
 
         <div className='d-flex gap-3'>
           <>
-            <Button  onClick={showModal} icon={<PlusOutlined />}>
+            <Button onClick={showModal} icon={<PlusOutlined />}>
               Add New Admin
             </Button>
-            <Button  onClick={showModal} icon={<PlusOutlined />}>
+            <Button onClick={showModal} icon={<PlusOutlined />}>
               Add New Doctor
             </Button>
 

@@ -1,8 +1,10 @@
 package vn.aptech.backendapi.service.Schedule;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import vn.aptech.backendapi.dto.CustomSlotWithScheduleDoctorId;
 import vn.aptech.backendapi.dto.SlotDto;
 import vn.aptech.backendapi.dto.Schedule.DepartmentWithSlotsDTO;
 import vn.aptech.backendapi.dto.Schedule.DoctorDtoForSchedule;
@@ -10,14 +12,19 @@ import vn.aptech.backendapi.dto.Schedule.ScheduleWithDepartmentDto;
 import vn.aptech.backendapi.dto.Schedule.SlotWithDoctorsDTO;
 import vn.aptech.backendapi.entities.Department;
 import vn.aptech.backendapi.entities.Doctor;
+import vn.aptech.backendapi.entities.Schedule;
+import vn.aptech.backendapi.entities.ScheduleDoctor;
 import vn.aptech.backendapi.entities.Slot;
-
+import vn.aptech.backendapi.repository.AppointmentRepository;
+import vn.aptech.backendapi.repository.DoctorRepository;
+import vn.aptech.backendapi.repository.ScheduleDoctorRepository;
 import vn.aptech.backendapi.repository.ScheduleRepository;
 
-
 import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
-
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -25,10 +32,22 @@ public class ScheduleServiceImpl implements ScheduleService {
     @Autowired
     private ScheduleRepository scheduleRepository;
 
+    @Autowired
+    private ScheduleDoctorRepository scheduleDoctorRepository;
+
+    @Autowired
+    private AppointmentRepository appointmentRepository;
+
+    @Autowired
+    private DoctorRepository doctorRepository;
+
+
+    @Autowired
+    private ModelMapper mapper;
 
     @Override
-    public List<String> findAllOnlyDay() {
-        return scheduleRepository.findDistinctDayWork();
+    public List<Object[]> findAllOnlyDay() {
+        return scheduleRepository.findDistinctDayWorkWithStatus();
     }
 
     @Override
@@ -55,12 +74,66 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     }
 
-    public List<SlotDto> findSlotsByDayAndDoctorId(LocalDate dayWorking, int doctorId){
-        List<Slot> s = scheduleRepository.findSlotsByDayAndDoctorId(dayWorking,doctorId);
-        return s.stream().map(
-            slot -> new SlotDto(slot.getId(), slot.getStartTime().toString(), slot.getEndTime().toString()))
-            .collect(Collectors.toList());
+    public void updateScheduleForAdmin(LocalDate dayWorking, int departmentId, int slotId, int[] doctorList) {
+        int scheduleId = scheduleRepository.findScheduleIdByDayAndDepartmentIdAndSlotId(dayWorking, departmentId,
+                slotId);
+        List<ScheduleDoctor> sDoctors = scheduleRepository.findByScheduleId(scheduleId);
+        List<Integer> existingDoctorIds = new ArrayList<>();
+        for (ScheduleDoctor scheduleDoctor : sDoctors) {
+
+            existingDoctorIds.add(scheduleDoctor.getDoctor().getId());
+        }
+
+        List<Integer> newDoctorIds = new ArrayList<>();
+        for (int doctorId : doctorList) {
+            newDoctorIds.add(doctorId);
+        }
+
+        for (ScheduleDoctor scheduleDoctor : sDoctors) {
+            if (!newDoctorIds.contains(scheduleDoctor.getDoctor().getId())) {
+                scheduleDoctorRepository.delete(scheduleDoctor);
+            }
+        }
+
+        for (int doctorId : doctorList) {
+            if (!existingDoctorIds.contains(doctorId)) {
+                ScheduleDoctor scheduleDoctor = new ScheduleDoctor();
+
+                Optional<Doctor> d = doctorRepository.findById(doctorId);
+                d.ifPresent(doctor -> scheduleDoctor.setDoctor(mapper.map(d, Doctor.class)));
+
+                Optional<Schedule> s = scheduleRepository.findById(scheduleId);
+                d.ifPresent(schedule -> scheduleDoctor.setSchedule(mapper.map(s, Schedule.class)));
+
+                scheduleDoctorRepository.save(scheduleDoctor);
+            }
+        }
     }
 
-   
+    public List<CustomSlotWithScheduleDoctorId> findSlotsByDayAndDoctorId(LocalDate dayWorking, int doctorId) {
+        List<Slot> slots = scheduleRepository.findSlotsByDayAndDoctorId(dayWorking, doctorId);
+        List<CustomSlotWithScheduleDoctorId> result = new ArrayList<>();
+
+        List<String> clinicHoursByBookingDateAndDoctorId = appointmentRepository.findClinicHoursByBookingDateAndDoctorId(dayWorking, doctorId)
+        .stream()
+        .map(LocalTime::toString)
+        .collect(Collectors.toList());
+
+        for (Slot slot : slots) {
+            LocalTime startTime = slot.getStartTime();
+            LocalTime endTime = slot.getEndTime();
+            while (startTime.isBefore(endTime)) {
+                LocalTime nextTime = startTime.plusMinutes(30);
+                if (nextTime.isAfter(endTime)) {
+                    nextTime = endTime;
+                }
+                int scheduleDoctorId = scheduleDoctorRepository.findScheduleDoctorIdByDayWorkingSlotIdAndDoctorId(dayWorking, slot.getId(), doctorId);
+                int status = clinicHoursByBookingDateAndDoctorId.contains(startTime.toString()) ? 0 : 1;
+                result.add(new CustomSlotWithScheduleDoctorId(slot.getId(), startTime.toString(), status, scheduleDoctorId));
+                startTime = nextTime;
+            }
+        }
+        return result;
+    }
+
 }

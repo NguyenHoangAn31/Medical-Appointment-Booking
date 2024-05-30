@@ -21,10 +21,9 @@ export const findScheduleByDay = async (day) => {
     }
 }
 
-export const updateScheduleForAdmin = async (clinicId , departmentId , slotId , doctorList) => {
-    console.log(doctorList)
+export const updateScheduleForAdmin = async (day , departmentId , slotId , doctorList) => {
     try {
-        await request.put(`schedules/updatelistschedule/${clinicId}/${departmentId}/${slotId}`,doctorList);
+        await request.put(`schedules/updatelistschedule/${day}/${departmentId}/${slotId}`,doctorList);
     } catch (error) {
         console.log(error);
         throw error;

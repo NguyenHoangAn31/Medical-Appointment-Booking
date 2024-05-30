@@ -36,7 +36,8 @@ function ManageSchedule() {
   };
 
 
-  const formattedDates = workDay.map(dateString => {
+  const formattedDates = workDay.map(dateArr => {
+    const dateString = dateArr[0];
     const dateObj = new Date(dateString);
     const options = { month: 'long', day: 'numeric', year: 'numeric' };
     return dateObj.toLocaleDateString('en-US', options);
@@ -52,7 +53,7 @@ function ManageSchedule() {
         buttonElement.style.color = '#7dff79';
       }
     });
-  }, [value,workDay]);
+  }, [value, workDay]);
 
 
 
@@ -62,10 +63,16 @@ function ManageSchedule() {
     const year = dateObj.getFullYear();
     const month = String(dateObj.getMonth() + 1).padStart(2, '0');
     const day = String(dateObj.getDate()).padStart(2, '0');
-
+    var status = 0;
     const formattedDate = `${year}-${month}-${day}`;
-
-    navigate(`/dashboard/admin/manage-schedule/detail?day=${formattedDate}`);
+    for (let i = 0; i < workDay.length; i++) {
+      const [date, value] = workDay[i];
+      if (date === formattedDate) {
+        status = value ? 1 : 0;
+        break;
+      }
+    }
+    navigate(`/dashboard/admin/manage-schedule/detail?day=${formattedDate}&status=${status}`);
   };
 
 
