@@ -2,7 +2,9 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 //import 'package:mobile/screens/home_screen.dart';
-import 'package:mobile/screens/login_screen.dart';
+
+import '../widgets/navigation_menu.dart';
+//import 'package:mobile/screens/login_screen.dart';
 
 class WelcomeScreen extends StatefulWidget {
   const WelcomeScreen({super.key});
@@ -11,16 +13,26 @@ class WelcomeScreen extends StatefulWidget {
   State<WelcomeScreen> createState() => _WelcomeScreenState();
 }
 
-class _WelcomeScreenState extends State<WelcomeScreen> {
+class _WelcomeScreenState extends State<WelcomeScreen> with SingleTickerProviderStateMixin  {
+  late AnimationController _controller;
   @override
   void initState() {
     super.initState();
-    Timer(const Duration(seconds: 5), () {
+    Timer(const Duration(seconds: 3), () {
       Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => const LoginScreen()),
-        //MaterialPageRoute(builder: (context) => const HomeScreen()),
+        //MaterialPageRoute(builder: (context) => const LoginScreen()),
+        MaterialPageRoute(builder: (context) => const NavigationMenu()),
       );
     });
+    _controller = AnimationController(
+      duration: const Duration(seconds: 3),
+      vsync: this,
+    )..repeat();
+  }
+  @override
+  void dispose() {
+    _controller.dispose(); // Dispose the controller when the widget is disposed
+    super.dispose();
   }
   @override
   Widget build(BuildContext context) {
@@ -42,22 +54,22 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
           )
         ],
       ),
-      child: const Stack(
+      child: Stack(
         children: [
-          Positioned(
-            left: 139,
-            top: 358,
+          const Positioned(
+            left: 135,
+            top: 220,
             child: SizedBox(
-              width: 96,
-              height: 96,
+              width: 150,
+              height: 150,
               child: Image(
                 image: AssetImage('assets/images/logo.png'),
               ),
             ),
           ),
-          Positioned(
-            left: 159,
-            top: 702,
+         Positioned(
+            left: 180,
+            top: 600,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.start,
@@ -66,8 +78,11 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                 SizedBox(
                   width: 56,
                   height: 56,
-                  child: Image(
-                    image: AssetImage('assets/images/Loading.png'),
+                  child: RotationTransition(
+                    turns: _controller,
+                    child: const Image(
+                      image: AssetImage('assets/images/Loading.png'),
+                    ),
                   ),
                 ),
               ],
