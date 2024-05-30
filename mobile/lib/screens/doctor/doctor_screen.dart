@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 
 class DoctorScreen extends StatefulWidget {
@@ -11,6 +12,12 @@ class DoctorScreen extends StatefulWidget {
 class _DoctorScreenState extends State<DoctorScreen> {
   @override
   Widget build(BuildContext context) {
-    return const Text("Doctor Screen");
+    return const Scaffold(
+      body: Center(
+        child: Text('Doctor Screen'),
+      ),
+      // bottomNavigationBar: BottomNavigationBarItem(
+      //     icon: Icon(Icons.home)),
+    );
   }
 }

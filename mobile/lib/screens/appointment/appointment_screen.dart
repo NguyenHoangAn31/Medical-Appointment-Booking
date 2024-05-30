@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 
 class AppointmentScreen extends StatefulWidget {
@@ -11,6 +12,12 @@ class AppointmentScreen extends StatefulWidget {
 class _AppointmentScreenState extends State<AppointmentScreen> {
   @override
   Widget build(BuildContext context) {
-    return const Text("Appointment Screen");
+    return const Scaffold(
+      body: Center(
+        child: Text('Appointment Screen'),
+      ),
+      // bottomNavigationBar: BottomNavigationBarItem(
+      //     icon: Icon(Icons.home)),
+    );
   }
 }
