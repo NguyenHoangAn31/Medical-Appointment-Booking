@@ -15,9 +15,11 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
     return DefaultTabController(
         length: 4,
         child: Scaffold(
+
           appBar: AppBar(
+            toolbarHeight: 80,
             //backgroundColor: Colors.blue,
-            title: const Text('My Appointment'),
+            title: const Text('My Appointment', style: TextStyle(color: Colors.black, fontSize: 22)),
             actions: [
               IconButton(
                 icon: const Icon(Icons.search),
