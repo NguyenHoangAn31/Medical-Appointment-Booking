@@ -17,6 +17,5 @@ public class QualificationDto {
     private String degreeName;
     private String universityName;
     private String course;
-    private int doctor;
-
+    private int doctor_id;
 }

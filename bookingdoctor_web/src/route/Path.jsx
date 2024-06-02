@@ -17,7 +17,7 @@ const publicRouters = [
     { path: '/login-by-gmail', component: Client.LoginGmail, layout: ClientLayout },
     { path: '/login-by-gmail-submit', component: Client.LoginGmailStep, layout: ClientLayout },
     { path: '/booking', component: Client.Booking, layout: ClientLayout },
-    { path: '/signup', component: Client.Signup, layout: ClientLayout },     
+    { path: '/signup', component: Client.Signup, layout: ClientLayout },
     { path: '/blog', component: Client.Blog, layout: ClientLayout },
     { path: '/blog/:id', component: Client.BlogDetail, layout: ClientLayout },
 ]
@@ -32,7 +32,8 @@ const patientRouters = [
 const doctorRouters = [
     { path: '/dashboard/doctor', component: DashBoard.DashboardDoctor, layout: DashBoardLayout },
     { path: '/dashboard/doctor/profile', component: DashBoard.ProfileDoctor, layout: DashBoardLayout },
-    { path: '/dashboard/doctor/schedule', component: DashBoard.Schedule, layout: DashBoardLayout }
+    { path: '/dashboard/doctor/schedule', component: DashBoard.Schedule, layout: DashBoardLayout },
+    { path: '/dashboard/doctor/edit/:id', component: DashBoard.EditProfileDoctor, layout: DashBoardLayout },
 ]
 const adminRouters = [
     { path: '/dashboard/admin', component: DashBoard.DashboardAdmin, layout: DashBoardLayout },
