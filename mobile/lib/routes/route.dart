@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import '../screens/auth/login_screen.dart';
 import '../screens/auth/register_screen.dart';
 import '../screens/auth/signin_screen.dart';
+import '../screens/doctor/doctor_detail_screen.dart';
 import '../widgets/navigation_menu.dart';
 
 class Routes {
@@ -14,6 +15,7 @@ class Routes {
       '/login': (context) => const LoginScreen(),
       '/register': (context) => const RegisterScreen(),
       '/sign-in': (context) => const SignInScreen(),
+      '/doctor': (context) => const DoctorDetailScreen(),
     };
   }
 }

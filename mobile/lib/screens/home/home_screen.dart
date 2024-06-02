@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mobile/ultils/color_app.dart';
+import 'package:mobile/ultils/list_service.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -13,28 +14,21 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final TextEditingController _searchController = TextEditingController();
+  int _selectedIndex = 0;
+  bool _isSelectedHeart= false;
   final List<Map<String, String>> services = [
-    {
-      "icon": "assets/images/dermatology.png",
-      "name": "Dermatology"
-    },
-    {
-      "icon": "assets/images/fetus.png",
-      "name": "Fetus"
-    },
-    {
-      "icon": "assets/images/ophthalmology.png",
-      "name": "Ophthalmology"
-    },
-    {
-      "icon": "assets/images/pediatrics.png",
-      "name": "Pediatrics"},
-    {
-      "icon": "assets/images/rehabilitation.png",
-      "name": "Rehabilitation"
-    },
-
+    {"icon": "assets/images/dermatology.png", "name": "Dermatology"},
+    {"icon": "assets/images/fetus.png", "name": "Fetus"},
+    {"icon": "assets/images/ophthalmology.png", "name": "Ophthalmology"},
+    {"icon": "assets/images/pediatrics.png", "name": "Pediatrics"},
+    {"icon": "assets/images/rehabilitation.png", "name": "Rehabilitation"},
   ];
+
+  void _handleSelected(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -413,7 +407,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     // List view Service
                     SizedBox(
-                      height: 500, // Đặt chiều cao phù hợp cho GridView
+                      height: 250, // Đặt chiều cao phù hợp cho GridView
                       child: GridView.builder(
                         padding: const EdgeInsets.all(10),
                         itemCount: services.length,
@@ -425,30 +419,173 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                         itemBuilder: (BuildContext context, int index) =>
                             Container(
-                              child: SingleChildScrollView(
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min, // Adjusts the column to take minimum space
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            // Adjusts the column to take minimum space
+                            children: [
+                              ClipRRect(
+                                child: Opacity(
+                                  opacity: 0.6,
+                                  child: Container(
+                                    width: 60,
+                                    height: 60,
+                                    padding: const EdgeInsets.all(15),
+                                    decoration: BoxDecoration(
+                                      gradient: const LinearGradient(
+                                        begin: Alignment(-1.00, 0.08),
+                                        end: Alignment(1, -0.08),
+                                        colors: [
+                                          Color(0xFF92A3FD),
+                                          Color(0xFF9DCEFF)
+                                        ],
+                                      ),
+                                      borderRadius: BorderRadius.circular(50),
+                                    ),
+                                    child: Image.asset(
+                                      services[index]["icon"]!,
+                                      width: 25,
+                                      height: 25,
+                                      //fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 4,
+                              ),
+                              Text(
+                                services[index]["name"]!,
+                                style: TextStyle(
+                                  color: AppColor.primaryText,
+                                  fontSize: 13,
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                                // Thêm dấu ba chấm nếu văn bản quá dài
+                                maxLines: 1,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Top Doctors',
+                          style: TextStyle(
+                            color: AppColor.primaryText,
+                            fontSize: 20,
+                            fontFamily: 'Poppins',
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            // Navigate to Create Account screen
+                            Navigator.pushNamed(context, '/home');
+                          },
+                          child: const Text(
+                            'SEE ALL',
+                            style: TextStyle(
+                              color: Color(0xFF92A3FD),
+                              fontSize: 14,
+                              fontFamily: 'Poppins',
+                              fontWeight: FontWeight.w600,
+                              letterSpacing: 0.11,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        children: [
+                          ListService(
+                              index: 0,
+                              text: 'All',
+                              selectedIndex: _selectedIndex,
+                              onSelected: _handleSelected,
+                          ),
+                          const SizedBox(width: 8),
+                          ListService(
+                              index: 1,
+                              text: 'Dermatology',
+                              selectedIndex: _selectedIndex,
+                              onSelected: _handleSelected,),
+                          const SizedBox(width: 8),
+                          ListService(
+                            index: 2,
+                            text: 'Fetus',
+                            selectedIndex: _selectedIndex,
+                            onSelected: _handleSelected,
+                          ),
+                          const SizedBox(width: 8),
+                          ListService(
+                            index: 3,
+                            text: 'Ophthalmology',
+                            selectedIndex: _selectedIndex,
+                            onSelected: _handleSelected,
+                          ),
+                          const SizedBox(width: 8),
+                          ListService(
+                            index: 4,
+                            text: 'Pediatrics',
+                            selectedIndex: _selectedIndex,
+                            onSelected: _handleSelected,
+                          ),
+                          const SizedBox(width: 8),
+                          ListService(
+                            index: 5,
+                            text: 'Rehabilitation',
+                            selectedIndex: _selectedIndex,
+                            onSelected: _handleSelected,
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 20,),
+                    Column(
+                      children: [
+                         Container(
+                           height: 120,
+                           padding: const EdgeInsets.all(20),
+                           decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(20),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.1),
+                                  spreadRadius: 1,
+                                  blurRadius: 1,
+                                  offset: const Offset(0, 1), // changes position of shadow
+                                ),
+                              ],
+                           ),
+                           child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
                                   children: [
                                     ClipRRect(
                                       child: Opacity(
                                         opacity: 0.6,
                                         child: Container(
-                                          width: 60,
-                                          height: 60,
-                                          padding: const EdgeInsets.all(15),
+                                          width: 80,
+                                          height: 80,
+                                          padding: const EdgeInsets.all(5),
                                           decoration: BoxDecoration(
-                                            gradient: const LinearGradient(
-                                              begin: Alignment(-1.00, 0.08),
-                                              end: Alignment(1, -0.08),
-                                              colors: [
-                                                Color(0xFF92A3FD),
-                                                Color(0xFF9DCEFF)
-                                              ],
-                                            ),
+                                            color: Colors.grey,
                                             borderRadius: BorderRadius.circular(50),
                                           ),
                                           child: Image.asset(
-                                            services[index]["icon"]!,
+                                            'assets/images/doctor_01.png',
                                             width: 25,
                                             height: 25,
                                             //fit: BoxFit.cover,
@@ -456,20 +593,390 @@ class _HomeScreenState extends State<HomeScreen> {
                                         ),
                                       ),
                                     ),
-                                    const SizedBox(height: 4,),
-                                    Text(
-                                      services[index]["name"]!,
-                                      style: TextStyle(
-                                        color: AppColor.primaryText,
-                                        fontSize: 13,
-                                      ),
+                                    const SizedBox(width: 20,),
+                                    const Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                          Text('Dr. William Smith',
+                                            style: TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.bold,
+                                            ),),
+                                          SizedBox(height: 5),
+                                          Text(
+                                            'Fetus | Medical Hospital',
+                                            style: TextStyle(
+                                              color: Colors.grey,
+                                              fontSize: 13,
+                                            ),),
+                                          SizedBox(height: 5),
+                                          Row(
+                                            crossAxisAlignment: CrossAxisAlignment.center,
+                                            children: [
+                                              Icon(Icons.star, size: 18, color: Colors.orange),
+                                              SizedBox(width: 10),
+                                              Text('5.0')
+                                            ],
+                                          )
+                                      ],
                                     ),
+
                                   ],
                                 ),
-                              )
+                                IconButton(
+                                    //alignment: Alignment.topRight,
+                                    onPressed: () {
+                                       setState(() {
+                                         _isSelectedHeart = !_isSelectedHeart;
+                                       });
+                                    },
+                                    icon: _isSelectedHeart ? const Icon(Icons.favorite, color: Color(0xFF92A3FD),) : const Icon(Icons.favorite_border, color: Color(0xFF92A3FD))
+                                ),
+                              ],
+                           ),
+                         ),
+                         const SizedBox(height: 10,),
+                         Container(
+                          height: 120,
+                          padding: const EdgeInsets.all(20),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(20),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.1),
+                                spreadRadius: 1,
+                                blurRadius: 1,
+                                offset: const Offset(0, 1), // changes position of shadow
+                              ),
+                            ],
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  ClipRRect(
+                                    child: Opacity(
+                                      opacity: 0.6,
+                                      child: Container(
+                                        width: 80,
+                                        height: 80,
+                                        padding: const EdgeInsets.all(5),
+                                        decoration: BoxDecoration(
+                                          color: Colors.grey,
+                                          borderRadius: BorderRadius.circular(50),
+                                        ),
+                                        child: Image.asset(
+                                          'assets/images/doctor_01.png',
+                                          width: 25,
+                                          height: 25,
+                                          //fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 20,),
+                                  const Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text('Dr. William Smith',
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.bold,
+                                        ),),
+                                      SizedBox(height: 5),
+                                      Text(
+                                        'Fetus | Medical Hospital',
+                                        style: TextStyle(
+                                          color: Colors.grey,
+                                          fontSize: 13,
+                                        ),),
+                                      SizedBox(height: 5),
+                                      Row(
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        children: [
+                                          Icon(Icons.star, size: 18, color: Colors.orange),
+                                          SizedBox(width: 10),
+                                          Text('5.0')
+                                        ],
+                                      )
+                                    ],
+                                  ),
 
-                            ),
-                      ),
+                                ],
+                              ),
+                              IconButton(
+                                //alignment: Alignment.topRight,
+                                  onPressed: () {
+                                    setState(() {
+                                      _isSelectedHeart = !_isSelectedHeart;
+                                    });
+                                  },
+                                  icon: _isSelectedHeart ? const Icon(Icons.favorite, color: Color(0xFF92A3FD),) : const Icon(Icons.favorite_border, color: Color(0xFF92A3FD))
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 10,),
+                         Container(
+                          height: 120,
+                          padding: const EdgeInsets.all(20),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(20),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.1),
+                                spreadRadius: 1,
+                                blurRadius: 1,
+                                offset: const Offset(0, 1), // changes position of shadow
+                              ),
+                            ],
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  ClipRRect(
+                                    child: Opacity(
+                                      opacity: 0.6,
+                                      child: Container(
+                                        width: 80,
+                                        height: 80,
+                                        padding: const EdgeInsets.all(5),
+                                        decoration: BoxDecoration(
+                                          color: Colors.grey,
+                                          borderRadius: BorderRadius.circular(50),
+                                        ),
+                                        child: Image.asset(
+                                          'assets/images/doctor_01.png',
+                                          width: 25,
+                                          height: 25,
+                                          //fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 20,),
+                                  const Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text('Dr. William Smith',
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.bold,
+                                        ),),
+                                      SizedBox(height: 5),
+                                      Text(
+                                        'Fetus | Medical Hospital',
+                                        style: TextStyle(
+                                          color: Colors.grey,
+                                          fontSize: 13,
+                                        ),),
+                                      SizedBox(height: 5),
+                                      Row(
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        children: [
+                                          Icon(Icons.star, size: 18, color: Colors.orange),
+                                          SizedBox(width: 10),
+                                          Text('5.0')
+                                        ],
+                                      )
+                                    ],
+                                  ),
+
+                                ],
+                              ),
+                              IconButton(
+                                //alignment: Alignment.topRight,
+                                  onPressed: () {
+                                    setState(() {
+                                      _isSelectedHeart = !_isSelectedHeart;
+                                    });
+                                  },
+                                  icon: _isSelectedHeart ? const Icon(Icons.favorite, color: Color(0xFF92A3FD),) : const Icon(Icons.favorite_border, color: Color(0xFF92A3FD))
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 10,),
+                        Container(
+                          height: 120,
+                          padding: const EdgeInsets.all(20),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(20),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.1),
+                                spreadRadius: 1,
+                                blurRadius: 1,
+                                offset: const Offset(0, 1), // changes position of shadow
+                              ),
+                            ],
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  ClipRRect(
+                                    child: Opacity(
+                                      opacity: 0.6,
+                                      child: Container(
+                                        width: 80,
+                                        height: 80,
+                                        padding: const EdgeInsets.all(5),
+                                        decoration: BoxDecoration(
+                                          color: Colors.grey,
+                                          borderRadius: BorderRadius.circular(50),
+                                        ),
+                                        child: Image.asset(
+                                          'assets/images/doctor_01.png',
+                                          width: 25,
+                                          height: 25,
+                                          //fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 20,),
+                                  const Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text('Dr. William Smith',
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.bold,
+                                        ),),
+                                      SizedBox(height: 5),
+                                      Text(
+                                        'Fetus | Medical Hospital',
+                                        style: TextStyle(
+                                          color: Colors.grey,
+                                          fontSize: 13,
+                                        ),),
+                                      SizedBox(height: 5),
+                                      Row(
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        children: [
+                                          Icon(Icons.star, size: 18, color: Colors.orange),
+                                          SizedBox(width: 10),
+                                          Text('5.0')
+                                        ],
+                                      )
+                                    ],
+                                  ),
+
+                                ],
+                              ),
+                              IconButton(
+                                //alignment: Alignment.topRight,
+                                  onPressed: () {
+                                    setState(() {
+                                      _isSelectedHeart = !_isSelectedHeart;
+                                    });
+                                  },
+                                  icon: _isSelectedHeart ? const Icon(Icons.favorite, color: Color(0xFF92A3FD),) : const Icon(Icons.favorite_border, color: Color(0xFF92A3FD))
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 10,),
+                        Container(
+                          height: 120,
+                          padding: const EdgeInsets.all(20),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(20),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.1),
+                                spreadRadius: 1,
+                                blurRadius: 1,
+                                offset: const Offset(0, 1), // changes position of shadow
+                              ),
+                            ],
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  ClipRRect(
+                                    child: Opacity(
+                                      opacity: 0.6,
+                                      child: Container(
+                                        width: 80,
+                                        height: 80,
+                                        padding: const EdgeInsets.all(5),
+                                        decoration: BoxDecoration(
+                                          color: Colors.grey,
+                                          borderRadius: BorderRadius.circular(50),
+                                        ),
+                                        child: Image.asset(
+                                          'assets/images/doctor_01.png',
+                                          width: 25,
+                                          height: 25,
+                                          //fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 20,),
+                                  const Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text('Dr. William Smith',
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.bold,
+                                        ),),
+                                      SizedBox(height: 5),
+                                      Text(
+                                        'Fetus | Medical Hospital',
+                                        style: TextStyle(
+                                          color: Colors.grey,
+                                          fontSize: 13,
+                                        ),),
+                                      SizedBox(height: 5),
+                                      Row(
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        children: [
+                                          Icon(Icons.star, size: 18, color: Colors.orange),
+                                          SizedBox(width: 10),
+                                          Text('5.0')
+                                        ],
+                                      )
+                                    ],
+                                  ),
+
+                                ],
+                              ),
+                              IconButton(
+                                //alignment: Alignment.topRight,
+                                  onPressed: () {
+                                    setState(() {
+                                      _isSelectedHeart = !_isSelectedHeart;
+                                    });
+                                  },
+                                  icon: _isSelectedHeart ? const Icon(Icons.favorite, color: Color(0xFF92A3FD),) : const Icon(Icons.favorite_border, color: Color(0xFF92A3FD))
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
                     )
                   ],
                 ),
@@ -481,3 +988,6 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 }
+
+
+

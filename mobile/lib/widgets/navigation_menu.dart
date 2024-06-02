@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:mobile/screens/account/account_screen.dart';
-
 import '../screens/appointment/appointment_screen.dart';
 import '../screens/blog/blog_screen.dart';
 import '../screens/doctor/doctor_screen.dart';
@@ -63,19 +62,20 @@ class NavigationController extends GetxController {
     //   );
     //
     // } else
-    if(index == 4 && !loggedIn.value) {
-      AwesomeDialog.show(
-        context: context,
-        title: 'Notification!',
-        content: 'Please Sign in to use this function',
-        confirmText: 'Login',
-        route: '/sign-in',
-        cancelText: 'Close',
-        onCancel: () => Get.back(),
-      );
-    }else{
-      selectedIndex.value = index;
-    }
+    // if(index == 4 && !loggedIn.value) {
+    //   AwesomeDialog.show(
+    //     context: context,
+    //     title: 'Notification!',
+    //     content: 'Please Sign in to use this function',
+    //     confirmText: 'Login',
+    //     route: '/sign-in',
+    //     cancelText: 'Close',
+    //     onCancel: () => Get.back(),
+    //   );
+    // }else{
+    //   selectedIndex.value = index;
+    // }
+    selectedIndex.value = index;
   }
 
   void login() {
