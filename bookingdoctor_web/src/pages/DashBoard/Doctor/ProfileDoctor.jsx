@@ -1,5 +1,5 @@
 // eslint-disable-next-line no-unused-vars
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { EditOutlined } from '@ant-design/icons';
 import { Button } from 'antd';
@@ -7,14 +7,16 @@ import { Link } from 'react-router-dom';
 // import moment from 'moment';
 // eslint-disable-next-line no-unused-vars
 import getUserData from '../../../route/CheckRouters/token/Token'
+import { AlertContext } from '../../../components/Layouts/DashBoard';
 function ProfileDoctor() {
   const [doctor, setDoctor] = useState(null);
+
+  const {currentUser} = useContext(AlertContext)
   // const id = getUserData.user.id; // cái này là user_id
   useEffect(() => {
-    const id = getUserData.user.id;
     const fetchDoctorData = async () => {
       try {
-        const response = await axios.get(`http://localhost:8080/api/doctor/${id}`); // cái này là tìm doctor theo id chứ k phải tìm theo user_id
+        const response = await axios.get(`http://localhost:8080/api/doctor/${currentUser.id}`); // cái này là tìm doctor theo id chứ k phải tìm theo user_id
         const doctorData = response.data;
         console.log(doctorData);
         setDoctor(doctorData);
@@ -58,11 +60,11 @@ function ProfileDoctor() {
           <hr />
           <p>
             <strong>Email: </strong>
-            {getUserData.user.email}
+            {currentUser.user.email}
           </p>
           <p>
             <strong>Phone: </strong>
-            {getUserData.user.phone}
+            {currentUser.user.phone}
           </p>
           <hr />
           <p>

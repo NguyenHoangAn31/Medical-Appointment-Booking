@@ -44,7 +44,7 @@ function EditNews() {
   const navigate = useNavigate();
 
   // thông báo
-  const Alert = useContext(AlertContext);
+  const {openNotificationWithIcon} = useContext(AlertContext);
   // lấy id từ url
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
@@ -85,7 +85,7 @@ function EditNews() {
       const formData = new FormData()
       formData.append('image', image)
       formData.append('news', JSON.stringify((news)))
-      Alert('success', 'Editing News Successfully', '')
+      openNotificationWithIcon('success', 'Editing News Successfully', '')
 
       await updateNews(id, formData);
       console.log(formData.get('news'))
@@ -93,7 +93,7 @@ function EditNews() {
     }
     catch (error) {
       console.log(error)
-      Alert('error', 'Error Editing News', '')
+      openNotificationWithIcon('error', 'Error Editing News', '')
     }
 
   };

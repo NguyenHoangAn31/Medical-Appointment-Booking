@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom';
 import Spinner from '../../../../components/Spinner';
 import { AlertContext } from '../../../../components/Layouts/DashBoard';
 const ManageSlot = () => {
-  const Alert = useContext(AlertContext);
+  const {openNotificationWithIcon} = useContext(AlertContext);
   // useState cho mảng dữ liệu slots
   const [slots, setSlots] = useState([]);
   // useState clear search , sort
@@ -48,7 +48,7 @@ const ManageSlot = () => {
     try {
       await deleteSlot(id);
       loadSlots();
-      Alert('success', 'Deletete Successfully', '')
+      openNotificationWithIcon('success', 'Deletete Successfully', '')
     } catch (error) {
       console.log(error)
     }

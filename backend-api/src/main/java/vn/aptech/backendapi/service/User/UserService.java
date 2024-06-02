@@ -20,7 +20,7 @@ public interface UserService {
     //Optional<UserDto> findByPhone(String username);
     //UserDto registerNewUser(String email, String phone, String fullName, String keyCode, String provider,boolean status, String role);
 
-    UserDtoCreate registerNewUser(UserDtoCreate userDtoCreate);
+    UserDtoCreate registerNewUser(UserDtoCreate userDtoCreate) throws Exception;
 
     Optional<UserDto> updateUser(UserDto dto);
 }

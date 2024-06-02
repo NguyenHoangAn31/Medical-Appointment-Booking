@@ -2,14 +2,13 @@ import * as request from "../../ultils/request";
 
 export const getPatientByUserId = async (userId) => {
     try {
-        const res =  await request.get('patient/', {data: data});
-        return res.data;
-
+        const response =  await request.get(`patient/${userId}`);
+        return response;
     } catch (error) {
+        console.log(error)
     }
 }
 
-export default {getPatientByUserId}
 
 
 
@@ -24,9 +23,9 @@ export const getAllPatient = async () => {
     }
 };
 
-export const detailPatient = async (id) => {
+export const getPatientByPatientId = async (id) => {
     try {
-        const response = await request.get(`patient/${id}`);
+        const response = await request.get(`patient/patientid/${id}`);
         return response;
     } catch (error) {
         console.log(error);

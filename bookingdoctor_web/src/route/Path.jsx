@@ -23,8 +23,8 @@ const publicRouters = [
 ]
 
 const patientRouters = [
-    { path: '/account', component: Client.Account, layout: AccountLayout },
-    { path: '/checkout', component: Client.CheckOut, layout: AccountLayout }
+    { path: '/account', component: Client.Account, layout: ClientLayout},
+    { path: '/checkout', component: Client.CheckOut, layout: ClientLayout}
 ]
 
 
@@ -39,6 +39,7 @@ const adminRouters = [
     { path: '/dashboard/admin', component: DashBoard.DashboardAdmin, layout: DashBoardLayout },
     { path: '/dashboard/admin/profile', component: DashBoard.ProfileAdmin, layout: DashBoardLayout },
     { path: '/dashboard/admin/manage-user', component: DashBoard.ManageUser, layout: DashBoardLayout },
+    { path: '/dashboard/admin/manage-user/create', component: DashBoard.AddUser, layout: DashBoardLayout },
     { path: '/dashboard/admin/manage-user/admindetail', component: DashBoard.AdminDetail, layout: DashBoardLayout },
     { path: '/dashboard/admin/manage-user/doctordetail', component: DashBoard.DoctorDetail, layout: DashBoardLayout },
     { path: '/dashboard/admin/manage-user/patientdetail', component: DashBoard.PatientDetail, layout: DashBoardLayout },
@@ -56,12 +57,14 @@ const adminRouters = [
     { path: '/dashboard/admin/manage-slot/create', component: DashBoard.AddSlot, layout: DashBoardLayout },
     { path: '/dashboard/admin/manage-slot/edit', component: DashBoard.EditSlot, layout: DashBoardLayout },
     { path: '/dashboard/admin/manage-appointment', component: DashBoard.ManageAppointment, layout: DashBoardLayout },
+    { path: '/dashboard/admin/manage-appointment/appointmentdetail', component: DashBoard.AppointmentDetail, layout: DashBoardLayout },
     { path: '/dashboard/admin/manage-feedback', component: DashBoard.ManageFeedback, layout: DashBoardLayout },
     { path: '/dashboard/admin/manage-feedback/detail', component: DashBoard.FeedbackDetail, layout: DashBoardLayout },
     { path: '/dashboard/admin/manage-news', component: DashBoard.ManageNews, layout: DashBoardLayout },
     { path: '/dashboard/admin/manage-news/create', component: DashBoard.AddNews, layout: DashBoardLayout },
     { path: '/dashboard/admin/manage-news/edit', component: DashBoard.EditNews, layout: DashBoardLayout },
-    { path: '/dashboard/admin/manage-news/detail', component: DashBoard.NewsDetail, layout: DashBoardLayout }
+    { path: '/dashboard/admin/manage-news/detail', component: DashBoard.NewsDetail, layout: DashBoardLayout },
+    { path: '/dashboard/admin/manage-report/', component: DashBoard.ManageReport, layout: DashBoardLayout }
 ]
 
 export { publicRouters, patientRouters, doctorRouters, adminRouters }

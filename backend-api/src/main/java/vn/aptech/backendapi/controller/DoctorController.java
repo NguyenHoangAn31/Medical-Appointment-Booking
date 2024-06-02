@@ -48,6 +48,17 @@ public class DoctorController {
         }
     }
 
+    @GetMapping(value = "/findbyuserid/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    // @PreAuthorize("hasAnyAuthority('ADMIN')")
+    public ResponseEntity<DoctorDto> findByUserId(@PathVariable("id") int id) {
+        DoctorDto result = doctorService.findByUserId(id);
+        if (result != null) {
+            return ResponseEntity.ok(result);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
     // Hien Create 30/4/2024
     @GetMapping(value = "/related-doctor/{departmentId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<DoctorDto>> findRDoctorsByDepartment(@PathVariable("departmentId") int departmentId) {

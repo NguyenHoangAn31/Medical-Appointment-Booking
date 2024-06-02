@@ -10,8 +10,9 @@ import { AlertContext } from '../../../../components/Layouts/DashBoard';
 import getUserData from '../../../../route/CheckRouters/token/Token';
 
 const ManageNews = () => {
+  const {currentUser} = useContext(AlertContext);
   // thông báo
-  const Alert = useContext(AlertContext);
+  const {openNotificationWithIcon} = useContext(AlertContext);
   // useState cho mảng dữ liệu news
   const [news, setNews] = useState([]);
   // useState clear search , sort
@@ -57,7 +58,7 @@ const ManageNews = () => {
     try {
       await deleteNews(id);
       loadNews();
-      Alert('success', 'Deletete News Successfully', '')
+      openNotificationWithIcon('success', 'Deletete News Successfully', '')
     } catch (error) {
       Alert('warning', 'This News Is Active', '')
       console.log(error)
@@ -69,10 +70,10 @@ const ManageNews = () => {
   const handlechangeStatus = async (id, status) => {
     try {
       await changeStatus('news',id, status);
-      Alert('success', 'Change Status Feedback Successfully', '')
+      openNotificationWithIcon('success', 'Change Status Feedback Successfully', '')
       loadNews();
     } catch (error) {
-      Alert('error', 'Something Went Wrong', '')
+      openNotificationWithIcon('error', 'Something Went Wrong', '')
       console.log(error)
     }
   };
@@ -282,7 +283,7 @@ const ManageNews = () => {
           </Link>
 
           {
-            record.creator_id == getUserData.user.id ? <>
+            record.creator_id == currentUser.user.id ? <>
               <Link style={{ marginRight: '16px' }}
                 to={`/dashboard/admin/manage-news/edit?id=${record.id}`}>
                 <Button type="primary" icon={<EditOutlined />} style={{ backgroundColor: 'orange' }}>

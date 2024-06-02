@@ -35,8 +35,8 @@ public class DoctorServiceImpl implements DoctorService {
 
     private DoctorDto mapToDoctorDto(Doctor doctor) {
         DoctorDto doctorDto = new DoctorDto();
-//        doctorDto.setId(String.valueOf(doctor.getId()));
-        doctorDto.setId(doctor.getId());
+        doctorDto.setId((doctor.getId()));
+
         doctorDto.setFullName(doctor.getFullName());
         doctorDto.setTitle(doctor.getTitle());
         doctorDto.setGender(doctor.getGender());
@@ -194,6 +194,14 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
 
+    @Override
+    public DoctorDto findByUserId(int userId){
+        Doctor optionalDoctor = doctorRepository.findDoctorByUserId(userId);
+        if(optionalDoctor != null){
+            return mapToDoctorDto(optionalDoctor);
+        }
+        return null;
+    }
 
     // Hien Create 30/4/2024
     @Override

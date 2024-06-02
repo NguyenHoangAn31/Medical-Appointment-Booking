@@ -2,9 +2,11 @@ package vn.aptech.backendapi.service.User;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
-import vn.aptech.backendapi.dto.SlotDto;
+import jakarta.mail.internet.MimeMessage;
 import vn.aptech.backendapi.dto.UserDto;
 import vn.aptech.backendapi.dto.UserDtoCreate;
 import vn.aptech.backendapi.entities.Role;
@@ -25,6 +27,10 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private ModelMapper mapper;
+
+    // writed by An in 5/31
+    @Autowired
+    private JavaMailSender javaMailSender;
 
     // edited by An in 5/6
     private UserDto toDto(User user) {
@@ -68,6 +74,24 @@ public class UserServiceImpl implements UserService {
         Optional<Role> roleOptional = roleRepository.findById(userDtoCreate.getRoleId());
         roleOptional.ifPresent(role -> user.setRoles(Collections.singletonList(role)));
         User savedUser = userRepository.save(user);
+
+        if (savedUser != null) {
+            try {
+
+                String Message = "Dear Customer , you have just successfully created an account, please go to http://localhost:5173/login to activate the account . Thank You.";
+
+                MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+                MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage);
+                mimeMessageHelper.setTo(userDtoCreate.getEmail());
+                mimeMessageHelper.setSubject("Register Successfully");
+                mimeMessageHelper.setText(Message);
+                javaMailSender.send(mimeMessage);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        }
+
         return mapper.map(savedUser, UserDtoCreate.class);
     }
 
@@ -77,7 +101,7 @@ public class UserServiceImpl implements UserService {
             user.setFullName(dto.getFullName());
             user.setEmail(dto.getEmail());
             user.setPhone(dto.getPhone());
-            userRepository.save(user); 
+            userRepository.save(user);
             return toDto(user);
         });
     }
