@@ -18,7 +18,7 @@ const Routers = () => {
         {patientRouters.map((route, index) => {
           const Layout = route.layout || Fragment;
           const Page = route.component;
-          return <Route key={index} path={route.path} element={<Layout><Page /></Layout>} />;
+          return <Route key={index} path={route.path} element={<Layout isForPatient={true}><Page /></Layout>} />;
         })}
       </Route>
 

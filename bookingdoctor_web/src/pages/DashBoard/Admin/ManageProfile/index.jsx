@@ -15,7 +15,8 @@ import { AlertContext } from '../../../../components/Layouts/DashBoard';
 
 
 function ProfileAdmin() {
-  const Alert = useContext(AlertContext);
+  const {openNotificationWithIcon} = useContext(AlertContext);
+  const {currentUser} = useContext(AlertContext);
 
 
   const [user, setUser] = useState({});
@@ -25,8 +26,7 @@ function ProfileAdmin() {
   }, []);
 
   const loadUser = async () => {
-    setUser(await findUserById(getUserData.user.id));
-
+    setUser(await findUserById(currentUser.user.id));
   };
 
   const onInputChange = (name, value) => {
@@ -36,11 +36,11 @@ function ProfileAdmin() {
   const handleUpdate = async () => {
     try {
       await updateUser(user.id, user);
-        Alert('success', 'Update Profile Successfully', '')
+        openNotificationWithIcon('success', 'Update Profile Successfully', '')
 
     }
     catch (error) {
-      Alert('error', 'Error Update Profile', '')
+      openNotificationWithIcon('error', 'Error Update Profile', '')
     }
 }
 

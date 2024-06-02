@@ -4,11 +4,9 @@ import Button from 'react-bootstrap/Button';
 import { format } from 'date-fns';
 import { addAppointment } from '../../services/API/bookingService';
 import axios from 'axios';
+import { formatDate } from '../../ultils/formatDate';
 
 const Payment = ({ setSchedules, isOpen, data, onClose }) => {
-    const formatDay = (index) => {
-        return format(Date(index), 'dd/MM/yyyy')
-    }
     const handleSubmitBook = async () => {
         data.price = data.price * 0.3;
         try {
@@ -30,11 +28,11 @@ const Payment = ({ setSchedules, isOpen, data, onClose }) => {
                 <Modal.Title>Thông tin lịch book khám bệnh</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <p>Bệnh nhân: {data?.patientName}</p>
+                <p>Bệnh nhân: {data?.partientName}</p>
                 <p>Bác sỹ Khám:  {data?.doctorTitle} {data?.doctorName}</p>
                 <p>Giá khám bệnh: {data?.price} VNĐ</p>
-                <p>Ngày khám bệnh: {formatDay(data?.dayselect)}</p>
-                <p>Giờ khám bệnh: {data?.slotName}</p>
+                <p>Ngày khám bệnh: {formatDate(data?.bookingDate)}</p>
+                <p>Giờ khám bệnh: {data?.clinicHours}</p>
                 <p>Số tiền cầm thanh toán giữ chỗ: {data?.price * 0.3} VNĐ</p>
                 <p>Chọn phương thức thanh toán:</p>
                 <Button variant="primary" className='me-3' onClick={() => handlePayment('VNPay')}>

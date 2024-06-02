@@ -29,7 +29,7 @@ const tailLayout = {
 
 function AddSlot() {
     // thông báo
-    const Alert = useContext(AlertContext);
+    const {openNotificationWithIcon} = useContext(AlertContext);
 
     // chuyển trang
     const navigate = useNavigate();
@@ -54,13 +54,13 @@ function AddSlot() {
     const handleFormSubmit = async () => {
         try {
             await addSlot(slot);
-            Alert('success', 'Add New Slot Successfully', '')
+            openNotificationWithIcon('success', 'Add New Slot Successfully', '')
             navigate("/dashboard/admin/manage-slot");
 
         }
         catch (error) {
             console.log(error)
-            Alert('error', 'Error Creating New Slot', '')
+            openNotificationWithIcon('error', 'Error Creating New Slot', '')
 
         }
     };

@@ -11,7 +11,7 @@ import { findScheduleByDay, updateScheduleForAdmin } from '../../../../services/
 function ScheduleDetail() {
 
   // thông báo
-  const Alert = useContext(AlertContext);
+  const {openNotificationWithIcon} = useContext(AlertContext);
   // lấy date từ url
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
@@ -47,11 +47,11 @@ function ScheduleDetail() {
     try {
       await updateScheduleForAdmin(day, departmentId, slotId, value)
       loadClinic()
-      Alert('success', 'Update Schedule Successfully', '')
+      openNotificationWithIcon('success', 'Update Schedule Successfully', '')
 
     } catch (error) {
       console.log(error)
-      Alert('error', 'Error Update Schedule', '')
+      openNotificationWithIcon('error', 'Error Update Schedule', '')
 
     }
 
@@ -92,7 +92,7 @@ function ScheduleDetail() {
                   mode="multiple"
                   style={{ width: '50%' }}
                   placeholder="select doctor"
-                  defaultValue={slot.doctorsForSchedules.map(doctor => doctor.id.toString())}
+                  defaultValue={slot.doctorsForSchedules.map(doctor => doctor.id)}
                   onChange={(value) => handleChange(deptValue.id, slot.slotId, value)}
                   options={doctors.filter(doctor => doctor.department.id == deptValue.id)}
                   optionRender={(option) => (

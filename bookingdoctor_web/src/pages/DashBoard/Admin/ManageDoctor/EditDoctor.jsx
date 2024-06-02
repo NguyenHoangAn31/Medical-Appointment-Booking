@@ -33,7 +33,7 @@ function EditDoctor() {
   const navigate = useNavigate();
 
   // thông báo
-  const Alert = useContext(AlertContext);
+  const {openNotificationWithIcon} = useContext(AlertContext);
   // lấy id từ url
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
@@ -70,12 +70,12 @@ function EditDoctor() {
     try {
 
       await updateDoctor(id,doctor.price,doctor.department.id);
-      Alert('success', 'Editing Doctor Successfully', '')
+      openNotificationWithIcon('success', 'Editing Doctor Successfully', '')
       navigate("/dashboard/admin/manage-doctor");
     }
     catch (error) {
       console.log(error)
-      Alert('error', 'Error Editing Doctor', '')
+      openNotificationWithIcon('error', 'Error Editing Doctor', '')
     }
   };
 

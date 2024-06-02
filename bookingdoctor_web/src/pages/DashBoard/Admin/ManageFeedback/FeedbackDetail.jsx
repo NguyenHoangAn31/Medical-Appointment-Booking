@@ -9,7 +9,7 @@ import { AlertContext } from '../../../../components/Layouts/DashBoard';
 import { formatDate } from '../../../../ultils/formatDate';
 
 function FeedbackDetail() {
-  const Alert = useContext(AlertContext);
+  const {openNotificationWithIcon} = useContext(AlertContext);
 
   // lấy id và rate từ query
   const location = useLocation();
@@ -45,7 +45,7 @@ function FeedbackDetail() {
     try {
       await changeStatus('feedback', id, status);
       loadDetailFeedback();
-      Alert('success', 'Change Status Feedback Successfully', '')
+      openNotificationWithIcon('success', 'Change Status Feedback Successfully', '')
     } catch (error) {
       Alert('warning', 'Something Went Wrong', '')
       console.log(error)
@@ -57,7 +57,7 @@ function FeedbackDetail() {
     try {
       await deleteFeedback(id);
       loadDetailFeedback();
-      Alert('success', 'Deletete Feedback Successfully', '')
+      openNotificationWithIcon('success', 'Deletete Feedback Successfully', '')
     } catch (error) {
       Alert('warning', 'Something went Wrong', '')
       console.log(error)

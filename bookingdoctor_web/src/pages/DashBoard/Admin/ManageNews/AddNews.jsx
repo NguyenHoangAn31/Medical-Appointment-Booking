@@ -39,18 +39,19 @@ const normFile = (e) => {
   return e?.fileList;
 };
 function AddNews() {
+  const {currentUser} = useContext(AlertContext);
 
   const navigate = useNavigate();
 
   // thông báo
-  const Alert = useContext(AlertContext);
+  const {openNotificationWithIcon} = useContext(AlertContext);
   // state cho news
   const [news, setNews] = useState({
     title: '',
     content: '',
     url: '',
     status: '1',
-    user_id: getUserData.user.id
+    user_id: currentUser.user.id
   });
   // state cho image
   const [image, setImage] = useState('');
@@ -83,13 +84,13 @@ function AddNews() {
       formData.append('image', image)
       formData.append('news', JSON.stringify((news)))
       await addNews(formData);
-      Alert('success', 'Add New News Successfully', '')
+      openNotificationWithIcon('success', 'Add New News Successfully', '')
       navigate("/dashboard/admin/manage-news");
 
     }
     catch (error) {
       console.log(error)
-      Alert('error', 'Error Creating New News', '')
+      openNotificationWithIcon('error', 'Error Creating New News', '')
 
     }
   };

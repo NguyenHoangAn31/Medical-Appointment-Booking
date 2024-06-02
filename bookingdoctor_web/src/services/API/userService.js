@@ -20,6 +20,17 @@ export const findUserById = async (id) => {
         throw error;
     }
 }
+
+export const createUser = async (user) => {
+    try {
+        const response = await request.post(`user/register`,user);
+        return response;
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+}
+
 export const updateUser = async (id,user) => {
     try {
         const response = await request.put(`user/update/${id}`,user);

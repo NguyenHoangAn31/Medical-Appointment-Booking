@@ -34,90 +34,104 @@ import {
     CarryOutTwoTone,
     SettingOutlined,
     SettingTwoTone,
-    ContactsTwoTone
+    ContactsTwoTone,
+    AppstoreTwoTone
 } from '@ant-design/icons';
 import { Button, Breadcrumb, Layout, Menu, theme, Dropdown, Space, Badge } from 'antd';
 import openAlert from '../../openAlert';
 const { Header, Content, Footer, Sider } = Layout;
 
 
-var itemslist = []
-if (getUserData != null) {
-    var role = getUserData.user.roles[0];
-    if (role == "ADMIN") {
-        itemslist.push(
-            {
-                label: "Dashboard",
-                icon: <DashboardTwoTone twoToneColor='blue' />,
-                key: "/dashboard/admin",
-            },
-            {
-                label: "Manage User",
-                icon: <ContactsTwoTone twoToneColor='#6699cc'/>,
-                key: "/dashboard/admin/manage-user",
-            },
-            // {
-            //     label: "Manage Patient",
-            //     key: "/dashboard/admin/manage-patient",
-            //     icon: <MedicineBoxTwoTone twoToneColor='red' />,
-            // },
-            // {
-            //     label: "Manage Doctor",
-            //     key: "/dashboard/admin/manage-doctor",
-            //     icon: <IdcardTwoTone twoToneColor='green' />,
-            // },
-            {
-                label: "Manage Department",
-                key: "/dashboard/admin/manage-department",
-                icon: <ShopTwoTone twoToneColor='#c6c243' />,
-            },
-            // {
-            //     label: "Manage Slot",
-            //     key: "/dashboard/admin/manage-slot",
-            //     icon: <FieldTimeOutlined />,
-            // },
-            {
-                label: "Manage Appointment",
-                key: "/dashboard/admin/manage-appointment",
-                icon: <CreditCardTwoTone twoToneColor='purple' />,
-            },
-            {
-                label: "Manage Schedule",
-                key: "/dashboard/admin/manage-schedule",
-                icon: <CalendarTwoTone twoToneColor='#f081ff' />,
-            },
-            {
-                label: "Manage Feedback",
-                key: "/dashboard/admin/manage-feedback",
-                icon: <QuestionCircleTwoTone twoToneColor='#eb2f96' />,
-            },
-            {
-                label: "Manage News",
-                key: "/dashboard/admin/manage-news",
-                icon: <HighlightTwoTone twoToneColor='#00fff6' />,
-            }
-        )
-    }
-    else if (role == "DOCTOR") {
-        itemslist.push(
-            {
-                label: "Dashboard",
-                key: "/dashboard/doctor",
-                icon: <DashboardOutlined />,
-            },
-            {
-                label: "Schedule",
-                key: "/dashboard/doctor/schedule",
-                icon: <ScheduleOutlined />,
-            }
-        )
-    }
-}
+
 
 export const AlertContext = createContext();
 
 
 const DashBoardLayout = ({ children }) => {
+
+    var itemslist = []
+    const [currentUser, setCurrentUser] = useState()
+
+    if (currentUser != null) {
+        var role = currentUser.user.roles[0];
+        if (role == "ADMIN") {
+            itemslist.push(
+                {
+                    label: "Dashboard",
+                    icon: <DashboardTwoTone twoToneColor='blue' />,
+                    key: "/dashboard/admin",
+                },
+                {
+                    label: "Manage User",
+                    icon: <ContactsTwoTone twoToneColor='#6699cc' />,
+                    key: "/dashboard/admin/manage-user",
+                },
+                // {
+                //     label: "Manage Patient",
+                //     key: "/dashboard/admin/manage-patient",
+                //     icon: <MedicineBoxTwoTone twoToneColor='red' />,
+                // },
+                // {
+                //     label: "Manage Doctor",
+                //     key: "/dashboard/admin/manage-doctor",
+                //     icon: <IdcardTwoTone twoToneColor='green' />,
+                // },
+                {
+                    label: "Manage Department",
+                    key: "/dashboard/admin/manage-department",
+                    icon: <ShopTwoTone twoToneColor='#c6c243' />,
+                },
+                // {
+                //     label: "Manage Slot",
+                //     key: "/dashboard/admin/manage-slot",
+                //     icon: <FieldTimeOutlined />,
+                // },
+                {
+                    label: "Manage Feedback",
+                    key: "/dashboard/admin/manage-feedback",
+                    icon: <QuestionCircleTwoTone twoToneColor='#eb2f96' />,
+                },
+                {
+                    label: "Manage Schedule",
+                    key: "/dashboard/admin/manage-schedule",
+                    icon: <CalendarTwoTone twoToneColor='#f081ff' />,
+                },
+                {
+
+                    label: "Manage Appointment",
+                    key: "/dashboard/admin/manage-appointment",
+                    icon: <CreditCardTwoTone twoToneColor='purple' />,
+                },
+                {
+                    label: "Manage News",
+                    key: "/dashboard/admin/manage-news",
+                    icon: <HighlightTwoTone twoToneColor='#00fff6' />,
+                }
+                ,
+                {
+                    label: "Manage Report",
+                    key: "/dashboard/admin/manage-report",
+                    icon: <AppstoreTwoTone twoToneColor=''/>
+                }
+            )
+        }
+        else if (role == "DOCTOR") {
+            itemslist.push(
+                {
+                    label: "Dashboard",
+                    key: "/dashboard/doctor",
+                    icon: <DashboardOutlined />,
+                },
+                {
+                    label: "Schedule",
+                    key: "/dashboard/doctor/schedule",
+                    icon: <ScheduleOutlined />,
+                }
+            )
+        }
+    }
+
+
     const [collapsed, setCollapsed] = useState(false);
     const [darkTheme, setDarkTheme] = useState(false);
     const navigate = useNavigate();
@@ -137,15 +151,13 @@ const DashBoardLayout = ({ children }) => {
     const curentPath = paths.slice(2).join(' / ');
     // xử lý logout
     const handleLogout = () => {
-        sessionStorage.removeItem("Token");
+        localStorage.removeItem("Token");
         const auth = getAuth();
         signOut(auth).then(() => {
-            // Sign-out successful.
+            navigate("/");
         }).catch((error) => {
-            // An error happened.
+            console.log(error)
         });
-        navigate("/");
-        window.location.reload();
     }
 
     const [selectedKeys, setSelectedKeys] = useState("/");
@@ -158,15 +170,19 @@ const DashBoardLayout = ({ children }) => {
         };
     }, [location.pathname]);
 
+    useEffect(() => {
+        setCurrentUser(getUserData())
+    }, []);
+
+
 
     const {
         token: { colorBgContainer, borderRadiusLG },
     } = theme.useToken();
 
 
-    console.log(curentPath)
     return (
-        <AlertContext.Provider value={openNotificationWithIcon}>
+        <AlertContext.Provider value={{ openNotificationWithIcon, currentUser }}>
 
             <Layout
                 style={{
@@ -361,7 +377,7 @@ const DashBoardLayout = ({ children }) => {
                                         marginRight: '10px'
                                     }}
                                 />
-                                <span>{getUserData.user.email}</span>
+                                <span>{currentUser != null ? currentUser.user.email : null}</span>
 
                             </div>
                         </div>
@@ -373,7 +389,7 @@ const DashBoardLayout = ({ children }) => {
                     >
                         <div
                             style={{
-                                overflow:'hidden',
+                                overflow: 'hidden',
                                 padding: 24,
                                 minHeight: 360,
                                 position: 'relative',

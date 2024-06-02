@@ -10,7 +10,7 @@ import { formatDate } from '../../../../ultils/formatDate';
 
 const ManageFeedback = () => {
   // thông báo
-  const Alert = useContext(AlertContext);
+  const {openNotificationWithIcon} = useContext(AlertContext);
   // useState cho mảng dữ liệu feedback
   const [feedbacks, setFeedbacks] = useState([]);
   // useState clear search , sort

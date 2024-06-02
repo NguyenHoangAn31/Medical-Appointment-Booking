@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import vn.aptech.backendapi.dto.DepartmentDto;
 import vn.aptech.backendapi.dto.PatientDto;
 import vn.aptech.backendapi.service.Patient.PatientService;
 

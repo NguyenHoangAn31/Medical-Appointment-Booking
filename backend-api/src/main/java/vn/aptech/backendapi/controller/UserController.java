@@ -53,7 +53,7 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<UserDtoCreate> registerNewUser(@RequestBody UserDtoCreate user) throws URISyntaxException {
+    public ResponseEntity<UserDtoCreate> registerNewUser(@RequestBody UserDtoCreate user) throws Exception {
         UserDtoCreate createdUser = userService.registerNewUser(user);
         return ResponseEntity.created(new URI("/api/users/" + createdUser.getId())).body(createdUser);
     }

@@ -10,7 +10,7 @@ import { AlertContext } from '../../../../components/Layouts/DashBoard';
 
 const ManageDepartment = () => {
   // thông báo
-  const Alert = useContext(AlertContext);
+  const {openNotificationWithIcon} = useContext(AlertContext);
   // useState cho mảng dữ liệu departments
   const [departments, setDepartments] = useState([]);
   // useState clear search , sort
@@ -56,7 +56,7 @@ const ManageDepartment = () => {
     try {
       await deleteDepartment(id);
       loadDepartments();
-      Alert('success', 'Deletete Department Successfully', '')
+      openNotificationWithIcon('success', 'Deletete Department Successfully', '')
     } catch (error) {
       Alert('warning', 'something Went Wrong', '')
       console.log(error)
@@ -67,11 +67,11 @@ const ManageDepartment = () => {
   const handlechangeStatus = async (id, status) => {
     try {
       await changeStatus('department',id, status);
-      Alert('success', 'Change Status Feedback Successfully', '')
+      openNotificationWithIcon('success', 'Change Status Feedback Successfully', '')
 
       loadDepartments();
     } catch (error) {
-      Alert('error', 'Something Went Wrong', '')
+      openNotificationWithIcon('error', 'Something Went Wrong', '')
 
       console.log(error)
     }

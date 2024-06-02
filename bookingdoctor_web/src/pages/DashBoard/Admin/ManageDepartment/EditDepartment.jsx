@@ -42,7 +42,7 @@ function EditDepartment() {
   const navigate = useNavigate();
 
   // thông báo
-  const Alert = useContext(AlertContext);
+  const {openNotificationWithIcon} = useContext(AlertContext);
   // lấy id từ url
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
@@ -83,12 +83,12 @@ function EditDepartment() {
       formData.append('icon', icon)
       formData.append('department', JSON.stringify((department)))
       await updateDepartment(id, formData);
-      Alert('success', 'Editing Department Successfully', '')
+      openNotificationWithIcon('success', 'Editing Department Successfully', '')
       navigate("/dashboard/admin/manage-department");
     }
     catch (error) {
       console.log(error)
-      Alert('error', 'Error Editing Department', '')
+      openNotificationWithIcon('error', 'Error Editing Department', '')
     }
   };
 

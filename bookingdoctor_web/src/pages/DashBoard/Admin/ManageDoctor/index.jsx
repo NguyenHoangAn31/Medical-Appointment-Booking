@@ -12,7 +12,7 @@ import { changeStatus } from '../../../../services/API/changeStatus';
 
 const ManageDoctor = () => {
   // thông báo
-  const Alert = useContext(AlertContext);
+  const {openNotificationWithIcon} = useContext(AlertContext);
   // useState cho mảng dữ liệu doctor
   const [doctors, setDoctors] = useState([]);
   // useState clear search , sort
@@ -58,10 +58,10 @@ const ManageDoctor = () => {
     try {
       var convertStatus = status ? 1 : 0;
       await changeStatus('doctor', id, convertStatus);
-      Alert('success', 'Change Status Doctor Successfully', '')
+      openNotificationWithIcon('success', 'Change Status Doctor Successfully', '')
       loadDoctors();
     } catch (error) {
-      Alert('error', 'Something Went Wrong', '')
+      openNotificationWithIcon('error', 'Something Went Wrong', '')
       console.log(error)
     }
   };

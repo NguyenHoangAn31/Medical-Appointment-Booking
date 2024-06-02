@@ -13,7 +13,7 @@ import java.util.List;
 @Getter
 @Setter
 public class DoctorDto {
-    private String id;
+    private int id;
     private String fullName;
     private String title; //Chức danh
     private String gender; // giới tính
