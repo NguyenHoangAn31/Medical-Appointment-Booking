@@ -10,30 +10,28 @@ import { getAllUser } from '../../../../services/API/userService';
 
 const ManageUser = () => {
 
-  // modal
-  const [open, setOpen] = useState(false);
-  const showModal = () => {
-    setOpen(true);
-  };
-  const handleOk = () => {
-    setOpen(false);
+  // // modal
+  // const [open, setOpen] = useState(false);
+  // const showModal = () => {
+  //   setOpen(true);
+  // };
+  // const handleOk = () => {
+  //   setOpen(false);
 
-  };
-  const handleCancel = () => {
-    setOpen(false);
-  };
-
-
-  const onFinish = (values) => {
-    console.log('Success:', values);
-  };
-  const onFinishFailed = (errorInfo) => {
-    console.log('Failed:', errorInfo);
-  };
+  // };
+  // const handleCancel = () => {
+  //   setOpen(false);
+  // };
+  // const onFinish = (values) => {
+  //   console.log('Success:', values);
+  // };
+  // const onFinishFailed = (errorInfo) => {
+  //   console.log('Failed:', errorInfo);
+  // };
 
 
   // thông báo
-  const Alert = useContext(AlertContext);
+  const { openNotificationWithIcon } = useContext(AlertContext);
   // useState cho mảng dữ liệu users
   const [users, setUsers] = useState([]);
   // useState clear search , sort
@@ -59,7 +57,6 @@ const ManageUser = () => {
   };
 
 
-  console.log(users)
   // tải dữ liệu và gán vào users thông qua hàm setUsers
   const loadUsers = async () => {
     const fetchedUsers = await getAllUser();
@@ -307,10 +304,13 @@ const ManageUser = () => {
 
         <div className='d-flex gap-3'>
           <>
-            <Button onClick={showModal} icon={<PlusOutlined />}>
-              Add New Admin
-            </Button>
-            <Button onClick={showModal} icon={<PlusOutlined />}>
+            <Link to="/dashboard/admin/manage-user/create">
+              <Button type="primary" icon={<PlusOutlined />} style={{ backgroundColor: '#52c41a' }}>
+                Add New Account
+              </Button>
+            </Link>
+
+            {/* <Button onClick={showModal} icon={<PlusOutlined />}>
               Add New Doctor
             </Button>
 
@@ -353,14 +353,11 @@ const ManageUser = () => {
                 </Form>
               ]}
             >
-            </Modal>
+            </Modal> */}
 
           </>
         </div>
-
-
       </Space>
-
       {users.length != 0 ? <Table style={{ userSelect: 'none' }} columns={columns} dataSource={users} onChange={handleChange} /> : <Spinner />}
     </>
   )

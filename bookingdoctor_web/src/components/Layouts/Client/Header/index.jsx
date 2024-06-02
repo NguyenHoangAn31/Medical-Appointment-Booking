@@ -1,12 +1,12 @@
-import React, { useState, useEffect, useRef  } from 'react'
+import React, { useState, useEffect, useRef, useContext } from 'react'
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { motion } from 'framer-motion';
 import getUserData from '../../../../route/CheckRouters/token/Token';
-import { BiBell, BiHeart, BiLogIn, BiCalendarCheck, BiSolidUserRectangle    } from "react-icons/bi";
+import { BiBell, BiHeart, BiLogIn, BiCalendarCheck, BiSolidUserRectangle } from "react-icons/bi";
 //import * as patientService from '../../../../services/API/patientService';
 import axios from 'axios';
 import { getAuth, signOut } from "firebase/auth";
-
+import { UserContext } from '..';
 
 const Header = () => {
   const location = useLocation();
@@ -15,28 +15,23 @@ const Header = () => {
   const [user, setUser] = useState([]);
   const [isMenuVisible, setIsMenuVisible] = useState(false);
 
+  const { currentUser } = useContext(UserContext);
 
-
-  
   useEffect(() => {
     const fecthApi = async () => {
       try {
-        const userId = getUserData.user.id;
-       const result =  await axios.get(`http://localhost:8080/api/patient/${userId}`);
-          //console.log(result.data);
+        if(currentUser!= null){
+          const result = await axios.get(`http://localhost:8080/api/patient/${currentUser.user.id}`);
           setUser(result.data);
-;;
+        }
       } catch (error) {
-        
+
       }
-      
-  }
-  
-  fecthApi();
+    }
+    fecthApi();
+  }, [currentUser]);
 
-  }, []);
 
-  
 
   const menuRef = useRef(null);
 
@@ -54,17 +49,17 @@ const Header = () => {
   }
 
   const handleSignOut = () => {
-    sessionStorage.removeItem('Token');
+    console.log("alo");
+    localStorage.removeItem("Token");
     const auth = getAuth();
     signOut(auth).then(() => {
-      // Sign-out successful.
+      navigate("/");
     }).catch((error) => {
-      // An error happened.
+      console.log(error);
     });
-    history('/');
-    window.location.reload();
-  }
- 
+  };
+
+
   return (
     <>
       <nav className="navbar navbar-expand-lg bg-light sticky-top">
@@ -88,41 +83,43 @@ const Header = () => {
                 <Link to="/doctor" className="nav-link">For Doctor</Link>
               </li>
               <li className="nav-item">
-                <Link to="/blog" className="nav-link">Blog</Link> 
+                <Link to="/blog" className="nav-link">Blog</Link>
               </li>
               <li className="nav-item">
                 <Link to="/contact" className="nav-link">Contact us</Link>
               </li>
             </ul>
             <motion.div whileTap={{ scale: 0.8 }}>
-              {getUserData != null ? (
+              {currentUser != null && currentUser.user.roles[0] != 'ADMIN' && currentUser.user.roles[0] != 'DOCTOR' ? (
                 <div className='icon_login'>
-                    <div>
-                      {user && user.image != null ? (
-                        <img src={"http://localhost:8080/images/patients/" + user.image} alt="" id='user-login' onClick={handleMenuToggle} className='img__icon_login img-fluid' />
-                      ) : (
-                        <img src="/images/login_default.jpg" alt="asds" id='user-login' onClick={handleMenuToggle} className='img__icon_login img-fluid' />
-                      )                                   
-                      }  
-                    </div>
-                    {isMenuVisible && (
+                  <div>
+                    {user.image!=null?<img src={"http://localhost:8080/images/patients/" + user.image} alt="" id='user-login' onClick={handleMenuToggle} className='img__icon_login img-fluid' />:null}
+
+                    {/* {user && user.image != null ? (
+                      <img src={"http://localhost:8080/images/patients/" + user.image} alt="" id='user-login' onClick={handleMenuToggle} className='img__icon_login img-fluid' />
+                    ) : (
+                      <img src="/images/login_default.jpg" alt="asds" id='user-login' onClick={handleMenuToggle} className='img__icon_login img-fluid' />
+                    )
+                    } */}
+                  </div>
+                  {isMenuVisible && (
                     <ul className='list-unstyled dropdown__user' ref={menuRef} onMouseLeave={handleMouseLeave}>
-                      <li><Link to=""  className='user__link'>Hello! {user.fullName}</Link></li>
-                      <li><Link to=""  className='user__link'><BiBell /> Notication</Link></li>
-                      <li><Link to="/account"  className='user__link'><BiSolidUserRectangle/> Profile</Link></li>
+                      <li><Link to="" className='user__link'>Hello! {user.fullName}</Link></li>
+                      <li><Link to="" className='user__link'><BiBell /> Notication</Link></li>
+                      <li><Link to="/account" className='user__link'><BiSolidUserRectangle /> Profile</Link></li>
                       <li><Link to="/" className='user__link'><BiCalendarCheck /> Booking</Link></li>
                       <li><Link to="" className='user__link'><BiHeart /> Fauvorite</Link></li>
-                      <li><Link to="/checkout" className='user__link'><BiHeart /> Checkout</Link></li>
-                      <li onClick={handleSignOut}><a  className='user__link'><BiLogIn /> Sign out</a></li>
+                      <li><Link to="/checkout" className='user__link'><BiSolidUserRectangle /> CheckOut</Link></li>
+                      <li onClick={handleSignOut}><a className='user__link'><BiLogIn /> Sign out</a></li>
                     </ul>
-                    )}
+                  )}
                   {/* <div  className="login">Sign out</div> */}
                 </div>
-                  
+
               ) : (
-                <div onClick={handleLogin}  className="login">Login</div>
+                <div onClick={handleLogin} className="login">Login</div>
               )}
-                {/* <div onClick={handleLogin}  className="login">Login</div> */}
+              {/* <div onClick={handleLogin}  className="login">Login</div> */}
             </motion.div>
           </div>
         </div>

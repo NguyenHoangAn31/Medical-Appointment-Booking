@@ -54,7 +54,7 @@ const LoginPhoneStep = () => {
             // console.log(result.data.user.roles[0]);
 
             if (result && result.data) {
-                sessionStorage.setItem('Token', ecryptToken.encryptToken(JSON.stringify(result.data)));
+                localStorage.setItem('Token', ecryptToken.encryptToken(JSON.stringify(result.data)));
                 if (result.data.user.roles[0] === 'DOCTOR') {
                     localStorage.setItem('currentPath', '');
                     navigateTo(`/dashboard/doctor`);

@@ -31,6 +31,17 @@ export const detailDoctor = async (id) => {
     }
 }
 
+export const findDoctorByUserId = async (id) => {
+    try {
+        const response = await request.get(`doctor/findbyuserid/${id}`);
+        return response;
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+}
+
+
 
 export const updateDoctor = async (id,price,departmentid) => {
     try {

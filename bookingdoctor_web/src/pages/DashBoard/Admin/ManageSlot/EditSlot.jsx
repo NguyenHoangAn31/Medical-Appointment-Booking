@@ -30,7 +30,7 @@ const tailLayout = {
 
 function EditSlot() {
   // thông báo
-  const Alert = useContext(AlertContext);
+  const {openNotificationWithIcon} = useContext(AlertContext);
   // lấy id từ url
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
@@ -65,11 +65,11 @@ function EditSlot() {
       try {
         await updateSlot(id, slot);
         setInitialSlot(await findSlotById(id));
-        Alert('success', 'Editing Slot Successfully', '')
+        openNotificationWithIcon('success', 'Editing Slot Successfully', '')
       }
       catch (error) {
         console.log(error)
-        Alert('error', 'Error Editing Slot', '')
+        openNotificationWithIcon('error', 'Error Editing Slot', '')
       }
     }
   };

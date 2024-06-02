@@ -40,7 +40,7 @@ function AddDepartment() {
   const navigate = useNavigate();
 
   // thông báo
-  const Alert = useContext(AlertContext);
+  const {openNotificationWithIcon} = useContext(AlertContext);
   // state cho department
   const [department, setDepartment] = useState({
     name: '',
@@ -77,13 +77,13 @@ function AddDepartment() {
       formData.append('icon', icon)
       formData.append('department', JSON.stringify((department)))
       await addDepartment(formData);
-      Alert('success', 'Add New Department Successfully', '')
+      openNotificationWithIcon('success', 'Add New Department Successfully', '')
       navigate("/dashboard/admin/manage-department");
 
     }
     catch (error) {
       console.log(error)
-      Alert('error', 'Error Creating New Department', '')
+      openNotificationWithIcon('error', 'Error Creating New Department', '')
 
     }
   };

@@ -2,13 +2,16 @@ package vn.aptech.backendapi.service.Appointment;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import vn.aptech.backendapi.dto.AppointmentDto;
+import vn.aptech.backendapi.dto.Appointment.CustomAppointmentDto;
 import vn.aptech.backendapi.entities.Appointment;
 
 import vn.aptech.backendapi.entities.Partient;
@@ -16,6 +19,7 @@ import vn.aptech.backendapi.entities.ScheduleDoctor;
 import vn.aptech.backendapi.repository.AppointmentRepository;
 import vn.aptech.backendapi.repository.PartientRepository;
 import vn.aptech.backendapi.repository.ScheduleDoctorRepository;
+import vn.aptech.backendapi.service.Patient.PatientService;
 
 @Service
 public class AppointmentServiceImpl implements AppointmentService {
@@ -37,6 +41,19 @@ public class AppointmentServiceImpl implements AppointmentService {
         return a;
     }
 
+    private CustomAppointmentDto toCustomDto(Appointment appointment) {
+        CustomAppointmentDto a = mapper.map(appointment, CustomAppointmentDto.class);
+        a.setImage(partientRepository.findById(appointment.getPartient().getId()).get().getImage());
+        a.setFullName(partientRepository.findById(appointment.getPartient().getId()).get().getFullName());
+        return a;
+    }
+    @Override
+    public List<CustomAppointmentDto> findAll(){
+        List<Appointment> a = appointmentRepository.findAll();
+        return a.stream().map(this::toCustomDto)
+                .collect(Collectors.toList());
+    }
+    @Override
     public AppointmentDto save(AppointmentDto dto) {
         Appointment a = mapper.map(dto, Appointment.class);
         a.setBookingDate(LocalDate.parse(dto.getBookingDate()));

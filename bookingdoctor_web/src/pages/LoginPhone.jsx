@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 
 import { useNavigate } from 'react-router-dom';
 import bg_login from '../../public/images/image-login.png';
@@ -7,21 +7,23 @@ import { auth } from "../services/auth/firebase.config";
 import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
 import { toast } from "react-hot-toast";
 import axios from 'axios';
-import getUserData from '../route/CheckRouters/token/Token';
 import ecryptToken from '../ultils/encrypt';
+import getUserData from '../route/CheckRouters/token/Token';
 
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
+import { UserContext } from '../components/Layouts/Client';
 
 //import { toast, Toaster } from "react-hot-toast";
 
 const LoginPhone = () => {
-    //console.log(getUserData);
+    const {currentUser,setCurrentUser } = useContext(UserContext);
     const [username, setUsername] = useState('');
     const [loading, setLoading] = useState(false);
     const provider = 'phone';
     const currentPath = localStorage.getItem('currentPath');
     const navigateTo = useNavigate();
+
 
 
     function onCaptchVerify() {
@@ -65,24 +67,34 @@ const LoginPhone = () => {
                     .catch((error) => {
                         setLoading(false);
                     });
-               
+
             } else {
                 const checkToken = await axios.post('http://localhost:8080/api/auth/check-refresh-token', data);
-                console.log(checkToken.data.accessToken);
-                if (checkToken.data.accessToken == null) { 
+                console.log("token : ", checkToken.data.accessToken);
+                if (checkToken.data.accessToken == null) {
                     toast.error("User not found or please try again with gmail!", {
                         position: "bottom-right"
                     });
 
                 } else {
-                    sessionStorage.setItem('Token', ecryptToken.encryptToken(JSON.stringify(checkToken.data)));
-                    navigateTo(`/`);
-                    window.location.reload()
+                    localStorage.setItem('Token', ecryptToken.encryptToken(JSON.stringify(checkToken.data)));
+                    if(checkToken.data.user.roles[0]=='USER'){
+                        setCurrentUser(checkToken.data)
+                    }
+                    if (getUserData().user.roles[0] == 'USER') {
+                        navigateTo(`/`);
+                    }
+                    else if (getUserData().user.roles[0] == 'DOCTOR') {
+                        navigateTo(`/dashboard/doctor`);
+                    }
+                    else if (getUserData().user.roles[0] == 'ADMIN') {
+                        navigateTo(`/dashboard/admin`);
+                    }
                 }
             }
 
         } catch (error) {
-
+            console.log(error)
         }
     };
 

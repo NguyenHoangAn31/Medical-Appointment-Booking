@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { MdSearch, MdOutlineStarPurple500, MdCalendarMonth, MdOutlinePhoneInTalk } from "react-icons/md";
 import { BiCommentDots, BiSolidVideo } from "react-icons/bi";
 import axios from 'axios';
@@ -13,6 +13,7 @@ import { startOfWeek, addDays, format } from 'date-fns';
 import getUserData from '../../route/CheckRouters/token/Token'
 import Payment from '../../components/Card/Payment';
 import { formatDateFromJs } from '../../ultils/formatDate';
+import { UserContext } from '../../components/Layouts/Client';
 
 const Booking = () => {
   const slots = [
@@ -113,6 +114,7 @@ const Booking = () => {
       "startTime": "21:30",
     }
   ]
+  const { currentUser, setCurrentUser } = useContext(UserContext);
   const currentDate = new Date();
   const months = [
     "January", "February", "March", "April", "May", "June",
@@ -163,6 +165,8 @@ const Booking = () => {
 
   const loadDayDefaults = () => {
     const ngayHienTai = new Date(); // Ngày hiện tại
+    ngayHienTai.setDate(ngayHienTai.getDate()); // Thêm 5 ngày
+
     const ngayDauTuan = startOfWeek(ngayHienTai); // Ngày đầu tiên của tuần hiện tại
     const daysOfWeekNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
     const cacNgayTrongTuan = [];
@@ -204,7 +208,6 @@ const Booking = () => {
   // Hàm tìm department của bác sỹ khám bệnh
   const handleServiceClick = async (index) => {
     setActiveDoctorIndex(0);
-    setDaySelected('')
     setSchedules([]);
     setActiveHourIndex('');
     setDoctorId(null)
@@ -224,10 +227,13 @@ const Booking = () => {
       alert('Vui lòng chọn bác sỹ trước khi chọn ngày')
       return;
     }
+    setSlotName('')
     setActiveHourIndex('');
     const dayvalue = `${day.nam}-${String(day.thang).padStart(2, '0')}-${String(day.ngayOfMonth).padStart(2, '0')}`;
+    console.log(dayvalue)
     setActiveDayIndex(index);
     setDaySelected(dayvalue);
+    console.log("day select" ,daySelected)
     const data = {
       doctorId: doctorId,
       day: dayvalue
@@ -273,8 +279,11 @@ const Booking = () => {
   // Tìm dữ liệu của 1 bác sỹ
   const handleDoctorClick = async (index) => {
     var defaultDate = new Date();
-    setDaySelected(formatDateFromJs(defaultDate))
+    if(daySelected == ''){
+      setDaySelected(formatDateFromJs(defaultDate))
+    }
     setDoctorId(index);
+    setSlotName('')
     setActiveDoctorIndex(index);
     setActiveHourIndex('');
     try {
@@ -283,7 +292,6 @@ const Booking = () => {
       const fetchedSlotByDoctorAndDay = await axios.get(`http://localhost:8080/api/schedules/doctor/${index}/day/${daySelected == '' ? formatDateFromJs(defaultDate) : daySelected}`);
       if (fetchedSlotByDoctorAndDay.status === 200) {
         setSchedules(fetchedSlotByDoctorAndDay.data);
-
 
       }
     } catch (error) {
@@ -310,11 +318,15 @@ const Booking = () => {
     setScheduledoctorId(scheduledoctor_Id);
   }
 
-  console.log(schedules)
 
   const handleSubmitBook = () => {
-    if (!getUserData) {
+    console.log("first",daySelected)
+    if (!currentUser) {
       alert('Vui lòng đăng nhập để sử dụng chức năng này!');
+      return;
+    }
+    else if(!doctorId){
+      alert('Please select choose a Doctor !');
       return;
     }
     else if (slotName == '') {
@@ -322,8 +334,10 @@ const Booking = () => {
       return;
     }
     const data = {
-      doctorId:doctorId,
-      partientId: getUserData.user.id,
+      doctorId: doctorId,
+      doctorName:doctor.fullName,
+      partientId: currentUser.user.id,
+      partientName: currentUser.user.fullName,
       scheduledoctorId: scheduledoctorId,
       clinicHours: slotName,
       price: doctor.price,
@@ -336,7 +350,6 @@ const Booking = () => {
 
   }
 
-  console.log(daySelected)
   const RatingStar = ({ rating }) => {
     const fullStar = '★';
     const emptyStar = '☆';
@@ -361,7 +374,6 @@ const Booking = () => {
   };
 
 
-  console.log(slotName)
 
   return (
     <section className='container'>
