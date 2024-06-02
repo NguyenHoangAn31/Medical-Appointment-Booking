@@ -64,7 +64,6 @@ public class WorkingController {
 
     @PostMapping(value = "/create", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<WorkingDto> Create(@RequestBody WorkingDto dto) {
-        
         WorkingDto result = workingService.save(dto);
         if (result != null) {
             return ResponseEntity.ok(result); 
@@ -83,6 +82,5 @@ public class WorkingController {
             return ResponseEntity.ok(updatedWorking);
         }
         return ResponseEntity.notFound().build();
-
     }
 }

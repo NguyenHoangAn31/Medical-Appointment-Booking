@@ -11,6 +11,7 @@ import vn.aptech.backendapi.entities.*;
 import vn.aptech.backendapi.repository.DepartmentRepository;
 import vn.aptech.backendapi.repository.DoctorRepository;
 
+import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -34,7 +35,8 @@ public class DoctorServiceImpl implements DoctorService {
 
     private DoctorDto mapToDoctorDto(Doctor doctor) {
         DoctorDto doctorDto = new DoctorDto();
-        doctorDto.setId(String.valueOf(doctor.getId()));
+//        doctorDto.setId(String.valueOf(doctor.getId()));
+        doctorDto.setId(doctor.getId());
         doctorDto.setFullName(doctor.getFullName());
         doctorDto.setTitle(doctor.getTitle());
         doctorDto.setGender(doctor.getGender());
@@ -262,6 +264,20 @@ public class DoctorServiceImpl implements DoctorService {
         }
         doctorRepository.save(d);
         return mapToDoctorDto(d);
+    }
+
+    // Hien - 28/5/2024
+    @Override
+    public DoctorDto update(int id, DoctorDto doctorDto) {
+        Doctor doctor
+                = doctorRepository.findById(id).get();
+        doctor.setTitle(doctorDto.getTitle());
+        doctor.setFullName(doctorDto.getFullName());
+        doctor.setGender(doctorDto.getGender());
+        doctor.setBirthday(LocalDate.parse(doctorDto.getBirthday()));
+        doctor.setAddress(doctorDto.getAddress());
+        doctorRepository.save(doctor);
+        return doctorDto;
     }
 
 }

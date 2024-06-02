@@ -6,9 +6,11 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import vn.aptech.backendapi.dto.DoctorCreateDto;
 import vn.aptech.backendapi.dto.DoctorDto;
 import vn.aptech.backendapi.service.Doctor.DoctorService;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -77,6 +79,15 @@ public class DoctorController {
         DoctorDto result = doctorService.updatePriceAndDepartment(id, price, departmentId);
         return ResponseEntity.ok(result);
 
+    }
+
+    @PutMapping(value = "/update/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<DoctorDto> updateTutorial(@PathVariable("id") int id,
+                                                    @RequestBody DoctorCreateDto doctorCreateDto) throws IOException {
+        System.out.println("doctor : " + doctorCreateDto);
+        DoctorDto doctorDto = mapper.map(doctorCreateDto, DoctorDto.class);
+        doctorDto = doctorService.update(id, doctorDto);
+        return ResponseEntity.ok(doctorDto);
     }
 
 }
