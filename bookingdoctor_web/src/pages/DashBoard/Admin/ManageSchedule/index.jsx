@@ -36,12 +36,14 @@ function ManageSchedule() {
   };
 
 
-  const formattedDates = workDay.map(dateArr => {
-    const dateString = dateArr[0];
-    const dateObj = new Date(dateString);
-    const options = { month: 'long', day: 'numeric', year: 'numeric' };
-    return dateObj.toLocaleDateString('en-US', options);
-  });
+  const formattedDates = Object.fromEntries(
+    Object.entries(workDay).map(([dateString, status]) => {
+      const dateObj = new Date(dateString);
+      const options = { month: 'long', day: 'numeric', year: 'numeric' };
+      const formattedDate = dateObj.toLocaleDateString('en-US', options);
+      return [formattedDate, status];
+    })
+  );
 
 
   useEffect(() => {
@@ -49,11 +51,12 @@ function ManageSchedule() {
     renderedDates.forEach((dateElement) => {
       const dateValue = dateElement.getAttribute('aria-label');
       const buttonElement = dateElement.parentElement;
-      if (formattedDates.includes(dateValue)) {
+      if (formattedDates[dateValue]) {
         buttonElement.style.color = '#7dff79';
       }
     });
   }, [value, workDay]);
+
 
 
 
@@ -63,17 +66,20 @@ function ManageSchedule() {
     const year = dateObj.getFullYear();
     const month = String(dateObj.getMonth() + 1).padStart(2, '0');
     const day = String(dateObj.getDate()).padStart(2, '0');
-    var status = 0;
+    let status = '';
+
     const formattedDate = `${year}-${month}-${day}`;
-    for (let i = 0; i < workDay.length; i++) {
-      const [date, value] = workDay[i];
+
+    for (const [date, state] of Object.entries(workDay)) {
       if (date === formattedDate) {
-        status = value ? 1 : 0;
+        status = state;
         break;
       }
     }
+
     navigate(`/dashboard/admin/manage-schedule/detail?day=${formattedDate}&status=${status}`);
   };
+
 
 
   return (

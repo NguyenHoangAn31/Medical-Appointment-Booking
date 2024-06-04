@@ -22,6 +22,7 @@ import vn.aptech.backendapi.service.Schedule.ScheduleService;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping(value = "/api/schedules", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -33,8 +34,8 @@ public class ScheduleController {
     private AppointmentRepository scheduleRepository;
 
     @GetMapping(value = "/getdays", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<Object[]>> findAllOnlyDay() {
-        List<Object[]> result = scheduleService.findAllOnlyDay();
+    public ResponseEntity<Map<String, String>> findAllOnlyDay() {
+        Map<String, String> result = scheduleService.findAllOnlyDay();
         return ResponseEntity.ok(result);
     }
 

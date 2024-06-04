@@ -39,7 +39,6 @@ function PatientDetail() {
 
   };
 
-  console.log(patient.image)
   return (
     !Object.keys(user).length != 0 ? null : <>
       <div>
@@ -54,7 +53,7 @@ function PatientDetail() {
       </div>
       
       <h1>Profile</h1>
-      {patient.image!=null?<img src={"http://localhost:8080/images/patients/" + patient.image} width="150"/>:null}
+      {/* {patient.image!=null?<img src={"http://localhost:8080/images/patients/" + patient.image} width="150"/>:null} */}
 
       <p>Email : {user.email}</p>
       <p>Phone : {user.phone}</p>
