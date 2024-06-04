@@ -408,7 +408,7 @@ class ReceivedScreen extends StatelessWidget {
                         ),
                         child: const Center(
                           child: Text(
-                            'Reschedule',
+                            'View Schedule',
                             style: TextStyle(
                               //color: Color(0xFF92A3FD),
                               fontSize: 16,
@@ -591,7 +591,7 @@ class CompletedScreen extends StatelessWidget {
                         ),
                         child: const Center(
                           child: Text(
-                            'Completed',
+                            'Book Again',
                             style: TextStyle(
                               //color: Color(0xFF92A3FD),
                               fontSize: 16,

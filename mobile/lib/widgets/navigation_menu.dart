@@ -61,7 +61,8 @@ class NavigationController extends GetxController {
     //     onCancel: () => Get.back(),
     //   );
     //
-    // } else
+    // }
+    //else
     // if(index == 4 && !loggedIn.value) {
     //   AwesomeDialog.show(
     //     context: context,

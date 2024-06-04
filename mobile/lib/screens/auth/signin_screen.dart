@@ -514,7 +514,7 @@ class _SignInScreenState extends State<SignInScreen> {
                       controller: _phoneNumberController,
                       decoration: const InputDecoration(
                         border: InputBorder.none,
-                        hintText: 'Phone number',
+                        labelText: 'Phone number',
                         counter: SizedBox.shrink(), // Ẩn counter cho nhập chữ số duy nhất
                         //alignLabelWithHint: true, // Canh giữa với dòng văn bản
                         counterText: '',
