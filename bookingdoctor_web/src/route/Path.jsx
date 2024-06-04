@@ -23,8 +23,8 @@ const publicRouters = [
 ]
 
 const patientRouters = [
-    { path: '/account', component: Client.Account, layout: ClientLayout},
-    { path: '/checkout', component: Client.CheckOut, layout: ClientLayout}
+    { path: '/account', component: Client.Account, layout: ClientLayout },
+    { path: '/checkout', component: Client.CheckOut, layout: ClientLayout }
 ]
 
 

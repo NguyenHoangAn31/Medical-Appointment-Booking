@@ -7,7 +7,7 @@ const getUserData = () => {
   const TokenReult = localStorage.getItem("Token");
 
   if (TokenReult != null && TokenReult != '') {
-    console.log("token");
+    // console.log("token");
     const result = JSON.parse(encrypt.decryptToken(TokenReult));
     const isTokenExpired = () => {
       const currentDate = new Date(); // Get the current date and time

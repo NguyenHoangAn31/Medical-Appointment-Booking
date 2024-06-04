@@ -6,23 +6,24 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name="qualifications")
 public class Qualification extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    private String course;
     @Column(name = "degree_name")
     private String degreeName;
     @Column(name = "university_name")
     private String universityName;
-    private String course;
+    private boolean status;
 
     @ManyToOne
     @JoinColumn(name = "doctor_id", referencedColumnName = "id")
     private Doctor doctor;
 
-    private boolean status;
+
 }

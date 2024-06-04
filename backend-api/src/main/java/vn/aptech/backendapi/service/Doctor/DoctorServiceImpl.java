@@ -67,7 +67,8 @@ public class DoctorServiceImpl implements DoctorService {
         qualificationDto.setId(qualification.getId());
         qualificationDto.setDegreeName(qualification.getDegreeName());
         qualificationDto.setUniversityName(qualification.getUniversityName());
-        qualificationDto.setCourse(qualificationDto.getCourse());
+        qualificationDto.setCourse(qualification.getCourse());
+        qualificationDto.setDoctor_id(qualification.getDoctor().getId());
         return qualificationDto;
     }
 
@@ -192,16 +193,50 @@ public class DoctorServiceImpl implements DoctorService {
             return Optional.empty(); // Trả về Optional rỗng nếu không tìm thấy Doctor
         }
     }
-
-
+//    @Override
+//    public DoctorDto findByUserId(int userId){
+//        Doctor optionalDoctor = doctorRepository.findDoctorByUserId(userId);
+//        if(optionalDoctor != null){
+//            return mapToDoctorDto(optionalDoctor);
+//        }
+//        return null;
+//    }
     @Override
-    public DoctorDto findByUserId(int userId){
-        Doctor optionalDoctor = doctorRepository.findDoctorByUserId(userId);
-        if(optionalDoctor != null){
-            return mapToDoctorDto(optionalDoctor);
+    public Optional<DoctorDto> findByUserId(int userId) {
+        Doctor doctor = doctorRepository.findDoctorByUserId(userId);
+
+        if (doctor != null) {
+            List<WorkingDto> workingList = doctor.getWorkings().stream()
+                    .map(this::mapToWorkingDto)
+                    .collect(Collectors.toList());
+            List<QualificationDto> qualificationList = doctor.getQualifications().stream()
+                    .map(this::mapToQualificationDto)
+                    .collect(Collectors.toList());
+
+            List<FeedbackDto> feedbackList = doctor.getFeedbacks().stream()
+                    .map(this::mapToFeedbackDto)
+                    .collect(Collectors.toList());
+
+            double totalRating = 0;
+            if (!feedbackList.isEmpty()) {
+                totalRating = feedbackList.stream()
+                        .mapToDouble(FeedbackDto::getRate)
+                        .average()
+                        .orElse(0);
+            }
+
+            DoctorDto doctorDto = mapToDoctorDto(doctor);
+            doctorDto.setWorkings(workingList);
+            doctorDto.setQualifications(qualificationList);
+            doctorDto.setFeedbackDtoList(feedbackList);
+            doctorDto.setRate(totalRating);
+
+            return Optional.of(doctorDto);
+        } else {
+            return Optional.empty(); // Trả về Optional rỗng nếu không tìm thấy Doctor
         }
-        return null;
     }
+
 
     // Hien Create 30/4/2024
     @Override
