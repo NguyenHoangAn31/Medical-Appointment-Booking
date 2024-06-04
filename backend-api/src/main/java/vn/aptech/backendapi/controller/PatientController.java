@@ -49,14 +49,4 @@ public class PatientController {
         List<PatientDto> result = patientService.getAll();
         return ResponseEntity.ok(result);
     }
-
-    @PutMapping(value = "/changestatus/{id}/{status}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> changeStatusPatient(@PathVariable("id") int id, @PathVariable("status") int status) {
-        boolean changed = patientService.changeStatus(id, status);
-        if (changed) {
-            return ResponseEntity.ok().build();
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
 }

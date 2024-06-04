@@ -203,7 +203,7 @@ const ManageNews = () => {
       title: 'Creator',
       dataIndex: 'creator_email',
       key: 'creator_email',
-      width: '16.666%',
+      width: '18.666%',
       filteredValue: filteredInfo.creator_email || null,
       sorter: (a, b) => a.creator_email.localeCompare(b.creator_email),
       sortOrder: sortedInfo.columnKey === 'creator_email' ? sortedInfo.order : null,
@@ -216,7 +216,7 @@ const ManageNews = () => {
       title: 'Image',
       dataIndex: 'image',
       key: 'image',
-      width: '16.666%',
+      width: '13.666%',
       render: (_, { image }) => {
         return (
           image ? <img src={"http://localhost:8080/images/news/" + image} width="75" alt="" /> : null);

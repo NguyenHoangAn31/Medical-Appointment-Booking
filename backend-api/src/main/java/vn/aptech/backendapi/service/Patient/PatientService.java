@@ -11,5 +11,4 @@ public interface PatientService {
     Optional<PatientDto> getPatientByPatientId(int patientId);
     // writed by An in 5/11
     List<PatientDto> getAll();
-    boolean changeStatus(int id,int status);
 }

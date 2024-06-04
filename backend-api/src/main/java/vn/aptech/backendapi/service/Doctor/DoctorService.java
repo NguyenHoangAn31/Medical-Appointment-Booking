@@ -12,7 +12,6 @@ public interface DoctorService {
     //Hien Create 30/4/2024
     List<DoctorDto> findDoctorsByDepartmentId(int departmentId);
     // writed by An in 5/11
-    boolean changeStatus(int id,int status);
     DoctorDto updatePriceAndDepartment(int id , double price , int departmentId);
     List<DoctorDto> findAllWithAllStatus();
 

@@ -7,14 +7,15 @@ import getUserData from '../../../route/CheckRouters/token/Token';
 export const UserContext = createContext();
 
 function ClientLayout({ children, isForPatient }) {
-    const [currentUser, setCurrentUser] = useState()
+    const [currentUser, setCurrentUser] = useState(null)
+    console.log("current user : ",currentUser)
     useEffect(() => {
         var token = getUserData();
-        console.log(token)
         if (token!=null && token.user.roles[0] == 'USER') {
             setCurrentUser(token)
         }
     }, [])
+    console.log("child : " ,children)
     return (
         <UserContext.Provider value={{ currentUser, setCurrentUser }}>
 

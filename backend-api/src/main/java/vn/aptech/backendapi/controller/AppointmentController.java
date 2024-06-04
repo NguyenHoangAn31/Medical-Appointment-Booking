@@ -13,9 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import vn.aptech.backendapi.dto.AppointmentDto;
-import vn.aptech.backendapi.dto.PatientDoctorInfo;
+import vn.aptech.backendapi.dto.Appointment.AppointmentDetail;
 import vn.aptech.backendapi.dto.Appointment.CustomAppointmentDto;
-import vn.aptech.backendapi.repository.AppointmentRepository;
 import vn.aptech.backendapi.service.Appointment.AppointmentService;
 
 @RestController
@@ -24,13 +23,16 @@ public class AppointmentController {
     @Autowired
     private AppointmentService appointmentService;
 
-    @Autowired
-    private AppointmentRepository appointmentRepository;
 
 
     @GetMapping(value = "/all", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<CustomAppointmentDto>> findAll() {
         List<CustomAppointmentDto> result = appointmentService.findAll();
+        return ResponseEntity.ok(result);
+    }
+    @GetMapping(value = "/detail/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<AppointmentDetail> appointmentDetail(@PathVariable("id") int id) {
+        AppointmentDetail result = appointmentService.appointmentDetail(id);
         return ResponseEntity.ok(result);
     }
 

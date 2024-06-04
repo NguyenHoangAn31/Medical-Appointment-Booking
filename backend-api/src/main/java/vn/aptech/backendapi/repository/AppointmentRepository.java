@@ -15,9 +15,9 @@ import vn.aptech.backendapi.entities.Appointment;
 public interface AppointmentRepository extends JpaRepository<Appointment, Integer> {
 
        @Query("SELECT a.clinicHours FROM Appointment a " +
-                     "WHERE a.bookingDate = :bookingDate AND a.scheduledoctor.doctor.id = :doctorId")
+                     "WHERE a.appointmentDate = :appointmentDate AND a.scheduledoctor.doctor.id = :doctorId")
        List<LocalTime> findClinicHoursByBookingDateAndDoctorId(
-                     @Param("bookingDate") LocalDate bookingDate,
+                     @Param("appointmentDate") LocalDate appointmentDate,
                      @Param("doctorId") int doctorId);
 
 }

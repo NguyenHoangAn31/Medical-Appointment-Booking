@@ -65,7 +65,7 @@ public class DoctorServiceImpl implements DoctorService {
         qualificationDto.setId(qualification.getId());
         qualificationDto.setDegreeName(qualification.getDegreeName());
         qualificationDto.setUniversityName(qualification.getUniversityName());
-        qualificationDto.setCourse(qualificationDto.getCourse());
+        qualificationDto.setCourse(qualification.getCourse());
         return qualificationDto;
     }
 
@@ -194,9 +194,16 @@ public class DoctorServiceImpl implements DoctorService {
 
     @Override
     public DoctorDto findByUserId(int userId){
-        Doctor optionalDoctor = doctorRepository.findDoctorByUserId(userId);
-        if(optionalDoctor != null){
-            return mapToDoctorDto(optionalDoctor);
+        Doctor doctor = doctorRepository.findDoctorByUserId(userId);
+        if(doctor != null){
+            DoctorDto doctorDto = mapToDoctorDto(doctor);
+            doctorDto.setWorkings(doctor.getWorkings().stream()
+            .map(this::mapToWorkingDto)
+            .collect(Collectors.toList()));
+            doctorDto.setQualifications(doctor.getQualifications().stream()
+            .map(this::mapToQualificationDto)
+            .collect(Collectors.toList()));
+            return doctorDto;
         }
         return null;
     }
@@ -238,19 +245,6 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     // writed by An in 5/11
-    @Override
-    public boolean changeStatus(int id, int status) {
-        Doctor d = doctorRepository.findById(id).get();
-        boolean newStatus = (status == 1) ? false : true;
-        d.setStatus(newStatus);
-        try {
-            doctorRepository.save(d);
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
 
     public List<DoctorDto> findAllWithAllStatus() {
         List<Doctor> doctor = doctorRepository.findAll();
@@ -261,10 +255,11 @@ public class DoctorServiceImpl implements DoctorService {
     @Override
     public DoctorDto updatePriceAndDepartment(int id, double price, int departmentId) {
         Doctor d = doctorRepository.findById(id).get();
+        if(price != 0){
+            d.setPrice(price);
+        }
         d.setPrice(price);
-        d.setDepartment(null);
-
-        if (departmentId > 0) {
+        if (departmentId != 0) {
             Optional<Department> department = departmentRepository.findById(departmentId);
             department.ifPresent(de -> d.setDepartment(department.get()));
         }
