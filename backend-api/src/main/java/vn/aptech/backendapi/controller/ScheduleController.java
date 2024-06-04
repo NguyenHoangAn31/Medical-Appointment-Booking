@@ -14,9 +14,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import vn.aptech.backendapi.dto.CustomSlotWithScheduleDoctorId;
 import vn.aptech.backendapi.dto.Schedule.ScheduleWithDepartmentDto;
+import vn.aptech.backendapi.repository.AppointmentRepository;
+import vn.aptech.backendapi.repository.ScheduleDoctorRepository;
+import vn.aptech.backendapi.repository.ScheduleRepository;
 import vn.aptech.backendapi.service.Schedule.ScheduleService;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 @RestController
@@ -24,6 +28,9 @@ import java.util.List;
 public class ScheduleController {
     @Autowired
     private ScheduleService scheduleService;
+
+    @Autowired
+    private AppointmentRepository scheduleRepository;
 
     @GetMapping(value = "/getdays", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Object[]>> findAllOnlyDay() {
@@ -51,6 +58,17 @@ public class ScheduleController {
         } else {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @GetMapping(value = "/test/{doctorId}/{dayWorking}")
+    public ResponseEntity<List<LocalTime>> test(
+            @PathVariable("doctorId") int doctorId,
+            @PathVariable("dayWorking") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dayWorking) {
+
+        List<LocalTime> result = scheduleRepository.findClinicHoursByBookingDateAndDoctorId(dayWorking, doctorId);
+
+        return ResponseEntity.ok(result);
+
     }
 
     @PutMapping(value = "/updatelistschedule/{day}/{departmentId}/{slotId}", produces = MediaType.APPLICATION_JSON_VALUE)
