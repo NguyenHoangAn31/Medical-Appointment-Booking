@@ -408,6 +408,10 @@ section {
   text-decoration: underline;
 }
 
+.doctor__profile_image {
+  height: 380px;
+}
+
 nav {
   font-family: "Poppins", sans-serif;
 }

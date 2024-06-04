@@ -17,4 +17,7 @@ public interface DoctorService {
 
     List<DoctorDto> searchDoctorsByName(String name);
 
+    // Hien - 28/5/2024
+    DoctorDto update(int id, DoctorDto doctorDto);
+
 }

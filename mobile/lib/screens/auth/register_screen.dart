@@ -18,7 +18,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            Navigator.pushNamed(context, '/login');
+            Navigator.pushNamed(context, '/home');
           },
         ),
         actions: [
@@ -75,16 +75,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         letterSpacing: 0.25,
                       ),
                     ),
-                    // Text(
-                    //   'Account',
-                    //   style: TextStyle(
-                    //     color: Color(0xFF1A1A1A),
-                    //     fontSize: 32,
-                    //     fontFamily: 'Poppins',
-                    //     fontWeight: FontWeight.w600,
-                    //     letterSpacing: 0.25,
-                    //   ),
-                    // ),
+
                   ],
                 ),
                 const SizedBox(height: 200),
