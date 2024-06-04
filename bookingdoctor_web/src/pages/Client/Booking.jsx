@@ -114,7 +114,7 @@ const Booking = () => {
       "startTime": "21:30",
     }
   ]
-  const { currentUser, setCurrentUser } = useContext(UserContext);
+  const { currentUser } = useContext(UserContext);
   const currentDate = new Date();
   const months = [
     "January", "February", "March", "April", "May", "June",
@@ -134,7 +134,8 @@ const Booking = () => {
   const [days, setDays] = useState([]);
 
   const [doctorId, setDoctorId] = useState();
-  const [searchName, setSearchName] = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [doctorForSearch,setDoctorForSearch] = useState([]);
   const [schedules, setSchedules] = useState([]);
   const [scheduledoctorId, setScheduledoctorId] = useState('');
   const [slotName, setSlotName] = useState('');
@@ -152,6 +153,7 @@ const Booking = () => {
   const loadDoctors = async () => {
     const fetchedDoctors = await axios.get('http://localhost:8080/api/doctor/all');
     setDoctors(fetchedDoctors.data);
+    setDoctorForSearch(fetchedDoctors.data);
     const id = fetchedDoctors.data[0].id;
     // setActiveDoctorIndex(id);
     try {
@@ -163,10 +165,12 @@ const Booking = () => {
   };
 
 
+
   const loadDayDefaults = () => {
     const ngayHienTai = new Date(); // Ngày hiện tại
-    ngayHienTai.setDate(ngayHienTai.getDate()); // Thêm 5 ngày
+    ngayHienTai.setDate(ngayHienTai.getDate());
 
+  
     const ngayDauTuan = startOfWeek(ngayHienTai); // Ngày đầu tiên của tuần hiện tại
     const daysOfWeekNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
     const cacNgayTrongTuan = [];
@@ -187,8 +191,6 @@ const Booking = () => {
     setDays(cacNgayTrongTuan);
 
   }
-
-
 
 
   // thực hiện load dữ liệu 1 lần 
@@ -230,10 +232,8 @@ const Booking = () => {
     setSlotName('')
     setActiveHourIndex('');
     const dayvalue = `${day.nam}-${String(day.thang).padStart(2, '0')}-${String(day.ngayOfMonth).padStart(2, '0')}`;
-    console.log(dayvalue)
     setActiveDayIndex(index);
     setDaySelected(dayvalue);
-    console.log("day select" ,daySelected)
     const data = {
       doctorId: doctorId,
       day: dayvalue
@@ -256,6 +256,7 @@ const Booking = () => {
       }
     }
   }
+
 
 
   const formatDate = (index) => {
@@ -305,13 +306,22 @@ const Booking = () => {
   }
 
 
+
   const handleSearch = async (event) => {
-    setSearchName(event.target.value);
-    if (event.target.value) {
-      const response = await axios.get(`http://localhost:8080/api/doctor/search?name=${event.target.value}`);
-      setDoctors(response.data);
+    const term = event.target.value;
+    setSearchTerm(term);
+
+    if (term.trim() !== '') {
+      const filtered = doctors.filter(doctor =>
+        doctor.fullName.toLowerCase().includes(term.toLowerCase())
+      );
+      setDoctorForSearch(filtered);
+    } else {
+      setDoctorForSearch(doctors);
     }
-  }
+  };
+
+  
   const handleSlotClick = (slot_Name, slot_Id, scheduledoctor_Id) => {
     setActiveHourIndex(slot_Id);
     setSlotName(slot_Name);
@@ -320,7 +330,6 @@ const Booking = () => {
 
 
   const handleSubmitBook = () => {
-    console.log("first",daySelected)
     if (!currentUser) {
       alert('Vui lòng đăng nhập để sử dụng chức năng này!');
       return;
@@ -341,9 +350,9 @@ const Booking = () => {
       scheduledoctorId: scheduledoctorId,
       clinicHours: slotName,
       price: doctor.price,
-      bookingDate: daySelected,
+      medicalExaminationDay: daySelected,
       payment: 'null',
-      status: 'success',
+      status: 'waiting',
     }
     setModalData(data);
     setIsModalOpen(true);
@@ -367,12 +376,10 @@ const Booking = () => {
 
   const settings = {
     dots: false,
-    infinite: true,
-    speed: 500,
+    infinite: doctorForSearch.length > 3,
     slidesToShow: 2,
     slidesToScroll: 2
   };
-
 
 
   return (
@@ -409,7 +416,7 @@ const Booking = () => {
                     <div className="title">Choose doctor</div>
                     <div className="card__body">
                       <Slider {...settings}>
-                        {doctors.map((item) => (
+                        {doctorForSearch.map((item) => (
                           <div className={`card__doctor ${activeDoctorIndex === item.id ? 'active' : ''}`} key={item.id} onClick={() => handleDoctorClick(item.id)}>
                             <div className='doctr_image'>
                               <img src={"http://localhost:8080/images/doctors/" + item.image} alt="" className='img-fluid' />

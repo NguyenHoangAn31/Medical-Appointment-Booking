@@ -30,8 +30,11 @@ public class Appointment extends BaseEntity {
     private int price;
     private String payment;
     private String status;
-    @Column(name = "booking_date")
-    private LocalDate bookingDate;
+    private String note;
+    @Column(name = "appointment_date")
+    private LocalDate appointmentDate;
+    @Column(name = "medical_examination_day")
+    private LocalDate medicalExaminationDay;
     @Column(name = "clinic_hours")
     private LocalTime clinicHours;
 }

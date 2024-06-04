@@ -67,6 +67,15 @@ public class UserController {
         } else {
             return ResponseEntity.notFound().build();
         }
+    }
 
+    @PutMapping(value = "/changestatus/{id}/{status}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> changeStatusUser(@PathVariable("id") int id, @PathVariable("status") boolean status) {
+        boolean changed = userService.changeStatus(id, status);
+        if (changed) {
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 }

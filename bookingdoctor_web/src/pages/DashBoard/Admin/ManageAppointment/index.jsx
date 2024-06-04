@@ -203,16 +203,16 @@ const ManageAppointment = () => {
       ...getColumnSearchProps('fullName'),
     },
     {
-      title: 'Booking Date',
-      dataIndex: 'bookingDate',
-      key: 'bookingDate',
+      title: 'Appointment Date',
+      dataIndex: 'appointmentDate',
+      key: 'appointmentDate',
       width: '8%',
-      filteredValue: filteredInfo.bookingDate || null,
-      sorter: (a, b) => a.bookingDate.localeCompare(b.bookingDate),
-      sortOrder: sortedInfo.columnKey === 'bookingDate' ? sortedInfo.order : null,
+      filteredValue: filteredInfo.appointmentDate || null,
+      sorter: (a, b) => a.appointmentDate.localeCompare(b.appointmentDate),
+      sortOrder: sortedInfo.columnKey === 'appointmentDate' ? sortedInfo.order : null,
       ellipsis: true,
       // search
-      ...getColumnSearchProps('bookingDate'),
+      ...getColumnSearchProps('appointmentDate'),
     },
     {
       title: 'Price',
@@ -311,7 +311,7 @@ const ManageAppointment = () => {
       render: (_, record) => (
         <div style={{ display: 'flex', justifyContent: 'center' }}>
           <Link style={{ marginRight: '16px' }}
-            to={`/dashboard/admin/manage-doctor/detail?id=${record.id}`}>
+            to={`/dashboard/admin/manage-appointment/detail?id=${record.id}`}>
             <Button type="primary" icon={<EyeOutlined />} >
               Detail
             </Button>

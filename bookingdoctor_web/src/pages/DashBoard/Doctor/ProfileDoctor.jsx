@@ -12,11 +12,12 @@ function ProfileDoctor() {
   const [doctor, setDoctor] = useState(null);
 
   const {currentUser} = useContext(AlertContext)
+  console.log("id of currentUser : ",currentUser.user.id)
   // const id = getUserData.user.id; // cái này là user_id
   useEffect(() => {
     const fetchDoctorData = async () => {
       try {
-        const response = await axios.get(`http://localhost:8080/api/doctor/${currentUser.id}`); // cái này là tìm doctor theo id chứ k phải tìm theo user_id
+        const response = await axios.get(`http://localhost:8080/api/doctor/findbyuserid/${currentUser.user.id}`); // cái này là tìm doctor theo id chứ k phải tìm theo user_id
         const doctorData = response.data;
         console.log(doctorData);
         setDoctor(doctorData);

@@ -23,4 +23,6 @@ public interface UserService {
     UserDtoCreate registerNewUser(UserDtoCreate userDtoCreate) throws Exception;
 
     Optional<UserDto> updateUser(UserDto dto);
+
+    boolean changeStatus(int id,boolean status);
 }
