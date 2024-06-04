@@ -37,6 +37,7 @@ dependencies:
   get: ^4.6.6
   awesome_dialog: ^3.2.1
   font_awesome_flutter: ^10.7.0
+  table_calendar: ^3.1.1
 
 dev_dependencies:
   flutter_test:
@@ -74,6 +75,9 @@ flutter:
      - assets/images/rehabilitation.png
      - assets/images/tooth.png
      - assets/images/no_result_default.png
+     - assets/images/momo.png
+     - assets/images/vnpay.png
+     - assets/images/paypal.png
 
 
 
