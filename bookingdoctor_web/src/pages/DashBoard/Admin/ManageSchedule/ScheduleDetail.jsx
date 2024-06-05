@@ -64,7 +64,7 @@ function ScheduleDetail() {
     <Spinner />
   ) : (
     <>
-      <h1 className='mb-5'>Work Day : {day} - {status == 1 ? <span className='text-success'>Active</span> : <span className='text-danger'>Finished</span>}</h1>
+      <h1 className='mb-5'>Work Day : {day} - {status}</h1>
       <Tabs
         tabPosition={tabPosition}
         defaultActiveKey={null}
@@ -88,7 +88,7 @@ function ScheduleDetail() {
                 </div>
 
                 <Select
-                  disabled={status != 1}
+                  disabled={status == 'completed'}
                   mode="multiple"
                   style={{ width: '50%' }}
                   placeholder="select doctor"

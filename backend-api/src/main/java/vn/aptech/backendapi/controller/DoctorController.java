@@ -72,19 +72,10 @@ public class DoctorController {
         List<DoctorDto> result = doctorService.findAllWithAllStatus();
         return ResponseEntity.ok(result);
     }
-    @PutMapping(value = "/changestatus/{id}/{status}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> changeStatusDoctor(@PathVariable("id") int id, @PathVariable("status") int status) {
-        boolean changed = doctorService.changeStatus(id, status);
-        if (changed) {
-            return ResponseEntity.ok().build();
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
 
     @PutMapping(value = "/updatepriceanddepartment/{id}/{price}/{departmentid}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<DoctorDto> UpdatePriceAndDepartment(@PathVariable("id") int id,
-            @PathVariable("price") double price, @PathVariable("departmentid") int departmentId) {
+            @PathVariable(name = "price",required = false) double price, @PathVariable(name = "departmentid" , required = false) int departmentId) {
 
         doctorService.findById(id).orElseThrow(() -> new RuntimeException());
         DoctorDto result = doctorService.updatePriceAndDepartment(id, price, departmentId);

@@ -1,6 +1,6 @@
 import * as Client from '../pages/Client'
 import * as DashBoard from '../pages/DashBoard'
-import { AccountLayout, ClientLayout, DashBoardLayout } from '../components/Layouts'
+import {ClientLayout, DashBoardLayout } from '../components/Layouts'
 
 const publicRouters = [
     { path: '/', component: Client.Home, layout: ClientLayout },
@@ -20,12 +20,14 @@ const publicRouters = [
     { path: '/signup', component: Client.Signup, layout: ClientLayout },
     { path: '/blog', component: Client.Blog, layout: ClientLayout },
     { path: '/blog/:id', component: Client.BlogDetail, layout: ClientLayout },
-]
+
 
 const patientRouters = [
-    { path: '/account', component: Client.Account, layout: ClientLayout },
-    { path: '/checkout', component: Client.CheckOut, layout: ClientLayout }
+
+    { path: '/account', component: Client.Account, layout: ClientLayout,isForPatient:true},
+    { path: '/checkout', component: Client.CheckOut, layout: ClientLayout,isForPatient:true}
 ]
+
 
 
 
@@ -57,7 +59,7 @@ const adminRouters = [
     { path: '/dashboard/admin/manage-slot/create', component: DashBoard.AddSlot, layout: DashBoardLayout },
     { path: '/dashboard/admin/manage-slot/edit', component: DashBoard.EditSlot, layout: DashBoardLayout },
     { path: '/dashboard/admin/manage-appointment', component: DashBoard.ManageAppointment, layout: DashBoardLayout },
-    { path: '/dashboard/admin/manage-appointment/appointmentdetail', component: DashBoard.AppointmentDetail, layout: DashBoardLayout },
+    { path: '/dashboard/admin/manage-appointment/detail', component: DashBoard.AppointmentDetail, layout: DashBoardLayout },
     { path: '/dashboard/admin/manage-feedback', component: DashBoard.ManageFeedback, layout: DashBoardLayout },
     { path: '/dashboard/admin/manage-feedback/detail', component: DashBoard.FeedbackDetail, layout: DashBoardLayout },
     { path: '/dashboard/admin/manage-news', component: DashBoard.ManageNews, layout: DashBoardLayout },
@@ -67,4 +69,4 @@ const adminRouters = [
     { path: '/dashboard/admin/manage-report/', component: DashBoard.ManageReport, layout: DashBoardLayout }
 ]
 
-export { publicRouters, patientRouters, doctorRouters, adminRouters }
+export { publicRouters, doctorRouters, adminRouters }

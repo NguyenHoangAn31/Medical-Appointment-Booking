@@ -69,6 +69,7 @@ public class DoctorServiceImpl implements DoctorService {
         qualificationDto.setUniversityName(qualification.getUniversityName());
         qualificationDto.setCourse(qualification.getCourse());
         qualificationDto.setDoctor_id(qualification.getDoctor().getId());
+
         return qualificationDto;
     }
 
@@ -193,16 +194,9 @@ public class DoctorServiceImpl implements DoctorService {
             return Optional.empty(); // Trả về Optional rỗng nếu không tìm thấy Doctor
         }
     }
-//    @Override
-//    public DoctorDto findByUserId(int userId){
-//        Doctor optionalDoctor = doctorRepository.findDoctorByUserId(userId);
-//        if(optionalDoctor != null){
-//            return mapToDoctorDto(optionalDoctor);
-//        }
-//        return null;
-//    }
+
     @Override
-    public Optional<DoctorDto> findByUserId(int userId) {
+    public Optional<DoctorDto> findByUserId1(int userId) {
         Doctor doctor = doctorRepository.findDoctorByUserId(userId);
 
         if (doctor != null) {
@@ -234,6 +228,20 @@ public class DoctorServiceImpl implements DoctorService {
             return Optional.of(doctorDto);
         } else {
             return Optional.empty(); // Trả về Optional rỗng nếu không tìm thấy Doctor
+             }
+    }
+    @Override
+    public DoctorDto findByUserId(int userId){
+        Doctor doctor = doctorRepository.findDoctorByUserId(userId);
+        if(doctor != null){
+            DoctorDto doctorDto = mapToDoctorDto(doctor);
+            doctorDto.setWorkings(doctor.getWorkings().stream()
+            .map(this::mapToWorkingDto)
+            .collect(Collectors.toList()));
+            doctorDto.setQualifications(doctor.getQualifications().stream()
+            .map(this::mapToQualificationDto)
+            .collect(Collectors.toList()));
+            return doctorDto;
         }
     }
 
@@ -275,19 +283,6 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     // writed by An in 5/11
-    @Override
-    public boolean changeStatus(int id, int status) {
-        Doctor d = doctorRepository.findById(id).get();
-        boolean newStatus = (status == 1) ? false : true;
-        d.setStatus(newStatus);
-        try {
-            doctorRepository.save(d);
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
 
     public List<DoctorDto> findAllWithAllStatus() {
         List<Doctor> doctor = doctorRepository.findAll();
@@ -298,10 +293,11 @@ public class DoctorServiceImpl implements DoctorService {
     @Override
     public DoctorDto updatePriceAndDepartment(int id, double price, int departmentId) {
         Doctor d = doctorRepository.findById(id).get();
+        if(price != 0){
+            d.setPrice(price);
+        }
         d.setPrice(price);
-        d.setDepartment(null);
-
-        if (departmentId > 0) {
+        if (departmentId != 0) {
             Optional<Department> department = departmentRepository.findById(departmentId);
             department.ifPresent(de -> d.setDepartment(department.get()));
         }

@@ -22,12 +22,23 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Integer> {
         @Query(value = "SELECT DISTINCT CAST(day_working AS CHAR) AS day, status FROM schedules", nativeQuery = true)
         List<Object[]> findDistinctDayWorkWithStatus();
 
-        default Map<String, Integer> getDistinctDayWorkWithStatus() {
+        default Map<String, String> getDistinctDayWorkWithStatus() {
                 List<Object[]> results = findDistinctDayWorkWithStatus();
+                LocalDate today = LocalDate.now();
+
                 return results.stream()
                                 .collect(Collectors.toMap(
                                                 result -> result[0].toString(),
-                                                result -> (Integer) result[1],
+                                                result -> {
+                                                        LocalDate day = LocalDate.parse(result[0].toString());
+                                                        if (day.isBefore(today)) {
+                                                                return "completed";
+                                                        } else if (day.isEqual(today)) {
+                                                                return "oncoming";
+                                                        } else {
+                                                                return "upcoming";
+                                                        }
+                                                },
                                                 (existing, replacement) -> existing));
         }
 

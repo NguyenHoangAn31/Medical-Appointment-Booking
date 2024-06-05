@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import jakarta.mail.internet.MimeMessage;
 import vn.aptech.backendapi.dto.UserDto;
 import vn.aptech.backendapi.dto.UserDtoCreate;
+import vn.aptech.backendapi.entities.Partient;
 import vn.aptech.backendapi.entities.Role;
 import vn.aptech.backendapi.entities.User;
 import vn.aptech.backendapi.repository.RoleRepository;
@@ -38,6 +39,7 @@ public class UserServiceImpl implements UserService {
         userDto.setId(user.getId());
         userDto.setEmail(user.getEmail());
         userDto.setPhone(user.getPhone());
+        userDto.setStatus(user.isStatus());
         userDto.setFullName(user.getFullName());
         userDto.setProvider(user.getProvider());
         userDto.setRoles(user.getAuthorities());
@@ -104,6 +106,20 @@ public class UserServiceImpl implements UserService {
             userRepository.save(user);
             return toDto(user);
         });
+    }
+
+    @Override
+    public boolean changeStatus(int id,boolean status){
+        User d = userRepository.findById(id).get();
+        boolean newStatus = status ? false : true; 
+        d.setStatus(newStatus);
+        try {
+            userRepository.save(d);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
 }

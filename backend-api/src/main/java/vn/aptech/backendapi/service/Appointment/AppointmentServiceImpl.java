@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import vn.aptech.backendapi.dto.AppointmentDto;
+import vn.aptech.backendapi.dto.Appointment.AppointmentDetail;
 import vn.aptech.backendapi.dto.Appointment.CustomAppointmentDto;
 import vn.aptech.backendapi.entities.Appointment;
 
@@ -19,7 +20,9 @@ import vn.aptech.backendapi.entities.ScheduleDoctor;
 import vn.aptech.backendapi.repository.AppointmentRepository;
 import vn.aptech.backendapi.repository.PartientRepository;
 import vn.aptech.backendapi.repository.ScheduleDoctorRepository;
+import vn.aptech.backendapi.service.Doctor.DoctorService;
 import vn.aptech.backendapi.service.Patient.PatientService;
+
 
 @Service
 public class AppointmentServiceImpl implements AppointmentService {
@@ -32,6 +35,10 @@ public class AppointmentServiceImpl implements AppointmentService {
     private PartientRepository partientRepository;
     @Autowired
     private ScheduleDoctorRepository scheduleDoctorRepository;
+    @Autowired
+    private PatientService patientService;
+    @Autowired
+    private DoctorService doctorService;
 
 
     private AppointmentDto toDto(Appointment appointment) {
@@ -47,6 +54,14 @@ public class AppointmentServiceImpl implements AppointmentService {
         a.setFullName(partientRepository.findById(appointment.getPartient().getId()).get().getFullName());
         return a;
     }
+
+    private AppointmentDetail toAppointmentDetail(Appointment appointment){
+        AppointmentDetail a = mapper.map(appointment,AppointmentDetail.class);
+        a.setPartient(patientService.getPatientByPatientId(appointment.getPartient().getId()).get());
+        a.setDoctor(doctorService.findById(appointment.getScheduledoctor().getDoctor().getId()).get());
+        return a;
+    }
+
     @Override
     public List<CustomAppointmentDto> findAll(){
         List<Appointment> a = appointmentRepository.findAll();
@@ -54,9 +69,15 @@ public class AppointmentServiceImpl implements AppointmentService {
                 .collect(Collectors.toList());
     }
     @Override
+    public AppointmentDetail appointmentDetail(int appointmentId){
+        Appointment a = appointmentRepository.findById(appointmentId).get();
+        return toAppointmentDetail(a);
+    }
+    @Override
     public AppointmentDto save(AppointmentDto dto) {
         Appointment a = mapper.map(dto, Appointment.class);
-        a.setBookingDate(LocalDate.parse(dto.getBookingDate()));
+        a.setAppointmentDate(LocalDate.parse(dto.getAppointmentDate()));
+        a.setMedicalExaminationDay(LocalDate.parse(dto.getMedicalExaminationDay()));
         a.setClinicHours(LocalTime.parse(dto.getClinicHours()));
         if(dto.getPartientId() != 0){
             Optional<Partient> p = partientRepository.getPatientByUserId(dto.getPartientId());

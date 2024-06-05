@@ -11,9 +11,9 @@ import { AlertContext } from '../../../components/Layouts/DashBoard';
 function ProfileDoctor() {
   const [doctor, setDoctor] = useState(null);
 
-  const { currentUser } = useContext(AlertContext);
 
-  // console.log(currentUser.user.id);
+  const {currentUser} = useContext(AlertContext)
+  console.log("id of currentUser : ",currentUser.user.id)
   // const id = getUserData.user.id; // cái này là user_id
   useEffect(() => {
     const fetchDoctorData = async () => {

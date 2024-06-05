@@ -24,6 +24,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -46,8 +47,8 @@ public class ScheduleServiceImpl implements ScheduleService {
     private ModelMapper mapper;
 
     @Override
-    public List<Object[]> findAllOnlyDay() {
-        return scheduleRepository.findDistinctDayWorkWithStatus();
+    public Map<String, String> findAllOnlyDay() {
+        return scheduleRepository.getDistinctDayWorkWithStatus();
     }
 
     @Override
