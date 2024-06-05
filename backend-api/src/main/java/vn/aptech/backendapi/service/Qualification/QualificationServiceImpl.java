@@ -30,9 +30,9 @@ public class QualificationServiceImpl implements QualificationService {
     private QualificationDto toDto(Qualification s) {
         QualificationDto q = mapper.map(s, QualificationDto.class);
         q.setDoctor_id(s.getDoctor().getId());
-//        q.setUniversityName(s.getUniversityName().toString());
-//        q.setCourse(s.getCourse().toString());
-//        q.setDegreeName(s.getDegreeName().toString());
+        q.setCourse(s.getCourse());
+        q.setUniversityName(s.getUniversityName());
+        q.setDegreeName(s.getDegreeName());
         return q;
     }
     @Override

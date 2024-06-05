@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router-dom';
 // eslint-disable-next-line react/prop-types
 const DeleteWorking = ({ isOpen, data, onClose }) => {
     const navigate = useNavigate();
-    const Alert = useContext(AlertContext);
+    const { openNotificationWithIcon } = useContext(AlertContext);
 
     const [working, setWorking] = useState({
         id: '',
@@ -31,11 +31,11 @@ const DeleteWorking = ({ isOpen, data, onClose }) => {
         e.preventDefault();
         try {
             const res = await axios.delete('http://localhost:8080/api/working/delete/' + working.id, working);
-            Alert('success', 'Delete Working Successfully', '');
+            openNotificationWithIcon('success', 'Delete Working Successfully', '');
             navigate("/dashboard/doctor/profile");
             return res;
         } catch (error) {
-            Alert('danger', 'Failed to edit working', '');
+            openNotificationWithIcon('danger', 'Failed to edit working', '');
         }
     };
 

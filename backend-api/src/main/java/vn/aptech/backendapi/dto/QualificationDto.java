@@ -14,8 +14,9 @@ import vn.aptech.backendapi.entities.Doctor;
 @Setter
 public class QualificationDto {
     private int id;
+    private String course;
     private String degreeName;
     private String universityName;
-    private String course;
+    private byte status;
     private int doctor_id;
 }

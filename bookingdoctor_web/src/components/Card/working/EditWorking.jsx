@@ -7,9 +7,9 @@ import { AlertContext } from '../../Layouts/DashBoard';
 import { useNavigate } from 'react-router-dom';
 
 // eslint-disable-next-line react/prop-types
-const EditWorking = ({ isOpen, data, onClose }) => {
+const EditWorking = ({ isOpen, data, doctorId, onClose }) => {
     const navigate = useNavigate();
-    const Alert = useContext(AlertContext);
+    const { openNotificationWithIcon } = useContext(AlertContext);
 
     const [working, setWorking] = useState({
         id: '',
@@ -18,7 +18,7 @@ const EditWorking = ({ isOpen, data, onClose }) => {
         company: '',
         address: '',
         status: 1,
-        doctor_id: 0,
+        doctor_id: doctorId,
     });
 
     const [validationErrors, setValidationErrors] = useState({});
@@ -71,16 +71,16 @@ const EditWorking = ({ isOpen, data, onClose }) => {
     const updateWorking = async (e) => {
         e.preventDefault();
         if (!validateForm()) {
-            Alert('danger', 'Please fill out all required fields', '');
+            openNotificationWithIcon('danger', 'Please fill out all required fields', '');
             return;
         }
         try {
             const res = await axios.put('http://localhost:8080/api/working/update/' + working.id, working);
-            Alert('success', 'Edit Working Successfully', '');
+            openNotificationWithIcon('success', 'Edit Working Successfully', '');
             navigate("/dashboard/doctor/profile");
             return res;
         } catch (error) {
-            Alert('danger', 'Failed to edit working', '');
+            openNotificationWithIcon('danger', 'Failed to edit working', '');
         }
     };
 

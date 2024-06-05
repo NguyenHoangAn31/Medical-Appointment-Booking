@@ -7,36 +7,40 @@ import { Button, } from 'antd';
 import { useParams, useNavigate } from 'react-router-dom';
 import { AlertContext } from '../../../components/Layouts/DashBoard';
 import { detailDoctor } from '../../../services/API/doctorService';
-import getUserData from '../../../route/CheckRouters/token/Token'
+// import getUserData from '../../../route/CheckRouters/token/Token';
 import axios from 'axios';
 import EditWorking from '../../../components/Card/working/EditWorking';
 import CreateWorking from '../../../components/Card/working/CreateWorking';
 import DeleteWorking from '../../../components/Card/working/DeleteWorking';
-// import EditQualification from '../../../components/Card/qualification/EditQualification';
+import EditQualification from '../../../components/Card/qualification/EditQualification';
 import CreateQualification from '../../../components/Card/qualification/CreateQualification';
-// import DeleteQualification from '../../../components/Card/qualification/DeleteQualification';
+import DeleteQualification from '../../../components/Card/qualification/DeleteQualification';
 
 const EditProfileDoctor = () => {
     const { id } = useParams();
-    const user_id = getUserData.user.id;
+    // const { currentUser } = useContext(AlertContext);
+    // const user_id = getUserData.user.id;
+    // const id = currentUser.user.id;
+    // console.log(id);
+    const user_id = id;
     const status = 1;
 
     const navigate = useNavigate();
-    const Alert = useContext(AlertContext);
+    const { openNotificationWithIcon } = useContext(AlertContext);
 
     const [isCreateWorkingModalOpen, setIsCreateWorkingModalOpen] = useState(false);
     const [isEditWorkingModalOpen, setIsEditWorkingModalOpen] = useState(false);
     const [isDeleteWorkingModalOpen, setIsDeleteWorkingModalOpen] = useState(false);
 
     const [isCreateQualificationModalOpen, setIsCreateQualificationModalOpen] = useState(false);
-    // const [isEditQualificationModalOpen, setIsEditQualificationModalOpen] = useState(false);
-    // const [isDeleteQualificationModalOpen, setIsDeleteQualificationModalOpen] = useState(false);
+    const [isEditQualificationModalOpen, setIsEditQualificationModalOpen] = useState(false);
+    const [isDeleteQualificationModalOpen, setIsDeleteQualificationModalOpen] = useState(false);
 
     const [workings, setWorkings] = useState([]);
     const [dataWork, setDataWork] = useState(null);
 
     const [qualifications, setQualifications] = useState([]);
-    // const [dataQualification, setDataQualification] = useState(null);
+    const [dataQualification, setDataQualification] = useState(null);
 
     const [doctor, setDoctor] = useState(
         {
@@ -60,7 +64,7 @@ const EditProfileDoctor = () => {
         setWorkings(result.workings);
         setQualifications(result.qualifications);
         setDoctor(result);
-        console.log(result);
+        // console.log(result);
     };
     const handleChangeProfile = (e) => {
         const { name, value } = e.target;
@@ -72,8 +76,8 @@ const EditProfileDoctor = () => {
     const updateDoctor = async (e) => {
         e.preventDefault();
         try {
-            const res = await axios.put('http://localhost:8080/api/doctor/update/' + doctor.id, doctor);
-            Alert('success', 'Edit Profile Doctor Successfully', '');
+            const res = await axios.put('http://localhost:8080/api/doctor/update/' + id, doctor);
+            openNotificationWithIcon('success', 'Edit Profile Doctor Successfully', '');
             navigate("/dashboard/doctor/profile");
             return res;
         } catch (error) { /* empty */ }
@@ -117,21 +121,36 @@ const EditProfileDoctor = () => {
     const handleCreateQualification = () => {
         setIsCreateQualificationModalOpen(true);
     }
-    // const handleEditQualification = async (id) => {
-    //     try {
-    //         const result = await axios.get('http://localhost:8080/api/qualification/' + id);
-    //         const newQualification = {
-    //             id: result.data.id,
-    //             course: result.data.course,
-    //             university_name: result.data.university_name,
-    //             degree_name: result.data.degree_name,
-    //             status: result.data.status,
-    //             doctor_id: result.data.doctor_id,
-    //         }
-    //         setDataQualification(newQualification);
-    //         setIsEditQualificationModalOpen(true);
-    //     } catch (error) { /* empty */ }
-    // };
+    const handleEditQualification = async (id) => {
+        try {
+            const result = await axios.get('http://localhost:8080/api/qualification/' + id);
+            const newQualification = {
+                id: result.data.id,
+                course: result.data.course,
+                universityName: result.data.universityName,
+                degreeName: result.data.degreeName,
+                status: result.data.status,
+                doctor_id: result.data.doctor_id,
+            }
+            setDataQualification(newQualification);
+            setIsEditQualificationModalOpen(true);
+        } catch (error) { /* empty */ }
+    };
+    const handleDeleteQualification = async (id) => {
+        try {
+            const result = await axios.get('http://localhost:8080/api/qualification/' + id);
+            const deleteQualification = {
+                id: result.data.id,
+                course: result.data.course,
+                universityName: result.data.universityName,
+                degreeName: result.data.degreeName,
+                status: result.data.status,
+                doctor_id: result.data.doctor_id,
+            }
+            setDataQualification(deleteQualification);
+            setIsDeleteQualificationModalOpen(true);
+        } catch (error) { /* empty */ }
+    };
 
 
     return (
@@ -271,7 +290,7 @@ const EditProfileDoctor = () => {
                                 {workings && workings.map((working, index) => (
                                     <tr key={index}>
                                         <td>
-                                            {working.id}
+                                            {index + 1}
                                         </td>
                                         <td>
                                             {working.startWork}
@@ -337,7 +356,7 @@ const EditProfileDoctor = () => {
                                 {qualifications && qualifications.map((qualification, index) => (
                                     <tr key={index} >
                                         <td>
-                                            {qualification.id}
+                                            {index + 1}
                                         </td>
                                         <td>
                                             {qualification.course}
@@ -353,9 +372,9 @@ const EditProfileDoctor = () => {
                                                 type="submit"
                                                 icon={<EditOutlined />}
                                                 style={{ backgroundColor: 'orange' }}
-                                            // onClick={() => handleEditQualification(
-                                            //     qualification.id
-                                            // )}
+                                                onClick={() => handleEditQualification(
+                                                    qualification.id
+                                                )}
                                             >
                                             </Button>
                                             &nbsp;
@@ -363,9 +382,9 @@ const EditProfileDoctor = () => {
                                                 type="primary"
                                                 icon={<DeleteOutlined />}
                                                 style={{ backgroundColor: 'red' }}
-                                            // onClick={() => handleDeleteQualification(
-                                            //     qualification.id
-                                            // )}
+                                                onClick={() => handleDeleteQualification(
+                                                    qualification.id
+                                                )}
                                             >
                                             </Button>
                                         </td>
@@ -376,14 +395,13 @@ const EditProfileDoctor = () => {
                     </div>
                 </div>
             </div >
-            {isEditWorkingModalOpen && <EditWorking data={dataWork} isOpen={isEditWorkingModalOpen} onClose={() => setIsEditWorkingModalOpen(false)} />
-            }
+            {isEditWorkingModalOpen && <EditWorking data={dataWork} isOpen={isEditWorkingModalOpen} onClose={() => setIsEditWorkingModalOpen(false)} doctorId={doctor.id} />}
             {isCreateWorkingModalOpen && <CreateWorking isOpen={isCreateWorkingModalOpen} onClose={() => setIsCreateWorkingModalOpen(false)} doctorId={doctor.id} />}
             {isDeleteWorkingModalOpen && <DeleteWorking data={dataWork} isOpen={isDeleteWorkingModalOpen} onClose={() => setIsDeleteWorkingModalOpen(false)} />}
 
-            {/* {isEditQualificationModalOpen && <EditQualification data={dataQualification} isOpen={isEditQualificationModalOpen} onClose={() => setIsEditQualificationModalOpen(false)} />} */}
+            {isEditQualificationModalOpen && <EditQualification data={dataQualification} isOpen={isEditQualificationModalOpen} onClose={() => setIsEditQualificationModalOpen(false)} doctorId={doctor.id} />}
             {isCreateQualificationModalOpen && <CreateQualification isOpen={isCreateQualificationModalOpen} onClose={() => setIsCreateQualificationModalOpen(false)} doctorId={doctor.id} />}
-            {/* {isDeleteQualificationModalOpen && <DeleteQualification data={dataQualification} isOpen={isDeleteQualificationModalOpen} onClose={() => setIsDeleteQualificationModalOpen(false)} />} */}
+            {isDeleteQualificationModalOpen && <DeleteQualification data={dataQualification} isOpen={isDeleteQualificationModalOpen} onClose={() => setIsDeleteQualificationModalOpen(false)} />}
         </>
     )
 

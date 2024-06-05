@@ -21,6 +21,9 @@ const publicRouters = [
     { path: '/blog', component: Client.Blog, layout: ClientLayout },
     { path: '/blog/:id', component: Client.BlogDetail, layout: ClientLayout },
 
+
+const patientRouters = [
+
     { path: '/account', component: Client.Account, layout: ClientLayout,isForPatient:true},
     { path: '/checkout', component: Client.CheckOut, layout: ClientLayout,isForPatient:true}
 ]

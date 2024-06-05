@@ -41,7 +41,7 @@ const Doctor = () => {
       <div className="container mt-5">
         <h1>List Doctor</h1>
         <hr />
-        <div className="row">6
+        <div className="row">
           {currentDoctors.map((item, index) => (
             <div className="col-md-3">
               <DoctorItem item={item} key={index} />

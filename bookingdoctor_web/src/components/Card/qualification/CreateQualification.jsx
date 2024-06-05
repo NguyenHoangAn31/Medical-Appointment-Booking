@@ -8,11 +8,11 @@ import { useNavigate } from 'react-router-dom';
 // eslint-disable-next-line react/prop-types
 const CreateQualification = ({ isOpen, onClose, doctorId }) => {
     const navigate = useNavigate();
-    const Alert = useContext(AlertContext);
+    const { openNotificationWithIcon } = useContext(AlertContext);
     const [newQualification, setNewQualification] = useState({
         course: '',
-        university_name: '',
-        degree_name: '',
+        universityName: '',
+        degreeName: '',
         status: 1,
         doctor_id: doctorId,
     });
@@ -37,31 +37,32 @@ const CreateQualification = ({ isOpen, onClose, doctorId }) => {
             errors.course = true;
             isValid = false;
         }
-        if (!newQualification.university_name.trim()) {
-            errors.university_name = true;
+        if (!newQualification.universityName.trim()) {
+            errors.universityName = true;
             isValid = false;
         }
-        if (!newQualification.degree_name.trim()) {
-            errors.degree_name = true;
+        if (!newQualification.degreeName.trim()) {
+            errors.degreeName = true;
             isValid = false;
         }
         setValidationErrors(errors);
         return isValid;
     };
     const createNewQualification = async (e) => {
+        console.log(newQualification);
         e.preventDefault();
         if (!validateForm()) {
-            Alert('danger', 'Please fill out all required fields', '');
+            openNotificationWithIcon('danger', 'Please fill out all required fields', '');
             return;
         }
         try {
             const res = await axios.post('http://localhost:8080/api/qualification/create', newQualification);
-            Alert('success', 'Create New Qualification Successfully', '');
+            openNotificationWithIcon('success', 'Create New Qualification Successfully', '');
             navigate("/dashboard/doctor/profile");
             onClose();
             return res;
         } catch (error) {
-            Alert('danger', 'Failed to create new qualification', '');
+            openNotificationWithIcon('danger', 'Failed to create new qualification', '');
         }
     };
     return (
@@ -90,12 +91,12 @@ const CreateQualification = ({ isOpen, onClose, doctorId }) => {
                     <span className="input-group-text">University Name</span>
                     <input
                         type="text"
-                        className={`form-control ${validationErrors.university_name ? 'is-invalid' : ''}`}
-                        name="university_name"
-                        value={newQualification.university_name}
+                        className={`form-control ${validationErrors.universityName ? 'is-invalid' : ''}`}
+                        name="universityName"
+                        value={newQualification.universityName}
                         onChange={handleChangeNewQualification}
                     />
-                    {validationErrors.university_name && (
+                    {validationErrors.universityName && (
                         <span className="text-danger">This field is required</span>
                     )}
                 </div>
@@ -103,12 +104,12 @@ const CreateQualification = ({ isOpen, onClose, doctorId }) => {
                     <span className="input-group-text">Degree Name</span>
                     <input
                         type="text"
-                        className={`form-control ${validationErrors.degree_name ? 'is-invalid' : ''}`}
-                        name="degree_name"
-                        value={newQualification.degree_name}
+                        className={`form-control ${validationErrors.degreeName ? 'is-invalid' : ''}`}
+                        name="degreeName"
+                        value={newQualification.degreeName}
                         onChange={handleChangeNewQualification}
                     />
-                    {validationErrors.degree_name && (
+                    {validationErrors.degreeName && (
                         <span className="text-danger">This field is required</span>
                     )}
                 </div>

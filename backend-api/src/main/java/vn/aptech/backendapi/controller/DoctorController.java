@@ -51,9 +51,9 @@ public class DoctorController {
     @GetMapping(value = "/findbyuserid/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     // @PreAuthorize("hasAnyAuthority('ADMIN')")
     public ResponseEntity<DoctorDto> findByUserId(@PathVariable("id") int id) {
-        DoctorDto result = doctorService.findByUserId(id);
+        Optional<DoctorDto> result = doctorService.findByUserId(id);
         if (result != null) {
-            return ResponseEntity.ok(result);
+            return ResponseEntity.ok(result.get());
         } else {
             return ResponseEntity.notFound().build();
         }
