@@ -241,6 +241,7 @@ public class DoctorServiceImpl implements DoctorService {
             doctorDto.setQualifications(doctor.getQualifications().stream()
             .map(this::mapToQualificationDto)
             .collect(Collectors.toList()));
+
             List<FeedbackDto> feedbackList = doctor.getFeedbacks().stream().map(this::mapToFeedbackDto)
                     .collect(Collectors.toList());
 

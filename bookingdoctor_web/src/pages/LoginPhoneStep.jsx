@@ -62,6 +62,9 @@ const LoginPhoneStep = () => {
                     localStorage.setItem('currentPath', '');
                     navigateTo(`/dashboard/admin`);
                 } else {
+                    //const resultUser = await axios.get(`http://localhost:8080/api/user/search/${username}`);
+                    //console.log(resultUser.data);
+                    //const resultDoctor = await axios.get(`http://localhost:8080/api/doctor/findbyuserid/${id}`);
                     if (currentPath == null || currentPath == '' || currentPath == '/login'
                         || currentPath == '/login-by-phone'
                         || currentPath == '/login-by-phone-submit') {
