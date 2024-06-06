@@ -5,14 +5,6 @@ import { useNavigate } from 'react-router-dom';
 
 const Account = () => {
   const { currentUser } = useContext(UserContext);
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if (!currentUser) {
-      navigate('/login');
-    }
-  }, [currentUser, navigate]);
-
 
   return (
     <h1>Account</h1>

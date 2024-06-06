@@ -231,7 +231,7 @@ public class DoctorServiceImpl implements DoctorService {
              }
     }
     @Override
-    public DoctorDto findByUserId(int userId){
+    public Optional<DoctorDto> findByUserId(int userId){
         Doctor doctor = doctorRepository.findDoctorByUserId(userId);
         if(doctor != null){
             DoctorDto doctorDto = mapToDoctorDto(doctor);
@@ -252,8 +252,9 @@ public class DoctorServiceImpl implements DoctorService {
                         .orElse(0);
             }
             doctorDto.setRate(totalRating);
-            return doctorDto;
+            return Optional.of(doctorDto);
         }
+        return null;
     }
 
 
