@@ -16,7 +16,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class SlotWithDoctorsDTO {
-    private int slotId;
+    private int id;
     private String startTime;
     private String endTime;
     private List<DoctorDtoForSchedule> doctorsForSchedules;

@@ -23,8 +23,8 @@ const publicRouters = [
 
 ]
 const patientRouters = [
-    { path: '/account', component: Client.Account, layout: ClientLayout,isForPatient:true},
-    { path: '/checkout', component: Client.CheckOut, layout: ClientLayout,isForPatient:true}
+    { path: '/account', component: Client.Account, layout: ClientLayout},
+    { path: '/checkout', component: Client.CheckOut, layout: ClientLayout}
 ]
 
 
@@ -68,4 +68,4 @@ const adminRouters = [
     { path: '/dashboard/admin/manage-report/', component: DashBoard.ManageReport, layout: DashBoardLayout }
 ]
 
-export { publicRouters, doctorRouters, adminRouters }
+export { publicRouters, patientRouters, doctorRouters, adminRouters }

@@ -16,9 +16,11 @@ import vn.aptech.backendapi.entities.Schedule;
 import vn.aptech.backendapi.entities.ScheduleDoctor;
 import vn.aptech.backendapi.entities.Slot;
 import vn.aptech.backendapi.repository.AppointmentRepository;
+import vn.aptech.backendapi.repository.DepartmentRepository;
 import vn.aptech.backendapi.repository.DoctorRepository;
 import vn.aptech.backendapi.repository.ScheduleDoctorRepository;
 import vn.aptech.backendapi.repository.ScheduleRepository;
+import vn.aptech.backendapi.repository.SlotRepository;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -42,6 +44,11 @@ public class ScheduleServiceImpl implements ScheduleService {
     @Autowired
     private DoctorRepository doctorRepository;
 
+    @Autowired
+    private DepartmentRepository departmentRepository;
+
+    @Autowired
+    private SlotRepository slotRepository;
 
     @Autowired
     private ModelMapper mapper;
@@ -115,10 +122,11 @@ public class ScheduleServiceImpl implements ScheduleService {
         List<Slot> slots = scheduleRepository.findSlotsByDayAndDoctorId(dayWorking, doctorId);
         List<CustomSlotWithScheduleDoctorId> result = new ArrayList<>();
 
-        List<String> clinicHoursByBookingDateAndDoctorId = appointmentRepository.findClinicHoursByBookingDateAndDoctorId(dayWorking, doctorId)
-        .stream()
-        .map(LocalTime::toString)
-        .collect(Collectors.toList());
+        List<String> clinicHoursByBookingDateAndDoctorId = appointmentRepository
+                .findClinicHoursByBookingDateAndDoctorId(dayWorking, doctorId)
+                .stream()
+                .map(LocalTime::toString)
+                .collect(Collectors.toList());
 
         for (Slot slot : slots) {
             LocalTime startTime = slot.getStartTime();
@@ -128,13 +136,37 @@ public class ScheduleServiceImpl implements ScheduleService {
                 if (nextTime.isAfter(endTime)) {
                     nextTime = endTime;
                 }
-                int scheduleDoctorId = scheduleDoctorRepository.findScheduleDoctorIdByDayWorkingSlotIdAndDoctorId(dayWorking, slot.getId(), doctorId);
+                int scheduleDoctorId = scheduleDoctorRepository
+                        .findScheduleDoctorIdByDayWorkingSlotIdAndDoctorId(dayWorking, slot.getId(), doctorId);
                 int status = clinicHoursByBookingDateAndDoctorId.contains(startTime.toString()) ? 0 : 1;
-                result.add(new CustomSlotWithScheduleDoctorId(slot.getId(), startTime.toString(), status, scheduleDoctorId));
+                result.add(new CustomSlotWithScheduleDoctorId(slot.getId(), startTime.toString(), status,
+                        scheduleDoctorId));
                 startTime = nextTime;
             }
         }
         return result;
+    }
+
+    @Override
+    public boolean create(LocalDate dayWorking, int departmentId, int[] slotsId) {
+        try {
+            for (int slotId : slotsId) {
+                Schedule s = new Schedule();
+                Optional<Department> d = departmentRepository.findById(departmentId);
+                d.ifPresent(department -> s.setDepartment(mapper.map(department, Department.class)));
+
+                Optional<Slot> sl = slotRepository.findById(slotId);
+                sl.ifPresent(slot -> s.setSlot(mapper.map(slot, Slot.class)));
+
+                s.setDayWorking(dayWorking);
+                s.setStatus(true);
+                scheduleRepository.save(s);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
     }
 
 }
