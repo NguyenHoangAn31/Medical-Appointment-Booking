@@ -231,7 +231,7 @@ public class DoctorServiceImpl implements DoctorService {
              }
     }
     @Override
-    public DoctorDto findByUserId(int userId){
+    public Optional<DoctorDto> findByUserId(int userId){
         Doctor doctor = doctorRepository.findDoctorByUserId(userId);
         if(doctor != null){
             DoctorDto doctorDto = mapToDoctorDto(doctor);
@@ -241,8 +241,20 @@ public class DoctorServiceImpl implements DoctorService {
             doctorDto.setQualifications(doctor.getQualifications().stream()
             .map(this::mapToQualificationDto)
             .collect(Collectors.toList()));
-            return doctorDto;
+            List<FeedbackDto> feedbackList = doctor.getFeedbacks().stream().map(this::mapToFeedbackDto)
+                    .collect(Collectors.toList());
+
+            double totalRating = 0;
+            if (!feedbackList.isEmpty()) {
+                totalRating = feedbackList.stream()
+                        .mapToDouble(FeedbackDto::getRate)
+                        .average()
+                        .orElse(0);
+            }
+            doctorDto.setRate(totalRating);
+            return Optional.of(doctorDto);
         }
+        return null;
     }
 
 
