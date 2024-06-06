@@ -3,13 +3,14 @@ import { motion } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 //import ecryptToken from '../ultils/encrypt';
-// import { auth } from "../services/auth/firebase.config";
+import { auth } from "../services/auth/firebase.config";
 import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
 import { toast } from "react-hot-toast";
 
 const Signup = () => {
   const [fullname, setFullname] = useState('');
-  const [username, setUsername] = useState('');
+  const [phone, setPhone] = useState('');
+  const [email, setEmail] = useState('');
   const [keycode, setKeycode] = useState('');
   const [showOTP, setShowOTP] = useState(false);
   //const navigateTo = useNavigate();
@@ -19,8 +20,8 @@ const Signup = () => {
 
   const data = {
     fullName: fullname,
-    phone: username,
-    email: "",
+    phone: phone,
+    email: email,
     keyCode: keycode,
     provider: provider,
     roleId: role,
@@ -53,7 +54,7 @@ const handleSignup = async () => {
           toast.success("Register successfully!", {
               position: "top-right"
           });
-          navigator('/');
+          navigator('/home');
           window.location.reload();
         }
       } catch (error) {
@@ -69,18 +70,19 @@ const handleSignup = async () => {
   
 }
 const hanldeSendOtp = async () => {
-  const result = await axios.get(`http://localhost:8080/api/user/search/${username}`);
+  const result = await axios.get(`http://localhost:8080/api/user/search/${phone}`);
   if(result && result.data == true) {
     toast.error("Phone đã đăng ký! Vui lòng đăng nhập hoặc đăng ký số phone mới", {
                   position: "bottom-right"
               });
+    //return;
   }else{
-    toast.success("Phone chưa đăng ký!", {
+    toast.success("Bạn có thể đăng ký toàn khoản mới vớ số điện thoại này!", {
                   position: "top-right"
               });
     onCaptchVerify();
     const appVerifier = window.recaptchaVerifier;
-    const formatPh = "+84" + username.slice(1);
+    const formatPh = "+84" + phone.slice(1);
     signInWithPhoneNumber(auth, formatPh, appVerifier)
         .then((confirmationResult) => {
             window.confirmationResult = confirmationResult;
@@ -131,10 +133,17 @@ const hanldeSendOtp = async () => {
                     />
                   </div>
                   <div className="mb-3">
-                    <input type="gmail" className="input__username"
+                    <input type="phone" className="input__username"
                       id="input__phone" placeholder="Enter your phone number"
-                      value={username}
-                      onChange={(e) => setUsername(e.target.value)}
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value)}
+                    />
+                  </div>
+                  <div className="mb-3">
+                    <input type="phone" className="input__username"
+                      id="input__phone" placeholder="Enter your gmail"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
                     />
                   </div>
                   <div className="mb-4">

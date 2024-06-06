@@ -10,7 +10,7 @@ import { motion } from 'framer-motion';
 const HomeNews = () => {
 
     const [news, setNews] = useState([]);
-    console.log(news);
+    // console.log(news);
     useEffect(() => {
         fetchNews();
     }, []);

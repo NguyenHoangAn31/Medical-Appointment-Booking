@@ -11,23 +11,26 @@ import { useNavigate } from "react-router-dom"
 
 import getUserData from '../../route/CheckRouters/token/Token'
 
-const Home = () => {
+const Home =  () => {
+    var token = getUserData();
+    //console.log(token.user.id)
     // const navigateTo = useNavigate();
-    //  useEffect(() =>{
+    //  useEffect(async () =>{
     //   if(getUserData != null){
-    //       var role = getUserData.user.roles[0];
-    //       if(role == 'ADMIN'){
-    //         navigateTo(`/dashboard/admin`);
-    //       }else if(role == 'DOCTOR'){
-    //         navigateTo(`/dashboard/doctor`);
-    //       }else{
-    //         navigateTo(`/`);
-    //       }
+    //     fetchDoctor();
     //    }else{
     //      localStorage.setItem('currentPath', '');
     //      navigateTo(`/`); 
     //    }
     //  }, []);
+
+    //  const fetchDoctor = async () => {
+    //    const checkExitDoctor = await axios.get(`http://localhost:8080/api/doctor/findbyuserid/${token.user.id}`);
+    //    if(checkExitDoctor  == null){
+    //      localStorage.setItem('currentPath', '');
+    //      navigateTo(`/account`);
+    //    }
+    //  }
     
   return (
     <>

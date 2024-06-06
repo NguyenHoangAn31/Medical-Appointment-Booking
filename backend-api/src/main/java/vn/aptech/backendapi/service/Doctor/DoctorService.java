@@ -8,6 +8,9 @@ import java.util.Optional;
 public interface DoctorService {
     List<DoctorDto> findAll();
     Optional<DoctorDto> findById(int id);
+
+    Optional<DoctorDto> findByUserId1(int userId);
+
     Optional<DoctorDto> findByUserId(int userId);
     //Hien Create 30/4/2024
     List<DoctorDto> findDoctorsByDepartmentId(int departmentId);
