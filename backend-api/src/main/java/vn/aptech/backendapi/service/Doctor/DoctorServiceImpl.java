@@ -205,6 +205,17 @@ public class DoctorServiceImpl implements DoctorService {
             doctorDto.setQualifications(doctor.getQualifications().stream()
             .map(this::mapToQualificationDto)
             .collect(Collectors.toList()));
+            List<FeedbackDto> feedbackList = doctor.getFeedbacks().stream().map(this::mapToFeedbackDto)
+                    .collect(Collectors.toList());
+
+            double totalRating = 0;
+            if (!feedbackList.isEmpty()) {
+                totalRating = feedbackList.stream()
+                        .mapToDouble(FeedbackDto::getRate)
+                        .average()
+                        .orElse(0);
+            }
+            doctorDto.setRate(totalRating);
             return doctorDto;
         }
         return null;

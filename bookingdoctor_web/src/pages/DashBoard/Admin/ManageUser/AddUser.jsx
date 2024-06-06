@@ -133,7 +133,7 @@ function AddUser() {
             required: true,
           }]}>
           <Select placeholder="Select Role" onChange={(e) => onInputChangeForUser('roleId', e)}>
-            {/* <Select.Option value="1">User</Select.Option> */}
+            <Select.Option value="1">User</Select.Option>
             <Select.Option value="2">Doctor</Select.Option>
             <Select.Option value="3">Admin</Select.Option>
           </Select>

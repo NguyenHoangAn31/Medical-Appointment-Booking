@@ -16,6 +16,8 @@ public class News extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String title;
+    @Lob
+    @Column(columnDefinition = "LONGTEXT")
     private String content;
     private String image;
     private String url;

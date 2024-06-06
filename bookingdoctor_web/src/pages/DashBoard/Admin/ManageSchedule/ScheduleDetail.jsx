@@ -5,13 +5,16 @@ import Spinner from '../../../../components/Spinner';
 import { getAllDoctorWithStatus } from '../../../../services/API/doctorService';
 
 import { Button, Select, Space, Tabs } from 'antd';
-import { findScheduleByDay, updateScheduleForAdmin } from '../../../../services/API/scheduleService';
+import { createSchedule, findScheduleByDay, updateScheduleForAdmin } from '../../../../services/API/scheduleService';
+import { getAllDepartment } from '../../../../services/API/departmentService';
+import { getAllSlot } from '../../../../services/API/slotService';
+import { CloseSquareFilled } from '@ant-design/icons';
 
 
 function ScheduleDetail() {
 
   // thông báo
-  const {openNotificationWithIcon} = useContext(AlertContext);
+  const { openNotificationWithIcon } = useContext(AlertContext);
   // lấy date từ url
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
@@ -24,6 +27,11 @@ function ScheduleDetail() {
 
   const [clinic, setClinic] = useState({});
   const [doctors, setDoctors] = useState([]);
+  const [departmentsForCreate, setDepartmentsForCreate] = useState([]);
+  const [slots, setSlots] = useState([]);
+  const [slotsForCreate, setSlotsForCreate] = useState([]);
+  const [departmentId, setDepartmentId] = useState();
+  const [slotsList, setSlotsList] = useState([]);
 
   useEffect(() => {
     loadClinic();
@@ -31,15 +39,35 @@ function ScheduleDetail() {
   }, []);
 
   const loadClinic = async () => {
-    setClinic(await findScheduleByDay(day));
+    const s = await findScheduleByDay(day)
+    const d = await getAllDepartment();
+    const slotwithvalueandlabel = await getAllSlot()
+    
+
+
+    d.forEach(d => {
+      d.value = d.id;
+      d.label = d.name
+    })
+
+    slotwithvalueandlabel.forEach(s => {
+      s.value = s.id;
+      s.label = s.startTime + ' - ' + s.endTime
+    })
+    setDepartmentsForCreate(d)
+    setClinic(s);
+    setSlots(slotwithvalueandlabel)
   };
+
+
+
+
   const loadDoctors = async () => {
     var doctorList = await getAllDoctorWithStatus();
-    doctorList
-      .forEach(doctor => {
-        doctor.value = doctor.id;
-        doctor.label = doctor.fullName
-      })
+    doctorList.forEach(doctor => {
+      doctor.value = doctor.id;
+      doctor.label = doctor.fullName
+    })
     setDoctors(doctorList);
   };
 
@@ -48,7 +76,6 @@ function ScheduleDetail() {
       await updateScheduleForAdmin(day, departmentId, slotId, value)
       loadClinic()
       openNotificationWithIcon('success', 'Update Schedule Successfully', '')
-
     } catch (error) {
       console.log(error)
       openNotificationWithIcon('error', 'Error Update Schedule', '')
@@ -57,6 +84,39 @@ function ScheduleDetail() {
 
   };
 
+  const handleChangeDepartment = (value) => {
+    setDepartmentId(value);
+    var s = clinic.departments[value]?.slots ?? [];
+    if (s.length != 0) {
+      const filteredSlots = slotsForCreate.filter(
+        s => !x.some(slot => slot.id === s.id)
+      );
+      filteredSlots.forEach(s => {
+        s.value = s.id;
+        s.label = s.startTime + ' - ' + s.endTime
+      })
+      setSlotsForCreate(filteredSlots)
+    }
+    else {
+      setSlotsForCreate(slots)
+    }
+
+  };
+  const handleChangeSlot = async (value) => {
+    setSlotsList(value)
+  };
+
+  const handleCreateSchedule = async () => {
+    try {
+      await createSchedule(day, departmentId, slotsList)
+      loadClinic()
+      openNotificationWithIcon('success', 'Create Schedule Successfully', '')
+    } catch (error) {
+      console.log(error)
+      openNotificationWithIcon('warning', 'Work Schedule Has Been Created', '')
+    }
+  }
+
 
 
 
@@ -64,7 +124,43 @@ function ScheduleDetail() {
     <Spinner />
   ) : (
     <>
-      <h1 className='mb-5'>Work Day : {day} - {status}</h1>
+      <h1 className='mb-5'>Work Day : {day} <span style={{ color: status === 'completed' ? 'red' : '#09ff00' }}>{status}</span></h1>
+      <Select
+        style={{
+          display: 'block',
+          width: '40%'
+        }}
+        placeholder="select department"
+        onChange={handleChangeDepartment}
+        options={departmentsForCreate}
+        optionRender={(option) => (
+          <Space>
+            <span role="img" aria-label={option.data.name}>
+              {option.data.name}
+            </span>
+          </Space>
+        )}
+      />
+
+      <Select
+        mode="multiple"
+        style={{
+          display: 'block',
+          width: '40%',
+          height: 30
+        }}
+        placeholder="select slots"
+        onChange={handleChangeSlot}
+        options={slotsForCreate}
+        optionRender={(option) => (
+          <Space>
+            <span role="img" aria-label={option.data.label}>
+              {option.data.startTime} - {option.data.endTime}
+            </span>
+          </Space>
+        )}
+      />
+      <Button disabled={slotsList.length == 0} onClick={handleCreateSchedule}>Create</Button>
       <Tabs
         tabPosition={tabPosition}
         defaultActiveKey={null}
@@ -93,12 +189,12 @@ function ScheduleDetail() {
                   style={{ width: '50%' }}
                   placeholder="select doctor"
                   defaultValue={slot.doctorsForSchedules.map(doctor => doctor.id)}
-                  onChange={(value) => handleChange(deptValue.id, slot.slotId, value)}
+                  onChange={(value) => handleChange(deptValue.id, slot.id, value)}
                   options={doctors.filter(doctor => doctor.department.id == deptValue.id)}
                   optionRender={(option) => (
                     <Space>
                       <span role="img" aria-label={option.data.fullName}>
-                      <img src={"http://localhost:8080/images/doctors/" + option.data.image} alt="" style={{ width: 30, height: 30, objectFit: 'cover', borderRadius: '50%', objectPosition: 'top' }} />
+                        <img src={"http://localhost:8080/images/doctors/" + option.data.image} alt="" style={{ width: 30, height: 30, objectFit: 'cover', borderRadius: '50%', objectPosition: 'top' }} />
                         {option.data.fullName}
                       </span>
                       {option.data.birthday}
@@ -109,7 +205,7 @@ function ScheduleDetail() {
             )),
           };
         })}
-        
+
       />
     </>
   );

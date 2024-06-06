@@ -7,6 +7,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,8 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 import vn.aptech.backendapi.dto.CustomSlotWithScheduleDoctorId;
 import vn.aptech.backendapi.dto.Schedule.ScheduleWithDepartmentDto;
 import vn.aptech.backendapi.repository.AppointmentRepository;
-import vn.aptech.backendapi.repository.ScheduleDoctorRepository;
-import vn.aptech.backendapi.repository.ScheduleRepository;
 import vn.aptech.backendapi.service.Schedule.ScheduleService;
 
 import java.time.LocalDate;
@@ -69,6 +68,19 @@ public class ScheduleController {
         List<LocalTime> result = scheduleRepository.findClinicHoursByBookingDateAndDoctorId(dayWorking, doctorId);
 
         return ResponseEntity.ok(result);
+
+    }
+
+    @PostMapping(value = "/create/{day}/{departmentId}")
+    public ResponseEntity<?> create(
+            @PathVariable("day") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dayWorking,
+            @PathVariable("departmentId") int departmentId,
+            @RequestBody int[] slotsId) {
+        boolean result = scheduleService.create(dayWorking, departmentId, slotsId);
+        if (result) {
+            return ResponseEntity.ok(result);
+        }
+        return ResponseEntity.notFound().build();
 
     }
 

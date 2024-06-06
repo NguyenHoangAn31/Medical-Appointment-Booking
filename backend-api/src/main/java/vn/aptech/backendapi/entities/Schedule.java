@@ -11,13 +11,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "schedules")
-public class Schedule extends BaseEntity {
+@Table(name = "schedules", uniqueConstraints = {
+    @UniqueConstraint(columnNames = { "department_id", "slot_id","dayWorking" })
+})public class Schedule extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     
-
     private LocalDate dayWorking;
 
     @ManyToOne

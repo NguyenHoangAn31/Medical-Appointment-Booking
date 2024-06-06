@@ -1,7 +1,6 @@
 package vn.aptech.backendapi.service.Schedule;
 
 import vn.aptech.backendapi.dto.CustomSlotWithScheduleDoctorId;
-import vn.aptech.backendapi.dto.SlotDto;
 import vn.aptech.backendapi.dto.Schedule.ScheduleWithDepartmentDto;
 
 import java.time.LocalDate;
@@ -18,5 +17,7 @@ public interface ScheduleService {
 
     void updateScheduleForAdmin(LocalDate dayWorking, int departmentId, int slotId,
             int[] doctorList);
+
+    boolean create(LocalDate dayWorking, int departmentId, int[] slotsId);
 
 }
