@@ -10,7 +10,7 @@ import { useNavigate } from 'react-router-dom';
 // eslint-disable-next-line react/prop-types
 const CreateWorking = ({ isOpen, onClose, doctorId }) => {
     const navigate = useNavigate();
-    const Alert = useContext(AlertContext);
+    const { openNotificationWithIcon } = useContext(AlertContext);
 
     const [newWork, setNewWork] = useState({
         startWork: '',
@@ -65,17 +65,17 @@ const CreateWorking = ({ isOpen, onClose, doctorId }) => {
     const createNewWork = async (e) => {
         e.preventDefault();
         if (!validateForm()) {
-            Alert('danger', 'Please fill out all required fields', '');
+            openNotificationWithIcon('danger', 'Please fill out all required fields', '');
             return;
         }
         try {
             const res = await axios.post('http://localhost:8080/api/working/create', newWork);
-            Alert('success', 'Create New Working Successfully', '');
+            openNotificationWithIcon('success', 'Create New Working Successfully', '');
             navigate("/dashboard/doctor/profile");
             onClose();
             return res;
         } catch (error) {
-            Alert('danger', 'Failed to create new working', '');
+            openNotificationWithIcon('danger', 'Failed to create new working', '');
         }
     };
 

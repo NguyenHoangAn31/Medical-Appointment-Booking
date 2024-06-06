@@ -68,6 +68,8 @@ public class DoctorServiceImpl implements DoctorService {
         qualificationDto.setDegreeName(qualification.getDegreeName());
         qualificationDto.setUniversityName(qualification.getUniversityName());
         qualificationDto.setCourse(qualification.getCourse());
+        qualificationDto.setDoctor_id(qualification.getDoctor().getId());
+
         return qualificationDto;
     }
 
@@ -193,7 +195,41 @@ public class DoctorServiceImpl implements DoctorService {
         }
     }
 
+    @Override
+    public Optional<DoctorDto> findByUserId1(int userId) {
+        Doctor doctor = doctorRepository.findDoctorByUserId(userId);
 
+        if (doctor != null) {
+            List<WorkingDto> workingList = doctor.getWorkings().stream()
+                    .map(this::mapToWorkingDto)
+                    .collect(Collectors.toList());
+            List<QualificationDto> qualificationList = doctor.getQualifications().stream()
+                    .map(this::mapToQualificationDto)
+                    .collect(Collectors.toList());
+
+            List<FeedbackDto> feedbackList = doctor.getFeedbacks().stream()
+                    .map(this::mapToFeedbackDto)
+                    .collect(Collectors.toList());
+
+            double totalRating = 0;
+            if (!feedbackList.isEmpty()) {
+                totalRating = feedbackList.stream()
+                        .mapToDouble(FeedbackDto::getRate)
+                        .average()
+                        .orElse(0);
+            }
+
+            DoctorDto doctorDto = mapToDoctorDto(doctor);
+            doctorDto.setWorkings(workingList);
+            doctorDto.setQualifications(qualificationList);
+            doctorDto.setFeedbackDtoList(feedbackList);
+            doctorDto.setRate(totalRating);
+
+            return Optional.of(doctorDto);
+        } else {
+            return Optional.empty(); // Trả về Optional rỗng nếu không tìm thấy Doctor
+             }
+    }
     @Override
     public DoctorDto findByUserId(int userId){
         Doctor doctor = doctorRepository.findDoctorByUserId(userId);
@@ -218,8 +254,8 @@ public class DoctorServiceImpl implements DoctorService {
             doctorDto.setRate(totalRating);
             return doctorDto;
         }
-        return null;
     }
+
 
     // Hien Create 30/4/2024
     @Override

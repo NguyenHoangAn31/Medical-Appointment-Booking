@@ -6,10 +6,11 @@ import { Button } from 'antd';
 import { Link } from 'react-router-dom';
 // import moment from 'moment';
 // eslint-disable-next-line no-unused-vars
-import getUserData from '../../../route/CheckRouters/token/Token'
+// import getUserData from '../../../route/CheckRouters/token/Token'
 import { AlertContext } from '../../../components/Layouts/DashBoard';
 function ProfileDoctor() {
   const [doctor, setDoctor] = useState(null);
+
 
   const {currentUser} = useContext(AlertContext)
   console.log("id of currentUser : ",currentUser.user.id)
@@ -90,7 +91,7 @@ function ProfileDoctor() {
       </div>
       <div className='row text-center mt-5'>
         <Link style={{ marginRight: '16px', color: 'blue' }}
-          to={`/dashboard/doctor/edit/${doctor.id}`}>
+          to={`/dashboard/doctor/edit/${currentUser.user.id}`}>
           <Button type="primary" icon={<EditOutlined />} >
             Edit
           </Button>
