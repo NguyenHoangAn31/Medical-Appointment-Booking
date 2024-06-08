@@ -5,6 +5,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,7 +22,6 @@ import vn.aptech.backendapi.service.Schedule.ScheduleService;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping(value = "/api/schedules", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -33,8 +33,8 @@ public class ScheduleController {
     private AppointmentRepository scheduleRepository;
 
     @GetMapping(value = "/getdays", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Map<String, String>> findAllOnlyDay() {
-        Map<String, String> result = scheduleService.findAllOnlyDay();
+    public ResponseEntity<List<Object[]>> findAllOnlyDay() {
+        List<Object[]> result = scheduleService.findAllOnlyDay();
         return ResponseEntity.ok(result);
     }
 
@@ -77,6 +77,19 @@ public class ScheduleController {
             @PathVariable("departmentId") int departmentId,
             @RequestBody int[] slotsId) {
         boolean result = scheduleService.create(dayWorking, departmentId, slotsId);
+        if (result) {
+            return ResponseEntity.ok(result);
+        }
+        return ResponseEntity.notFound().build();
+
+    }
+
+    @DeleteMapping(value = "/deleteslot/{day}/{departmentId}/{slotId}")
+    public ResponseEntity<?> deleteSlot(
+            @PathVariable("day") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dayWorking,
+            @PathVariable("departmentId") int departmentId,
+            @PathVariable("slotId") int slotId) {
+        boolean result = scheduleService.deleteSlot(dayWorking, departmentId, slotId);
         if (result) {
             return ResponseEntity.ok(result);
         }

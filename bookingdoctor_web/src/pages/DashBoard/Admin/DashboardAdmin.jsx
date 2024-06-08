@@ -134,7 +134,7 @@ function DashboardAdmin() {
   ];
   const count = [
     {
-      today: "Today’s Sales",
+      today: "Today’s Revenue",
       title: "$53,000",
       persent: "+30%",
       icon: dollor,
@@ -155,7 +155,7 @@ function DashboardAdmin() {
       bnb: "redtext",
     },
     {
-      today: "New Orders",
+      today: "New Books",
       title: "$13,200",
       persent: "10%",
       icon: cart,

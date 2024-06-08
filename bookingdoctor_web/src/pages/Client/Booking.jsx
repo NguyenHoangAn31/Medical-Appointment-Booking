@@ -134,8 +134,7 @@ const Booking = () => {
   const [days, setDays] = useState([]);
 
   const [doctorId, setDoctorId] = useState();
-  const [searchTerm, setSearchTerm] = useState('');
-  const [doctorForSearch,setDoctorForSearch] = useState([]);
+  const [doctorForSearch, setDoctorForSearch] = useState([]);
   const [schedules, setSchedules] = useState([]);
   const [scheduledoctorId, setScheduledoctorId] = useState('');
   const [slotName, setSlotName] = useState('');
@@ -170,7 +169,7 @@ const Booking = () => {
     const ngayHienTai = new Date(); // Ngày hiện tại
     ngayHienTai.setDate(ngayHienTai.getDate());
 
-  
+
     const ngayDauTuan = startOfWeek(ngayHienTai); // Ngày đầu tiên của tuần hiện tại
     const daysOfWeekNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
     const cacNgayTrongTuan = [];
@@ -217,11 +216,15 @@ const Booking = () => {
     setActiveIndex(index);
     try {
       const fetchedDoctorDepartment = await axios.get('http://localhost:8080/api/doctor/related-doctor/' + index);
-      setDoctors(fetchedDoctorDepartment.data)
+      setDoctorForSearch(fetchedDoctorDepartment.data)
 
     } catch (error) {
 
     }
+  }
+
+  function stripTime(date) {
+    return new Date(date.getFullYear(), date.getMonth(), date.getDate());
   }
 
   const handleDayClick = async (index, day) => {
@@ -229,10 +232,17 @@ const Booking = () => {
       alert('Vui lòng chọn bác sỹ trước khi chọn ngày')
       return;
     }
-    setSlotName('')
-    setActiveHourIndex('');
-    const dayvalue = `${day.nam}-${String(day.thang).padStart(2, '0')}-${String(day.ngayOfMonth).padStart(2, '0')}`;
     setActiveDayIndex(index);
+    const dayvalue = `${day.nam}-${String(day.thang).padStart(2, '0')}-${String(day.ngayOfMonth).padStart(2, '0')}`;
+
+    // xử lý không cho chọn những ngày cũ
+    const inputDate = new Date(dayvalue);
+    const currentDate = new Date();
+    if (stripTime(inputDate) < stripTime(currentDate)) {
+      console.log("less than");
+      setSchedules([]);
+      return;
+    }
     setDaySelected(dayvalue);
     const data = {
       doctorId: doctorId,
@@ -255,20 +265,36 @@ const Booking = () => {
         console.error('An error occurred:', error);
       }
     }
+    setSlotName('')
+    setActiveHourIndex('');
   }
 
 
+
+  function parseTimeString(timeString) {
+    const [hours, minutes] = timeString.split(':').map(Number);
+    const now = new Date();
+    return new Date(now.getFullYear(), now.getMonth(), now.getDate(), hours, minutes);
+  }
 
   const formatDate = (index) => {
     return format(Date(index), 'dd MMMM, yyyy')
   }
+
   const isSlotAvailable = (slot) => {
     const foundSlot = schedules.find(slots => slots.startTime === slot);
+    // lấy thời gian hiện tại
+    const now = new Date();
+    const currentTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), now.getHours(), now.getMinutes());
+
     if (foundSlot) {
-      if (foundSlot.status === 1) {
+      const slotTime = parseTimeString(foundSlot.startTime);
+      if (foundSlot.status === 1 && (slotTime > currentTime || (stripTime(now) < stripTime(new Date(daySelected) ||  stripTime(now) > stripTime(new Date(daySelected)))))) {
         return { status: 'true', scheduledoctorId: foundSlot.scheduledoctorId };
-      } else {
+      } else if (foundSlot.status === 0) {
         return { status: 'booked' };
+      } else {
+        return { status: 'false' };
       }
     } else {
       return { status: 'false' };
@@ -277,10 +303,12 @@ const Booking = () => {
 
 
 
+
+
   // Tìm dữ liệu của 1 bác sỹ
   const handleDoctorClick = async (index) => {
     var defaultDate = new Date();
-    if(daySelected == ''){
+    if (daySelected == '') {
       setDaySelected(formatDateFromJs(defaultDate))
     }
     setDoctorId(index);
@@ -309,8 +337,6 @@ const Booking = () => {
 
   const handleSearch = async (event) => {
     const term = event.target.value;
-    setSearchTerm(term);
-
     if (term.trim() !== '') {
       const filtered = doctors.filter(doctor =>
         doctor.fullName.toLowerCase().includes(term.toLowerCase())
@@ -321,7 +347,7 @@ const Booking = () => {
     }
   };
 
-  
+
   const handleSlotClick = (slot_Name, slot_Id, scheduledoctor_Id) => {
     setActiveHourIndex(slot_Id);
     setSlotName(slot_Name);
@@ -334,7 +360,7 @@ const Booking = () => {
       alert('Vui lòng đăng nhập để sử dụng chức năng này!');
       return;
     }
-    else if(!doctorId){
+    else if (!doctorId) {
       alert('Please select choose a Doctor !');
       return;
     }
@@ -344,7 +370,7 @@ const Booking = () => {
     }
     const data = {
       doctorId: doctorId,
-      doctorName:doctor.fullName,
+      doctorName: doctor.fullName,
       partientId: currentUser.user.id,
       partientName: currentUser.user.fullName,
       scheduledoctorId: scheduledoctorId,
@@ -470,7 +496,7 @@ const Booking = () => {
 
                         if (matchedSchedule.status === 'true') {
                           slotClass += ' selectable';
-                        } else if (matchedSchedule.status === 'false') {
+                        } else if (matchedSchedule.status === 'false' || matchedSchedule.status === 'booked') {
                           slotClass += ' disabled';
                         }
                         return (
@@ -563,7 +589,7 @@ const Booking = () => {
           </div>
         </div>
       </div>
-      {isModalOpen && <Payment setSchedules={setSchedules} data={modalData} isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />}
+      {isModalOpen && <Payment setActiveHourIndex={setActiveHourIndex} setSlotName={setSlotName} setSchedules={setSchedules} data={modalData} isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />}
     </section>
   )
 }

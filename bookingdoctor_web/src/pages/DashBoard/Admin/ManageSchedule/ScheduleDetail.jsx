@@ -4,8 +4,8 @@ import { AlertContext } from '../../../../components/Layouts/DashBoard';
 import Spinner from '../../../../components/Spinner';
 import { getAllDoctorWithStatus } from '../../../../services/API/doctorService';
 
-import { Button, Select, Space, Tabs } from 'antd';
-import { createSchedule, findScheduleByDay, updateScheduleForAdmin } from '../../../../services/API/scheduleService';
+import { Button, Select, Space, Tabs, Tag } from 'antd';
+import { createSchedule, deleteSlot, findScheduleByDay, updateScheduleForAdmin } from '../../../../services/API/scheduleService';
 import { getAllDepartment } from '../../../../services/API/departmentService';
 import { getAllSlot } from '../../../../services/API/slotService';
 import { CloseSquareFilled } from '@ant-design/icons';
@@ -28,7 +28,6 @@ function ScheduleDetail() {
   const [clinic, setClinic] = useState({});
   const [doctors, setDoctors] = useState([]);
   const [departmentsForCreate, setDepartmentsForCreate] = useState([]);
-  const [slots, setSlots] = useState([]);
   const [slotsForCreate, setSlotsForCreate] = useState([]);
   const [departmentId, setDepartmentId] = useState();
   const [slotsList, setSlotsList] = useState([]);
@@ -40,35 +39,25 @@ function ScheduleDetail() {
 
   const loadClinic = async () => {
     const s = await findScheduleByDay(day)
-    const d = await getAllDepartment();
-    const slotwithvalueandlabel = await getAllSlot()
-    
 
-
-    d.forEach(d => {
-      d.value = d.id;
-      d.label = d.name
-    })
-
-    slotwithvalueandlabel.forEach(s => {
-      s.value = s.id;
-      s.label = s.startTime + ' - ' + s.endTime
-    })
-    setDepartmentsForCreate(d)
     setClinic(s);
-    setSlots(slotwithvalueandlabel)
   };
 
 
-
-
   const loadDoctors = async () => {
-    var doctorList = await getAllDoctorWithStatus();
-    doctorList.forEach(doctor => {
-      doctor.value = doctor.id;
-      doctor.label = doctor.fullName
+    const doctorWithValueAndLabel = await getAllDoctorWithStatus();
+    const departmenWithValueAndLable = await getAllDepartment();
+
+    departmenWithValueAndLable.forEach(d => {
+      d.value = d.id;
+      d.label = d.name
     })
-    setDoctors(doctorList);
+    doctorWithValueAndLabel.forEach(d => {
+      d.value = d.id;
+      d.label = d.fullName
+    })
+    setDoctors(doctorWithValueAndLabel);
+    setDepartmentsForCreate(departmenWithValueAndLable)
   };
 
   const handleChange = async (departmentId, slotId, value) => {
@@ -79,27 +68,22 @@ function ScheduleDetail() {
     } catch (error) {
       console.log(error)
       openNotificationWithIcon('error', 'Error Update Schedule', '')
-
     }
-
   };
 
-  const handleChangeDepartment = (value) => {
+  const handleChangeDepartment = async (value) => {
     setDepartmentId(value);
-    var s = clinic.departments[value]?.slots ?? [];
-    if (s.length != 0) {
-      const filteredSlots = slotsForCreate.filter(
-        s => !x.some(slot => slot.id === s.id)
-      );
-      filteredSlots.forEach(s => {
+    if (slotsForCreate.length == 0) {
+      console.log("first")
+      const slotwithvalueAndlabel = await getAllSlot()
+      slotwithvalueAndlabel.forEach(s => {
         s.value = s.id;
         s.label = s.startTime + ' - ' + s.endTime
       })
-      setSlotsForCreate(filteredSlots)
+      setSlotsForCreate(slotwithvalueAndlabel)
     }
-    else {
-      setSlotsForCreate(slots)
-    }
+
+
 
   };
   const handleChangeSlot = async (value) => {
@@ -117,6 +101,17 @@ function ScheduleDetail() {
     }
   }
 
+  const handleDeleteSlot = async (departmentId, slotId) => {
+    try {
+      await deleteSlot(day, departmentId, slotId)
+      loadClinic()
+      openNotificationWithIcon('success', 'Delete Slot Successfully', '')
+    } catch (error) {
+      console.log(error)
+      openNotificationWithIcon('danger', 'Error Deleting Slot', '')
+    }
+  }
+
 
 
 
@@ -124,43 +119,59 @@ function ScheduleDetail() {
     <Spinner />
   ) : (
     <>
-      <h1 className='mb-5'>Work Day : {day} <span style={{ color: status === 'completed' ? 'red' : '#09ff00' }}>{status}</span></h1>
-      <Select
-        style={{
-          display: 'block',
-          width: '40%'
-        }}
-        placeholder="select department"
-        onChange={handleChangeDepartment}
-        options={departmentsForCreate}
-        optionRender={(option) => (
-          <Space>
-            <span role="img" aria-label={option.data.name}>
-              {option.data.name}
-            </span>
-          </Space>
-        )}
-      />
+      <h1 className='mb-5 text-center'>Work Day : {day} <Tag className='position-absolute' color={status === 'completed' ? 'red' : 'green'}>{status}</Tag></h1>
+      <div className='mb-5'>
+        <h3>Create Schedule</h3>
+        <div>
+          <label htmlFor="">Choose Department</label>
+          <Select
+            style={{
+              display: 'block',
+              width: '30%',
+              marginBottom: 10
+            }}
+            disabled={status == 'completed'}
+            placeholder="select department"
+            onChange={handleChangeDepartment}
+            options={departmentsForCreate}
+            optionRender={(option) => (
+              <Space>
+                <span role="img" aria-label={option.data.name}>
+                  {option.data.name}
+                </span>
+              </Space>
+            )}
+          />
+        </div>
+        <div>
+          <label htmlFor="">Choose Work Hours</label>
+          <Select
+            mode="multiple"
+            style={{
+              display: 'block',
+              width: '30%',
+              height: 30,
+              marginBottom: 10
+            }}
+            placeholder="select slots"
+            onChange={handleChangeSlot}
+            disabled={status == 'completed'}
+            options={slotsForCreate}
+            optionRender={(option) => (
+              <Space>
+                <span role="img" aria-label={option.data.label}>
+                  {option.data.startTime} - {option.data.endTime}
+                </span>
+              </Space>
+            )}
+          />
+        </div>
 
-      <Select
-        mode="multiple"
-        style={{
-          display: 'block',
-          width: '40%',
-          height: 30
-        }}
-        placeholder="select slots"
-        onChange={handleChangeSlot}
-        options={slotsForCreate}
-        optionRender={(option) => (
-          <Space>
-            <span role="img" aria-label={option.data.label}>
-              {option.data.startTime} - {option.data.endTime}
-            </span>
-          </Space>
-        )}
-      />
-      <Button disabled={slotsList.length == 0} onClick={handleCreateSchedule}>Create</Button>
+        <Button type='primary' disabled={slotsList.length == 0 || status == 'completed'} onClick={handleCreateSchedule}>Create</Button>
+      </div>
+
+            <h3 className='mb-5'>List Schedule Today</h3>
+
       <Tabs
         tabPosition={tabPosition}
         defaultActiveKey={null}
@@ -171,7 +182,7 @@ function ScheduleDetail() {
             label: <div className='d-flex gap-3'><img src={"http://localhost:8080/images/department/" + deptValue.icon} width='20' />{deptValue.name}   </div>,
             key: id,
             children: deptValue.slots.map((slot, slotIndex) => (
-              <div key={slotIndex} className='d-flex align-items-center justify-content-between' style={{ maxWidth: 800 }}>
+              <div key={slotIndex} className='d-flex align-items-center justify-content-between' style={{ maxWidth: 850,marginBottom:15 }}>
                 <div style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
                   <span>{slot.startTime} : {slot.endTime} </span>
                   {slot.doctorsForSchedules ? <>
@@ -201,6 +212,7 @@ function ScheduleDetail() {
                     </Space>
                   )}
                 />
+                <Button type='primary' danger disabled={!slot.doctorsForSchedules.length == 0 || status == 'completed'} onClick={() => handleDeleteSlot(deptValue.id, slot.id)}>Delete Slot</Button>
               </div>
             )),
           };

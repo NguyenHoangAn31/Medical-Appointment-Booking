@@ -8,15 +8,15 @@ import { formatDate } from '../../ultils/formatDate';
 import { Input } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 
-const Payment = ({ setSchedules, isOpen, data, onClose }) => {
+const Payment = ({ setActiveHourIndex , setSlotName , setSchedules, isOpen, data, onClose }) => {
     const dateObj = new Date();
     const year = dateObj.getFullYear();
     const month = String(dateObj.getMonth() + 1).padStart(2, '0');
     const day = String(dateObj.getDate()).padStart(2, '0');
     const formattedDate = `${year}-${month}-${day}`;
 
-    const [note,setNote] = useState('')
-    const handleChangeContent = (value)=>{
+    const [note, setNote] = useState('')
+    const handleChangeContent = (value) => {
         setNote(value)
     }
     const handleSubmitBook = async () => {
@@ -27,6 +27,8 @@ const Payment = ({ setSchedules, isOpen, data, onClose }) => {
             await addAppointment(data);
             const response = await axios.get(`http://localhost:8080/api/schedules/doctor/${data.doctorId}/day/${data.medicalExaminationDay}`);
             setSchedules(response.data);
+            setActiveHourIndex('');
+            setSlotName('');
             onClose();
             alert('Booking successfully');
         } catch (error) {
@@ -39,20 +41,21 @@ const Payment = ({ setSchedules, isOpen, data, onClose }) => {
             centered
         >
             <Modal.Header closeButton>
-                <Modal.Title>Thông tin lịch book khám bệnh</Modal.Title>
+                <Modal.Title>Medical Examination Schedule Information
+                </Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <p>Bệnh nhân: {data?.partientName}</p>
-                <p>Bác sỹ Khám:  {data?.doctorTitle} {data?.doctorName}</p>
-                <p>Giá khám bệnh: {data?.price} VNĐ</p>
-                <p>Ngày khám bệnh: {formatDate(data?.medicalExaminationDay)}</p>
-                <p>Giờ khám bệnh: {data?.clinicHours}</p>
-                <p>Số tiền cầm thanh toán giữ chỗ: {data?.price * 0.3} VNĐ</p>
+                <p>Patient Name : {data?.partientName}</p>
+                <p>Doctor Name :  {data?.doctorTitle} {data?.doctorName}</p>
+                <p>Medical Examination Price : {data?.price} VNĐ</p>
+                <p>Medical Examination Day : {formatDate(data?.medicalExaminationDay)}</p>
+                <p>Medical Examination Hours : {data?.clinicHours}</p>
+                <p>Amount To Be Paid To Reserve A Place : {data?.price * 0.3} VNĐ</p>
                 <div>
-                    <span>note</span>
-                    <TextArea value={note} onChange={(e)=>handleChangeContent(e.target.value)} rows={4} />
+                    <span>Note</span>
+                    <TextArea value={note} onChange={(e) => handleChangeContent(e.target.value)} rows={4} />
                 </div>
-                <p>Chọn phương thức thanh toán:</p>
+                <p>Select A Payment Method : </p>
                 <Button variant="primary" className='me-3' onClick={() => handlePayment('VNPay')}>
                     VN Pay
                 </Button>
@@ -69,7 +72,7 @@ const Payment = ({ setSchedules, isOpen, data, onClose }) => {
                     Close
                 </Button>
                 <Button variant="primary" onClick={handleSubmitBook}>
-                    Book Now (dùng để test chưa có chức năng thanh toán)
+                    Book Now (test function)
                 </Button>
             </Modal.Footer>
         </Modal>

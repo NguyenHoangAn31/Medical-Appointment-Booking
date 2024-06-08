@@ -54,8 +54,8 @@ public class ScheduleServiceImpl implements ScheduleService {
     private ModelMapper mapper;
 
     @Override
-    public Map<String, String> findAllOnlyDay() {
-        return scheduleRepository.getDistinctDayWorkWithStatus();
+    public List<Object[]> findAllOnlyDay() {
+        return scheduleRepository.findDistinctDayWorkWithStatus();
     }
 
     @Override
@@ -83,8 +83,7 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     public void updateScheduleForAdmin(LocalDate dayWorking, int departmentId, int slotId, int[] doctorList) {
-        int scheduleId = scheduleRepository.findScheduleIdByDayAndDepartmentIdAndSlotId(dayWorking, departmentId,
-                slotId);
+        int scheduleId = scheduleRepository.findScheduleIdByDayAndDepartmentIdAndSlotId(dayWorking, departmentId,slotId);
         List<ScheduleDoctor> sDoctors = scheduleRepository.findByScheduleId(scheduleId);
         List<Integer> existingDoctorIds = new ArrayList<>();
         for (ScheduleDoctor scheduleDoctor : sDoctors) {
@@ -167,6 +166,18 @@ public class ScheduleServiceImpl implements ScheduleService {
             return false;
         }
         return true;
+    }
+
+    @Override
+    public boolean deleteSlot(LocalDate dayWorking, int departmentId, int slotId){
+        int scheduleId = scheduleRepository.findScheduleIdByDayAndDepartmentIdAndSlotId(dayWorking, departmentId,slotId);
+        try {
+            scheduleRepository.deleteById(scheduleId);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
 }
