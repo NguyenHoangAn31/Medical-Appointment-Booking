@@ -5,19 +5,18 @@ import vn.aptech.backendapi.dto.Schedule.ScheduleWithDepartmentDto;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
 
 public interface ScheduleService {
 
     ScheduleWithDepartmentDto getDepartmentsWithSlotsAndDoctors(LocalDate dayWorking);
 
-    Map<String, String> findAllOnlyDay();
-
+    List<Object[]> findAllOnlyDay();
     List<CustomSlotWithScheduleDoctorId> findSlotsByDayAndDoctorId(LocalDate dayWorking, int doctorId);
 
     void updateScheduleForAdmin(LocalDate dayWorking, int departmentId, int slotId,
             int[] doctorList);
 
     boolean create(LocalDate dayWorking, int departmentId, int[] slotsId);
+    boolean deleteSlot(LocalDate dayWorking, int departmentId, int slotId);
 
 }

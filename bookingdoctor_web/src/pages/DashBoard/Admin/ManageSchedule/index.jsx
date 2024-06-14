@@ -36,14 +36,12 @@ function ManageSchedule() {
   };
 
 
-  const formattedDates = Object.fromEntries(
-    Object.entries(workDay).map(([dateString, status]) => {
-      const dateObj = new Date(dateString);
-      const options = { month: 'long', day: 'numeric', year: 'numeric' };
-      const formattedDate = dateObj.toLocaleDateString('en-US', options);
-      return [formattedDate, status];
-    })
-  );
+  const formattedDates = workDay.map(dateArr => {
+    const dateString = dateArr[0];
+    const dateObj = new Date(dateString);
+    const options = { month: 'long', day: 'numeric', year: 'numeric' };
+    return dateObj.toLocaleDateString('en-US', options);
+  });
 
 
   useEffect(() => {
@@ -51,7 +49,7 @@ function ManageSchedule() {
     renderedDates.forEach((dateElement) => {
       const dateValue = dateElement.getAttribute('aria-label');
       const buttonElement = dateElement.parentElement;
-      if (formattedDates[dateValue]) {
+      if (formattedDates.includes(dateValue)) {
         buttonElement.style.color = '#7dff79';
       }
     });
@@ -63,18 +61,19 @@ function ManageSchedule() {
   const handleChange = (newValue) => {
     setValue(newValue);
     const dateObj = new Date(newValue);
+    const currentDate = new Date();
     const year = dateObj.getFullYear();
     const month = String(dateObj.getMonth() + 1).padStart(2, '0');
     const day = String(dateObj.getDate()).padStart(2, '0');
     let status = '';
-
     const formattedDate = `${year}-${month}-${day}`;
 
-    for (const [date, state] of Object.entries(workDay)) {
-      if (date === formattedDate) {
-        status = state;
-        break;
-      }
+    if (dateObj.toDateString() === currentDate.toDateString()) {
+      status = 'incoming';
+    } else if (dateObj < currentDate) {
+      status = 'completed';
+    } else {
+      status = 'upcoming';
     }
 
     navigate(`/dashboard/admin/manage-schedule/detail?day=${formattedDate}&status=${status}`);
@@ -82,8 +81,9 @@ function ManageSchedule() {
 
 
 
+
   return (
-    <div className='calendar'>
+    <div className='calendar' style={{minWidth:1138}}>
       <Calendar onChange={handleChange} value={value} onActiveStartDateChange={() => setCalendarRendered(true)} />
     </div>
 

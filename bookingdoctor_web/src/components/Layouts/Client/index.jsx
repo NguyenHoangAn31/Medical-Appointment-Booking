@@ -11,11 +11,10 @@ function ClientLayout({ children, isForPatient }) {
     //console.log("current user : ",currentUser)
     useEffect(() => {
         var token = getUserData();
-        if (token!=null && token.user.roles[0] == 'USER') {
+        if (token != null && token.user.roles[0] == 'USER') {
             setCurrentUser(token)
         }
     }, [])
-    console.log("child : " ,children)
     return (
         <UserContext.Provider value={{ currentUser, setCurrentUser }}>
 
@@ -23,8 +22,20 @@ function ClientLayout({ children, isForPatient }) {
                 <div className='float-end'><Toaster toastOptions={{ duration: 4000 }} /></div>
                 <Header />
                 <div className='main-app'>
-                    {isForPatient ? <div>sidebar</div> : null}
-                    <div className='content'>{children}</div>
+                    {isForPatient ? <div className='container'>
+                        <div className='row'>
+                            <div className='col-md-4'>
+                                <div>
+                                    sidebar
+                                </div>
+                            </div>
+                            <div className='col-md-8'>
+                                {children}
+                            </div>
+                        </div>
+                    </div> : <div className='content'>
+                        {children}
+                    </div>}
                 </div>
                 <Footer />
             </div>

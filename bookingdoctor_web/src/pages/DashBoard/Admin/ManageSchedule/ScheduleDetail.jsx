@@ -4,11 +4,17 @@ import { AlertContext } from '../../../../components/Layouts/DashBoard';
 import Spinner from '../../../../components/Spinner';
 import { getAllDoctorWithStatus } from '../../../../services/API/doctorService';
 
-import { Button, Select, Space, Tabs } from 'antd';
-import { createSchedule, findScheduleByDay, updateScheduleForAdmin } from '../../../../services/API/scheduleService';
+import { Button, Select, Space, Tabs, Tag } from 'antd';
+import { createSchedule, deleteSlot, findScheduleByDay, updateScheduleForAdmin } from '../../../../services/API/scheduleService';
 import { getAllDepartment } from '../../../../services/API/departmentService';
 import { getAllSlot } from '../../../../services/API/slotService';
-import { CloseSquareFilled } from '@ant-design/icons';
+import AOS from "aos";
+import "aos/dist/aos.css";
+import Slider from "react-slick"
+import "slick-carousel/slick/slick.css"
+import "slick-carousel/slick/slick-theme.css"
+
+
 
 
 function ScheduleDetail() {
@@ -22,13 +28,13 @@ function ScheduleDetail() {
   const status = queryParams.get("status")
 
 
+
   // tabs
   const [tabPosition, setTabPosition] = useState('left');
 
   const [clinic, setClinic] = useState({});
   const [doctors, setDoctors] = useState([]);
   const [departmentsForCreate, setDepartmentsForCreate] = useState([]);
-  const [slots, setSlots] = useState([]);
   const [slotsForCreate, setSlotsForCreate] = useState([]);
   const [departmentId, setDepartmentId] = useState();
   const [slotsList, setSlotsList] = useState([]);
@@ -40,35 +46,24 @@ function ScheduleDetail() {
 
   const loadClinic = async () => {
     const s = await findScheduleByDay(day)
-    const d = await getAllDepartment();
-    const slotwithvalueandlabel = await getAllSlot()
-    
-
-
-    d.forEach(d => {
-      d.value = d.id;
-      d.label = d.name
-    })
-
-    slotwithvalueandlabel.forEach(s => {
-      s.value = s.id;
-      s.label = s.startTime + ' - ' + s.endTime
-    })
-    setDepartmentsForCreate(d)
     setClinic(s);
-    setSlots(slotwithvalueandlabel)
   };
 
 
-
-
   const loadDoctors = async () => {
-    var doctorList = await getAllDoctorWithStatus();
-    doctorList.forEach(doctor => {
-      doctor.value = doctor.id;
-      doctor.label = doctor.fullName
+    const doctorWithValueAndLabel = await getAllDoctorWithStatus();
+    const departmenWithValueAndLable = await getAllDepartment();
+
+    departmenWithValueAndLable.forEach(d => {
+      d.value = d.id;
+      d.label = d.name
     })
-    setDoctors(doctorList);
+    doctorWithValueAndLabel.forEach(d => {
+      d.value = d.id;
+      d.label = d.fullName
+    })
+    setDoctors(doctorWithValueAndLabel);
+    setDepartmentsForCreate(departmenWithValueAndLable)
   };
 
   const handleChange = async (departmentId, slotId, value) => {
@@ -79,29 +74,29 @@ function ScheduleDetail() {
     } catch (error) {
       console.log(error)
       openNotificationWithIcon('error', 'Error Update Schedule', '')
-
     }
-
   };
 
-  const handleChangeDepartment = (value) => {
+  const handleChangeDepartment = async (value) => {
     setDepartmentId(value);
-    var s = clinic.departments[value]?.slots ?? [];
-    if (s.length != 0) {
-      const filteredSlots = slotsForCreate.filter(
-        s => !x.some(slot => slot.id === s.id)
-      );
-      filteredSlots.forEach(s => {
+    if (slotsForCreate.length == 0) {
+      console.log("first")
+      const slotwithvalueAndlabel = await getAllSlot()
+      slotwithvalueAndlabel.forEach(s => {
         s.value = s.id;
         s.label = s.startTime + ' - ' + s.endTime
       })
-      setSlotsForCreate(filteredSlots)
+      setSlotsForCreate(slotwithvalueAndlabel)
     }
-    else {
-      setSlotsForCreate(slots)
-    }
-
   };
+
+
+  useEffect(() => {
+    AOS.init({
+      duration: 2000
+    });
+  }, []);
+
   const handleChangeSlot = async (value) => {
     setSlotsList(value)
   };
@@ -117,6 +112,18 @@ function ScheduleDetail() {
     }
   }
 
+  const handleDeleteSlot = async (departmentId, slotId) => {
+    try {
+      await deleteSlot(day, departmentId, slotId)
+      loadClinic()
+      openNotificationWithIcon('success', 'Delete Slot Successfully', '')
+    } catch (error) {
+      console.log(error)
+      openNotificationWithIcon('danger', 'Error Deleting Slot', '')
+    }
+  }
+
+
 
 
 
@@ -124,89 +131,165 @@ function ScheduleDetail() {
     <Spinner />
   ) : (
     <>
-      <h1 className='mb-5'>Work Day : {day} <span style={{ color: status === 'completed' ? 'red' : '#09ff00' }}>{status}</span></h1>
-      <Select
-        style={{
-          display: 'block',
-          width: '40%'
-        }}
-        placeholder="select department"
-        onChange={handleChangeDepartment}
-        options={departmentsForCreate}
-        optionRender={(option) => (
-          <Space>
-            <span role="img" aria-label={option.data.name}>
-              {option.data.name}
-            </span>
-          </Space>
-        )}
-      />
+      <div className='d-lg-flex'>
+        <div data-aos="fade-down" className='w-50 mt-4'>
+          <h2>Work Day : {day} <Tag className='position-absolute' color={status === 'completed' ? 'red' : 'green'}>{status}</Tag></h2>
+          <h3 className='mt-5'>Create Schedule</h3>
+          <div className='mt-3'>
+            <div className='mb-3'>
+              <label htmlFor="" className='mb-1'>Choose Department</label>
+              <Select
+                style={{
+                  display: 'block',
+                }}
+                disabled={status == 'completed'}
+                placeholder="select department"
+                onChange={handleChangeDepartment}
+                options={departmentsForCreate}
+                optionRender={(option) => (
+                  <Space>
+                    <span role="img" aria-label={option.data.name}>
+                      {option.data.name}
+                    </span>
+                  </Space>
+                )}
+              />
+            </div>
+            <div className='mb-3'>
+              <label htmlFor="" className='mb-1'>Choose Work Hours</label>
+              <Select
+                mode="multiple"
+                style={{
+                  display: 'block',
+                  height: 30,
+                  marginBottom: 10
+                }}
+                placeholder="select slots"
+                onChange={handleChangeSlot}
+                disabled={status == 'completed'}
+                options={slotsForCreate}
+                optionRender={(option) => (
+                  <Space>
+                    <span role="img" aria-label={option.data.label}>
+                      {option.data.startTime} - {option.data.endTime}
+                    </span>
+                  </Space>
+                )}
+              />
+            </div>
 
-      <Select
-        mode="multiple"
-        style={{
-          display: 'block',
-          width: '40%',
-          height: 30
-        }}
-        placeholder="select slots"
-        onChange={handleChangeSlot}
-        options={slotsForCreate}
-        optionRender={(option) => (
-          <Space>
-            <span role="img" aria-label={option.data.label}>
-              {option.data.startTime} - {option.data.endTime}
-            </span>
-          </Space>
-        )}
-      />
-      <Button disabled={slotsList.length == 0} onClick={handleCreateSchedule}>Create</Button>
-      <Tabs
-        tabPosition={tabPosition}
-        defaultActiveKey={null}
-        centered
-        items={clinic.departments.map((deptValue, i) => {
-          const id = String(i + 1);
-          return {
-            label: <div className='d-flex gap-3'><img src={"http://localhost:8080/images/department/" + deptValue.icon} width='20' />{deptValue.name}   </div>,
-            key: id,
-            children: deptValue.slots.map((slot, slotIndex) => (
-              <div key={slotIndex} className='d-flex align-items-center justify-content-between' style={{ maxWidth: 800 }}>
-                <div style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
-                  <span>{slot.startTime} : {slot.endTime} </span>
-                  {slot.doctorsForSchedules ? <>
-                    {slot.doctorsForSchedules.map((doctor, doctorIndex) => (
-                      <div key={doctorIndex}>
-                        <img src={"http://localhost:8080/images/doctors/" + doctor.image} alt="" style={{ width: 50, height: 50, objectFit: 'cover', borderRadius: '50%', objectPosition: 'top' }} />
-                      </div>
-                    ))}
-                  </> : null}
-                </div>
+            <div className='text-end mt-4'>
+              <Button type='primary' disabled={slotsList.length == 0 || status == 'completed'} onClick={handleCreateSchedule}>Create</Button>
 
-                <Select
-                  disabled={status == 'completed'}
-                  mode="multiple"
-                  style={{ width: '50%' }}
-                  placeholder="select doctor"
-                  defaultValue={slot.doctorsForSchedules.map(doctor => doctor.id)}
-                  onChange={(value) => handleChange(deptValue.id, slot.id, value)}
-                  options={doctors.filter(doctor => doctor.department.id == deptValue.id)}
-                  optionRender={(option) => (
-                    <Space>
-                      <span role="img" aria-label={option.data.fullName}>
-                        <img src={"http://localhost:8080/images/doctors/" + option.data.image} alt="" style={{ width: 30, height: 30, objectFit: 'cover', borderRadius: '50%', objectPosition: 'top' }} />
-                        {option.data.fullName}
-                      </span>
-                      {option.data.birthday}
-                    </Space>
-                  )}
-                />
-              </div>
-            )),
-          };
-        })}
+            </div>
+          </div>
 
-      />
+        </div>
+        <div data-aos="fade-left" className='w-50'>
+          <img src='/images/dashboard/schedule_create.jpg' alt="" className='w-100' />
+        </div>
+
+      </div>
+
+
+      <div data-aos="fade-up">
+        <h3 className='my-3'>List Schedule</h3>
+        <Tabs
+          // tabPosition={tabPosition}
+          defaultActiveKey={null}
+          centered
+          items={clinic.departments.map((deptValue, i) => {
+            const id = String(i + 1);
+            return {
+              label: <div className='d-flex gap-3'><img src={"http://localhost:8080/images/department/" + deptValue.icon} width='20' />{deptValue.name}   </div>,
+              key: id,
+              children: <Tabs
+                tabPosition={tabPosition}
+                defaultActiveKey={null}
+                centered
+                items={deptValue.slots.map((slot, slotIndex) => {
+                  const id = String(slotIndex + 1);
+
+                  return {
+                    label: <span>{slot.startTime} : {slot.endTime} </span>,
+                    key: id,
+                    children: <div>
+
+                      <Select
+                        style={{ width: '85%', height: 30, marginRight: 15 }}
+                        disabled={status == 'completed'}
+                        mode="multiple"
+                        placeholder="select doctor"
+                        defaultValue={slot.doctorsForSchedules.map(doctor => doctor.id)}
+                        onChange={(value) => handleChange(deptValue.id, slot.id, value)}
+                        options={doctors.filter(doctor => doctor.department.id == deptValue.id)}
+                        optionRender={(option) => (
+                          <Space>
+                            <span role="img" aria-label={option.data.fullName}>
+                              <img src={"http://localhost:8080/images/doctors/" + option.data.image} alt="" style={{ width: 30, height: 30, objectFit: 'cover', borderRadius: '50%', objectPosition: 'top' }} />
+                              <span className='ms-3'>{option.data.fullName}</span>
+                            </span>
+                          </Space>
+                        )}
+                      />
+                      <Button type='primary' danger disabled={!slot.doctorsForSchedules.length == 0 || status == 'completed'} onClick={() => handleDeleteSlot(deptValue.id, slot.id)}>Delete Slot</Button>
+
+                      <Slider {...{
+                        dots: false,
+                        infinite: true,
+                        slidesToShow: slot.doctorsForSchedules.length,
+                        slidesToScroll: 2
+                      }} className='mt-5'>
+                        {slot.doctorsForSchedules.map((doctor, doctorIndex) => (
+                          <div key={doctorIndex} className='text-center'>
+                            <img src={"http://localhost:8080/images/doctors/" + doctor.image} alt="" style={{ backgroundImage: 'linear-gradient(120deg, rgb(161, 196, 253) 0%, rgb(194, 233, 251) 100%)',width:200,display:'block',margin:'auto' }} />
+                            <p className='mt-3'>{doctor.fullName}</p>
+                          </div>
+                        ))}
+                      </Slider>
+                    </div>
+                  }
+                })}
+              />
+              // children:
+              //  deptValue.slots.map((slot, slotIndex) => (
+              //   <div key={slotIndex} className='d-flex align-items-center justify-content-between' style={{ maxWidth: 850, marginBottom: 15 }}>
+              //     <div style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
+              //       <span>{slot.startTime} : {slot.endTime} </span>
+              //       {slot.doctorsForSchedules ? <>
+              //         {slot.doctorsForSchedules.map((doctor, doctorIndex) => (
+              //           <div key={doctorIndex}>
+              //             <img src={"http://localhost:8080/images/doctors/" + doctor.image} alt="" style={{ width: 50, height: 50, objectFit: 'cover', borderRadius: '50%', objectPosition: 'top' }} />
+              //           </div>
+              //         ))}
+              //       </> : null}
+              //     </div>
+
+              //     <Select
+              //       disabled={status == 'completed'}
+              //       mode="multiple"
+              //       placeholder="select doctor"
+              //       defaultValue={slot.doctorsForSchedules.map(doctor => doctor.id)}
+              //       onChange={(value) => handleChange(deptValue.id, slot.id, value)}
+              //       options={doctors.filter(doctor => doctor.department.id == deptValue.id)}
+              //       optionRender={(option) => (
+              //         <Space>
+              //           <span role="img" aria-label={option.data.fullName}>
+              //             <img src={"http://localhost:8080/images/doctors/" + option.data.image} alt="" style={{ width: 30, height: 30, objectFit: 'cover', borderRadius: '50%', objectPosition: 'top' }} />
+              //             {option.data.fullName}
+              //           </span>
+              //           {option.data.birthday}
+              //         </Space>
+              //       )}
+              //     />
+              //     <Button type='primary' danger disabled={!slot.doctorsForSchedules.length == 0 || status == 'completed'} onClick={() => handleDeleteSlot(deptValue.id, slot.id)}>Delete Slot</Button>
+              //   </div>
+              // )),
+            };
+          })}
+        />
+      </div>
+
     </>
   );
 }

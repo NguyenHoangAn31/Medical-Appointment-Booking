@@ -16,10 +16,13 @@ import vn.aptech.backendapi.dto.PatientDto;
 @Setter
 public class AppointmentDetail {
     private int id;
-    private PatientDto partient;
+    private PatientDto patient;
     private DoctorDto doctor;
     private int price;
     private String payment;
     private String status;
+    private String note;
+    private String appointmentDate;
+    private String medicalExaminationDay;   
     private String clinicHours;
 }

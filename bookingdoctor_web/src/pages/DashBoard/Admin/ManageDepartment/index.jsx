@@ -256,29 +256,29 @@ const ManageDepartment = () => {
       onFilter: (value, record) => record.status == value,
       filterSearch: true,
 
-      render: (_, { status, id }) => {
-        return (
-          <>
-            {status ? <Switch
-              defaultChecked
-              onChange={() => handlechangeStatus(id, status)}
-            /> : <Switch
-              onChange={() => handlechangeStatus(id, status)}
-            />}
-          </>
-        );
-      }
-
-
-      // render: (_, { status }) => {
-      //   let color = status ? 'green' : 'volcano';
-      //   let title = status ? 'Active' : 'Not Active'
+      // render: (_, { status, id }) => {
       //   return (
-      //     <Tag color={color} key={title}>
-      //       {title ? title.toUpperCase() : ''}
-      //     </Tag>
+      //     <>
+      //       {status ? <Switch
+      //         defaultChecked
+      //         onChange={() => handlechangeStatus(id, status)}
+      //       /> : <Switch
+      //         onChange={() => handlechangeStatus(id, status)}
+      //       />}
+      //     </>
       //   );
-      // },
+      // }
+
+
+      render: (_, { status }) => {
+        let color = status ? 'green' : 'volcano';
+        let title = status ? 'Active' : 'Not Active'
+        return (
+          <Tag color={color} key={title}>
+            {title ? title.toUpperCase() : ''}
+          </Tag>
+        );
+      },
     },
 
     {
@@ -324,7 +324,7 @@ const ManageDepartment = () => {
       </Space>
 
 
-      {departments.length != 0?<Table style={{userSelect:'none'}} columns={columns} dataSource={departments} onChange={handleChange} />:<Spinner/>}
+      {departments.length != 0?<Table style={{userSelect:'none',minWidth:1138}} columns={columns} dataSource={departments} onChange={handleChange} />:<Spinner/>}
     </>
   )
 };

@@ -40,3 +40,14 @@ export const createSchedule = async (day , departmentId , slotsId) => {
         throw error;
     }
 };
+
+
+export const deleteSlot = async (day , departmentId , slotId) => {
+    console.log(day,departmentId,slotId)
+    try {
+        await request.remove(`schedules/deleteslot/${day}/${departmentId}/${slotId}`);
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+};
