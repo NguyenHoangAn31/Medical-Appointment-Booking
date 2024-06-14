@@ -8,7 +8,7 @@ export const UserContext = createContext();
 
 function ClientLayout({ children, isForPatient }) {
     const [currentUser, setCurrentUser] = useState(null)
-    // console.log("current user : ", currentUser)
+    //console.log("current user : ",currentUser)
     useEffect(() => {
         var token = getUserData();
         if (token != null && token.user.roles[0] == 'USER') {
@@ -34,7 +34,7 @@ function ClientLayout({ children, isForPatient }) {
                             </div>
                         </div>
                     </div> : <div className='content'>
-                    {children}
+                        {children}
                     </div>}
                 </div>
                 <Footer />
