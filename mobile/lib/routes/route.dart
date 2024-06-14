@@ -8,6 +8,7 @@ import '../screens/auth/signin_screen.dart';
 import '../screens/doctor/booking_patient_screen.dart';
 import '../screens/doctor/doctor_booking.dart';
 import '../screens/doctor/doctor_detail_screen.dart';
+import '../screens/filter_screen.dart';
 import '../widgets/navigation_menu.dart';
 
 class Routes {
@@ -18,6 +19,7 @@ class Routes {
       '/login': (context) => const LoginScreen(),
       '/register': (context) => const RegisterScreen(),
       '/sign-in': (context) => const SignInScreen(),
+      '/filter': (context) => const FilterScreen(),
       '/doctor': (context) => const DoctorDetailScreen(),
       '/doctor/booking': (context) => const DoctorBookingScreen(),
       '/doctor/booking/patient': (context) => const DoctorBookingPatientScreen(),

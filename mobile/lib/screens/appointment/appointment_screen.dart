@@ -15,7 +15,6 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
     return DefaultTabController(
         length: 4,
         child: Scaffold(
-
           appBar: AppBar(
             toolbarHeight: 80,
             //backgroundColor: Colors.blue,
@@ -31,6 +30,7 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                 icon: const Icon(Icons.tune),
                 onPressed: () {
                   // Action for tune button
+                  Navigator.pushNamed(context, '/filter');
                 },
               ),
             ],

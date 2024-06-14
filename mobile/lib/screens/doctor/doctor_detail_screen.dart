@@ -30,8 +30,6 @@ class _DoctorDetailScreenState extends State<DoctorDetailScreen> {
                 onPressed: () {},
               ),
             ],
-
-
         ),
         body: SingleChildScrollView(
           padding: const EdgeInsets.all(20),

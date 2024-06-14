@@ -471,7 +471,6 @@ class _SignInScreenState extends State<SignInScreen> {
             child: Column(
               children: [
                 const SizedBox(height: 30),
-
                 const Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
