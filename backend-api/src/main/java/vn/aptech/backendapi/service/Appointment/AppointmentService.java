@@ -11,4 +11,5 @@ public interface AppointmentService {
 
         List<CustomAppointmentDto> findAll();
         AppointmentDetail appointmentDetail(int appointmentId);
+        boolean changestatus(int id , String status);
 }

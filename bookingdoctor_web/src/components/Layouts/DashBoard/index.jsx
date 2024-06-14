@@ -8,23 +8,11 @@ import {
     MenuUnfoldOutlined,
     FireFilled,
     BulbOutlined,
-    AppstoreOutlined,
-    ShopOutlined,
     DashboardOutlined,
-    MedicineBoxOutlined,
-    UserOutlined,
-    HomeOutlined,
-    FieldTimeOutlined,
-    InfoCircleOutlined,
-    QuestionCircleOutlined,
-    FormOutlined,
     ProfileOutlined,
     ScheduleOutlined,
     LogoutOutlined,
     DashboardTwoTone,
-    PlusSquareTwoTone,
-    MedicineBoxTwoTone,
-    IdcardTwoTone,
     ShopTwoTone,
     CreditCardTwoTone,
     CalendarTwoTone,
@@ -32,7 +20,6 @@ import {
     QuestionCircleTwoTone,
     BellTwoTone,
     CarryOutTwoTone,
-    SettingOutlined,
     SettingTwoTone,
     ContactsTwoTone,
     AppstoreTwoTone
@@ -101,17 +88,18 @@ const DashBoardLayout = ({ children }) => {
                     label: "Manage Appointment",
                     key: "/dashboard/admin/manage-appointment",
                     icon: <CreditCardTwoTone twoToneColor='purple' />,
-                },
+                }
+                ,
+                {
+                    label: "Manage Revenue",
+                    key: "/dashboard/admin/manage-revenue",
+                    icon: <AppstoreTwoTone twoToneColor='' />
+                }
+                ,
                 {
                     label: "Manage News",
                     key: "/dashboard/admin/manage-news",
                     icon: <HighlightTwoTone twoToneColor='#00fff6' />,
-                }
-                ,
-                {
-                    label: "Manage Report",
-                    key: "/dashboard/admin/manage-report",
-                    icon: <AppstoreTwoTone twoToneColor=''/>
                 }
             )
         }
@@ -172,6 +160,19 @@ const DashBoardLayout = ({ children }) => {
 
     useEffect(() => {
         setCurrentUser(getUserData())
+
+        const handleResize = () => {
+            if (window.innerWidth <= 1100) {
+                setCollapsed(true);
+            } else {
+                setCollapsed(false);
+            }
+        };
+        window.addEventListener('resize', handleResize);
+        handleResize();
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        };
     }, []);
 
 
@@ -223,6 +224,7 @@ const DashBoardLayout = ({ children }) => {
 
                 <Layout style={{ marginLeft: collapsed ? 80 : 250, transition: '.2s', paddingTop: '115px', backgroundColor: '#f4f7fe' }}>
                     <Header
+                        className='header_dashboard'
                         style={{
                             background: colorBgContainer,
                             left: collapsed ? 106 : 276,
@@ -242,8 +244,9 @@ const DashBoardLayout = ({ children }) => {
 
                         }}
                     >
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+                        <div className='bread_crumb' style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
                             <Button
+                                className='toggle-sidebar'
                                 type="text"
                                 icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
                                 onClick={() => setCollapsed(!collapsed)}
@@ -256,7 +259,7 @@ const DashBoardLayout = ({ children }) => {
                             />
 
                             <div>
-                                <Breadcrumb style={{ float: 'left' }}>
+                                <Breadcrumb style={{ float: 'left', color: 'black' }}>
                                     <Breadcrumb.Item>pages</Breadcrumb.Item>
                                     <Breadcrumb.Item>{curentPath != '' ? curentPath : 'Main Dashboard'}</Breadcrumb.Item>
                                 </Breadcrumb>
@@ -267,7 +270,7 @@ const DashBoardLayout = ({ children }) => {
 
 
 
-                        <div style={{ display: 'flex', float: 'right', alignItems: 'center', gap: '25px', userSelect: 'none', borderRadius: "50px", padding: "0 25px", backgroundColor: "white", height: '65px' }}>
+                        <div className='nav_info' style={{ display: 'flex', float: 'right', alignItems: 'center', gap: '25px', userSelect: 'none', borderRadius: "50px", padding: "0 25px", backgroundColor: "white", height: '65px' }}>
                             <Dropdown
                                 menu={{
                                     items: [
@@ -366,7 +369,7 @@ const DashBoardLayout = ({ children }) => {
 
 
                             </Dropdown>
-                            <div >
+                            <div className='account' style={{ whiteSpace: 'nowrap' }}>
                                 <img
                                     src="/images/dashboard/default_user.jpg"
                                     alt=""
@@ -383,13 +386,14 @@ const DashBoardLayout = ({ children }) => {
                         </div>
                     </Header>
                     <Content
+                        className='content_dashboard'
                         style={{
                             margin: '0 26px',
                         }}
                     >
                         <div
                             style={{
-                                overflow: 'hidden',
+                                // overflow: 'scroll',
                                 padding: 24,
                                 minHeight: 360,
                                 position: 'relative',
@@ -400,14 +404,14 @@ const DashBoardLayout = ({ children }) => {
                             {children}
                         </div>
                     </Content>
-                    {/* <Footer
+                    <Footer
                         style={{
                             textAlign: 'center',
-                            backgroundColor:'rgb(244, 247, 254)'
+                            backgroundColor: 'rgb(244, 247, 254)'
                         }}
                     >
                         Ant Design ©{new Date().getFullYear()} Created by Ant UED
-                    </Footer> */}
+                    </Footer>
                 </Layout>
             </Layout>
         </AlertContext.Provider>

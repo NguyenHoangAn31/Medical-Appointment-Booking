@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom';
 import { findUserById } from '../../../../services/API/userService';
-import { findDoctorByUserId, updateDoctor } from '../../../../services/API/doctorService';
+import { detailDoctor, findDoctorByUserId, updateDoctor } from '../../../../services/API/doctorService';
 import { getAllDepartment } from '../../../../services/API/departmentService';
 import { Button, Input, Select, Switch, Tabs } from 'antd';
 import { AlertContext } from '../../../../components/Layouts/DashBoard';
@@ -85,9 +85,9 @@ function DoctorDetail() {
 
   return (
     !Object.keys(user).length != 0 ? <Spinner /> :
-      <>
-        <div className='position-absolute' style={{right:30}}>
-
+      <div className='doctor_detail_dashboard'>
+        <div className='position-absolute' style={{ right: 30 }}>
+          <span className='d-inline-block pe-2'>Status</span>
           {user.status ? <Switch
             defaultChecked
             onChange={() => handlechangeStatus(id, user.status)}
@@ -95,20 +95,19 @@ function DoctorDetail() {
             onChange={() => handlechangeStatus(id, user.status)}
           />}
         </div>
-        <div style={{ display: 'flex', width: '90%', margin: 'auto', gap: '40px' }}>
+        <div className='doctor_info' style={{ display: 'flex', width: '90%', margin: 'auto', gap: '40px'}}>
 
-          <div>
-            {!Object.keys(doctor).length == 0 && doctor.image != null ? <img src={"http://localhost:8080/images/doctors/" + doctor.image} width="350" style={{ backgroundImage: "linear-gradient(120deg, #a1c4fd 0%, #c2e9fb 100%)" }} /> : null}
+          <div className='dotor_image_dashboard text-center' style={{maxWidth:350,margin:'0 auto'}}>
+            {!Object.keys(doctor).length == 0 && doctor.image != null ? <img src={"http://localhost:8080/images/doctors/" + doctor.image} style={{width:'100%', backgroundImage: "linear-gradient(120deg, #a1c4fd 0%, #c2e9fb 100%)" }} /> : null}
             {imageDefault ? <img src="/images/login_default.jpg" width='350' /> : null}
             <div className='text-center mt-3 mx-auto' style={{ width: '85%' }}>
               <p style={{ fontSize: '33', fontWeight: '700' }}>Dr.{user.fullName}</p>
               <p>Doctor{doctor.department != null ? `of ${doctor.department.name} department` : null} at Johns Hopkins Hospital</p>
             </div>
-
           </div>
 
-          <Tabs
-            style={{ width: '100%' }}
+          <Tabs className='info_detail'
+            style={{ width:'60%', marginTop:25}}
             defaultActiveKey="1"
             items={[
               {
@@ -116,38 +115,37 @@ function DoctorDetail() {
                 key: '1',
                 children: <div>
                   <h1 className='text-primary'>Dr.{user.fullName}</h1>
+                  <div className='mb-3'>
+                    <label className='mb-1' style={{fontWeight:700}}>Email</label>
+                    <Input value={user.email}/>
+                  </div>
+                  <div className='mb-3'>
+                    <label className='mb-1' style={{fontWeight:700}}>Phone</label>
+                    <Input value={user.phone}/>
+                  </div>
 
                   <div className='mb-3'>
-                    <label className='mb-1'>Email</label>
-                    <Input value={user.email} disabled />
+                    <label className='mb-1' style={{fontWeight:700}}>Address</label>
+                    <Input value={doctor.address !== null ? doctor.address : ''}/>
                   </div>
                   <div className='mb-3'>
-                    <label className='mb-1'>Phone</label>
-                    <Input value={user.phone} disabled />
-                  </div>
-
-                  <div className='mb-3'>
-                    <label className='mb-1'>Address</label>
-                    <Input value={doctor.address !== null ? doctor.address : ''} disabled />
+                    <label className='mb-1' style={{fontWeight:700}}>Birthday</label>
+                    <Input value={doctor.birthday !== null ? doctor.birthday : ''}/>
                   </div>
                   <div className='mb-3'>
-                    <label className='mb-1'>Birthday</label>
-                    <Input value={doctor.birthday !== null ? doctor.birthday : ''} disabled />
-                  </div>
-                  <div className='mb-3'>
-                    <label className='mb-1'>Gender</label>
-                    <Input value={doctor.gender !== null ? doctor.gender : ''} disabled />
+                    <label className='mb-1' style={{fontWeight:700}}>Gender</label>
+                    <Input value={doctor.gender !== null ? doctor.gender : ''}/>
                   </div>
                   {
                     !Object.keys(doctor).length != 0 ? null :
                       <>
                         <div className='mb-3'>
-                          <label className='mb-1'>Examination price</label>
+                          <label className='mb-1' style={{fontWeight:700}}>Examination price</label>
                           <Input value={doctor.price} onChange={(e) => onInputChange('price', e.target.value)} required />
                         </div>
 
                         <div className='mb-4'>
-                          <label className='mb-1'>Department </label>
+                          <label className='mb-1' style={{fontWeight:700}}>Department </label>
                           <Select defaultValue={{
                             value: doctor.department.id,
                             label: doctor.department.name,
@@ -223,14 +221,12 @@ function DoctorDetail() {
                 </>}
                 </>,
               }
-
             ]}
           />
 
 
-
         </div>
-      </>
+      </div>
 
 
   )

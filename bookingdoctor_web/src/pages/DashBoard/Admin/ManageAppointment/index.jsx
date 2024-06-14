@@ -49,6 +49,8 @@ const ManageAppointment = () => {
       key: index.toString(),
     }));
     setAppointments(appointmensWithKeys);
+
+
   };
   useEffect(() => {
     loadAppointments();
@@ -232,7 +234,7 @@ const ManageAppointment = () => {
       title: 'Payment Method',
       dataIndex: 'payment',
       key: 'payment',
-      width: '10%',
+      width: '8%',
       filteredValue: filteredInfo.payment || null,
       sorter: (a, b) => a.payment.localeCompare(b.payment),
       sortOrder: sortedInfo.columnKey === 'payment' ? sortedInfo.order : null,
@@ -241,17 +243,17 @@ const ManageAppointment = () => {
       ...getColumnSearchProps('payment'),
       render: (_, { payment }) => {
         var image;
-        if(payment == 'PayPal'){
+        if (payment == 'PayPal') {
           image = paypal
         }
-        else if(payment == 'Momo'){
+        else if (payment == 'Momo') {
           image = momo
         }
-        else if(payment == 'VN Pay'){
+        else if (payment == 'VN Pay') {
           image = vnpay
         }
         return (
-          payment ? <img src={image} alt="" style={{ width: '40px'}} /> : null);
+          payment ? <img src={image} alt="" style={{ width: '40px' }} /> : null);
       },
     },
     {
@@ -268,11 +270,6 @@ const ManageAppointment = () => {
           text: 'waiting',
           value: 'waiting',
         },
-        ,
-        {
-          text: 'receive',
-          value: 'receive',
-        },
         {
           text: 'cancel',
           value: 'cancel',
@@ -284,16 +281,13 @@ const ManageAppointment = () => {
 
       render: (_, { status }) => {
         let color;
-        if(status == 'success'){
+        if (status == 'success') {
           color = 'green'
         }
-        else if(status == 'waiting'){
+        else if (status == 'waiting') {
           color = 'warning'
         }
-        else if(status == 'receive'){
-          color = 'blue'
-        }
-        else if(status == 'cancel'){
+        else {
           color = 'red'
         }
         return (
@@ -336,7 +330,7 @@ const ManageAppointment = () => {
       </Space>
 
 
-      {appointments.length != 0 ? <Table style={{ userSelect: 'none' }} columns={columns} dataSource={appointments} onChange={handleChange} /> : <Spinner />}
+      {appointments.length == 0?<Spinner/>:<Table style={{ userSelect: 'none', minWidth: 1138 }} columns={columns} dataSource={appointments} onChange={handleChange} />}
     </>
   )
 };

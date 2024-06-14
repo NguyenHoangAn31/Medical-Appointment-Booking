@@ -19,18 +19,18 @@ import Spinner from '../../../../components/Spinner';
 
 const layout = {
   labelCol: {
-    span: 8,
+    span: 4,
   },
-  wrapperCol: {
-    span: 16,
-  },
+  // wrapperCol: {
+  //   span: 16,
+  // },
 };
-const tailLayout = {
-  wrapperCol: {
-    offset: 8,
-    span: 16,
-  },
-};
+// const tailLayout = {
+//   wrapperCol: {
+//     offset: 8,
+//     span: 16,
+//   },
+// };
 const normFile = (e) => {
   if (Array.isArray(e)) {
     return e;
@@ -42,7 +42,7 @@ function EditDepartment() {
   const navigate = useNavigate();
 
   // thông báo
-  const {openNotificationWithIcon} = useContext(AlertContext);
+  const { openNotificationWithIcon } = useContext(AlertContext);
   // lấy id từ url
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
@@ -94,74 +94,86 @@ function EditDepartment() {
 
   return (
     <>
-      {Object.keys(department).length == 0 ? <Spinner /> : <> <h2>Edit Department - {department.status != null ?
-        department.status == 0 ? <span style={{ color: 'red' }}>Not Active</span> : <span style={{ color: 'rgb(82, 196, 26)' }}>Active</span>
-        : <></>
-      }</h2>
+      {Object.keys(department).length == 0 ? <Spinner /> : <>
 
-        <Form
-          {...layout}
-          name="control-hooks"
-          onFinish={handleFormSubmit}
-          style={{
-            maxWidth: 600,
-            marginTop: '45px'
-          }}
-        >
+        <div className='d-lg-flex mb-5'>
+          <div style={{ flexGrow: 1, marginTop: 35 , width:'50%' }}>
+            <h2>Edit Department - {department.status != null ?
+              department.status == 0 ? <span style={{ color: 'red' }}>Not Active</span> : <span style={{ color: 'rgb(82, 196, 26)' }}>Active</span>
+              : null
+            }</h2>
+            <hr className='w-75' />
+            Welcome to the Department registration system. Please fill in the information below to create a new Department.
 
-          <Form.Item label="Name">
-            <Input value={department.name} onChange={(e) => onInputChangeForDepartment('name', e.target.value)} required />
-          </Form.Item>
+            <Form
+              {...layout}
+              name="control-hooks"
+              onFinish={handleFormSubmit}
+              style={{
+                maxWidth: 600,
+                marginTop: '45px'
+              }}
+            >
 
-          <Form.Item label="URL">
-            <Input value={department.url} onChange={(e) => onInputChangeForDepartment('url', e.target.value)} required />
-          </Form.Item>
+              <Form.Item label="Name">
+                <Input value={department.name} onChange={(e) => onInputChangeForDepartment('name', e.target.value)} required />
+              </Form.Item>
+
+              <Form.Item label="Address">
+                <Input value={department.url} onChange={(e) => onInputChangeForDepartment('url', e.target.value)} required />
+              </Form.Item>
 
 
 
-          {/* <Form.Item label="Select Status" name="status">
+              {/* <Form.Item label="Select Status" name="status">
             <Select placeholder="Select Status" onChange={(e) => onInputChangeForDepartment('status', e)} >
               <Select.Option value="1">Active</Select.Option>
               <Select.Option value="0">Not Active</Select.Option>
             </Select>
           </Form.Item> */}
 
-          {department.icon ?
-            <Form.Item label="Icon">
-              <Image
-                width={100}
-                src={"http://localhost:8080/images/department/" + department.icon}
-              /></Form.Item> : <></>
-          }
-          <Form.Item label="Select Icon" valuePropName="fileList" getValueFromEvent={normFile}>
-            <Upload beforeUpload={() => false} listType="picture-card" maxCount={1} onChange={(e) => onInputChangeForIcon(e.file)}>
-              <button
-                style={{
-                  border: 0,
-                  background: 'none',
-                }}
-                type="button"
-              >
-                <PlusOutlined />
-                <div
-                  style={{
-                    marginTop: 8,
-                  }}
-                >
-                  Upload
-                </div>
-              </button>
-            </Upload>
-          </Form.Item>
+              {department.icon ?
+                <Form.Item label="Icon">
+                  <Image
+                    width={100}
+                    src={"http://localhost:8080/images/department/" + department.icon}
+                  /></Form.Item> : <></>
+              }
+              <Form.Item label="Select Icon" valuePropName="fileList" getValueFromEvent={normFile}>
+                <Upload beforeUpload={() => false} listType="picture-card" maxCount={1} onChange={(e) => onInputChangeForIcon(e.file)}>
+                  <button
+                    style={{
+                      border: 0,
+                      background: 'none',
+                    }}
+                    type="button"
+                  >
+                    <PlusOutlined />
+                    <div
+                      style={{
+                        marginTop: 8,
+                      }}
+                    >
+                      Upload
+                    </div>
+                  </button>
+                </Upload>
+              </Form.Item>
 
-          <Form.Item {...tailLayout}>
-            <Space>
-              <Button type="primary" htmlType="submit">
-                Submit
-              </Button>
-            </Space>
-          </Form.Item>
-        </Form></>}
+              <Form.Item className='text-end'>
+                <Space>
+                  <Button type="primary" htmlType="submit">
+                    Submit
+                  </Button>
+                </Space>
+              </Form.Item>
+            </Form>
+          </div>
+          <div style={{ width: '50%'}}>
+            <img src='/images/dashboard/department_create.jpg' alt="" className='w-100' />
+          </div>
+        </div>
+      </>}
 
     </>
   )

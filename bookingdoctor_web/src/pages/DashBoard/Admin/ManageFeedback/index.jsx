@@ -301,7 +301,7 @@ const ManageFeedback = () => {
         </Space>
       </Space>
 
-        {feedbacks.length != 0?<Table style={{userSelect:'none'}} columns={columns} dataSource={feedbacks} onChange={handleChange} />:<Spinner/>}
+        {feedbacks.length != 0?<Table style={{userSelect:'none',minWidth:1138}} columns={columns} dataSource={feedbacks} onChange={handleChange} />:<Spinner/>}
     </>
   )
 };

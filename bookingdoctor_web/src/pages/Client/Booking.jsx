@@ -289,7 +289,7 @@ const Booking = () => {
 
     if (foundSlot) {
       const slotTime = parseTimeString(foundSlot.startTime);
-      if (foundSlot.status === 1 && (slotTime > currentTime || (stripTime(now) < stripTime(new Date(daySelected) ||  stripTime(now) > stripTime(new Date(daySelected)))))) {
+      if (foundSlot.status === 1 && (slotTime > currentTime || (stripTime(now) < stripTime(new Date(daySelected) || stripTime(now) > stripTime(new Date(daySelected)))))) {
         return { status: 'true', scheduledoctorId: foundSlot.scheduledoctorId };
       } else if (foundSlot.status === 0) {
         return { status: 'booked' };
@@ -415,14 +415,6 @@ const Booking = () => {
           <div className="col-md-12">
             <div className="row">
               <div className="col-12">
-                <div className='booking__search'>
-                  <MdSearch className='booking__search-icon' />
-                  <input type="text" placeholder='Search doctor' className='booking__search-input'
-                    name='searchName'
-                    onChange={handleSearch} />
-                </div>
-              </div>
-              <div className="col-12">
                 <h3 className='booking_title'>Making appointment</h3>
               </div>
               <div className="col-12">
@@ -437,6 +429,15 @@ const Booking = () => {
                     ))}
                   </div>
                 </div>
+
+                <div className="col-12">
+                  <div className='booking__search'>
+                    <MdSearch className='booking__search-icon' />
+                    <input type="text" placeholder='Search doctor' className='booking__search-input'
+                      name='searchName'
+                      onChange={handleSearch} />
+                  </div>
+                </div>    
                 <div className="col-12">
                   <div className="booking__list">
                     <div className="title">Choose doctor</div>

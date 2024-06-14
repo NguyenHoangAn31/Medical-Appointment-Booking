@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import {
   Button,
   Form,
@@ -13,22 +13,25 @@ import { Link, useNavigate } from 'react-router-dom';
 import { LeftOutlined, PlusOutlined } from '@ant-design/icons';
 import { addDepartment } from '../../../../services/API/departmentService';
 import { AlertContext } from '../../../../components/Layouts/DashBoard';
+import AOS from "aos";
+import "aos/dist/aos.css";
+
 
 
 const layout = {
   labelCol: {
-    span: 8,
+    span: 4,
   },
-  wrapperCol: {
-    span: 16,
-  },
+  // wrapperCol: {
+  //   span: 16,
+  // },
 };
-const tailLayout = {
-  wrapperCol: {
-    offset: 8,
-    span: 16,
-  },
-};
+// const tailLayout = {
+//   wrapperCol: {
+//     offset: 8,
+//     span: 16,
+//   },
+// };
 const normFile = (e) => {
   if (Array.isArray(e)) {
     return e;
@@ -40,11 +43,11 @@ function AddDepartment() {
   const navigate = useNavigate();
 
   // thông báo
-  const {openNotificationWithIcon} = useContext(AlertContext);
+  const { openNotificationWithIcon } = useContext(AlertContext);
   // state cho department
   const [department, setDepartment] = useState({
     name: '',
-    status: '1',
+    status: '0',
     url: ''
   });
   // state cho icon
@@ -59,6 +62,12 @@ function AddDepartment() {
 
     setDepartment({ ...department, [name]: value });
   };
+
+  useEffect(() => {
+    AOS.init({
+      duration: 2000
+    });
+  }, []);
 
   // cập nhật thay đổi giá trị cho icon
   const onInputChangeForIcon = (value) => {
@@ -91,27 +100,34 @@ function AddDepartment() {
     <>
 
       {/* <Link to={`/dashboard/admin/manage-slot`}><LeftOutlined /> Back To Slot</Link> */}
-      <h2>Add New Department</h2>
 
-      <Form
-        {...layout}
-        form={form}
-        name="control-hooks"
-        onFinish={handleFormSubmit}
-        style={{
-          maxWidth: 600,
-          marginTop: '45px'
-        }}
-      >
-        <Form.Item label="Name" rules={[
-          {
-            required: true,
-          },
-        ]} name="name">
-          <Input onChange={(e) => onInputChangeForDepartment('name', e.target.value)} />
-        </Form.Item>
+      <div className='d-lg-flex mb-5'>
+        <div  data-aos="fade-down" style={{ flexGrow: 1, marginTop: 50 ,width:'50%'}}>
+          <div style={{}}>
+            <h1 className='text-primary'>Create New Department</h1>
+            <hr className='w-75' />
+            Welcome to the Department registration system. Please fill in the information below to create a new Department.
 
-        {/* <Form.Item label="Status" rules={[
+          </div>
+          <Form
+            {...layout}
+            form={form}
+            name="control-hooks"
+            onFinish={handleFormSubmit}
+            style={{
+              maxWidth: 600,
+              marginTop: '45px'
+            }}
+          >
+            <Form.Item label="Name" rules={[
+              {
+                required: true,
+              },
+            ]} name="name">
+              <Input onChange={(e) => onInputChangeForDepartment('name', e.target.value)} />
+            </Form.Item>
+
+            {/* <Form.Item label="Status" rules={[
           {
             required: true,
           },
@@ -123,52 +139,58 @@ function AddDepartment() {
           </Select>
         </Form.Item> */}
 
-        <Form.Item label="URL" rules={[
-          {
-            required: true,
-          },
-        ]} name="url">
-          <Input onChange={(e) => onInputChangeForDepartment('url', e.target.value)} />
-        </Form.Item>
+            <Form.Item label="Address" rules={[
+              {
+                required: true,
+              },
+            ]} name="url">
+              <Input onChange={(e) => onInputChangeForDepartment('url', e.target.value)} />
+            </Form.Item>
 
-        <Form.Item label="Icon" valuePropName="fileList" getValueFromEvent={normFile} rules={[
-          {
-            required: true,
-          },
-        ]} name="icon">
-          <Upload beforeUpload={() => false} listType="picture-card" maxCount={1} onChange={(e) => onInputChangeForIcon(e.file)}>
-            <button
-              style={{
-                border: 0,
-                background: 'none',
-              }}
-              type="button"
-            >
-              <PlusOutlined />
-              <div
-                style={{
-                  marginTop: 8,
-                }}
-              >
-                Upload
-              </div>
-            </button>
-          </Upload>
-        </Form.Item>
+            <Form.Item label="Icon" valuePropName="fileList" getValueFromEvent={normFile} rules={[
+              {
+                required: true,
+              },
+            ]} name="icon">
+              <Upload beforeUpload={() => false} listType="picture-card" maxCount={1} onChange={(e) => onInputChangeForIcon(e.file)}>
+                <button
+                  style={{
+                    border: 0,
+                    background: 'none',
+                  }}
+                  type="button"
+                >
+                  <PlusOutlined />
+                  <div
+                    style={{
+                      marginTop: 8,
+                    }}
+                  >
+                    Upload
+                  </div>
+                </button>
+              </Upload>
+            </Form.Item>
 
 
 
-        <Form.Item {...tailLayout}>
-          <Space>
-            <Button type="primary" htmlType="submit">
-              Submit
-            </Button>
-            <Button htmlType="button" onClick={onReset}>
-              Reset
-            </Button>
-          </Space>
-        </Form.Item>
-      </Form>
+            <Form.Item className='text-end' >
+              <Space>
+                <Button type="primary" htmlType="submit">
+                  Submit
+                </Button>
+                <Button htmlType="button" onClick={onReset}>
+                  Reset
+                </Button>
+              </Space>
+            </Form.Item>
+          </Form>
+        </div>
+        <div data-aos="fade-left" style={{ width: "50%"}}>
+          <img src='/images/dashboard/department_create.jpg' alt="" className='w-100' />
+        </div>
+      </div>
+
     </>
   )
 }

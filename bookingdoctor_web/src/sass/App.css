@@ -412,6 +412,39 @@ section {
   height: 380px;
 }
 
+@media screen and (max-width: 1100px) {
+  .header_dashboard .bread_crumb .toggle-sidebar {
+    display: none !important;
+  }
+  .content_dashboard .doctor_detail_dashboard .doctor_info,
+  .content_dashboard .patient_detail_dashboard .patient_info {
+    gap: 0px !important;
+    flex-direction: column;
+  }
+  .content_dashboard .doctor_detail_dashboard .doctor_info .info_detail,
+  .content_dashboard .patient_detail_dashboard .patient_info .info_detail {
+    width: 100% !important;
+  }
+}
+@media screen and (max-width: 800px) {
+  .header_dashboard {
+    justify-content: center !important;
+  }
+  .header_dashboard .bread_crumb {
+    display: none !important;
+  }
+  .content_dashboard .feedback_detail {
+    padding: 0;
+  }
+}
+@media screen and (max-width: 510px) {
+  .header_dashboard .nav_info .account span {
+    display: none !important;
+  }
+  .content_dashboard {
+    margin: 0 !important;
+  }
+}
 nav {
   font-family: "Poppins", sans-serif;
 }
@@ -1163,6 +1196,9 @@ nav .nav-link:hover {
   float: left;
   width: 15%;
   margin-top: 10px;
+}
+.feedback_detail .rating_user .side div {
+  white-space: nowrap;
 }
 .feedback_detail .rating_user .middle {
   margin-top: 10px;

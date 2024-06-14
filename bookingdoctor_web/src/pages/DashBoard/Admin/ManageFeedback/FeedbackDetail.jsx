@@ -72,9 +72,9 @@ function FeedbackDetail() {
     <>
       {Object.keys(detail).length == 0 ? <Spinner /> : <div className='feedback_detail'>
 
-        <div className='doctor d-md-flex justify-content-around align-item-center'>
-          <div className='image text-center'>
-            <img className='d-block pb-5 m-auto' src={"http://localhost:8080/images/doctors/" + detail.image} width="300" alt="" />
+        <div className='doctor d-md-flex justify-content-around align-item-center  gap-5'>
+          <div className='image text-center' style={{maxWidth:350,margin:'auto'}}>
+            <img className='d-block pb-5 m-auto w-100' src={"http://localhost:8080/images/doctors/" + detail.image} alt="" />
 
             <Rate className="fs-3 mb-2" count={5} disabled defaultValue={Number(rate)} allowHalf />
             <p>Department : {detail.department['name']}</p>
@@ -178,7 +178,7 @@ function FeedbackDetail() {
                 color={value.status ? "null" : "red"}
               >
                 <div className="card_patient mb-5  d-flex gap-3">
-                  <div className="image_patient">
+                  <div className="image_patient" style={{width:75}}>
                     <img className="rounded-circle object-fit-cover"
                       src={"http://localhost:8080/images/patients/" + value.patient.image}
                       alt=""
@@ -204,18 +204,18 @@ function FeedbackDetail() {
                             ),
                             key: '0',
                           },
-                          {
-                            label: (
-                              <span onClick={() => handleDelete(value.id)}>
-                                Delete Comment
-                              </span>
-                            ),
-                            key: '1',
-                          }
+                          // {
+                          //   label: (
+                          //     <span onClick={() => handleDelete(value.id)}>
+                          //       Delete Comment
+                          //     </span>
+                          //   ),
+                          //   key: '1',
+                          // }
                         ]
                       }}
                     >
-                      <span onClick={(e) => e.preventDefault()}>
+                      <span onClick={(e) => e.preventDefault()} style={{display:'inline-block',width:20}}>
                         <Space>
                           . . .
                         </Space>

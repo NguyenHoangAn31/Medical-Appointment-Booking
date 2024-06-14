@@ -83,7 +83,7 @@ function ManageSchedule() {
 
 
   return (
-    <div className='calendar'>
+    <div className='calendar' style={{minWidth:1138}}>
       <Calendar onChange={handleChange} value={value} onActiveStartDateChange={() => setCalendarRendered(true)} />
     </div>
 

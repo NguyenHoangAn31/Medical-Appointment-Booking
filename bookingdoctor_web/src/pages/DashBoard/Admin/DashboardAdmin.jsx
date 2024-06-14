@@ -141,8 +141,8 @@ function DashboardAdmin() {
       bnb: "bnb2",
     },
     {
-      today: "Today’s Users",
-      title: "3,200",
+      today: "Today’s Patients",
+      title: "200",
       persent: "+20%",
       icon: profile,
       bnb: "bnb2",
@@ -155,8 +155,8 @@ function DashboardAdmin() {
       bnb: "redtext",
     },
     {
-      today: "New Books",
-      title: "$13,200",
+      today: "Today's Appointment",
+      title: "+200",
       persent: "10%",
       icon: cart,
       bnb: "bnb2",
