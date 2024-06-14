@@ -118,22 +118,6 @@ class _PaymentScreenState extends State<PaymentScreen> {
                   ListTile(
                     title: Row(
                       children: [
-                        Image.asset('assets/images/momo.png', width: 50, height: 50),
-                      ],
-                    ),
-                    leading: Radio<String>(
-                      value: 'Momo',
-                      groupValue: _selectedPaymentMethod,
-                      onChanged: (String? value) {
-                        setState(() {
-                          _selectedPaymentMethod = value!;
-                        });
-                      },
-                    ),
-                  ),
-                  ListTile(
-                    title: Row(
-                      children: [
                         Image.asset('assets/images/paypal.png', width: 50, height: 50),
                       ],
                     ),

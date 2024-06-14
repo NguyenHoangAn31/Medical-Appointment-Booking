@@ -37,6 +37,7 @@ class _DoctorScreenState extends State<DoctorScreen> {
             icon: const Icon(Icons.tune),
             onPressed: () {
               // Action for tune button
+              Navigator.pushNamed(context, '/filter');
             },
           ),
         ],

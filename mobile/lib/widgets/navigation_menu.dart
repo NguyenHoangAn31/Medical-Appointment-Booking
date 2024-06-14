@@ -63,19 +63,19 @@ class NavigationController extends GetxController {
     //
     // }
     //else
-    // if(index == 4 && !loggedIn.value) {
-    //   AwesomeDialog.show(
-    //     context: context,
-    //     title: 'Notification!',
-    //     content: 'Please Sign in to use this function',
-    //     confirmText: 'Login',
-    //     route: '/sign-in',
-    //     cancelText: 'Close',
-    //     onCancel: () => Get.back(),
-    //   );
-    // }else{
-    //   selectedIndex.value = index;
-    // }
+    if(index == 4 && !loggedIn.value) {
+      AwesomeDialog.show(
+        context: context,
+        title: 'Notification!',
+        content: 'Please Sign in to use this function',
+        confirmText: 'Login',
+        route: '/sign-in',
+        cancelText: 'Close',
+        onCancel: () => Get.back(),
+      );
+    }else{
+      selectedIndex.value = index;
+    }
     selectedIndex.value = index;
   }
 

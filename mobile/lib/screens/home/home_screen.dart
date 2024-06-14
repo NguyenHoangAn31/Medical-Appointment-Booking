@@ -158,7 +158,16 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                           ),
                           const SizedBox(width: 10),
-                          const Icon(Icons.tune, color: Color(0xFF98A2B2)),
+                          GestureDetector(
+                            onTap: () {
+                              // Chuyển trang tại đây
+                              Navigator.pushNamed(context, '/filter');
+                            },
+                            child: const Icon(
+                              Icons.tune,
+                              color: Color(0xFF98A2B2),
+                            ),
+                          ),
                         ],
                       ),
                     ),

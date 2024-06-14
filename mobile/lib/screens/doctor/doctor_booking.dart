@@ -202,7 +202,7 @@ class _DoctorBookingScreenState extends State<DoctorBookingScreen> {
                           ),
                         ],
                       ),
-                      child: SizedBox(
+                      child: Container(
                         height: 30,
                         child: Center(
                           child: Text(
