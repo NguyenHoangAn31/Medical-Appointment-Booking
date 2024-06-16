@@ -212,6 +212,26 @@ section {
   margin-right: 30px;
 }
 
+.sidebar {
+  width: 100%;
+  height: 500px;
+  background-color: #efdfdf;
+  border-radius: 20px;
+  padding: 20px 0px;
+}
+.sidebar .item {
+  list-style: none;
+  padding: 10px 20px;
+}
+.sidebar .item .link {
+  text-decoration: none;
+  color: #000;
+  text-transform: uppercase;
+}
+.sidebar .item.active {
+  background-color: #fff;
+}
+
 .doctor__list {
   width: 100%;
   height: auto; /* Thay đổi từ 372px thành auto */
