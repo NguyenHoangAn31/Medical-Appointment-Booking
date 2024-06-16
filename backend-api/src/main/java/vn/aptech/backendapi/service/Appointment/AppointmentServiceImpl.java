@@ -57,7 +57,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     private AppointmentDetail toAppointmentDetail(Appointment appointment){
         AppointmentDetail a = mapper.map(appointment,AppointmentDetail.class);
-        a.setPartient(patientService.getPatientByPatientId(appointment.getPartient().getId()).get());
+        a.setPatient(patientService.getPatientByPatientId(appointment.getPartient().getId()).get());
         a.setDoctor(doctorService.findById(appointment.getScheduledoctor().getDoctor().getId()).get());
         return a;
     }
@@ -68,6 +68,20 @@ public class AppointmentServiceImpl implements AppointmentService {
         return a.stream().map(this::toCustomDto)
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public boolean changestatus(int id , String status){
+        Appointment a = appointmentRepository.findById(id).get();
+        a.setStatus(status);
+        try {
+            appointmentRepository.save(a);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     @Override
     public AppointmentDetail appointmentDetail(int appointmentId){
         Appointment a = appointmentRepository.findById(appointmentId).get();

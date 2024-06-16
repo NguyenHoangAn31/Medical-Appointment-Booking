@@ -65,7 +65,7 @@ const adminRouters = [
     { path: '/dashboard/admin/manage-news/create', component: DashBoard.AddNews, layout: DashBoardLayout },
     { path: '/dashboard/admin/manage-news/edit', component: DashBoard.EditNews, layout: DashBoardLayout },
     { path: '/dashboard/admin/manage-news/detail', component: DashBoard.NewsDetail, layout: DashBoardLayout },
-    { path: '/dashboard/admin/manage-report/', component: DashBoard.ManageReport, layout: DashBoardLayout }
+    { path: '/dashboard/admin/manage-revenue/', component: DashBoard.ManageReport, layout: DashBoardLayout }
 ]
 
 export { publicRouters, patientRouters, doctorRouters, adminRouters }

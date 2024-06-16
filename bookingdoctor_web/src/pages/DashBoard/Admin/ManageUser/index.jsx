@@ -358,7 +358,7 @@ const ManageUser = () => {
           </>
         </div>
       </Space>
-      {users.length != 0 ? <Table style={{ userSelect: 'none' }} columns={columns} dataSource={users} onChange={handleChange} /> : <Spinner />}
+      {users.length != 0 ? <Table style={{ userSelect: 'none' , minWidth:1138}} columns={columns} dataSource={users} onChange={handleChange} /> : <Spinner />}
     </>
   )
 };

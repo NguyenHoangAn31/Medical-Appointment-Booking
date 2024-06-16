@@ -11,11 +11,11 @@ function ClientLayout({ children, isForPatient }) {
     //console.log("current user : ",currentUser)
     useEffect(() => {
         var token = getUserData();
-        if (token!=null && token.user.roles[0] == 'USER') {
+        if (token != null && token.user.roles[0] == 'USER') {
             setCurrentUser(token)
         }
     }, [])
-    //console.log("child : " ,children)
+
     return (
         <UserContext.Provider value={{ currentUser, setCurrentUser }}>
 

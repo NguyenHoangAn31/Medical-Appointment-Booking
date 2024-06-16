@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,7 +27,16 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     @Override
     public List<DepartmentDto> findAll() {
+        List<Integer> departmentIdsWithDoctors = departmentRepository.findDepartmentIdsWithDoctors();
         List<Department> departments = departmentRepository.findAll();
+        for (Department department : departments) {
+            if (departmentIdsWithDoctors.contains(department.getId())) {
+                department.setStatus(true);
+            } else {
+                department.setStatus(false);
+            }
+            departmentRepository.save(department);
+        }
         return departments.stream().map(this::toDto)
                 .collect(Collectors.toList());
     }
@@ -56,10 +64,11 @@ public class DepartmentServiceImpl implements DepartmentService {
             return false;
         }
     }
+
     @Override
-    public boolean changeStatus(int id,int status){
+    public boolean changeStatus(int id, int status) {
         Department d = departmentRepository.findById(id).get();
-        boolean newStatus = (status == 1) ? false : true; 
+        boolean newStatus = (status == 1) ? false : true;
         d.setStatus(newStatus);
         try {
             departmentRepository.save(d);
