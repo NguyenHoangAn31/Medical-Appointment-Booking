@@ -15,6 +15,7 @@ function ClientLayout({ children, isForPatient }) {
             setCurrentUser(token)
         }
     }, [])
+
     return (
         <UserContext.Provider value={{ currentUser, setCurrentUser }}>
 
@@ -22,14 +23,27 @@ function ClientLayout({ children, isForPatient }) {
                 <div className='float-end'><Toaster toastOptions={{ duration: 4000 }} /></div>
                 <Header />
                 <div className='main-app'>
-                    {isForPatient ? <div className='container'>
+                    {isForPatient ? <div className='container mt-5'>
                         <div className='row'>
-                            <div className='col-md-4'>
-                                <div>
-                                    sidebar
+                            <div className='col-md-2'>
+                                <div className='col-12'>
+                                    <ul className='sidebar'>
+                                        <li className='item active'>
+                                            <a href="#" className='link'>Profile</a>
+                                        </li>
+                                        <li className='item'>
+                                            <a href="#" className='link'>Booking</a>
+                                        </li>
+                                        <li className='item'>
+                                            <a href="#" className='link'>Fauvorite</a>
+                                        </li>
+                                        <li className='item'>
+                                            <a href="#" className='link'>Medical history</a>
+                                        </li>
+                                    </ul>
                                 </div>
                             </div>
-                            <div className='col-md-8'>
+                            <div className='col-md-10'>
                                 {children}
                             </div>
                         </div>
