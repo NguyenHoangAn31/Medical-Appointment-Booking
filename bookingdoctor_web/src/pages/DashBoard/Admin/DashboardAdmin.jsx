@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useState } from "react";
 
 import {
@@ -37,15 +37,22 @@ import team2 from "../../../assets/images/dashboard/team-2.jpg";
 import team3 from "../../../assets/images/dashboard/team-3.jpg";
 import team4 from "../../../assets/images/dashboard/team-4.jpg";
 import card from "../../../assets/images/dashboard/info-card-1.jpg";
-
+import { getStatistical } from '../../../services/API/reportService';
 
 function DashboardAdmin() {
   const { Title, Text } = Typography;
 
+
   const onChange = (e) => console.log(`radio checked:${e.target.value}`);
 
   const [reverse, setReverse] = useState(false);
-
+  const [statistical,setStatistical] = useState({revenueToday:0,percnetRevenue:0,patientsToday:0,percentPatients:0,bookingsToday:0,percentBookings:0,clientsToday:0,percentClients:0});
+  useEffect(()=>{
+    loadStatistical();
+  },[]);
+  const loadStatistical = async () =>{
+    setStatistical(await getStatistical());
+  }
   const dollor = [
     <svg
       width="22"
@@ -135,31 +142,31 @@ function DashboardAdmin() {
   const count = [
     {
       today: "Today’s Revenue",
-      title: "$53,000",
-      persent: "+30%",
+      title: statistical.revenueToday,
+      persent: statistical.percnetRevenue+"%",
       icon: dollor,
       bnb: "bnb2",
     },
     {
       today: "Today’s Patients",
-      title: "200",
-      persent: "+20%",
+      title: statistical.patientsToday,
+      persent: statistical.percentPatients+"%",
       icon: profile,
       bnb: "bnb2",
     },
     {
-      today: "New Clients",
-      title: "+1,200",
-      persent: "-20%",
-      icon: heart,
-      bnb: "redtext",
-    },
-    {
-      today: "Today's Appointment",
-      title: "+200",
-      persent: "10%",
+      today: "Today's Bookings",
+      title: statistical.bookingsToday,
+      persent: statistical.percentBookings+"%",
       icon: cart,
       bnb: "bnb2",
+    },
+    {
+      today: "New Clients",
+      title: statistical.clientsToday,
+      persent: statistical.percentClients+"%",
+      icon: heart,
+      bnb: "redtext",
     },
   ];
 

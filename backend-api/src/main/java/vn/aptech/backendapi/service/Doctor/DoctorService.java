@@ -15,10 +15,17 @@ public interface DoctorService {
     // writed by An in 5/11
     DoctorDto updatePriceAndDepartment(int id , double price , int departmentId);
     List<DoctorDto> findAllWithAllStatus();
+    List<DoctorDto> findDoctorsByDepartmentIdWithAllStatus(int departmentId);
 
     List<DoctorDto> searchDoctorsByName(String name);
 
     // Hien - 28/5/2024
     DoctorDto update(int id, DoctorDto doctorDto);
+
+    boolean deleteDoctorFromDepartment(int doctorId);
+
+    List<DoctorDto> doctorNotDepartment();
+
+    boolean addDoctorToDepartment(int departmentId , int doctorId);
 
 }

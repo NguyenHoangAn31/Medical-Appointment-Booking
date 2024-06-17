@@ -16,8 +16,8 @@ public class ReportDto {
     private String fullName;
     private String image;
     private double price;
-    private long countSuccess;
-    private long countCancel;
+    private long countBook;
+    private long countFinished;
     private String departmentName; 
     private double total;
 }

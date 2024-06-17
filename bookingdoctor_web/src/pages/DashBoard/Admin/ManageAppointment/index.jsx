@@ -263,16 +263,16 @@ const ManageAppointment = () => {
       width: '6%',
       filters: [
         {
-          text: 'success',
-          value: 'success',
+          text: 'finished',
+          value: 'finished',
         },
         {
           text: 'waiting',
           value: 'waiting',
         },
         {
-          text: 'cancel',
-          value: 'cancel',
+          text: 'canceled',
+          value: 'canceled',
         }
       ],
       filteredValue: filteredInfo.status || null,
@@ -281,7 +281,7 @@ const ManageAppointment = () => {
 
       render: (_, { status }) => {
         let color;
-        if (status == 'success') {
+        if (status == 'finished') {
           color = 'green'
         }
         else if (status == 'waiting') {
