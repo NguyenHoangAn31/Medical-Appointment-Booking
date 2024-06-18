@@ -15,7 +15,7 @@ class NavigationMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(NavigationController());
+    final controller = Get.put(NavigationControllerForDoctor());
     return Scaffold(
       bottomNavigationBar: Obx(
           () => NavigationBar(
@@ -37,7 +37,7 @@ class NavigationMenu extends StatelessWidget {
   }
 }
 
-class NavigationController extends GetxController {
+class NavigationControllerForDoctor extends GetxController {
   final Rx<int> selectedIndex = 0.obs;
   final RxBool loggedIn = false.obs;
   final screens = [
@@ -82,7 +82,7 @@ class NavigationController extends GetxController {
   void login() {
     // Perform login logic
     // On successful login, update the loggedIn status
-    final controller = Get.find<NavigationController>();
+    final controller = Get.find<NavigationControllerForDoctor>();
     controller.loggedIn.value = true;
   }
 

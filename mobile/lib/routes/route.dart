@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:mobile/screens/doctor/payment_screen.dart';
+import 'package:mobile/widgets/navigation_menu_doctor.dart';
 
 //import '../screens/home/home_screen.dart';
 import '../screens/auth/login_screen.dart';
@@ -24,6 +25,8 @@ class Routes {
       '/doctor/booking': (context) => const DoctorBookingScreen(),
       '/doctor/booking/patient': (context) => const DoctorBookingPatientScreen(),
       '/doctor/booking/payment': (context) => const PaymentScreen(),
+
+      '/dashboard/doctor/home':(contxt) => const NavigationMenuDoctor()
     };
   }
 }

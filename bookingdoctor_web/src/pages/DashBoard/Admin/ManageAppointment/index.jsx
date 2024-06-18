@@ -44,10 +44,11 @@ const ManageAppointment = () => {
 
   const loadAppointments = async () => {
     const fetchedAppointments = await getAllAppointment();
-    const appointmensWithKeys = fetchedAppointments.map((appointment, index) => ({
+    let appointmensWithKeys = fetchedAppointments.map((appointment, index) => ({
       ...appointment,
       key: index.toString(),
     }));
+    appointmensWithKeys = appointmensWithKeys.reverse();
     setAppointments(appointmensWithKeys);
 
 

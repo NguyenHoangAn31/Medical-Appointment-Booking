@@ -16,6 +16,11 @@ public final class GeneratedPluginRegistrant {
   private static final String TAG = "GeneratedPluginRegistrant";
   public static void registerWith(@NonNull FlutterEngine flutterEngine) {
     try {
+      flutterEngine.getPlugins().add(new dev.fluttercommunity.plus.network_info.NetworkInfoPlusPlugin());
+    } catch (Exception e) {
+      Log.e(TAG, "Error registering plugin network_info_plus, dev.fluttercommunity.plus.network_info.NetworkInfoPlusPlugin", e);
+    }
+    try {
       flutterEngine.getPlugins().add(new app.rive.rive.RivePlugin());
     } catch (Exception e) {
       Log.e(TAG, "Error registering plugin rive_common, app.rive.rive.RivePlugin", e);

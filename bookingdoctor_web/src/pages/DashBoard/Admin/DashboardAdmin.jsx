@@ -162,7 +162,7 @@ function DashboardAdmin() {
       bnb: "bnb2",
     },
     {
-      today: "New Clients",
+      today: "Today's New Clients",
       title: statistical.clientsToday,
       persent: statistical.percentClients+"%",
       icon: heart,
