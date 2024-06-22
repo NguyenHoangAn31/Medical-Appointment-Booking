@@ -19,9 +19,13 @@ import { AlertContext } from '../../../../components/Layouts/DashBoard';
 import getUserData from '../../../../route/CheckRouters/token/Token';
 import Spinner from '../../../../components/Spinner';
 
+
+import dynamic from 'next/dynamic';
+const Editor = dynamic(() => import('../../Admin/ManageNews/CKEditor'), { ssr:false})
+
 const layout = {
   labelCol: {
-    span: 8,
+    span: 4,
   },
   wrapperCol: {
     span: 16,
@@ -63,7 +67,9 @@ function EditNews() {
 
   // xét giá trị cho news
   const loadNews = async () => {
-    setNews(await findNewsByIdForUpdate(id));
+    // setNews(await findNewsByIdForUpdate(id));
+    const newsData = await findNewsByIdForUpdate(id);
+    setNews(newsData);
 
   };
 
@@ -124,6 +130,7 @@ function EditNews() {
 
           <Form.Item label="Content" style={{margin:'50px 0'}}>
             <ReactQuill value={news.content} theme="snow" onChange={(e) => onInputChangeForNews('content', e)} />
+            {/* <Editor  value={news.content} theme="snow" onChange={(e) => onInputChangeForNews('content', e)} /> */}
 
           </Form.Item>
 

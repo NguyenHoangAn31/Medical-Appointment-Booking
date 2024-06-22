@@ -89,7 +89,7 @@ public class NewController {
         ObjectMapper objectMapper = new ObjectMapper();
         NewsCreateDto NewsCreateDto = objectMapper.readValue(news, NewsCreateDto.class);
         // xử lý hình ảnh
-
+        System.out.println(NewsCreateDto.getDayCreate());
         NewsCreateDto.setImage(fileService.uploadFile("news", photo));
         NewsCreateDto result = newsService.save(NewsCreateDto);
         if (result != null) {

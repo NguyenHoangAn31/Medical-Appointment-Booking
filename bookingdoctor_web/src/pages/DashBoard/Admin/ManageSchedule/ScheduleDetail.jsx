@@ -236,7 +236,7 @@ function ScheduleDetail() {
 
                       <Slider {...{
                         dots: false,
-                        infinite: true,
+                        infinite: slot.doctorsForSchedules.length>3,
                         slidesToShow: slot.doctorsForSchedules.length,
                         slidesToScroll: 2
                       }} className='mt-5'>

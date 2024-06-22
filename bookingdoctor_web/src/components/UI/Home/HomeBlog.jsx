@@ -10,7 +10,7 @@ import { motion } from 'framer-motion';
 const HomeNews = () => {
 
     const [news, setNews] = useState([]);
-    // console.log(news);
+    console.log(news);
     useEffect(() => {
         fetchNews();
     }, []);
@@ -112,7 +112,6 @@ const HomeNews = () => {
                 </div>
                 
                 <div>
-                {/* <div className='col-md-12 slider-container mb-5'> */}
                     <Slider {...settings}>
                         {news.map((item) => (
                             <NewsItem
@@ -122,6 +121,7 @@ const HomeNews = () => {
                         ))}
                     </Slider>
                 </div>
+                
                 <div className='col-md-12 mt-5 text-center'>
                     <motion.div whileTap={{scale: 0.8}}>
                         <Link className='btn__service' to={'/blog'}>See all</Link>

@@ -1,5 +1,6 @@
 package vn.aptech.backendapi.dto.News;
-
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,4 +16,5 @@ public class NewsCreateDto {
     private String url;
     private int status;
     private int user_id;
+    private String dayCreate;
 }

@@ -1,48 +1,89 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { GoArrowUpRight } from "react-icons/go";
-import { LineStrokeColorVar } from 'antd/es/progress/style';
 
 const NewsItem = ({ item }) => {
   const cardStyle = {
-    width: '300px',  // Cố định chiều rộng là 300px
-    height: '350px', // Cố định chiều cao là 150px
-    // overflow: 'hidden', // Đảm bảo nội dung vượt quá kích thước sẽ bị ẩn
-    objectFit: 'cover', // Đảm bảo hình ảnh lấp đầy toàn bộ không gian mà không bị biến dạng
+    borderRadius: '8px',
+    overflow: 'hidden',
+    boxShadow: '1px 5px 7px rgba(0.11,0,0,0.1)',
+    marginBottom: '20px',
+    // width: '300px',
+    backgroundColor: '#F0F8FF',
+    height: '350px',
+    objectFit: 'hidden',
+    position: 'relative',
   };
 
-  const imageStyle = {
-    width: '100%',    // Đặt rộng của hình ảnh chiếm 100% chiều rộng của thẻ cha
-    height: '100%',   // Đặt cao của hình ảnh chiếm 100% chiều cao của thẻ cha
-    objectFit: 'cover', // Đảm bảo hình ảnh lấp đầy toàn bộ không gian mà không bị biến dạng
-    overflow: 'hidden', // Đảm bảo nội dung vượt quá kích thước sẽ bị ẩn
-  };
-
-  const arrowStyle = {
-    position: 'absolute',
-    bottom: '10px',
-    right: '10px',
-    width: '40px',
-    height: '40px',
-    backgroundColor: '#007bff',
-    borderRadius: '50%',
+  const imageContainerStyle = {
+    width: '100%',
+    height: '150px',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    color: '#fff',
-    textDecoration: 'none',
+    overflow: 'hidden',
+    padding: '15px',
   };
 
+  const imageStyle = {
+    width: '100%',
+    height: '100%',
+    objectFit: 'cover',
+    borderRadius: '8px',
+  };
+
+  const cardBodyStyle = {
+    padding: '20px',
+    position: 'relative',
+  };
+
+  const titleStyle = {
+    fontSize: '1.25rem',
+    fontWeight: 'bold',
+    marginBottom: '10px',
+  };
+
+  const textStyle = {
+    fontSize: '0.875rem',
+    color: '#6c757d',
+  };
+
+  const linkStyle = {
+    position: 'absolute',
+    bottom: '20px',
+    left: '22px',
+    color: '#007bff',
+    textDecoration: 'none',
+    fontWeight: 'bold',
+  };
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const day = date.getDate().toString().padStart(2, '0');
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const year = date.getFullYear();
+    const hours = date.getHours().toString().padStart(2, '0');
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+    return `${day}-${month}-${year}, ${hours}:${minutes}`;
+  };
+
+  const publishDate = formatDate(item.dayCreate);
+
+  const limitedTitle = item.title.length > 70 ? `${item.title.substring(0, 70)}...` : item.title;
+
   return (
-    <div className="card mb-4" style={cardStyle}>
-      <img src={`http://localhost:8080/images/news/${item.image}`} className="card-img-top" alt={item.title} style={imageStyle} />
-      <div className="card-body">
-        <h5 className="card-title">{item.title}</h5>
-        <p className="card-text"><small className="text-muted">By: {item.creator_email}</small></p>
-        <Link to={`/blog/${item.id}`} style={arrowStyle}>
-          <GoArrowUpRight className='list__icon-rowup' />
-        </Link>
+    <div style={cardStyle}>
+      <div style={imageContainerStyle}>
+        <img
+          src={`http://localhost:8080/images/news/${item.image}`}
+          alt={item.title}
+          style={imageStyle}
+        />
       </div>
+      <div style={cardBodyStyle}>
+        <p style={textStyle}>Published: {publishDate}</p>
+        <h5 style={titleStyle}>{limitedTitle}</h5>
+      </div>
+      <Link to={`/blog/${item.id}`} style={linkStyle}>Read more</Link>
     </div>
   );
 };

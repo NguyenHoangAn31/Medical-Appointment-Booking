@@ -59,6 +59,7 @@ public class SecurityConfiguration {
                     request.requestMatchers("/api/feedback/**").permitAll();
                     request.requestMatchers("/api/user/**").permitAll();
                     request.requestMatchers("/api/doctor/**").permitAll();
+                    request.requestMatchers("/api/contact/**").permitAll();
                     request.requestMatchers("/api/patient/**").permitAll();
                     request.requestMatchers("/api/schedules/**").permitAll();
                     request.requestMatchers("/api/appointment/**").permitAll();

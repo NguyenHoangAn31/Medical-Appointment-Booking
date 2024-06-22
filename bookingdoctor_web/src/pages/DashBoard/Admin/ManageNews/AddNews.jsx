@@ -11,6 +11,7 @@ import {
   TimePicker,
   Upload,
 } from 'antd';
+
 import { Link, useNavigate } from 'react-router-dom';
 
 import { LeftOutlined, PlusOutlined } from '@ant-design/icons';
@@ -18,9 +19,13 @@ import { addNews } from '../../../../services/API/news';
 import { AlertContext } from '../../../../components/Layouts/DashBoard';
 import getUserData from '../../../../route/CheckRouters/token/Token';
 
+
+import dynamic from 'next/dynamic';
+const Editor = dynamic(() => import('../../Admin/ManageNews/CKEditor'), { ssr:false})
+
 const layout = {
   labelCol: {
-    span: 8,
+    span: 4,
   },
   wrapperCol: {
     span: 16,
@@ -39,7 +44,10 @@ const normFile = (e) => {
   return e?.fileList;
 };
 function AddNews() {
-  const {currentUser} = useContext(AlertContext);
+  // const {currentUser} = useContext(AlertContext);
+  
+  const { currentUser } = useContext(AlertContext);
+  console.log("id of currentUser : ", currentUser.user.id);
 
   const navigate = useNavigate();
 
@@ -51,6 +59,7 @@ function AddNews() {
     content: '',
     url: '',
     status: '1',
+    // user_id: getUserData.user_id
     user_id: currentUser.user.id
   });
   // state cho image
@@ -77,6 +86,7 @@ function AddNews() {
     form.resetFields();
   };
 
+  // xử lý submit
   const handleFormSubmit = async () => {
     try {
       const formData = new FormData()
@@ -105,7 +115,7 @@ function AddNews() {
         name="control-hooks"
         onFinish={handleFormSubmit}
         style={{
-          maxWidth: 600,
+          maxWidth: 2400,
           marginTop: '45px'
         }}
       >
@@ -130,8 +140,9 @@ function AddNews() {
         <Form.Item label="Content" style={{margin:'50px 0'}} >
 
           <ReactQuill theme="snow" onChange={(e) => onInputChangeForNews('content', e)} />
-
+          {/* <Editor/> */}
         </Form.Item>
+        
 
 
 
