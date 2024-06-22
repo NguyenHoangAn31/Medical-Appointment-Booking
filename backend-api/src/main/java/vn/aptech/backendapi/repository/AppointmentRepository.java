@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import vn.aptech.backendapi.dto.ReportDto;
 import vn.aptech.backendapi.entities.Appointment;
+import vn.aptech.backendapi.entities.Partient;
 
 @Repository
 public interface AppointmentRepository extends JpaRepository<Appointment, Integer> {
@@ -40,4 +41,9 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Intege
                      "OR SUM(CASE WHEN a.status = 'cancel' THEN 1 ELSE 0 END) > 0")
        List<ReportDto> findDoctorAppointmentsReport(@Param("startDate") LocalDate startDate,
                      @Param("endDate") LocalDate endDate);
+
+
+
+
+
 }
