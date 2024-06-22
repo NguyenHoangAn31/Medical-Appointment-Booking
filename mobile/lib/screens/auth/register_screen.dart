@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:mobile/services/auth_service.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -9,7 +11,65 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
-  final TextEditingController _phoneNumberController = TextEditingController();
+  final TextEditingController _txtPhone = TextEditingController();
+  final TextEditingController _txtFullName = TextEditingController();
+  final TextEditingController _txtEmail = TextEditingController();
+
+  void registerAccount() async{
+      String phone = _txtPhone.text;
+      String fullName = _txtFullName.text;
+      String email = _txtEmail.text;
+
+      if(fullName.isEmpty){
+        Fluttertoast.showToast(
+            msg: 'Fullname is not be blank!',
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.red,
+            textColor: Colors.white,
+            fontSize: 16.0
+        );
+      }
+
+      if(phone.isEmpty){
+        Fluttertoast.showToast(
+            msg: 'Phone is not be blank!',
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.red,
+            textColor: Colors.white,
+            fontSize: 16.0
+        );
+      }else{
+        bool isCheckUser = await AuthClient().checkPhone(phone);
+        if(!isCheckUser){
+          Fluttertoast.showToast(
+              msg: 'Phone has been registered. Please enter another phone number!',
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.BOTTOM,
+              timeInSecForIosWeb: 1,
+              backgroundColor: Colors.red,
+              textColor: Colors.white,
+              fontSize: 16.0
+          );
+        }
+      }
+      if(email.isEmpty){
+        Fluttertoast.showToast(
+            msg: 'Email is not be blank!',
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.red,
+            textColor: Colors.white,
+            fontSize: 16.0
+        );
+      }
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -92,13 +152,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       child: Align(
                         alignment: Alignment.centerLeft,
                         child: TextField(
-                          controller: _phoneNumberController,
+                          controller: _txtFullName,
                           decoration: const InputDecoration(
                             border: InputBorder.none,
-                            hintText: 'Enter full name',
-                            counter: SizedBox.shrink(), // Ẩn counter cho nhập chữ số duy nhất
-                            //alignLabelWithHint: true, // Canh giữa với dòng văn bản
-                            //counterText: '',
+                            labelText: 'Full Name',
+                            hintText: 'Enter your full name',
                             hintStyle: TextStyle(
                               color: Color(0xFF98A2B2),
                               fontSize: 14,
@@ -128,12 +186,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       child: Align(
                         alignment: Alignment.centerLeft,
                         child: TextField(
-                          controller: _phoneNumberController,
+                          controller: _txtPhone,
                           decoration: const InputDecoration(
                             border: InputBorder.none,
+                            labelText: 'Phone',
                             hintText: 'Enter your phone number',
                             counter: SizedBox.shrink(), // Ẩn counter cho nhập chữ số duy nhất
-                            //alignLabelWithHint: true, // Canh giữa với dòng văn bản
                             counterText: '',
                             hintStyle: TextStyle(
                               color: Color(0xFF98A2B2),
@@ -153,6 +211,43 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         ),
                       ),
                     ),
+                    const SizedBox(height: 15,),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                      decoration: ShapeDecoration(
+                        color: const Color(0xFFF2F4F7),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                      ),
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: TextField(
+                          controller: _txtEmail,
+                          decoration: const InputDecoration(
+                            border: InputBorder.none,
+                            labelText: 'Email',
+                            hintText: 'Enter your email',
+                            counter: SizedBox.shrink(), // Ẩn counter cho nhập chữ số duy nhất
+                            //alignLabelWithHint: true, // Canh giữa với dòng văn bản
+                            counterText: '',
+                            hintStyle: TextStyle(
+                              color: Color(0xFF98A2B2),
+                              fontSize: 14,
+                              fontFamily: 'Poppins',
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                          style: const TextStyle(
+                            color: Colors.black,
+                            fontSize: 18,
+                            fontFamily: 'Poppins',
+                            fontWeight: FontWeight.w600,
+                          ),
+                          keyboardType: TextInputType.emailAddress,
+                        ),
+                      ),
+                    ),
                   ],
                 ),
                 const SizedBox(height: 30),
@@ -169,9 +264,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       backgroundColor: const Color(0xFF92A3FD),
                     ),
                     onPressed: () {
+                      registerAccount();
                     },
                     child: const Text(
-                      'SEND OTP',
+                      'CREATE ACCOUNT',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 16,
@@ -190,3 +286,4 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
   }
+

@@ -8,7 +8,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 class AuthClient{
   final ipDevice = BaseClient().ip;
   final storage = const FlutterSecureStorage();
-  Future<dynamic> login(String phone, String smsCode) async{
+  Future<void> login(String phone, String smsCode) async{
     var data = {
       'phone': phone,
       'smsCode': smsCode,
@@ -58,5 +58,36 @@ class AuthClient{
 
   Future<void> logout() async {
     await storage.delete(key: 'authToken');
+  }
+
+  Future<bool> checkPhone(String username) async {
+    var url = Uri.parse('https://$ipDevice:8080/api/user/search/$username');
+    var response = await http.get(url);
+    if (response.statusCode == 200) {
+      print(response.body);
+      return true;
+    }else{
+      return false;
+    }
+  }
+
+  Future<String?> register(String fullName, String phone, String email, String keyCode) async {
+    var data = {
+      'fullName': fullName,
+      'phone': phone,
+      'provider': 'phone',
+      'email': email,
+      'keyCode': keyCode,
+      'status': 1,
+      'roleId': 1
+    };
+    var url = Uri.parse('https://$ipDevice:8080/api/user/register');
+    var response = await http.post(url, body: data);
+    if(response.statusCode == 200){
+      var jsonResponse = jsonDecode(response.body);
+      return jsonResponse;
+    }else{
+      return null;
+    }
   }
 }

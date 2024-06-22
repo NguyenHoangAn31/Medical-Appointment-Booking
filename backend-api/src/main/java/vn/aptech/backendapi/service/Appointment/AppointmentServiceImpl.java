@@ -95,7 +95,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         a.setMedicalExaminationDay(LocalDate.parse(dto.getMedicalExaminationDay()));
         a.setClinicHours(LocalTime.parse(dto.getClinicHours()));
         if (dto.getPartientId() != 0) {
-            Partient p = partientRepository.getPatientByUserId(dto.getPartientId());
+            Partient p = partientRepository.getPatientByUserId(dto.getPartientId()).get();
             a.setPartient(mapper.map(p, Partient.class));
         }
         if (dto.getScheduledoctorId() != 0) {

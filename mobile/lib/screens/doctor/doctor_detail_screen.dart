@@ -90,7 +90,7 @@ class _DoctorDetailScreenState extends State<DoctorDetailScreen> {
                                 height: 80,
                                 padding: const EdgeInsets.all(5),
                                 decoration: BoxDecoration(
-                                  color: Colors.grey,
+                                  color: Colors.lightBlueAccent,
                                   borderRadius: BorderRadius.circular(50),
                                 ),
                                 child: Image.network(

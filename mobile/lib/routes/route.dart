@@ -4,12 +4,9 @@ import 'package:mobile/screens/doctor/dashboard_doctor/qualification_doctor_scre
 import 'package:mobile/screens/doctor/dashboard_doctor/working_doctor_screen.dart';
 import 'package:mobile/screens/doctor/payment_screen.dart';
 import 'package:mobile/widgets/navigation_menu_doctor.dart';
-
-//import '../screens/home/home_screen.dart';
-
 import '../screens/auth/login_screen.dart';
 import '../screens/auth/register_screen.dart';
-import '../screens/auth/signin_screen.dart';
+import '../screens/auth/sign_screen.dart';
 import '../screens/doctor/booking_patient_screen.dart';
 import '../screens/doctor/doctor_booking.dart';
 import '../screens/doctor/doctor_detail_screen.dart';

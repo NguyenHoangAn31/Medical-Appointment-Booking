@@ -47,7 +47,7 @@ function AddDepartment() {
   // state cho department
   const [department, setDepartment] = useState({
     name: '',
-    status: '0',
+    status: 'false',
     url: ''
   });
   // state cho icon
