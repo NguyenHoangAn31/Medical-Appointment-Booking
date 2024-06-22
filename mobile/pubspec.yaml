@@ -43,8 +43,11 @@ dependencies:
   firebase_core: ^2.14.0
   firebase_auth: ^4.1.0
   fluttertoast: ^8.2.6
-  network_info_plus: ^2.0.0
   flutter_secure_storage: ^8.0.0
+  network_info_plus: ^5.0.3
+  timeago: ^3.6.1
+  intl: ^0.19.0
+  carousel_slider: ^4.2.1
 
 dev_dependencies:
   flutter_test:
@@ -85,6 +88,11 @@ flutter:
      - assets/images/momo.png
      - assets/images/vnpay.png
      - assets/images/paypal.png
+     - assets/images/no_schedule.png
+     - assets/images/no_data.png
+     - assets/images/banner_appointment.png
+     - assets/images/banner1.png
+
 
 
 

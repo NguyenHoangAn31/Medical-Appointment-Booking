@@ -13,6 +13,7 @@ class NavigationMenuDoctor extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(NavigationController());
+    // controller.selectedIndex.value = 0; // Ensure initial index is home
     return Scaffold(
       bottomNavigationBar: Obx(
         () => NavigationBar(
@@ -47,6 +48,7 @@ class NavigationController extends GetxController {
     const FeedbackDoctorScreen(),
     const ProfileDoctorScreen(),
   ];
+  
   void onDestinationSelected(int index, BuildContext context) {
     selectedIndex.value = index;
   }

@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import vn.aptech.backendapi.dto.PatientDto;
 
 
 @Data
@@ -17,8 +18,9 @@ import lombok.Setter;
 @Setter
 public class CustomAppointmentDto {
     private int id;
-    private String image;
-    private String fullName;
+    // private String image;
+    // private String fullName;
+    private PatientDto patientDto;
     private int price;
     private String payment;
     private String status;

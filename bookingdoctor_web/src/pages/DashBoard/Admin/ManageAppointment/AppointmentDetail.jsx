@@ -111,7 +111,7 @@ function AppointmentDetail() {
 
             </div>
 
-            <div className='general-information flex-grow-1' style={{ padding: '35px 25px 0px 25px', background: 'rgb(244, 247, 254)', borderRadius: 8, height: 'max-content' }}>
+            <div className='general-information flex-grow-1' style={{ padding: '35px 25px 0px 25px', background: 'rgb(244, 247, 254)', height: 'max-content' }}>
               <h2 className='text-center mb-4'>Examination Information</h2>
               <div>
                 <p className='fs-5' style={{ fontWeight: 500 }}>Appointment Date</p>

@@ -291,8 +291,8 @@ const Booking = () => {
 
     if (foundSlot) {
       const slotTime = parseTimeString(foundSlot.startTime);
-      if (foundSlot.status === 1 && (slotTime > currentTime || (stripTime(now) < stripTime(new Date(daySelected) || stripTime(now) > stripTime(new Date(daySelected)))))) {
-      // if(foundSlot.status === 1){
+      // if (foundSlot.status === 1 && (slotTime > currentTime || (stripTime(now) < stripTime(new Date(daySelected) || stripTime(now) > stripTime(new Date(daySelected)))))) {
+      if(foundSlot.status === 1){
         return { status: 'true', scheduledoctorId: foundSlot.scheduledoctorId };
       } else if (foundSlot.status === 0) {
         return { status: 'booked' };

@@ -47,6 +47,8 @@ const ManageAppointment = () => {
     let appointmensWithKeys = fetchedAppointments.map((appointment, index) => ({
       ...appointment,
       key: index.toString(),
+      image : appointment.patientDto.image,
+      fullName : appointment.patientDto.fullName,
     }));
     appointmensWithKeys = appointmensWithKeys.reverse();
     setAppointments(appointmensWithKeys);
@@ -59,7 +61,7 @@ const ManageAppointment = () => {
 
 
 
-
+  console.log(appointments)
 
 
   const handleSearch = (selectedKeys, confirm, dataIndex) => {

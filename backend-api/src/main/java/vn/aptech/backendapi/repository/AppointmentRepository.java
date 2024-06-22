@@ -10,6 +10,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import vn.aptech.backendapi.entities.Appointment;
+import vn.aptech.backendapi.entities.Partient;
 
 @Repository
 public interface AppointmentRepository extends JpaRepository<Appointment, Integer> {
@@ -34,6 +35,20 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Intege
                      "AND a.status = 'finished'")
        Integer countSuccessfulAppointmentsByDoctorIdAndDateRange(
                      @Param("doctorId") Integer doctorId,
+                     @Param("startDate") LocalDate startDate,
+                     @Param("endDate") LocalDate endDate);
+
+       @Query("SELECT DISTINCT a FROM Appointment a " +
+                     "WHERE a.scheduledoctor.doctor.id = :doctorId " +
+                     "AND a.appointmentDate BETWEEN :startDate AND :endDate")
+       List<Appointment> findPatientsByDoctorIdAndAppointmentDates(@Param("doctorId") int doctorId,
+                     @Param("startDate") LocalDate startDate,
+                     @Param("endDate") LocalDate endDate);
+
+       @Query("SELECT DISTINCT a FROM Appointment a " +
+                     "WHERE a.scheduledoctor.doctor.id = :doctorId " +
+                     "AND a.medicalExaminationDay BETWEEN :startDate AND :endDate")
+       List<Appointment> findPatientsByDoctorIdAndMedicalExaminationDates(@Param("doctorId") int doctorId,
                      @Param("startDate") LocalDate startDate,
                      @Param("endDate") LocalDate endDate);
 
