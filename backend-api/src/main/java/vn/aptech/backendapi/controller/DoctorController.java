@@ -8,6 +8,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import vn.aptech.backendapi.dto.DoctorCreateDto;
 import vn.aptech.backendapi.dto.DoctorDto;
+import vn.aptech.backendapi.dto.DoctorViewDto;
 import vn.aptech.backendapi.service.Doctor.DoctorService;
 
 import java.io.IOException;
@@ -65,6 +66,7 @@ public class DoctorController {
         List<DoctorDto> relatedDoctors = doctorService.findDoctorsByDepartmentId(departmentId);
         return ResponseEntity.ok(relatedDoctors);
     }
+    
 
     // writed by An in 5/11
     @GetMapping(value = "/allwithallstatus", produces = MediaType.APPLICATION_JSON_VALUE)

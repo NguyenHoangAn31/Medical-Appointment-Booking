@@ -63,8 +63,8 @@ public class DepartmentController {
     @DeleteMapping(value = "/delete/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> deleteById(@PathVariable("id") int id) throws IOException {
         Optional<DepartmentDto> result = departmentService.findById(id);
-        int status = result.get().getStatus();
-        if (status == 1) {
+        boolean status = result.get().isStatus();
+        if (status == true) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Department is Active");
         }
         String pathIcon = result.get().getIcon();

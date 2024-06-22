@@ -4,7 +4,6 @@ import lombok.*;
 import vn.aptech.backendapi.dto.Feedback.FeedbackDto;
 import vn.aptech.backendapi.entities.Department;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @Data
@@ -12,7 +11,7 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 @Setter
-public class DoctorDto {
+public class DoctorViewDto {
     private int id;
     private String fullName;
     private String title; //Chức danh
@@ -23,10 +22,6 @@ public class DoctorDto {
     private Double price;
     private String biography;
     private Double rate;
-    private Boolean status;
     private int userId;
     private Department department;
-    private List<WorkingDto> workings;
-    private List<QualificationDto> qualifications;
-    private List<FeedbackDto> feedbackDtoList;
 }

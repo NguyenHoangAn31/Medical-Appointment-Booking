@@ -2271,6 +2271,18 @@ small.redtext {
   box-shadow: var(--boxShadow);
 }
 
+.payment_choose {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  gap: 50px;
+}
+
+.img_payment {
+  width: 100px;
+  cursor: pointer;
+}
+
 #myTab .nav-link {
   color: #111;
 }
