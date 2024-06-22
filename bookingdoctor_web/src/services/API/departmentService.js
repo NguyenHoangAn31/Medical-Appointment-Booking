@@ -44,3 +44,23 @@ export const updateDepartment = async (id,department) => {
     }
 };
 
+export const getDoctorByDepartmentId = async (departmentId) => {
+    try {
+        const response = await request.get(`doctor/listdoctorsbydepartmentid/${departmentId}`);
+        return response;
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+};
+
+
+export const deleteDoctorFromDepartment = async (departmentId) => {
+    try {
+        await request.put(`doctor/deletedoctorfromdepartment/${departmentId}`);
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+};
+

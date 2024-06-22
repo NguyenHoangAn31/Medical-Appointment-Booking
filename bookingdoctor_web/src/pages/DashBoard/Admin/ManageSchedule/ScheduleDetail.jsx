@@ -41,7 +41,7 @@ function ScheduleDetail() {
 
   useEffect(() => {
     loadClinic();
-    loadDoctors();
+    loadDoctorsAndDepartment();
   }, []);
 
   const loadClinic = async () => {
@@ -50,7 +50,7 @@ function ScheduleDetail() {
   };
 
 
-  const loadDoctors = async () => {
+  const loadDoctorsAndDepartment = async () => {
     const doctorWithValueAndLabel = await getAllDoctorWithStatus();
     const departmenWithValueAndLable = await getAllDepartment();
 
@@ -77,11 +77,33 @@ function ScheduleDetail() {
     }
   };
 
+  function parseTimeString(timeString) {
+    const [hours, minutes] = timeString.split(':').map(Number);
+    const now = new Date();
+    return new Date(now.getFullYear(), now.getMonth(), now.getDate(), hours, minutes);
+  }
+
+  function stripTime(date) {
+    return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  }
+
+  function checkDateTime(startTime) {
+    const now = new Date();
+    const currentTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), now.getHours(), now.getMinutes());
+    const slotTime = parseTimeString(startTime);
+    return (slotTime > currentTime || (stripTime(now) < stripTime(new Date(day) || stripTime(now) > stripTime(new Date(day)))))
+  }
+
   const handleChangeDepartment = async (value) => {
     setDepartmentId(value);
     if (slotsForCreate.length == 0) {
-      console.log("first")
-      const slotwithvalueAndlabel = await getAllSlot()
+      let slotwithvalueAndlabel = await getAllSlot();
+
+
+      slotwithvalueAndlabel = slotwithvalueAndlabel.filter(item => {
+        return checkDateTime(item.startTime)
+      });
+
       slotwithvalueAndlabel.forEach(s => {
         s.value = s.id;
         s.label = s.startTime + ' - ' + s.endTime
@@ -139,6 +161,7 @@ function ScheduleDetail() {
             <div className='mb-3'>
               <label htmlFor="" className='mb-1'>Choose Department</label>
               <Select
+                allowClear
                 style={{
                   display: 'block',
                 }}
@@ -158,6 +181,7 @@ function ScheduleDetail() {
             <div className='mb-3'>
               <label htmlFor="" className='mb-1'>Choose Work Hours</label>
               <Select
+                allowClear
                 mode="multiple"
                 style={{
                   display: 'block',
@@ -216,6 +240,7 @@ function ScheduleDetail() {
                     children: <div>
 
                       <Select
+                        allowClear
                         style={{ width: '85%', height: 30, marginRight: 15 }}
                         disabled={status == 'completed'}
                         mode="multiple"
@@ -232,17 +257,18 @@ function ScheduleDetail() {
                           </Space>
                         )}
                       />
-                      <Button type='primary' danger disabled={!slot.doctorsForSchedules.length == 0 || status == 'completed'} onClick={() => handleDeleteSlot(deptValue.id, slot.id)}>Delete Slot</Button>
+                      <Button type='primary' danger disabled={!slot.doctorsForSchedules.length == 0 || status == 'completed' || !checkDateTime(slot.startTime)} onClick={() => handleDeleteSlot(deptValue.id, slot.id)}>Delete Slot</Button>
 
                       <Slider {...{
                         dots: false,
-                        infinite: slot.doctorsForSchedules.length>3,
+
+                        infinite: slot.doctorsForSchedules.length > 3,
                         slidesToShow: slot.doctorsForSchedules.length,
                         slidesToScroll: 2
                       }} className='mt-5'>
                         {slot.doctorsForSchedules.map((doctor, doctorIndex) => (
                           <div key={doctorIndex} className='text-center'>
-                            <img src={"http://localhost:8080/images/doctors/" + doctor.image} alt="" style={{ backgroundImage: 'linear-gradient(120deg, rgb(161, 196, 253) 0%, rgb(194, 233, 251) 100%)',width:200,display:'block',margin:'auto' }} />
+                            <img src={"http://localhost:8080/images/doctors/" + doctor.image} alt="" style={{ backgroundImage: 'linear-gradient(120deg, rgb(161, 196, 253) 0%, rgb(194, 233, 251) 100%)', width: 200, display: 'block', margin: 'auto' }} />
                             <p className='mt-3'>{doctor.fullName}</p>
                           </div>
                         ))}
@@ -251,40 +277,6 @@ function ScheduleDetail() {
                   }
                 })}
               />
-              // children:
-              //  deptValue.slots.map((slot, slotIndex) => (
-              //   <div key={slotIndex} className='d-flex align-items-center justify-content-between' style={{ maxWidth: 850, marginBottom: 15 }}>
-              //     <div style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
-              //       <span>{slot.startTime} : {slot.endTime} </span>
-              //       {slot.doctorsForSchedules ? <>
-              //         {slot.doctorsForSchedules.map((doctor, doctorIndex) => (
-              //           <div key={doctorIndex}>
-              //             <img src={"http://localhost:8080/images/doctors/" + doctor.image} alt="" style={{ width: 50, height: 50, objectFit: 'cover', borderRadius: '50%', objectPosition: 'top' }} />
-              //           </div>
-              //         ))}
-              //       </> : null}
-              //     </div>
-
-              //     <Select
-              //       disabled={status == 'completed'}
-              //       mode="multiple"
-              //       placeholder="select doctor"
-              //       defaultValue={slot.doctorsForSchedules.map(doctor => doctor.id)}
-              //       onChange={(value) => handleChange(deptValue.id, slot.id, value)}
-              //       options={doctors.filter(doctor => doctor.department.id == deptValue.id)}
-              //       optionRender={(option) => (
-              //         <Space>
-              //           <span role="img" aria-label={option.data.fullName}>
-              //             <img src={"http://localhost:8080/images/doctors/" + option.data.image} alt="" style={{ width: 30, height: 30, objectFit: 'cover', borderRadius: '50%', objectPosition: 'top' }} />
-              //             {option.data.fullName}
-              //           </span>
-              //           {option.data.birthday}
-              //         </Space>
-              //       )}
-              //     />
-              //     <Button type='primary' danger disabled={!slot.doctorsForSchedules.length == 0 || status == 'completed'} onClick={() => handleDeleteSlot(deptValue.id, slot.id)}>Delete Slot</Button>
-              //   </div>
-              // )),
             };
           })}
         />

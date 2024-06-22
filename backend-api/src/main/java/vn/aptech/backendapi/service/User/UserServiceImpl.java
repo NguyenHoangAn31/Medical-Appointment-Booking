@@ -9,9 +9,12 @@ import org.springframework.stereotype.Service;
 import jakarta.mail.internet.MimeMessage;
 import vn.aptech.backendapi.dto.UserDto;
 import vn.aptech.backendapi.dto.UserDtoCreate;
+import vn.aptech.backendapi.entities.Doctor;
 import vn.aptech.backendapi.entities.Partient;
 import vn.aptech.backendapi.entities.Role;
 import vn.aptech.backendapi.entities.User;
+import vn.aptech.backendapi.repository.DoctorRepository;
+import vn.aptech.backendapi.repository.PartientRepository;
 import vn.aptech.backendapi.repository.RoleRepository;
 import vn.aptech.backendapi.repository.UserRepository;
 
@@ -22,6 +25,12 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService {
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private PartientRepository partientRepository;
+
+    @Autowired
+    private DoctorRepository doctorRepository;
 
     @Autowired
     private RoleRepository roleRepository;
@@ -109,12 +118,22 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean changeStatus(int id,boolean status){
-        User d = userRepository.findById(id).get();
-        boolean newStatus = status ? false : true; 
-        d.setStatus(newStatus);
+    public boolean changeStatus(int id, boolean status) {
+        User u = userRepository.findById(id).get();
+        boolean newStatus = status ? false : true;
+        Doctor d = doctorRepository.findDoctorByUserId(id);
+        Partient p = partientRepository.getPatientByUserId(id);
+        if (d != null) {
+            d.setStatus(newStatus);
+            doctorRepository.save(d);
+        }
+        if (p != null) {
+            p.setStatus(newStatus);
+            partientRepository.save(p);
+        }
+        u.setStatus(newStatus);
         try {
-            userRepository.save(d);
+            userRepository.save(u);
             return true;
         } catch (Exception e) {
             e.printStackTrace();

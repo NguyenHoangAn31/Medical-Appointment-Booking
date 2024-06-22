@@ -1804,7 +1804,7 @@ small.redtext {
 }
 
 .doctor_details_page_in_admin .right {
-  width: 80%;
+  width: 90%;
   padding: 0px 0px 20px 40px;
   left: 7%;
 }
@@ -2269,6 +2269,18 @@ small.redtext {
   z-index: 100px;
   background-color: #fff;
   box-shadow: var(--boxShadow);
+}
+
+.payment_choose {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  gap: 50px;
+}
+
+.img_payment {
+  width: 100px;
+  cursor: pointer;
 }
 
 #myTab .nav-link {

@@ -11,6 +11,7 @@ import vn.aptech.backendapi.entities.Partient;
 import vn.aptech.backendapi.repository.MedicalRepository;
 import vn.aptech.backendapi.repository.PartientRepository;
 
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -53,9 +54,8 @@ public class PatientServiceImpl implements PatientService {
     }
 
     public Optional<PatientDto> getPatientByUserId(int userId) {
-        Optional<Partient> optionalPatient = partientRepository.getPatientByUserId(userId);
-        if (optionalPatient.isPresent()) {
-            Partient patient = optionalPatient.get();
+        Partient patient = partientRepository.getPatientByUserId(userId);
+        if (patient != null) {
             List<MedicalDto> medicalList = patient.getMedicals().stream()
                     .map(this::mapToMedicalDto)
                     .collect(Collectors.toList());
@@ -92,6 +92,12 @@ public class PatientServiceImpl implements PatientService {
         List<Partient> p = partientRepository.findAll();
         return p.stream().map(this::toDto)
                 .collect(Collectors.toList());
+    }
+    @Override
+    public List<PatientDto> findPatientsByScheduleDoctorIdAndStartTime( int scheduledoctorid, LocalTime starttime){
+        List<PatientDto> patientDtoList = partientRepository.findPatientsByScheduleDoctorIdAndStartTime(scheduledoctorid,starttime).stream().map(this::toDto)
+                .collect(Collectors.toList());
+        return patientDtoList;
     }
     
 

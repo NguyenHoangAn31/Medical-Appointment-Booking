@@ -14,6 +14,6 @@ public class WorkingDto {
     private String address;
     private String startWork;
     private String endWork;
-    private byte status;
+    private boolean status;
     private int doctor_id;
 }

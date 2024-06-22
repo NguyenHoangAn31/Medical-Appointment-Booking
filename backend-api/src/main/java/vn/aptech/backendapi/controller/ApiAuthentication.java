@@ -52,7 +52,6 @@ public class ApiAuthentication {
     }
 
     @PostMapping(value = "/send-otp", produces = MediaType.APPLICATION_JSON_VALUE)
-
     public ResponseEntity<Boolean> sendOtp(@RequestBody AuthenticationWithUsernameAndKeycode body) {
         String username = body.getUsername();
         String provider = body.getProvider();

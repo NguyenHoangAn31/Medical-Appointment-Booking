@@ -10,6 +10,7 @@ import vn.aptech.backendapi.dto.Feedback.FeedbackDto;
 import vn.aptech.backendapi.entities.*;
 import vn.aptech.backendapi.repository.DepartmentRepository;
 import vn.aptech.backendapi.repository.DoctorRepository;
+import vn.aptech.backendapi.repository.ScheduleDoctorRepository;
 
 import java.time.LocalDate;
 import java.util.Comparator;
@@ -22,6 +23,9 @@ public class DoctorServiceImpl implements DoctorService {
 
     @Autowired
     private DoctorRepository doctorRepository;
+
+    @Autowired
+    private ScheduleDoctorRepository scheduleDoctorRepository;
 
     @Autowired
     private DepartmentRepository departmentRepository;
@@ -126,7 +130,8 @@ public class DoctorServiceImpl implements DoctorService {
         }
         return doctorList;
     }
-    public List<DoctorDto> searchDoctorsByName(String name){
+
+    public List<DoctorDto> searchDoctorsByName(String name) {
         List<Doctor> doctorDtos = doctorRepository.findDoctorsByFullNameContaining(name);
         doctorDtos = doctorDtos.stream()
                 .filter(Doctor::isStatus) // Giả sử trường status là isActive
@@ -228,19 +233,20 @@ public class DoctorServiceImpl implements DoctorService {
             return Optional.of(doctorDto);
         } else {
             return Optional.empty(); // Trả về Optional rỗng nếu không tìm thấy Doctor
-             }
+        }
     }
+
     @Override
-    public Optional<DoctorDto> findByUserId(int userId){
+    public Optional<DoctorDto> findByUserId(int userId) {
         Doctor doctor = doctorRepository.findDoctorByUserId(userId);
-        if(doctor != null){
+        if (doctor != null) {
             DoctorDto doctorDto = mapToDoctorDto(doctor);
             doctorDto.setWorkings(doctor.getWorkings().stream()
-            .map(this::mapToWorkingDto)
-            .collect(Collectors.toList()));
+                    .map(this::mapToWorkingDto)
+                    .collect(Collectors.toList()));
             doctorDto.setQualifications(doctor.getQualifications().stream()
-            .map(this::mapToQualificationDto)
-            .collect(Collectors.toList()));
+                    .map(this::mapToQualificationDto)
+                    .collect(Collectors.toList()));
 
             List<FeedbackDto> feedbackList = doctor.getFeedbacks().stream().map(this::mapToFeedbackDto)
                     .collect(Collectors.toList());
@@ -257,7 +263,6 @@ public class DoctorServiceImpl implements DoctorService {
         }
         return null;
     }
-
 
     // Hien Create 30/4/2024
     @Override
@@ -304,9 +309,16 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     @Override
+    public List<DoctorDto> findDoctorsByDepartmentIdWithAllStatus(int departmentId) {
+        List<Doctor> doctors = doctorRepository.findDoctorsByDepartmentId(departmentId);
+        return doctors.stream().map(this::mapToDoctorDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public DoctorDto updatePriceAndDepartment(int id, double price, int departmentId) {
         Doctor d = doctorRepository.findById(id).get();
-        if(price != 0){
+        if (price != 0) {
             d.setPrice(price);
         }
         d.setPrice(price);
@@ -321,8 +333,7 @@ public class DoctorServiceImpl implements DoctorService {
     // Hien - 28/5/2024
     @Override
     public DoctorDto update(int id, DoctorDto doctorDto) {
-        Doctor doctor
-                = doctorRepository.findById(id).get();
+        Doctor doctor = doctorRepository.findById(id).get();
         doctor.setTitle(doctorDto.getTitle());
         doctor.setFullName(doctorDto.getFullName());
         doctor.setGender(doctorDto.getGender());
@@ -330,6 +341,45 @@ public class DoctorServiceImpl implements DoctorService {
         doctor.setAddress(doctorDto.getAddress());
         doctorRepository.save(doctor);
         return doctorDto;
+    }
+
+    @Override
+    public boolean deleteDoctorFromDepartment(int doctorId) {
+        Doctor d = doctorRepository.findById(doctorId).get();
+        if (!scheduleDoctorRepository.existsByDoctorIdAndDayWorkingAfterOrEqual(doctorId, LocalDate.now())) {
+            d.setDepartment(null);
+            try {
+                doctorRepository.save(d);
+                return true;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return false;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public List<DoctorDto> doctorNotDepartment() {
+        List<Doctor> doctors = doctorRepository.findDoctorsWithNoDepartment();
+        return doctors.stream().map(this::toDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public boolean addDoctorToDepartment(int departmentId, int doctorId) {
+        Doctor d = doctorRepository.findById(doctorId).get();
+        try {
+            if (departmentId > 0) {
+                Optional<Department> de = departmentRepository.findById(departmentId);
+                de.ifPresent(doctor -> d.setDepartment(mapper.map(de, Department.class)));
+            }
+            doctorRepository.save(d);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
 }

@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:mobile/screens/auth/login_screen.dart';
+import 'package:mobile/widgets/navigation_menu_doctor.dart';
 //import 'package:mobile/screens/home_screen.dart';
 
 import '../widgets/navigation_menu.dart';
@@ -13,7 +15,8 @@ class WelcomeScreen extends StatefulWidget {
   State<WelcomeScreen> createState() => _WelcomeScreenState();
 }
 
-class _WelcomeScreenState extends State<WelcomeScreen> with SingleTickerProviderStateMixin  {
+class _WelcomeScreenState extends State<WelcomeScreen>
+    with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   @override
   void initState() {
@@ -29,11 +32,13 @@ class _WelcomeScreenState extends State<WelcomeScreen> with SingleTickerProvider
       vsync: this,
     )..repeat();
   }
+
   @override
   void dispose() {
     _controller.dispose(); // Dispose the controller when the widget is disposed
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -67,7 +72,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> with SingleTickerProvider
               ),
             ),
           ),
-         Positioned(
+          Positioned(
             left: 180,
             top: 600,
             child: Column(

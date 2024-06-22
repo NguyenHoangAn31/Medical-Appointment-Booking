@@ -52,3 +52,24 @@ export const updateDoctor = async (id, price, departmentid) => {
         throw error;
     }
 };
+
+export const getDoctorNotDepartment = async () => {
+    try {
+        const response = await request.get(`doctor/doctornotdepartment`);
+        return response;
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+}
+
+
+export const addDoctorToDepartment = async (doctorId,departmentId) => {
+    try {
+        const response = await request.put(`doctor/adddoctortodepartment/${doctorId}/${departmentId}`);
+        return response
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+};

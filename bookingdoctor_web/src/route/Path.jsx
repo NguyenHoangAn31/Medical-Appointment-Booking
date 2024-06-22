@@ -20,11 +20,13 @@ const publicRouters = [
     { path: '/signup', component: Client.Signup, layout: ClientLayout },
     { path: '/blog', component: Client.Blog, layout: ClientLayout },
     { path: '/blog/:id', component: Client.BlogDetail, layout: ClientLayout },
+    { path: '/proccess-payment', component: Client.Proccess, layout: ClientLayout}
 
 ]
 const patientRouters = [
     { path: '/account', component: Client.Account, layout: ClientLayout},
-    { path: '/checkout', component: Client.CheckOut, layout: ClientLayout}
+    { path: '/checkout', component: Client.CheckOut, layout: ClientLayout},
+    
 ]
 
 

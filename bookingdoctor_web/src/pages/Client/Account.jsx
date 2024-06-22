@@ -9,14 +9,13 @@ const Account = () => {
   const [patient, setPatient] = useState(null);
   const [error, setError] = useState(null);
   console.log(patient)
-  console.log("current user : ", currentUser?.user.id)
   useEffect(() => {
     fechDataPatient();
   }, []);
   const fechDataPatient = async () => {
     try {
       if (currentUser?.user.id) {
-        const response = await axios.get(`http://localhost:8080/api/patient/${currentUser.user.id}`);
+        const response = await axios.get(`http://localhost:8080/api/patient/${currentUser?.user.id}`);
         setPatient(response.data);
       } else {
         setError("No current user found");

@@ -7,6 +7,7 @@ import { Button, Input, Select, Switch, Tabs } from 'antd';
 import { AlertContext } from '../../../../components/Layouts/DashBoard';
 import { changeStatus } from '../../../../services/API/changeStatus';
 import Spinner from '../../../../components/Spinner';
+import { formatDate } from 'date-fns';
 
 function DoctorDetail() {
 

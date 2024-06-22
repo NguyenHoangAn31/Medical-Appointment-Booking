@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import vn.aptech.backendapi.dto.ReportDto;
+import vn.aptech.backendapi.dto.StatisticalDto;
 import vn.aptech.backendapi.service.Report.ReportService;
 
 @RestController
@@ -22,13 +23,20 @@ public class ReportController {
     @Autowired
     private ReportService reportService;
 
-    @GetMapping(value = "/today", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<ReportDto>> getDoctorAppointmentsReportToday() {
-        List<ReportDto> result = reportService.findDoctorAppointmentsReport();
+
+    @GetMapping(value = "/statistical", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<StatisticalDto> statistical() {
+        StatisticalDto result = reportService.statistical();
         return ResponseEntity.ok(result);
     }
 
-    @GetMapping(value = "/findbyday/{startDate}/{endDate}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/revenuetoday", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<ReportDto>> getDoctorAppointmentsReportToday() {
+        List<ReportDto> result = reportService.findDoctorAppointmentsReport(LocalDate.now(),LocalDate.now());
+        return ResponseEntity.ok(result);
+    }
+
+    @GetMapping(value = "/findrevenuebyday/{startDate}/{endDate}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<ReportDto>> getDoctorAppointmentsReportByDay(
             @PathVariable(value = "startDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
             @PathVariable(value = "endDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {

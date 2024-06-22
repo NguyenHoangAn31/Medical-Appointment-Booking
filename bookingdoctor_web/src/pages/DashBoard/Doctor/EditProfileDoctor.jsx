@@ -1,9 +1,9 @@
 // eslint-disable-next-line no-unused-vars
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react';
 // eslint-disable-next-line no-unused-vars
 import { Link } from 'react-router-dom';
 import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
-import { Button, } from 'antd';
+import { Button } from 'antd';
 import { useParams, useNavigate } from 'react-router-dom';
 import { AlertContext } from '../../../components/Layouts/DashBoard';
 import { detailDoctor } from '../../../services/API/doctorService';
@@ -42,23 +42,26 @@ const EditProfileDoctor = () => {
     const [qualifications, setQualifications] = useState([]);
     const [dataQualification, setDataQualification] = useState(null);
 
-    const [doctor, setDoctor] = useState(
-        {
-            id: id,
-            title: '',
-            fullName: '',
-            gender: '',
-            birthday: '',
-            address: '',
-            price: '',
-            image: '',
-            biography: '',
-            status: status,
-            user_id: user_id
-        });
+    const [doctor, setDoctor] = useState({
+        id: id,
+        title: '',
+        fullName: '',
+        gender: '',
+        birthday: '',
+        address: '',
+        price: '',
+        image: '',
+        biography: '',
+        status: status,
+        user_id: user_id
+    });
+
+    const [errors, setErrors] = useState({});
+
     useEffect(() => {
         loadDoctor();
     }, []);
+
     const loadDoctor = async () => {
         const result = await detailDoctor(id);
         setWorkings(result.workings);
@@ -66,25 +69,81 @@ const EditProfileDoctor = () => {
         setDoctor(result);
         // console.log(result);
     };
+
     const handleChangeProfile = (e) => {
         const { name, value } = e.target;
         setDoctor({
             ...doctor,
             [name]: value
         });
+
+        // Validate input fields
+        let errorMessages = {};
+
+        if (name === 'title' && value.trim() === '') {
+            errorMessages.title = 'Title is required';
+        }
+        if (name === 'fullName' && value.trim() === '') {
+            errorMessages.fullName = 'Full Name is required';
+        }
+        if (name === 'gender' && value.trim() === '') {
+            errorMessages.gender = 'Gender is required';
+        }
+        if (name === 'birthday' && value.trim() === '') {
+            errorMessages.birthday = 'Birthday is required';
+        }
+        if (name === 'address' && value.trim() === '') {
+            errorMessages.address = 'Address is required';
+        }
+
+        setErrors((prevErrors) => ({
+            ...prevErrors,
+            ...errorMessages
+        }));
     };
+
     const updateDoctor = async (e) => {
         e.preventDefault();
+
+        // Validate form before submission
+        let formErrors = {};
+
+        if (doctor.title.trim() === '') {
+            formErrors.title = 'Title is required';
+        }
+        if (doctor.fullName.trim() === '') {
+            formErrors.fullName = 'Full Name is required';
+        }
+        if (doctor.gender.trim() === '') {
+            formErrors.gender = 'Gender is required';
+        }
+        if (doctor.birthday.trim() === '') {
+            formErrors.birthday = 'Birthday is required';
+        }
+        if (doctor.address.trim() === '') {
+            formErrors.address = 'Address is required';
+        }
+
+        setErrors(formErrors);
+
+        if (Object.keys(formErrors).length > 0) {
+            return; // Prevent form submission if there are errors
+        }
+
         try {
             const res = await axios.put('http://localhost:8080/api/doctor/update/' + id, doctor);
             openNotificationWithIcon('success', 'Edit Profile Doctor Successfully', '');
             navigate("/dashboard/doctor/profile");
             return res;
-        } catch (error) { /* empty */ }
+        } catch (error) {
+            openNotificationWithIcon('error', 'Failed to update profile', '');
+        }
     };
+
     const handleCreateWorking = () => {
         setIsCreateWorkingModalOpen(true);
     };
+
     const handleEditWorking = async (id) => {
         try {
             const result = await axios.get('http://localhost:8080/api/working/' + id);
@@ -101,6 +160,7 @@ const EditProfileDoctor = () => {
             setIsEditWorkingModalOpen(true);
         } catch (error) { /* empty */ }
     };
+
     const handleDeleteWorking = async (id) => {
         try {
             const result = await axios.get('http://localhost:8080/api/working/' + id);
@@ -120,7 +180,8 @@ const EditProfileDoctor = () => {
 
     const handleCreateQualification = () => {
         setIsCreateQualificationModalOpen(true);
-    }
+    };
+
     const handleEditQualification = async (id) => {
         try {
             const result = await axios.get('http://localhost:8080/api/qualification/' + id);
@@ -136,6 +197,7 @@ const EditProfileDoctor = () => {
             setIsEditQualificationModalOpen(true);
         } catch (error) { /* empty */ }
     };
+
     const handleDeleteQualification = async (id) => {
         try {
             const result = await axios.get('http://localhost:8080/api/qualification/' + id);
@@ -151,7 +213,6 @@ const EditProfileDoctor = () => {
             setIsDeleteQualificationModalOpen(true);
         } catch (error) { /* empty */ }
     };
-
 
     return (
         <>
@@ -191,6 +252,7 @@ const EditProfileDoctor = () => {
                                         onChange={(e) => handleChangeProfile(e)}
                                     />
                                 </div>
+                                {errors.title && <div className="text-danger">{errors.title}</div>}
                                 <div className="input-group mb-3">
                                     <span className="input-group-text" id="inputGroup-sizing-default">Full Name</span>
                                     <input
@@ -203,6 +265,7 @@ const EditProfileDoctor = () => {
                                         onChange={(e) => handleChangeProfile(e)}
                                     />
                                 </div>
+                                {errors.fullName && <div className="text-danger">{errors.fullName}</div>}
                                 <div className="input-group mb-3">
                                     <span className="input-group-text" id="inputGroup-sizing-default">Gender</span>
                                     <input
@@ -215,6 +278,7 @@ const EditProfileDoctor = () => {
                                         onChange={(e) => handleChangeProfile(e)}
                                     />
                                 </div>
+                                {errors.gender && <div className="text-danger">{errors.gender}</div>}
                                 <div className="input-group mb-3">
                                     <span className="input-group-text" id="inputGroup-sizing-default">Birthday</span>
                                     <input
@@ -227,6 +291,7 @@ const EditProfileDoctor = () => {
                                         onChange={(e) => handleChangeProfile(e)}
                                     />
                                 </div>
+                                {errors.birthday && <div className="text-danger">{errors.birthday}</div>}
                                 <div className="input-group mb-3">
                                     <span className="input-group-text" id="inputGroup-sizing-default">Address</span>
                                     <input
@@ -239,6 +304,7 @@ const EditProfileDoctor = () => {
                                         onChange={(e) => handleChangeProfile(e)}
                                     />
                                 </div>
+                                {errors.address && <div className="text-danger">{errors.address}</div>}
                                 <div className="input-group mb-3">
                                     <span className="input-group-text" id="inputGroup-sizing-default">Price</span>
                                     <input
@@ -352,7 +418,6 @@ const EditProfileDoctor = () => {
                                 </tr>
                             </thead>
                             <tbody>
-
                                 {qualifications && qualifications.map((qualification, index) => (
                                     <tr key={index} >
                                         <td>
@@ -403,7 +468,7 @@ const EditProfileDoctor = () => {
             {isCreateQualificationModalOpen && <CreateQualification isOpen={isCreateQualificationModalOpen} onClose={() => setIsCreateQualificationModalOpen(false)} doctorId={doctor.id} />}
             {isDeleteQualificationModalOpen && <DeleteQualification data={dataQualification} isOpen={isDeleteQualificationModalOpen} onClose={() => setIsDeleteQualificationModalOpen(false)} />}
         </>
-    )
+    );
 
 }
-export default EditProfileDoctor
+export default EditProfileDoctor;
