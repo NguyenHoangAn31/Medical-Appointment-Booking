@@ -8,6 +8,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import vn.aptech.backendapi.dto.DoctorCreateDto;
 import vn.aptech.backendapi.dto.DoctorDto;
+import vn.aptech.backendapi.dto.DoctorViewDto;
 import vn.aptech.backendapi.service.Doctor.DoctorService;
 
 import java.io.IOException;
@@ -30,6 +31,7 @@ public class DoctorController {
         List<DoctorDto> result = doctorService.findAll();
         return ResponseEntity.ok(result);
     }
+
     @GetMapping(value = "/search", produces = MediaType.APPLICATION_JSON_VALUE)
     // @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     public ResponseEntity<List<DoctorDto>> searchDoctorsByName(@RequestParam String name) {
@@ -65,6 +67,7 @@ public class DoctorController {
         List<DoctorDto> relatedDoctors = doctorService.findDoctorsByDepartmentId(departmentId);
         return ResponseEntity.ok(relatedDoctors);
     }
+    
 
     // writed by An in 5/11
     @GetMapping(value = "/allwithallstatus", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -75,7 +78,8 @@ public class DoctorController {
 
     @PutMapping(value = "/updatepriceanddepartment/{id}/{price}/{departmentid}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<DoctorDto> UpdatePriceAndDepartment(@PathVariable("id") int id,
-            @PathVariable(name = "price",required = false) double price, @PathVariable(name = "departmentid" , required = false) int departmentId) {
+            @PathVariable(name = "price", required = false) double price,
+            @PathVariable(name = "departmentid", required = false) int departmentId) {
 
         doctorService.findById(id).orElseThrow(() -> new RuntimeException());
         DoctorDto result = doctorService.updatePriceAndDepartment(id, price, departmentId);
@@ -85,11 +89,44 @@ public class DoctorController {
 
     @PutMapping(value = "/update/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<DoctorDto> updateTutorial(@PathVariable("id") int id,
-                                                    @RequestBody DoctorCreateDto doctorCreateDto) throws IOException {
-        System.out.println("doctor : " + doctorCreateDto);
+            @RequestBody DoctorCreateDto doctorCreateDto) throws IOException {
         DoctorDto doctorDto = mapper.map(doctorCreateDto, DoctorDto.class);
         doctorDto = doctorService.update(id, doctorDto);
         return ResponseEntity.ok(doctorDto);
+    }
+
+    @PutMapping(value = "/deletedoctorfromdepartment/{doctorId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> deleteDoctorFromDepartment(@PathVariable("doctorId") int doctorId) throws IOException {
+        boolean result = doctorService.deleteDoctorFromDepartment(doctorId);
+        if (result) {
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    @GetMapping(value = "/doctornotdepartment", produces = MediaType.APPLICATION_JSON_VALUE)
+    // @PreAuthorize("hasAnyAuthority('ADMIN')")
+    public ResponseEntity<List<DoctorDto>> doctorNotDepartment() {
+        List<DoctorDto> result = doctorService.doctorNotDepartment();
+        if (result != null) {
+            return ResponseEntity.ok(result);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PutMapping(value = "/adddoctortodepartment/{departmentId}/{doctorId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> addDoctorToDepartment(@PathVariable("departmentId") int departmentId ,@PathVariable("doctorId") int doctorId) throws IOException {
+        boolean result = doctorService.addDoctorToDepartment(departmentId,doctorId);
+        if (result) {
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.notFound().build();
+    }
+    @GetMapping(value = "/listdoctorsbydepartmentid/{departmentId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<DoctorDto>> listDoctorsByDepartmentId(@PathVariable("departmentId") int departmentId) {
+        List<DoctorDto> relatedDoctors = doctorService.findDoctorsByDepartmentIdWithAllStatus(departmentId);
+        return ResponseEntity.ok(relatedDoctors);
     }
 
 }

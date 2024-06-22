@@ -15,7 +15,7 @@ class NavigationMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(NavigationController());
+    final controller = Get.put(NavigationControllerForDoctor());
     return Scaffold(
       bottomNavigationBar: Obx(
           () => NavigationBar(
@@ -37,7 +37,7 @@ class NavigationMenu extends StatelessWidget {
   }
 }
 
-class NavigationController extends GetxController {
+class NavigationControllerForDoctor extends GetxController {
   final Rx<int> selectedIndex = 0.obs;
   final RxBool loggedIn = false.obs;
   final screens = [
@@ -49,20 +49,6 @@ class NavigationController extends GetxController {
   ];
 
   void onDestinationSelected(int index, BuildContext context) {
-    // if (index == 2 && !loggedIn.value) {
-    //  // logic thông báo
-    //   AwesomeDialog.show(
-    //     context: context,
-    //     title: 'Notification!',
-    //     content: 'Please Sign in to use this function',
-    //     confirmText: 'Login',
-    //     route: '/sign-in',
-    //     cancelText: 'Close',
-    //     onCancel: () => Get.back(),
-    //   );
-    //
-    // }
-    //else
     if(index == 4 && !loggedIn.value) {
       AwesomeDialog.show(
         context: context,
@@ -82,7 +68,7 @@ class NavigationController extends GetxController {
   void login() {
     // Perform login logic
     // On successful login, update the loggedIn status
-    final controller = Get.find<NavigationController>();
+    final controller = Get.find<NavigationControllerForDoctor>();
     controller.loggedIn.value = true;
   }
 

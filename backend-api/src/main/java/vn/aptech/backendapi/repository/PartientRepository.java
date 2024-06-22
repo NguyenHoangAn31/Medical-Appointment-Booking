@@ -1,5 +1,8 @@
 package vn.aptech.backendapi.repository;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -19,4 +22,9 @@ public interface PartientRepository extends JpaRepository<Partient, Integer> {
     @Query("SELECT a.partient FROM Appointment a WHERE a.scheduledoctor.id = :scheduledoctorid AND a.clinicHours = :starttime")
     List<Partient> findPatientsByScheduleDoctorIdAndStartTime(@Param("scheduledoctorid") int scheduleDoctorId,
                                                               @Param("starttime") LocalTime startTime);
+
+    @Query("SELECT COUNT(a) FROM Partient a " +
+            "WHERE FUNCTION('DATE', a.createdAt) BETWEEN :startDate AND :endDate")
+
+    Integer getCountRegister(@Param("startDate") LocalDate startDate,@Param("endDate") LocalDate endDate);
 }
