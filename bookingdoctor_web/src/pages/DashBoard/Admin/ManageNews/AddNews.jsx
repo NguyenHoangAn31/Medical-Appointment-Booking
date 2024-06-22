@@ -77,7 +77,6 @@ function AddNews() {
     form.resetFields();
   };
 
-  // xử lý submit
   const handleFormSubmit = async () => {
     try {
       const formData = new FormData()
