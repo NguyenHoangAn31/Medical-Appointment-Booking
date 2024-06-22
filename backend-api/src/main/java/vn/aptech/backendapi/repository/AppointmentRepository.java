@@ -10,6 +10,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import vn.aptech.backendapi.entities.Appointment;
+import vn.aptech.backendapi.entities.Partient;
 
 @Repository
 public interface AppointmentRepository extends JpaRepository<Appointment, Integer> {
