@@ -17,6 +17,6 @@ public class FeedbackDto {
     private String comment;
     private int patientId;
     private int doctorId;
-    private byte status;
+    private boolean status;
     private PatientDto patient;
 }

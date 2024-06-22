@@ -490,10 +490,6 @@ const Booking = () => {
                       )}
                     </div>
                     <div className="body_date">
-
-
-
-
                       {slots.map((slot, index) => {
                         const matchedSchedule = isSlotAvailable(slot.startTime);
                         let slotClass = 'hour_item';
@@ -518,8 +514,6 @@ const Booking = () => {
                           </div>
                         );
                       })}
-
-
 
                     </div>
                     <div className="footer_date">

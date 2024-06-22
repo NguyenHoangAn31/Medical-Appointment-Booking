@@ -18,6 +18,6 @@ public class PatientDto {
     private String birthday; // ngày sinh
     private String address; // Địa chỉ
     private String image; // Image
-    private int status;
+    private Boolean status;
     private List<MedicalDto> medicals;
 }

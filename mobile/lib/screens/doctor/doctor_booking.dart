@@ -1,7 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
+import 'package:mobile/services/doctor/doctorService.dart';
 import 'package:table_calendar/table_calendar.dart';
+
+import '../../models/doctor.dart';
 
 //import '../../ultils/color_app.dart';
 
@@ -13,6 +18,8 @@ class DoctorBookingScreen extends StatefulWidget {
 }
 
 class _DoctorBookingScreenState extends State<DoctorBookingScreen> {
+
+
   final List<Map<String, String>> hoursList = [
     {"id": "1", "name": "08:00"},
     {"id": "2", "name": "08:30"},
@@ -37,7 +44,11 @@ class _DoctorBookingScreenState extends State<DoctorBookingScreen> {
     {"id": "21", "name": "20:00"},
     {"id": "22", "name": "20:30"},
   ];
+
+
   int? _selectedIndex;
+  late final int doctorId;
+  late Future<Doctor> _doctorFuture;
 
   DateTime toDay = DateTime.now();
   void _onDaySelected(DateTime date, DateTime focusedDay){
@@ -45,6 +56,14 @@ class _DoctorBookingScreenState extends State<DoctorBookingScreen> {
       toDay = date;
     });
   }
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final Map arguments = ModalRoute.of(context)?.settings.arguments as Map;
+    doctorId = arguments['doctorId'] as int;
+     _doctorFuture = getDoctorById(doctorId);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

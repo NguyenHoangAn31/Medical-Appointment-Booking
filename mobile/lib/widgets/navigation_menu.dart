@@ -49,20 +49,6 @@ class NavigationControllerForDoctor extends GetxController {
   ];
 
   void onDestinationSelected(int index, BuildContext context) {
-    // if (index == 2 && !loggedIn.value) {
-    //  // logic thông báo
-    //   AwesomeDialog.show(
-    //     context: context,
-    //     title: 'Notification!',
-    //     content: 'Please Sign in to use this function',
-    //     confirmText: 'Login',
-    //     route: '/sign-in',
-    //     cancelText: 'Close',
-    //     onCancel: () => Get.back(),
-    //   );
-    //
-    // }
-    //else
     if(index == 4 && !loggedIn.value) {
       AwesomeDialog.show(
         context: context,

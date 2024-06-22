@@ -15,6 +15,6 @@ public class DepartmentDto {
     private int id;
     private String name;
     private String url;
-    private int status;
+    private boolean status;
     private String icon;
 }
