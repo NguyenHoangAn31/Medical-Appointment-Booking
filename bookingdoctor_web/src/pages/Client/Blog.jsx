@@ -12,9 +12,10 @@ const Blog = () => {
   const fetchBlogs = async () => {
     try {
       const response = await axios.get('http://localhost:8080/api/news/all');
-      const blogs = response.data;
-      console.log(blogs);
-      setBlogs(blogs);
+      const allBlogs = response.data;
+      const activeBlogs = allBlogs.filter(blog => blog.status === 1);
+      console.log(activeBlogs);
+      setBlogs(activeBlogs);
     } catch (error) {
       console.error('Error fetching blogs:', error);
     }

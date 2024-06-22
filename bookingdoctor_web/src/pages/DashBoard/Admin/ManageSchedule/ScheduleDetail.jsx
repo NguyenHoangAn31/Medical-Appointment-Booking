@@ -261,6 +261,7 @@ function ScheduleDetail() {
 
                       <Slider {...{
                         dots: false,
+
                         infinite: slot.doctorsForSchedules.length > 3,
                         slidesToShow: slot.doctorsForSchedules.length,
                         slidesToScroll: 2

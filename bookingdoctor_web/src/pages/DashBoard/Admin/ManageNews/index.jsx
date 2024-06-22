@@ -49,6 +49,7 @@ const ManageNews = () => {
     }));
     setNews(newsWithKeys);
   };
+  
   // thực hiện load dữ liệu 1 lần 
   useEffect(() => {
     loadNews();
