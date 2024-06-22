@@ -1,20 +1,18 @@
 package vn.aptech.backendapi.service.News;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import vn.aptech.backendapi.dto.News.NewsCreateDto;
 import vn.aptech.backendapi.dto.News.NewsDto;
-import vn.aptech.backendapi.entities.Feedback;
 import vn.aptech.backendapi.entities.News;
 import vn.aptech.backendapi.entities.User;
 import vn.aptech.backendapi.repository.NewsRepository;
 import vn.aptech.backendapi.repository.UserRepository;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class NewsServiceImpl implements NewsService {

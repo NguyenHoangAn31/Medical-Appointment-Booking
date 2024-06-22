@@ -16,4 +16,5 @@ public class NewsDto {
     private int status;
     private int creator_id;
     private String creator_email;
+    private String dayCreate;
 }
