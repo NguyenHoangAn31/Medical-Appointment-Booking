@@ -1,9 +1,12 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:mobile/ultils/color_app.dart';
-import 'package:mobile/ultils/list_service.dart';
+
+import '../../models/department.dart';
+import '../../models/doctor.dart';
+import '../../services/Department/departmentApi.dart';
+import '../../ultils/color_app.dart';
+import '../../ultils/ip_app.dart';
+import '../../ultils/list_service.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -13,37 +16,39 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  late Future<List<Department>> departments;
+  late Future<List<Doctor>>? doctors;
   final TextEditingController _searchController = TextEditingController();
-  int _selectedIndex = 0;
-  bool _isSelectedHeart= false;
-  final List<Map<String, String>> services = [
-    {"icon": "assets/images/dermatology.png", "name": "Dermatology"},
-    {"icon": "assets/images/fetus.png", "name": "Fetus"},
-    {"icon": "assets/images/ophthalmology.png", "name": "Ophthalmology"},
-    {"icon": "assets/images/pediatrics.png", "name": "Pediatrics"},
-    {"icon": "assets/images/rehabilitation.png", "name": "Rehabilitation"},
-  ];
+  late int _selectedIndex = 0;
+
+  bool _isSelectedHeart = false;
+  final ipDevice = BaseClient().ip;
+
+  @override
+  void initState() {
+    super.initState();
+    departments = getDepartments();
+    doctors = getDoctorByDepartmentId(0);
+  }
 
   void _handleSelected(int index) {
     setState(() {
       _selectedIndex = index;
+      doctors = getDoctorByDepartmentId(index);
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(vertical: 50, horizontal: 20),
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Center(
-              child: Container(
-                child: Column(
-                  children: <Widget>[
-                    // Header
-                    Row(
+        body: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(vertical: 20),
+            child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 20),
+                child: Column(children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Row(
@@ -63,6 +68,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                             const Column(
                               mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
                                 Text('Hello,',
                                     style: TextStyle(
@@ -111,11 +117,14 @@ class _HomeScreenState extends State<HomeScreen> {
                         )
                       ],
                     ),
-                    const SizedBox(
-                      height: 30,
-                    ),
-                    // Search
-                    Container(
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 20, vertical: 10),
+                    child: Container(
                       padding: const EdgeInsets.symmetric(
                           horizontal: 20, vertical: 5),
                       decoration: ShapeDecoration(
@@ -171,12 +180,14 @@ class _HomeScreenState extends State<HomeScreen> {
                         ],
                       ),
                     ),
-
-                    const SizedBox(
-                      height: 30,
-                    ),
-                    // Upcoming Appointment
-                    Column(
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  // Upcoming
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Column(
                       children: [
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -280,7 +291,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                 height: 4,
                                               ),
                                               Text(
-                                                'Dentist | Royal Hospital',
+                                                'Dentist | Medicare Hospital',
                                                 style: TextStyle(
                                                   color: Colors.white70,
                                                   fontSize: 14,
@@ -377,626 +388,349 @@ class _HomeScreenState extends State<HomeScreen> {
                         // List
                       ],
                     ),
-                    const SizedBox(
-                      height: 25,
-                    ),
-                    //home title
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Column(
                       children: [
-                        Text(
-                          'Doctor Speciality',
-                          style: TextStyle(
-                            color: AppColor.primaryText,
-                            fontSize: 20,
-                            fontFamily: 'Poppins',
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        TextButton(
-                          onPressed: () {
-                            // Navigate to Create Account screen
-                            Navigator.pushNamed(context, '/sign-in');
-                          },
-                          child: const Text(
-                            'SEE ALL',
-                            style: TextStyle(
-                              color: Color(0xFF92A3FD),
-                              fontSize: 14,
-                              fontFamily: 'Poppins',
-                              fontWeight: FontWeight.w600,
-                              letterSpacing: 0.11,
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'Doctor Speciality',
+                              style: TextStyle(
+                                color: AppColor.primaryText,
+                                fontSize: 20,
+                                fontFamily: 'Poppins',
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 5,
-                    ),
-                    // List view Service
-                    SizedBox(
-                      height: 250, // Đặt chiều cao phù hợp cho GridView
-                      child: GridView.builder(
-                        padding: const EdgeInsets.all(10),
-                        itemCount: services.length,
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 4,
-                          crossAxisSpacing: 4,
-                          mainAxisSpacing: 25,
-                        ),
-                        itemBuilder: (BuildContext context, int index) =>
-                            Container(
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            // Adjusts the column to take minimum space
-                            children: [
-                              ClipRRect(
-                                child: Opacity(
-                                  opacity: 0.6,
-                                  child: Container(
-                                    width: 60,
-                                    height: 60,
-                                    padding: const EdgeInsets.all(15),
-                                    decoration: BoxDecoration(
-                                      gradient: const LinearGradient(
-                                        begin: Alignment(-1.00, 0.08),
-                                        end: Alignment(1, -0.08),
-                                        colors: [
-                                          Color(0xFF92A3FD),
-                                          Color(0xFF9DCEFF)
-                                        ],
-                                      ),
-                                      borderRadius: BorderRadius.circular(50),
-                                    ),
-                                    child: Image.asset(
-                                      services[index]["icon"]!,
-                                      width: 25,
-                                      height: 25,
-                                      //fit: BoxFit.cover,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(
-                                height: 4,
-                              ),
-                              Text(
-                                services[index]["name"]!,
+                            TextButton(
+                              onPressed: () {
+                                // Navigate to Create Account screen
+                                //Navigator.pushNamed(context, '/sign-in');
+                              },
+                              child: const Text(
+                                'SEE ALL',
                                 style: TextStyle(
-                                  color: AppColor.primaryText,
-                                  fontSize: 13,
+                                  color: Color(0xFF92A3FD),
+                                  fontSize: 14,
+                                  fontFamily: 'Poppins',
+                                  fontWeight: FontWeight.w600,
+                                  letterSpacing: 0.11,
                                 ),
-                                overflow: TextOverflow.ellipsis,
-                                // Thêm dấu ba chấm nếu văn bản quá dài
-                                maxLines: 1,
                               ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Top Doctors',
-                          style: TextStyle(
-                            color: AppColor.primaryText,
-                            fontSize: 20,
-                            fontFamily: 'Poppins',
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        TextButton(
-                          onPressed: () {
-                            // Navigate to Create Account screen
-                            Navigator.pushNamed(context, '/home');
-                          },
-                          child: const Text(
-                            'SEE ALL',
-                            style: TextStyle(
-                              color: Color(0xFF92A3FD),
-                              fontSize: 14,
-                              fontFamily: 'Poppins',
-                              fontWeight: FontWeight.w600,
-                              letterSpacing: 0.11,
                             ),
-                          ),
+                          ],
                         ),
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                        children: [
-                          ListService(
-                              index: 0,
-                              text: 'All',
-                              selectedIndex: _selectedIndex,
-                              onSelected: _handleSelected,
-                          ),
-                          const SizedBox(width: 8),
-                          ListService(
-                              index: 1,
-                              text: 'Dermatology',
-                              selectedIndex: _selectedIndex,
-                              onSelected: _handleSelected,),
-                          const SizedBox(width: 8),
-                          ListService(
-                            index: 2,
-                            text: 'Fetus',
-                            selectedIndex: _selectedIndex,
-                            onSelected: _handleSelected,
-                          ),
-                          const SizedBox(width: 8),
-                          ListService(
-                            index: 3,
-                            text: 'Ophthalmology',
-                            selectedIndex: _selectedIndex,
-                            onSelected: _handleSelected,
-                          ),
-                          const SizedBox(width: 8),
-                          ListService(
-                            index: 4,
-                            text: 'Pediatrics',
-                            selectedIndex: _selectedIndex,
-                            onSelected: _handleSelected,
-                          ),
-                          const SizedBox(width: 8),
-                          ListService(
-                            index: 5,
-                            text: 'Rehabilitation',
-                            selectedIndex: _selectedIndex,
-                            onSelected: _handleSelected,
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 20,),
-                    Column(
-                      children: [
-                         Container(
-                           height: 120,
-                           padding: const EdgeInsets.all(20),
-                           decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(20),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withOpacity(0.1),
-                                  spreadRadius: 1,
-                                  blurRadius: 1,
-                                  offset: const Offset(0, 1), // changes position of shadow
-                                ),
-                              ],
-                           ),
-                           child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  children: [
-                                    ClipRRect(
-                                      child: Opacity(
-                                        opacity: 0.6,
-                                        child: Container(
-                                          width: 80,
-                                          height: 80,
-                                          padding: const EdgeInsets.all(5),
-                                          decoration: BoxDecoration(
-                                            color: Colors.grey,
-                                            borderRadius: BorderRadius.circular(50),
-                                          ),
-                                          child: Image.asset(
-                                            'assets/images/doctor_01.png',
-                                            width: 25,
-                                            height: 25,
-                                            //fit: BoxFit.cover,
-                                          ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 1),
+                          child: FutureBuilder<List<Department>>(
+                              future: departments,
+                              builder: (context, snapshot) {
+                                if (snapshot.connectionState ==
+                                    ConnectionState.waiting) {
+                                  return const Center(
+                                      child: CircularProgressIndicator());
+                                } else if (snapshot.hasError) {
+                                  return Center(
+                                      child: Text('Error: ${snapshot.error}'));
+                                } else if (!snapshot.hasData ||
+                                    snapshot.data!.isEmpty) {
+                                  return const Center(
+                                      child: Text('No departments found'));
+                                } else {
+                                  return SizedBox(
+                                    // Đặt chiều cao phù hợp cho GridView
+                                    height: 200,
+                                    child: GridView.builder(
+                                      padding: const EdgeInsets.all(10),
+                                      itemCount: snapshot.data!.length,
+                                      gridDelegate:
+                                          const SliverGridDelegateWithFixedCrossAxisCount(
+                                        crossAxisCount: 4,
+                                        crossAxisSpacing: 4,
+                                        mainAxisSpacing: 20,
+                                      ),
+                                      itemBuilder:
+                                          (BuildContext context, int index) =>
+                                              Container(
+                                        child: Column(
+                                          mainAxisSize: MainAxisSize.max,
+                                          // Adjusts the column to take minimum space
+                                          children: [
+                                            ClipRRect(
+                                              child: Opacity(
+                                                opacity: 0.6,
+                                                child: Container(
+                                                  width: 60,
+                                                  height: 60,
+                                                  padding:
+                                                      const EdgeInsets.all(15),
+                                                  decoration: BoxDecoration(
+                                                    gradient:
+                                                        const LinearGradient(
+                                                      begin: Alignment(
+                                                          -1.00, 0.08),
+                                                      end: Alignment(1, -0.08),
+                                                      colors: [
+                                                        Color(0xFF92A3FD),
+                                                        Color(0xFF9DCEFF)
+                                                      ],
+                                                    ),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            50),
+                                                  ),
+                                                  child: Image.network(
+                                                    'http://$ipDevice:8080/images/department/${snapshot.data![index].icon}',
+                                                    width: 25,
+                                                    height: 25,
+                                                    //fit: BoxFit.cover,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                            const SizedBox(
+                                              height: 4,
+                                            ),
+                                            Text(
+                                              snapshot.data![index].name,
+                                              style: TextStyle(
+                                                color: AppColor.primaryText,
+                                                fontSize: 13,
+                                              ),
+                                              overflow: TextOverflow.ellipsis,
+                                              // Thêm dấu ba chấm nếu văn bản quá dài
+                                              maxLines: 1,
+                                            ),
+                                          ],
                                         ),
                                       ),
                                     ),
-                                    const SizedBox(width: 20,),
-                                    const Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                          Text('Dr. William Smith',
-                                            style: TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.bold,
-                                            ),),
-                                          SizedBox(height: 5),
-                                          Text(
-                                            'Fetus | Medical Hospital',
-                                            style: TextStyle(
-                                              color: Colors.grey,
-                                              fontSize: 13,
-                                            ),),
-                                          SizedBox(height: 5),
-                                          Row(
-                                            crossAxisAlignment: CrossAxisAlignment.center,
-                                            children: [
-                                              Icon(Icons.star, size: 18, color: Colors.orange),
-                                              SizedBox(width: 10),
-                                              Text('5.0')
-                                            ],
-                                          )
-                                      ],
+                                  );
+                                }
+                              }),
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 5),
+                          child: Column(
+                            children: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    'Top Doctors',
+                                    style: TextStyle(
+                                      color: AppColor.primaryText,
+                                      fontSize: 20,
+                                      fontFamily: 'Poppins',
+                                      fontWeight: FontWeight.w600,
                                     ),
-
-                                  ],
-                                ),
-                                IconButton(
-                                    //alignment: Alignment.topRight,
+                                  ),
+                                  TextButton(
                                     onPressed: () {
-                                       setState(() {
-                                         _isSelectedHeart = !_isSelectedHeart;
-                                       });
+                                      // Navigate to Create Account screen
+                                      //Navigator.pushNamed(context, '/sign-in');
                                     },
-                                    icon: _isSelectedHeart ? const Icon(Icons.favorite, color: Color(0xFF92A3FD),) : const Icon(Icons.favorite_border, color: Color(0xFF92A3FD))
+                                    child: const Text(
+                                      'SEE ALL',
+                                      style: TextStyle(
+                                        color: Color(0xFF92A3FD),
+                                        fontSize: 14,
+                                        fontFamily: 'Poppins',
+                                        fontWeight: FontWeight.w600,
+                                        letterSpacing: 0.11,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 10,),
+                              SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
+                                child: FutureBuilder<List<Department>>(
+                                  future: departments,
+                                  builder: (context, snapshot) {
+                                    if (snapshot.connectionState == ConnectionState.waiting) {
+                                      return const Center(child: CircularProgressIndicator());
+                                    } else if (snapshot.hasError) {
+                                      return Center(child: Text('Error: ${snapshot.error}'));
+                                    } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                                      return const Center(child: Text('No departments found'));
+                                    } else {
+                                      // Create a list of widgets from the data
+                                      List<Widget> departmentWidgets = [
+                                        ListService(
+                                          index: 0,
+                                          text: 'All',
+                                          selectedIndex: _selectedIndex,
+                                          onSelected: _handleSelected,
+                                        ),
+                                        const SizedBox(width: 8),
+                                      ];
+                                      for (var department in snapshot.data!) {
+                                        departmentWidgets.add(
+                                          ListService(
+                                            index: department.id,
+                                            text: department.name,
+                                            selectedIndex: _selectedIndex,
+                                            onSelected: _handleSelected,
+                                          ),
+                                        );
+                                        departmentWidgets.add(const SizedBox(width: 8));
+                                      }
+                                      // Return a Row containing the list of widgets
+                                      return Row(
+                                        children: departmentWidgets,
+                                      );
+                                    }
+                                  },
                                 ),
-                              ],
-                           ),
-                         ),
-                         const SizedBox(height: 10,),
-                         Container(
-                          height: 120,
-                          padding: const EdgeInsets.all(20),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(20),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.1),
-                                spreadRadius: 1,
-                                blurRadius: 1,
-                                offset: const Offset(0, 1), // changes position of shadow
                               ),
-                            ],
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  ClipRRect(
-                                    child: Opacity(
-                                      opacity: 0.6,
-                                      child: Container(
-                                        width: 80,
-                                        height: 80,
-                                        padding: const EdgeInsets.all(5),
-                                        decoration: BoxDecoration(
-                                          color: Colors.grey,
-                                          borderRadius: BorderRadius.circular(50),
-                                        ),
-                                        child: Image.asset(
-                                          'assets/images/doctor_01.png',
-                                          width: 25,
-                                          height: 25,
-                                          //fit: BoxFit.cover,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(width: 20,),
-                                  const Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text('Dr. William Smith',
-                                        style: TextStyle(
-                                          color: Colors.black,
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.bold,
-                                        ),),
-                                      SizedBox(height: 5),
-                                      Text(
-                                        'Fetus | Medical Hospital',
-                                        style: TextStyle(
-                                          color: Colors.grey,
-                                          fontSize: 13,
-                                        ),),
-                                      SizedBox(height: 5),
-                                      Row(
-                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                        children: [
-                                          Icon(Icons.star, size: 18, color: Colors.orange),
-                                          SizedBox(width: 10),
-                                          Text('5.0')
-                                        ],
-                                      )
-                                    ],
-                                  ),
-
-                                ],
-                              ),
-                              IconButton(
-                                //alignment: Alignment.topRight,
-                                  onPressed: () {
-                                    setState(() {
-                                      _isSelectedHeart = !_isSelectedHeart;
-                                    });
-                                  },
-                                  icon: _isSelectedHeart ? const Icon(Icons.favorite, color: Color(0xFF92A3FD),) : const Icon(Icons.favorite_border, color: Color(0xFF92A3FD))
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(height: 10,),
-                         Container(
-                          height: 120,
-                          padding: const EdgeInsets.all(20),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(20),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.1),
-                                spreadRadius: 1,
-                                blurRadius: 1,
-                                offset: const Offset(0, 1), // changes position of shadow
-                              ),
-                            ],
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  ClipRRect(
-                                    child: Opacity(
-                                      opacity: 0.6,
-                                      child: Container(
-                                        width: 80,
-                                        height: 80,
-                                        padding: const EdgeInsets.all(5),
-                                        decoration: BoxDecoration(
-                                          color: Colors.grey,
-                                          borderRadius: BorderRadius.circular(50),
-                                        ),
-                                        child: Image.asset(
-                                          'assets/images/doctor_01.png',
-                                          width: 25,
-                                          height: 25,
-                                          //fit: BoxFit.cover,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(width: 20,),
-                                  const Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text('Dr. William Smith',
-                                        style: TextStyle(
-                                          color: Colors.black,
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.bold,
-                                        ),),
-                                      SizedBox(height: 5),
-                                      Text(
-                                        'Fetus | Medical Hospital',
-                                        style: TextStyle(
-                                          color: Colors.grey,
-                                          fontSize: 13,
-                                        ),),
-                                      SizedBox(height: 5),
-                                      Row(
-                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                        children: [
-                                          Icon(Icons.star, size: 18, color: Colors.orange),
-                                          SizedBox(width: 10),
-                                          Text('5.0')
-                                        ],
-                                      )
-                                    ],
-                                  ),
-
-                                ],
-                              ),
-                              IconButton(
-                                //alignment: Alignment.topRight,
-                                  onPressed: () {
-                                    setState(() {
-                                      _isSelectedHeart = !_isSelectedHeart;
-                                    });
-                                  },
-                                  icon: _isSelectedHeart ? const Icon(Icons.favorite, color: Color(0xFF92A3FD),) : const Icon(Icons.favorite_border, color: Color(0xFF92A3FD))
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(height: 10,),
-                        Container(
-                          height: 120,
-                          padding: const EdgeInsets.all(20),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(20),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.1),
-                                spreadRadius: 1,
-                                blurRadius: 1,
-                                offset: const Offset(0, 1), // changes position of shadow
-                              ),
-                            ],
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  ClipRRect(
-                                    child: Opacity(
-                                      opacity: 0.6,
-                                      child: Container(
-                                        width: 80,
-                                        height: 80,
-                                        padding: const EdgeInsets.all(5),
-                                        decoration: BoxDecoration(
-                                          color: Colors.grey,
-                                          borderRadius: BorderRadius.circular(50),
-                                        ),
-                                        child: Image.asset(
-                                          'assets/images/doctor_01.png',
-                                          width: 25,
-                                          height: 25,
-                                          //fit: BoxFit.cover,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(width: 20,),
-                                  const Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text('Dr. William Smith',
-                                        style: TextStyle(
-                                          color: Colors.black,
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.bold,
-                                        ),),
-                                      SizedBox(height: 5),
-                                      Text(
-                                        'Fetus | Medical Hospital',
-                                        style: TextStyle(
-                                          color: Colors.grey,
-                                          fontSize: 13,
-                                        ),),
-                                      SizedBox(height: 5),
-                                      Row(
-                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                        children: [
-                                          Icon(Icons.star, size: 18, color: Colors.orange),
-                                          SizedBox(width: 10),
-                                          Text('5.0')
-                                        ],
-                                      )
-                                    ],
-                                  ),
-
-                                ],
-                              ),
-                              IconButton(
-                                //alignment: Alignment.topRight,
-                                  onPressed: () {
-                                    setState(() {
-                                      _isSelectedHeart = !_isSelectedHeart;
-                                    });
-                                  },
-                                  icon: _isSelectedHeart ? const Icon(Icons.favorite, color: Color(0xFF92A3FD),) : const Icon(Icons.favorite_border, color: Color(0xFF92A3FD))
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(height: 10,),
-                        Container(
-                          height: 120,
-                          padding: const EdgeInsets.all(20),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(20),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.1),
-                                spreadRadius: 1,
-                                blurRadius: 1,
-                                offset: const Offset(0, 1), // changes position of shadow
-                              ),
-                            ],
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  ClipRRect(
-                                    child: Opacity(
-                                      opacity: 0.6,
-                                      child: Container(
-                                        width: 80,
-                                        height: 80,
-                                        padding: const EdgeInsets.all(5),
-                                        decoration: BoxDecoration(
-                                          color: Colors.grey,
-                                          borderRadius: BorderRadius.circular(50),
-                                        ),
-                                        child: Image.asset(
-                                          'assets/images/doctor_01.png',
-                                          width: 25,
-                                          height: 25,
-                                          //fit: BoxFit.cover,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(width: 20,),
-                                  const Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text('Dr. William Smith',
-                                        style: TextStyle(
-                                          color: Colors.black,
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.bold,
-                                        ),),
-                                      SizedBox(height: 5),
-                                      Text(
-                                        'Fetus | Medical Hospital',
-                                        style: TextStyle(
-                                          color: Colors.grey,
-                                          fontSize: 13,
-                                        ),),
-                                      SizedBox(height: 5),
-                                      Row(
-                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                        children: [
-                                          Icon(Icons.star, size: 18, color: Colors.orange),
-                                          SizedBox(width: 10),
-                                          Text('5.0')
-                                        ],
-                                      )
-                                    ],
-                                  ),
-
-                                ],
-                              ),
-                              IconButton(
-                                //alignment: Alignment.topRight,
-                                  onPressed: () {
-                                    setState(() {
-                                      _isSelectedHeart = !_isSelectedHeart;
-                                    });
-                                  },
-                                  icon: _isSelectedHeart ? const Icon(Icons.favorite, color: Color(0xFF92A3FD),) : const Icon(Icons.favorite_border, color: Color(0xFF92A3FD))
-                              ),
+                              const SizedBox(height: 10,),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 5),
+                                child: FutureBuilder<List<Doctor>>(
+                                    future: doctors,
+                                    builder: (context, snapshot) {
+                                      if (snapshot.connectionState == ConnectionState.waiting) {
+                                        return const Center(child: CircularProgressIndicator());
+                                      } else if (snapshot.hasError) {
+                                        return Center(child: Text('Error: ${snapshot.error}'));
+                                      } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                                        return const Center(
+                                            child: Text('No departments found'));
+                                      } else {
+                                        return Expanded(
+                                            child: ListView.builder(
+                                                itemCount: snapshot.data!.length,
+                                                itemBuilder: (context, index) {
+                                                  Doctor doctor = snapshot.data![index];
+                                                  return Container(
+                                                    //height: 120,
+                                                    padding: const EdgeInsets.all(20),
+                                                    decoration: BoxDecoration(
+                                                      color: Colors.white,
+                                                      borderRadius: BorderRadius.circular(20),
+                                                      boxShadow: [
+                                                        BoxShadow(
+                                                          color: Colors.black.withOpacity(0.1),
+                                                          spreadRadius: 1,
+                                                          blurRadius: 1,
+                                                          offset: const Offset(
+                                                              0, 1), // changes position of shadow
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    child: Row(
+                                                      mainAxisAlignment:
+                                                      MainAxisAlignment.spaceBetween,
+                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                      children: [
+                                                        Row(
+                                                          children: [
+                                                            ClipRRect(
+                                                              child: Opacity(
+                                                                opacity: 0.6,
+                                                                child: Container(
+                                                                  width: 80,
+                                                                  height: 80,
+                                                                  padding: const EdgeInsets.all(5),
+                                                                  decoration: BoxDecoration(
+                                                                    color: Colors.grey,
+                                                                    borderRadius:
+                                                                    BorderRadius.circular(50),
+                                                                  ),
+                                                                  child: Image.asset(
+                                                                    'assets/images/doctor_01.png',
+                                                                    width: 25,
+                                                                    height: 25,
+                                                                    //fit: BoxFit.cover,
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            ),
+                                                            const SizedBox(
+                                                              width: 20,
+                                                            ),
+                                                            Column(
+                                                              crossAxisAlignment:
+                                                              CrossAxisAlignment.start,
+                                                              children: [
+                                                                Text(
+                                                                  doctor.fullName,
+                                                                  style: const TextStyle(
+                                                                    color: Colors.black,
+                                                                    fontSize: 14,
+                                                                    fontWeight: FontWeight.bold,
+                                                                  ),
+                                                                ),
+                                                                const SizedBox(height: 5),
+                                                                const Text(
+                                                                  'Fetus | Medical Hospital',
+                                                                  style: TextStyle(
+                                                                    color: Colors.grey,
+                                                                    fontSize: 13,
+                                                                  ),
+                                                                ),
+                                                                const SizedBox(height: 5),
+                                                                Row(
+                                                                  crossAxisAlignment:
+                                                                  CrossAxisAlignment.center,
+                                                                  children: [
+                                                                    const Icon(Icons.star,
+                                                                        size: 18,
+                                                                        color: Colors.orange),
+                                                                    const SizedBox(width: 10),
+                                                                    Text(doctor.rate.toString())
+                                                                  ],
+                                                                )
+                                                              ],
+                                                            ),
+                                                          ],
+                                                        ),
+                                                        IconButton(
+                                                          //alignment: Alignment.topRight,
+                                                            onPressed: () {
+                                                              setState(() {
+                                                                _isSelectedHeart =
+                                                                !_isSelectedHeart;
+                                                              });
+                                                            },
+                                                            icon: _isSelectedHeart
+                                                                ? const Icon(
+                                                              Icons.favorite,
+                                                              color: Color(0xFF92A3FD),
+                                                            )
+                                                                : const Icon(Icons.favorite_border,
+                                                                color: Color(0xFF92A3FD))),
+                                                      ],
+                                                    ),
+                                                  );
+                                                }
+                                                )
+                                        );
+                                      }
+                                    }
+                                )
+                              )
                             ],
                           ),
                         ),
                       ],
-                    )
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
+                    ),
+                  ),
+                ]))));
   }
 }
-
-
-

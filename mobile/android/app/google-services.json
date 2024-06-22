@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:274561182035:android:de33b8aa94cf39eeb5d9a6",
+        "mobilesdk_app_id": "1:274561182035:android:08e47e7e44f7cfe1b5d9a6",
         "android_client_info": {
-          "package_name": "com.aptech.booking_app"
+          "package_name": "vn.aptech.mobile"
         }
       },
       "oauth_client": [],

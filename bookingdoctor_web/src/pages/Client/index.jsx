@@ -18,3 +18,5 @@ export {default as LoginGmail} from '../LoginGmail';
 export {default as LoginPhoneStep} from '../LoginPhoneStep';
 export {default as LoginGmailStep} from '../LoginGmailStep';
 export {default as Signup} from '../Signup';
+export {default as Proccess} from './Proccess';
+
