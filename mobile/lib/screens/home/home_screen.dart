@@ -448,7 +448,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 } else {
                                   return SizedBox(
                                     // Đặt chiều cao phù hợp cho GridView
-                                    height: 200,
+                                    height: 220,
                                     child: GridView.builder(
                                       padding: const EdgeInsets.all(10),
                                       itemCount: snapshot.data!.length,
@@ -459,8 +459,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         mainAxisSpacing: 20,
                                       ),
                                       itemBuilder:
-                                          (BuildContext context, int index) =>
-                                              Container(
+                                          (BuildContext context, int index) => Container(
                                         child: Column(
                                           mainAxisSize: MainAxisSize.max,
                                           // Adjusts the column to take minimum space
@@ -602,128 +601,132 @@ class _HomeScreenState extends State<HomeScreen> {
                               Padding(
                                 padding: const EdgeInsets.symmetric(horizontal: 5),
                                 child: FutureBuilder<List<Doctor>>(
-                                    future: doctors,
-                                    builder: (context, snapshot) {
-                                      if (snapshot.connectionState == ConnectionState.waiting) {
-                                        return const Center(child: CircularProgressIndicator());
-                                      } else if (snapshot.hasError) {
-                                        return Center(child: Text('Error: ${snapshot.error}'));
-                                      } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                                        return const Center(
-                                            child: Text('No departments found'));
-                                      } else {
-                                        return Expanded(
-                                            child: ListView.builder(
-                                                itemCount: snapshot.data!.length,
-                                                itemBuilder: (context, index) {
-                                                  Doctor doctor = snapshot.data![index];
-                                                  return Container(
-                                                    //height: 120,
-                                                    padding: const EdgeInsets.all(20),
-                                                    decoration: BoxDecoration(
-                                                      color: Colors.white,
-                                                      borderRadius: BorderRadius.circular(20),
-                                                      boxShadow: [
-                                                        BoxShadow(
-                                                          color: Colors.black.withOpacity(0.1),
-                                                          spreadRadius: 1,
-                                                          blurRadius: 1,
-                                                          offset: const Offset(
-                                                              0, 1), // changes position of shadow
-                                                        ),
-                                                      ],
+                                  future: doctors,
+                                  builder: (context, snapshot) {
+                                    if (snapshot.connectionState == ConnectionState.waiting) {
+                                      return const Center(child: CircularProgressIndicator());
+                                    } else if (snapshot.hasError) {
+                                      return Center(child: Text('Error: ${snapshot.error}'));
+                                    } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                                      return const Center(child: Text('No doctors found'));
+                                    } else {
+                                      return SingleChildScrollView(
+                                        scrollDirection: Axis.vertical,
+                                        child: Column(
+                                          children: snapshot.data!.map((doctor) {
+                                            return Padding(
+                                              padding: const EdgeInsets.only(bottom: 15),
+                                              child: Container(
+                                                height: 130,
+                                                padding: const EdgeInsets.all(20),
+                                                decoration: BoxDecoration(
+                                                  color: Colors.white,
+                                                  borderRadius: BorderRadius.circular(20),
+                                                  boxShadow: [
+                                                    BoxShadow(
+                                                      color: Colors.black.withOpacity(0.1),
+                                                      spreadRadius: 1,
+                                                      blurRadius: 1,
+                                                      offset: const Offset(0, 1), // changes position of shadow
                                                     ),
-                                                    child: Row(
-                                                      mainAxisAlignment:
-                                                      MainAxisAlignment.spaceBetween,
-                                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                                      children: [
-                                                        Row(
-                                                          children: [
-                                                            ClipRRect(
-                                                              child: Opacity(
-                                                                opacity: 0.6,
-                                                                child: Container(
-                                                                  width: 80,
-                                                                  height: 80,
-                                                                  padding: const EdgeInsets.all(5),
-                                                                  decoration: BoxDecoration(
-                                                                    color: Colors.grey,
-                                                                    borderRadius:
-                                                                    BorderRadius.circular(50),
-                                                                  ),
-                                                                  child: Image.asset(
-                                                                    'assets/images/doctor_01.png',
-                                                                    width: 25,
-                                                                    height: 25,
-                                                                    //fit: BoxFit.cover,
-                                                                  ),
+                                                  ],
+                                                ),
+                                                child: Row(
+                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  children: [
+                                                    InkWell(
+                                                      onTap: () {
+                                                        Navigator.pushNamed(context, '/doctor', arguments:
+                                                        {
+                                                          'doctorId': doctor.id,
+                                                        });
+                                                      },
+                                                      child: Row(
+                                                        children: [
+                                                          ClipRRect(
+                                                            borderRadius: BorderRadius.circular(50),
+                                                            child: Opacity(
+                                                              opacity: 0.8,
+                                                              child: Container(
+                                                                width: 80,
+                                                                height: 80,
+                                                                //padding: const EdgeInsets.all(5),
+                                                                decoration: BoxDecoration(
+                                                                  color: Colors.lightBlueAccent,
+                                                                  borderRadius: BorderRadius.circular(50),
+                                                                ),
+                                                                child: Image.network(
+                                                                  'http://$ipDevice:8080/images/doctors/${doctor.image}',
+                                                                  // width: 25,
+                                                                  // height: 25,
+                                                                  fit: BoxFit.contain,
                                                                 ),
                                                               ),
                                                             ),
-                                                            const SizedBox(
-                                                              width: 20,
-                                                            ),
-                                                            Column(
-                                                              crossAxisAlignment:
-                                                              CrossAxisAlignment.start,
-                                                              children: [
-                                                                Text(
-                                                                  doctor.fullName,
-                                                                  style: const TextStyle(
-                                                                    color: Colors.black,
-                                                                    fontSize: 14,
-                                                                    fontWeight: FontWeight.bold,
-                                                                  ),
+                                                          ),
+                                                          const SizedBox(width: 20),
+                                                          Column(
+                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                            children: [
+                                                              Text(
+                                                                '${doctor.title} ' '${doctor.fullName}',
+                                                                style: const TextStyle(
+                                                                  color: Colors.black,
+                                                                  fontSize: 14,
+                                                                  fontWeight: FontWeight.bold,
                                                                 ),
-                                                                const SizedBox(height: 5),
-                                                                const Text(
-                                                                  'Fetus | Medical Hospital',
-                                                                  style: TextStyle(
-                                                                    color: Colors.grey,
-                                                                    fontSize: 13,
-                                                                  ),
+                                                              ),
+                                                              const SizedBox(height: 3),
+                                                              Text(
+                                                                doctor.department.name,
+                                                                style: const TextStyle(
+                                                                  color: Colors.grey,
+                                                                  fontSize: 12,
                                                                 ),
-                                                                const SizedBox(height: 5),
-                                                                Row(
-                                                                  crossAxisAlignment:
-                                                                  CrossAxisAlignment.center,
-                                                                  children: [
-                                                                    const Icon(Icons.star,
-                                                                        size: 18,
-                                                                        color: Colors.orange),
-                                                                    const SizedBox(width: 10),
-                                                                    Text(doctor.rate.toString())
-                                                                  ],
-                                                                )
-                                                              ],
-                                                            ),
-                                                          ],
-                                                        ),
-                                                        IconButton(
-                                                          //alignment: Alignment.topRight,
-                                                            onPressed: () {
-                                                              setState(() {
-                                                                _isSelectedHeart =
-                                                                !_isSelectedHeart;
-                                                              });
-                                                            },
-                                                            icon: _isSelectedHeart
-                                                                ? const Icon(
-                                                              Icons.favorite,
-                                                              color: Color(0xFF92A3FD),
-                                                            )
-                                                                : const Icon(Icons.favorite_border,
-                                                                color: Color(0xFF92A3FD))),
-                                                      ],
+                                                              ),
+                                                              const SizedBox(height: 3),
+                                                              const Text(
+                                                                'Medical Hospital',
+                                                                style: TextStyle(
+                                                                  color: Colors.grey,
+                                                                  fontSize: 12,
+                                                                ),
+                                                              ),
+                                                              const SizedBox(height: 5),
+                                                              Row(
+                                                                crossAxisAlignment: CrossAxisAlignment.center,
+                                                                children: [
+                                                                  const Icon(Icons.star, size: 18, color: Colors.orange),
+                                                                  const SizedBox(width: 10),
+                                                                  Text(doctor.rate.toString())
+                                                                ],
+                                                              )
+                                                            ],
+                                                          ),
+                                                        ],
+                                                      ),
                                                     ),
-                                                  );
-                                                }
-                                                )
-                                        );
-                                      }
+                                                    IconButton(
+                                                      onPressed: () {
+                                                        setState(() {
+                                                          _isSelectedHeart = !_isSelectedHeart;
+                                                        });
+                                                      },
+                                                      icon: _isSelectedHeart
+                                                          ? const Icon(Icons.favorite, color: Color(0xFF92A3FD))
+                                                          : const Icon(Icons.favorite_border, color: Color(0xFF92A3FD)),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            );
+                                          }).toList(),
+                                        ),
+                                      );
                                     }
-                                )
+                                  },
+                                ),
                               )
                             ],
                           ),
