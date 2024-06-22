@@ -1,25 +1,16 @@
 
-import 'dart:developer';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
-import 'package:mobile/ultils/getIPAddress.dart';
 import 'dart:convert';
-import 'package:network_info_plus/network_info_plus.dart';
-
 import 'package:mobile/ultils/storeCurrentUser.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:mobile/services/auth_service.dart';
 
-import '../../widgets/navigation_menu.dart';
-//import 'package:fluttertoast/fluttertoast.dart';
 
 
 
@@ -41,7 +32,7 @@ class _SignInScreenState extends State<SignInScreen> {
 
   bool _isShowOtp = false;
   bool _showError = false;
-  bool _isShowButtonHanleOpt = false;
+  // bool _isShowButtonHandleOpt = false;
 
   bool isShowBtn = false;
   bool otpVisibility = false;
@@ -120,11 +111,8 @@ class _SignInScreenState extends State<SignInScreen> {
     );
     try {
       await auth.signInWithCredential(credential);
-
       await AuthClient().setKeyCode(smsCode);
-
-      // kiểm tra đăng nhập
-
+      // check Login
       await AuthClient().login(_phoneNumberController.text, smsCode);
 
     } catch (e) {
@@ -163,7 +151,7 @@ class _SignInScreenState extends State<SignInScreen> {
           ? 'patient'
           : 'doctor/findbyuserid';
       var urlForCurrentUser =
-          'http://192.168.1.3:8080/api/${path}/${jsonResponse['user']['id']}';
+          'http://192.168.1.3:8080/api/$path/${jsonResponse['user']['id']}';
       var response = await http.get(
         Uri.parse(urlForCurrentUser),
         headers: {'Content-Type': 'application/json'},
@@ -179,7 +167,7 @@ class _SignInScreenState extends State<SignInScreen> {
     String result = await checkRefreshToken();
     if (result == 'send otp') {
       _isShowOtp = true;
-      _isShowButtonHanleOpt = true;
+      //_isShowButtonHanleOpt = true;
     } else if (result == 'Error') {
       setState(() {
         _showError = true;
