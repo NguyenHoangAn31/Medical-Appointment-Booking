@@ -7,7 +7,7 @@ import { getAllDoctorWithStatus } from '../../../../services/API/doctorService';
 import Spinner from '../../../../components/Spinner';
 import { AlertContext } from '../../../../components/Layouts/DashBoard';
 import getUserData from '../../../../route/CheckRouters/token/Token';
-import { formatDate } from '../../../../ultils/formatDate';
+import { formatDate, formatDateFromJs } from '../../../../ultils/formatDate';
 import { changeStatus } from '../../../../services/API/changeStatus';
 import { getAllReport, getAllReportByDay } from '../../../../services/API/reportService';
 import * as XLSX from 'xlsx';
@@ -29,6 +29,7 @@ const ManageReport = () => {
   const searchInput = useRef(null);
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
+  const [displayDay , setDisplayDay] = useState(formatDate(formatDateFromJs(new Date())));
 
   // xửa lý filetr and sort
   const handleChange = (pagination, filters, sorter) => {
@@ -56,9 +57,8 @@ const ManageReport = () => {
       key: (index + 1).toString(),
     }));
     const total = fetchedReport.reduce((total, item) => {
-      const cancelCost = (item.price * 0.3) * item.countCancel;
-      const successCost = item.price * item.countSuccess;
-      return total + cancelCost + successCost;
+     
+      return total + item.total;
     }, 0);
     setTotalPrice(total)
     setReport(reportWithKeys);
@@ -84,8 +84,10 @@ const ManageReport = () => {
     try {
       if (startDate != '' || endDate != '') {
         loadReport(await getAllReportByDay(startDate, endDate));
+        setDisplayDay(formatDate(startDate)+" - "+formatDate(endDate))
       }
       else {
+        setDisplayDay(formatDate(formatDateFromJs(new Date())))
         loadReport();
       }
     } catch (error) {
@@ -215,6 +217,7 @@ const ManageReport = () => {
 
 
 
+
   const columns = [
     {
       title: 'Id',
@@ -267,31 +270,31 @@ const ManageReport = () => {
     },
 
     {
-      title: 'Cancel',
-      dataIndex: 'countCancel',
-      key: 'countCancel',
+      title: 'Booked',
+      dataIndex: 'countBook',
+      key: 'countBook',
       width: '6%',
       // sort 
-      filteredValue: filteredInfo.countCancel || null,
-      sorter: (a, b) => a.countCancel - b.countCancel,
-      sortOrder: sortedInfo.columnKey === 'countCancel' ? sortedInfo.order : null,
+      filteredValue: filteredInfo.countBook || null,
+      sorter: (a, b) => a.countBook - b.countBook,
+      sortOrder: sortedInfo.columnKey === 'countBook' ? sortedInfo.order : null,
       ellipsis: true,
       // search
-      ...getColumnSearchProps('countCancel'),
+      ...getColumnSearchProps('countBook'),
 
     },
     {
-      title: 'Success',
-      dataIndex: 'countSuccess',
-      key: 'countSuccess',
+      title: 'Finished',
+      dataIndex: 'countFinished',
+      key: 'countFinished',
       width: '6%',
       // sort 
-      filteredValue: filteredInfo.countSuccess || null,
-      sorter: (a, b) => a.countSuccess - b.countSuccess,
-      sortOrder: sortedInfo.columnKey === 'countSuccess' ? sortedInfo.order : null,
+      filteredValue: filteredInfo.countFinished || null,
+      sorter: (a, b) => a.countFinished - b.countFinished,
+      sortOrder: sortedInfo.columnKey === 'countFinished' ? sortedInfo.order : null,
       ellipsis: true,
       // search
-      ...getColumnSearchProps('countSuccess'),
+      ...getColumnSearchProps('countFinished'),
 
     },
     {
@@ -316,6 +319,7 @@ const ManageReport = () => {
       <div className='d-flex justify-content-between'>
         <div>
 
+          {/* <p className='fs-5'>Day : {displayDay}</p> */}
           <Form.Item
             style={{marginBottom:10}}
             label="Search Day"
@@ -348,7 +352,7 @@ const ManageReport = () => {
         </div>
       </div>
 
-      <Table style={{ userSelect: 'none' }} columns={columns} dataSource={report} onChange={handleChange} />
+      {report.length == 0?<Spinner/>:<Table style={{ userSelect: 'none' }} columns={columns} dataSource={report} onChange={handleChange} />}
     </>
   )
 };

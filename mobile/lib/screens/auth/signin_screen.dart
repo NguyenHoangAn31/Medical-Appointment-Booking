@@ -1,3 +1,16 @@
+
+import 'dart:developer';
+import 'dart:io';
+
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:http/http.dart' as http;
+import 'package:mobile/ultils/getIPAddress.dart';
+import 'dart:convert';
+import 'package:network_info_plus/network_info_plus.dart';
+
+import 'package:mobile/ultils/storeCurrentUser.dart';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +20,7 @@ import 'package:mobile/services/auth_service.dart';
 
 import '../../widgets/navigation_menu.dart';
 //import 'package:fluttertoast/fluttertoast.dart';
+
 
 
 class SignInScreen extends StatefulWidget {
@@ -24,6 +38,11 @@ class _SignInScreenState extends State<SignInScreen> {
   final TextEditingController _otpNumber04Controller = TextEditingController();
   final TextEditingController _otpNumber05Controller = TextEditingController();
   final TextEditingController _otpNumber06Controller = TextEditingController();
+
+  bool _isShowOtp = false;
+  bool _showError = false;
+  bool _isShowButtonHanleOpt = false;
+
   bool isShowBtn = false;
   bool otpVisibility = false;
   String verificationId = "";
@@ -124,6 +143,54 @@ class _SignInScreenState extends State<SignInScreen> {
         _otpNumber06Controller.text;
   }
 
+  Future<String> checkRefreshToken() async {
+    //xử lý send otp
+
+    var url = 'http://192.168.1.3:8080/api/auth/check-refresh-token';
+    var data = {'username': _phoneNumberController.text, 'provider': 'phone'};
+
+    var response = await http.post(
+      Uri.parse(url),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode(data),
+    );
+
+    var jsonResponse = jsonDecode(response.body);
+    if (jsonResponse['user'] == null) {
+      return "Error";
+    } else {
+      var path = jsonResponse['user']['roles'][0] == 'USER'
+          ? 'patient'
+          : 'doctor/findbyuserid';
+      var urlForCurrentUser =
+          'http://192.168.1.3:8080/api/${path}/${jsonResponse['user']['id']}';
+      var response = await http.get(
+        Uri.parse(urlForCurrentUser),
+        headers: {'Content-Type': 'application/json'},
+      );
+      var dataForCurrentUser = jsonDecode(response.body);
+      CurrentUser.to.setUser(dataForCurrentUser);
+
+      return jsonResponse['user']['roles'][0];
+    }
+  }
+
+  void _handleLogin() async {
+    String result = await checkRefreshToken();
+    if (result == 'send otp') {
+      _isShowOtp = true;
+      _isShowButtonHanleOpt = true;
+    } else if (result == 'Error') {
+      setState(() {
+        _showError = true;
+      });
+    } else if (result == 'USER') {
+      Navigator.pushNamed(context, '/home');
+    }
+    if (result == 'DOCTOR') {
+      Navigator.pushNamed(context, '/dashboard/doctor/home');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -206,7 +273,8 @@ class _SignInScreenState extends State<SignInScreen> {
                 ),
                 const SizedBox(height: 200),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
                   decoration: ShapeDecoration(
                     color: const Color(0xFFF2F4F7),
                     shape: RoundedRectangleBorder(
@@ -217,18 +285,21 @@ class _SignInScreenState extends State<SignInScreen> {
                     alignment: Alignment.centerLeft,
                     child: TextField(
                       controller: _phoneNumberController,
-                      decoration: const InputDecoration(
+                      decoration: InputDecoration(
                         border: InputBorder.none,
                         labelText: 'Phone number',
-                        counter: SizedBox.shrink(), // Ẩn counter cho nhập chữ số duy nhất
+                        counter: const SizedBox
+                            .shrink(), // Ẩn counter cho nhập chữ số duy nhất
                         //alignLabelWithHint: true, // Canh giữa với dòng văn bản
+                        contentPadding: const EdgeInsets.only(top: 0),
                         counterText: '',
-                        hintStyle: TextStyle(
+                        hintStyle: const TextStyle(
                           color: Color(0xFF98A2B2),
                           fontSize: 14,
                           fontFamily: 'Poppins',
                           fontWeight: FontWeight.w400,
                         ),
+                        errorText: _showError ? 'Invalid phone number' : null,
                       ),
                       style: const TextStyle(
                         color: Colors.black,
@@ -254,7 +325,7 @@ class _SignInScreenState extends State<SignInScreen> {
                       _buildOtpField(5, _otpNumber06Controller),
                     ],
                   ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 10),
                 SizedBox(
                   width: 380,
                   height: 52,
@@ -267,6 +338,12 @@ class _SignInScreenState extends State<SignInScreen> {
                       elevation: 0,
                       backgroundColor: const Color(0xFF92A3FD),
                     ),
+// <<<<<<< An
+//                     onPressed: _handleLogin,
+//                     child: const Text(
+//                       'Log In',
+//                       style: TextStyle(
+// =======
                     onPressed: () async {
                       if (_phoneNumberController.text.length <= 9) {
                         Fluttertoast.showToast(
@@ -302,7 +379,7 @@ class _SignInScreenState extends State<SignInScreen> {
                     child: Text(otpVisibility ? 'SEND OTP' : 'VERIFY PHONE',
                       style: const TextStyle(
                         color: Colors.white,
-                        fontSize: 16,
+                        fontSize: 20,
                         fontFamily: 'Poppins',
                         fontWeight: FontWeight.w600,
                         letterSpacing: 0.02,
@@ -360,7 +437,11 @@ class _SignInScreenState extends State<SignInScreen> {
       ),
     );
   }
+// <<<<<<< An
+// }
+// =======
 
 
 
 }
+

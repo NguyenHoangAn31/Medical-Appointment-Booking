@@ -393,7 +393,7 @@ const DashBoardLayout = ({ children }) => {
                     >
                         <div
                             style={{
-                                // overflow: 'scroll',
+                                overflow: 'auto',
                                 padding: 24,
                                 minHeight: 360,
                                 position: 'relative',

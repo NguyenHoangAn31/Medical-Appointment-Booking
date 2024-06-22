@@ -236,13 +236,13 @@ const Booking = () => {
     const dayvalue = `${day.nam}-${String(day.thang).padStart(2, '0')}-${String(day.ngayOfMonth).padStart(2, '0')}`;
 
     // xử lý không cho chọn những ngày cũ
-    const inputDate = new Date(dayvalue);
-    const currentDate = new Date();
-    if (stripTime(inputDate) < stripTime(currentDate)) {
-      console.log("less than");
-      setSchedules([]);
-      return;
-    }
+    // const inputDate = new Date(dayvalue);
+    // const currentDate = new Date();
+    // if (stripTime(inputDate) < stripTime(currentDate)) {
+    //   console.log("less than");
+    //   setSchedules([]);
+    //   return;
+    // }
     setDaySelected(dayvalue);
     const data = {
       doctorId: doctorId,
@@ -270,6 +270,8 @@ const Booking = () => {
   }
 
 
+  console.log(schedules)
+
 
   function parseTimeString(timeString) {
     const [hours, minutes] = timeString.split(':').map(Number);
@@ -290,6 +292,7 @@ const Booking = () => {
     if (foundSlot) {
       const slotTime = parseTimeString(foundSlot.startTime);
       if (foundSlot.status === 1 && (slotTime > currentTime || (stripTime(now) < stripTime(new Date(daySelected) || stripTime(now) > stripTime(new Date(daySelected)))))) {
+      // if(foundSlot.status === 1){
         return { status: 'true', scheduledoctorId: foundSlot.scheduledoctorId };
       } else if (foundSlot.status === 0) {
         return { status: 'booked' };
