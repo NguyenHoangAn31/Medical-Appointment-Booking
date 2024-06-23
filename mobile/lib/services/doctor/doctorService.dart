@@ -32,6 +32,20 @@ Future<Doctor> getDoctorById(int id) async {
   }
 }
 
+// // lấy appointment theo khung giờ
+// Future<List<Appointment>> getAppointmentByDay(DateTime daySelected) async {
+//   String formattedDate = daySelected.toIso8601String().split('T')[0];
+//   final ipDevice = BaseClient().ip;
+//   var url = Uri.parse('http://$ipDevice:8080/api/appointments/day/$formattedDate');
+//   final response = await http.get(url);
+//   if (response.statusCode == 200) {
+//     List jsonData = json.decode(response.body);
+//     return jsonData.map((json) => Appointment.fromJson(json)).toList();
+//   } else {
+//     throw Exception('Failed to load appointment');
+//   }
+// }
+
 // get schedule with doctorId and daySelected
 
 Future<List<Schedule>> getScheduleByDoctorIdAndDay(int doctorId, DateTime daySelected) async {

@@ -2,12 +2,12 @@ class Schedule{
   final int? id;
   final String? startTime;
   final int? status;
-  final int? scheduleDoctorId;
+  late final int scheduledoctorId;
   Schedule({
     this.id,
     this.startTime,
     this.status,
-    this.scheduleDoctorId,
+    required this.scheduledoctorId,
   });
 
   factory Schedule.fromJson(Map<String, dynamic> json){
@@ -15,7 +15,7 @@ class Schedule{
       id: json['id'],
       startTime: json['startTime'],
       status: json['status'],
-      scheduleDoctorId: json['scheduleDoctorId'],
+      scheduledoctorId: json['scheduledoctorId'],
     );
   }
   Map<String, dynamic> toJson(){
@@ -23,7 +23,7 @@ class Schedule{
       'id': id,
      'startTime': startTime,
      'status': status,
-     'scheduleDoctorId': scheduleDoctorId,
+     'scheduledoctorId': scheduledoctorId,
     };
   }
 }

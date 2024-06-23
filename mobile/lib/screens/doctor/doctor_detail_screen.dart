@@ -209,20 +209,20 @@ class _DoctorDetailScreenState extends State<DoctorDetailScreen> {
                                       0, 3), // changes position of shadow
                                 ),
                               ]),
-                          child: const Column(
+                          child: Column(
                             children: [
                               Text(
-                                '10Y+',
-                                style: TextStyle(
+                                '${doctor.experience}Y+',
+                                style: const TextStyle(
                                   color: Color(0xFF97B3FE),
                                   fontWeight: FontWeight.bold,
                                   fontSize: 20.0,
                                 ),
                               ),
-                              SizedBox(
+                              const SizedBox(
                                 height: 8,
                               ),
-                              Text(
+                              const Text(
                                 'Experience',
                                 style: TextStyle(
                                   color: Colors.grey,

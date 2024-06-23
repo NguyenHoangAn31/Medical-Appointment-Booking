@@ -248,11 +248,8 @@ const ManageAppointment = () => {
         var image;
         if (payment == 'paypal') {
           image = paypal
-        }
-        else if (payment == 'Momo') {
-          image = momo
-        }
-        else if (payment == 'vnpay') {
+
+        }else if (payment == 'vnpay') {
           image = vnpay
         }
         return (
