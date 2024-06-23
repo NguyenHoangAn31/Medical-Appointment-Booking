@@ -16,7 +16,7 @@ import java.util.Optional;
 
 @Repository
 public interface PartientRepository extends JpaRepository<Partient, Integer> {
-    Optional<Partient> getPatientByUserId(int userId);
+    Partient getPatientByUserId(int userId);
 
 
     @Query("SELECT a.partient FROM Appointment a WHERE a.scheduledoctor.id = :scheduledoctorid AND a.clinicHours = :starttime")

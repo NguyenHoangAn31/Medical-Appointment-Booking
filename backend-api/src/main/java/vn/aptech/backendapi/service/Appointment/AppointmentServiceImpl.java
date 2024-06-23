@@ -68,15 +68,20 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public boolean changestatus(int id, String status) {
-        Appointment a = appointmentRepository.findById(id).get();
-        a.setStatus(status);
+    public void changestatus(int id, String status) {
         try {
-            appointmentRepository.save(a);
-            return true;
+            Optional<Appointment> appointmentOptional = appointmentRepository.findById(id);
+            if (appointmentOptional.isPresent()) {
+                Appointment a = appointmentOptional.get();
+                a.setStatus(status);
+                appointmentRepository.save(a);
+            } else {
+                // Xử lý khi không tìm thấy Appointment với id tương ứng
+                throw new IllegalArgumentException("Appointment not found for id: " + id);
+            }
         } catch (Exception e) {
             e.printStackTrace();
-            return false;
+            // Xử lý các ngoại lệ tại đây nếu cần
         }
     }
 
@@ -102,6 +107,15 @@ public class AppointmentServiceImpl implements AppointmentService {
         }
         Appointment result = appointmentRepository.save(a);
         return toDto(result);
+    }
+
+
+    @Override
+    public List<AppointmentDto> findAppointmentsByScheduleDoctorIdAndStartTime(int scheduledoctorid, LocalTime starttime) {
+        return appointmentRepository.findAppointmentsByScheduleDoctorIdAndStartTime(scheduledoctorid, starttime)
+                .stream()
+                .map(this::toDto)
+                .collect(Collectors.toList());
     }
 
 }
