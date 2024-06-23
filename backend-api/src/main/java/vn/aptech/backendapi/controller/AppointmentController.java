@@ -1,8 +1,10 @@
 package vn.aptech.backendapi.controller;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,7 +21,7 @@ import vn.aptech.backendapi.dto.Appointment.CustomAppointmentDto;
 import vn.aptech.backendapi.service.Appointment.AppointmentService;
 
 @RestController
-    @RequestMapping(value = "/api/appointment", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/api/appointment", produces = MediaType.APPLICATION_JSON_VALUE)
 public class AppointmentController {
     @Autowired
     private AppointmentService appointmentService;
@@ -54,5 +56,24 @@ public class AppointmentController {
         } else {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @GetMapping(value = "/patientsbydoctoridandmedicalexaminationupcoming/{doctorid}/{startdate}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<CustomAppointmentDto>> findPatientsByDoctorIdAndAppointmentUpcoming(
+            @PathVariable("doctorid") int doctorId,
+            @PathVariable("startdate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate) {
+        List<CustomAppointmentDto> result = appointmentService.findPatientsByDoctorIdAndAppointmentUpcoming(doctorId,
+                startDate);
+        return ResponseEntity.ok(result);
+    }
+
+    @GetMapping(value = "/patientsbydoctoridandmedicalexaminationtoday/{doctorid}/{startdate}/{enddate}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<CustomAppointmentDto>> findPatientsByDoctorIdAndMedicalExaminationToday(
+            @PathVariable("doctorid") int doctorId,
+            @PathVariable("startdate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @PathVariable("enddate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
+        List<CustomAppointmentDto> result = appointmentService
+                .findPatientsByDoctorIdAndMedicalExaminationToday(doctorId, startDate, endDate);
+        return ResponseEntity.ok(result);
     }
 }

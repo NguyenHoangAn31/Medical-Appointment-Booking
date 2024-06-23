@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import vn.aptech.backendapi.dto.AppointmentDto;
+import vn.aptech.backendapi.dto.PatientDto;
 import vn.aptech.backendapi.dto.Appointment.AppointmentDetail;
 import vn.aptech.backendapi.dto.Appointment.CustomAppointmentDto;
 import vn.aptech.backendapi.entities.Appointment;
@@ -48,8 +49,9 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     private CustomAppointmentDto toCustomDto(Appointment appointment) {
         CustomAppointmentDto a = mapper.map(appointment, CustomAppointmentDto.class);
-        a.setImage(partientRepository.findById(appointment.getPartient().getId()).get().getImage());
-        a.setFullName(partientRepository.findById(appointment.getPartient().getId()).get().getFullName());
+        // a.setImage(partientRepository.findById(appointment.getPartient().getId()).get().getImage());
+        // a.setFullName(partientRepository.findById(appointment.getPartient().getId()).get().getFullName());
+        a.setPatientDto(mapper.map(appointment.getPartient(), PatientDto.class));
         return a;
     }
 
@@ -102,6 +104,18 @@ public class AppointmentServiceImpl implements AppointmentService {
         }
         Appointment result = appointmentRepository.save(a);
         return toDto(result);
+    }
+
+    @Override
+    public List<CustomAppointmentDto> findPatientsByDoctorIdAndAppointmentUpcoming(int doctorId , LocalDate startDate){
+        return appointmentRepository.findPatientsByDoctorIdAndAppointmentUpcoming(doctorId,startDate).stream().map(this::toCustomDto)
+        .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<CustomAppointmentDto> findPatientsByDoctorIdAndMedicalExaminationToday(int doctorId , LocalDate startDate , LocalDate endDate){
+        return appointmentRepository.findPatientsByDoctorIdAndMedicalExaminationToday(doctorId,startDate,endDate).stream().map(this::toCustomDto)
+        .collect(Collectors.toList());
     }
 
 }

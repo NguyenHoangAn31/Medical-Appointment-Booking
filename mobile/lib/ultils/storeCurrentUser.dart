@@ -7,6 +7,10 @@ class CurrentUser extends GetxController {
     user.value = userData;
   }
 
+  void clearUser() {
+    user.clear();
+  }
+
   static CurrentUser get to => Get.find();
 
   @override

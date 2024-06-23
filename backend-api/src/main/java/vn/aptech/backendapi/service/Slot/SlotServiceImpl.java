@@ -1,5 +1,6 @@
 package vn.aptech.backendapi.service.Slot;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -50,5 +51,17 @@ public class SlotServiceImpl implements SlotService {
       e.printStackTrace();
       return false;
     }
+  }
+
+  @Override
+  public List<SlotDto> getSlotsByDepartmentIdAndDay(int departmentId, LocalDate day) {
+    return slotRepository.findSlotsByDepartmentIdAndDay(departmentId,day).stream().map(this::toDto)
+    .collect(Collectors.toList());
+  }
+
+  @Override
+  public List<SlotDto> getSlotsByDepartmentIdDoctorIdAndDay(int doctorId, int departmentId, LocalDate day) {
+    return slotRepository.findSlotsByDepartmentIdDoctorIdAndDay(doctorId,departmentId,day).stream().map(this::toDto)
+    .collect(Collectors.toList());
   }
 }

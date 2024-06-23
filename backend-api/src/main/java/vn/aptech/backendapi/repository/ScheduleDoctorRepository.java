@@ -1,8 +1,10 @@
 package vn.aptech.backendapi.repository;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -24,4 +26,14 @@ public interface ScheduleDoctorRepository extends JpaRepository<ScheduleDoctor, 
                         "WHERE sd.doctor.id = :doctorId AND sd.schedule.dayWorking >= :currentDate")
         boolean existsByDoctorIdAndDayWorkingAfterOrEqual(@Param("doctorId") int doctorId,
                         @Param("currentDate") LocalDate currentDate);
+
+        @Query("SELECT sd.id FROM ScheduleDoctor sd " +
+                        "WHERE sd.schedule.dayWorking = :day " +
+                        "AND sd.schedule.department.id = :departmentId " +
+                        "AND sd.doctor.id = :doctorId " +
+                        "AND sd.schedule.slot.id = :slotId")
+        Optional<Integer> findScheduleDoctorId(@Param("day") LocalDate day,
+                        @Param("departmentId") int departmentId,
+                        @Param("doctorId") int doctorId,
+                        @Param("slotId") int slotId);
 }

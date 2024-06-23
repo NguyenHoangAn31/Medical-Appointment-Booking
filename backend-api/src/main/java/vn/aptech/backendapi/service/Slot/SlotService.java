@@ -1,5 +1,6 @@
 package vn.aptech.backendapi.service.Slot;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -10,4 +11,8 @@ public interface SlotService {
     Optional<SlotDto> findById(int id);
     SlotDto save(SlotDto dto);
     boolean deleteById(int id);
+
+    List<SlotDto> getSlotsByDepartmentIdAndDay(int departmentId , LocalDate day);
+
+    List<SlotDto> getSlotsByDepartmentIdDoctorIdAndDay(int doctorId , int departmentId , LocalDate day);
 }

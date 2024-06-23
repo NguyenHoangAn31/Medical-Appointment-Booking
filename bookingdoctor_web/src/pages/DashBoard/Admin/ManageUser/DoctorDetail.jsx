@@ -73,6 +73,7 @@ function DoctorDetail() {
 
   const handlechangeStatus = async (id, status) => {
     try {
+      // status = status ? 1:0;
       await changeStatus('user', id, status);
       openNotificationWithIcon('success', 'Change Status Patient Successfully', '')
       loadUser();
