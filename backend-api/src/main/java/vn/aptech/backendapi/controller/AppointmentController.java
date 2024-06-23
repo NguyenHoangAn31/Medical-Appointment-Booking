@@ -1,10 +1,13 @@
 package vn.aptech.backendapi.controller;
 
+
 import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
+
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -40,11 +43,14 @@ public class AppointmentController {
 
     @PutMapping(value = "/changestatus/{id}/{status}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> changestatus(@PathVariable("id") int id, @PathVariable("status") String status) {
-        boolean result = appointmentService.changestatus(id, status);
-        if (result) {
-            return ResponseEntity.ok(result);
+        try {
+            appointmentService.changestatus(id, status);
+            return ResponseEntity.ok("Appointment status updated successfully");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to update appointment status");
         }
-        return ResponseEntity.notFound().build();
     }
 
     @PostMapping(value = "/create")
@@ -57,6 +63,15 @@ public class AppointmentController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    @GetMapping("/appointmentbyscheduledoctoridandstarttime/{scheduledoctorid}/{starttime}")
+    public ResponseEntity<List<AppointmentDto>> getAppointments(
+            @PathVariable("starttime") @DateTimeFormat(iso = DateTimeFormat.ISO.TIME) LocalTime starttime,
+            @PathVariable("scheduledoctorid") int scheduledoctorid) {
+        List<AppointmentDto> result = appointmentService.findAppointmentsByScheduleDoctorIdAndStartTime(scheduledoctorid, starttime);
+        return ResponseEntity.ok(result);
+    }
+}
 
     @GetMapping(value = "/patientsbydoctoridandmedicalexaminationupcoming/{doctorid}/{startdate}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<CustomAppointmentDto>> findPatientsByDoctorIdAndAppointmentUpcoming(
@@ -77,3 +92,4 @@ public class AppointmentController {
         return ResponseEntity.ok(result);
     }
 }
+

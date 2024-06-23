@@ -27,4 +27,9 @@ public interface PartientRepository extends JpaRepository<Partient, Integer> {
             "WHERE FUNCTION('DATE', a.createdAt) BETWEEN :startDate AND :endDate")
 
     Integer getCountRegister(@Param("startDate") LocalDate startDate,@Param("endDate") LocalDate endDate);
+
+
+
+    @Query("SELECT DISTINCT a.partient FROM Appointment a WHERE a.scheduledoctor.doctor.id = :doctorId AND a.status = 'FINISHED'")
+    List<Partient> findPatientsByDoctorIdAndFinishedStatus(@Param("doctorId") int doctorId);
 }

@@ -99,6 +99,15 @@ public class PatientServiceImpl implements PatientService {
                 .collect(Collectors.toList());
         return patientDtoList;
     }
+
+
+    @Override
+    public List<PatientDto> findPatientsByDoctorIdAndFinishedStatus(int doctorId) {
+        return partientRepository.findPatientsByDoctorIdAndFinishedStatus(doctorId)
+                .stream()
+                .map(this::toDto)
+                .collect(Collectors.toList());
+    }
     
 
 }

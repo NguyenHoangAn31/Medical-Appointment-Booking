@@ -1,6 +1,6 @@
 import * as Client from '../pages/Client'
 import * as DashBoard from '../pages/DashBoard'
-import {ClientLayout, DashBoardLayout } from '../components/Layouts'
+import { ClientLayout, DashBoardLayout } from '../components/Layouts'
 
 const publicRouters = [
     { path: '/', component: Client.Home, layout: ClientLayout },
@@ -20,13 +20,13 @@ const publicRouters = [
     { path: '/signup', component: Client.Signup, layout: ClientLayout },
     { path: '/blog', component: Client.Blog, layout: ClientLayout },
     { path: '/blog/:id', component: Client.BlogDetail, layout: ClientLayout },
-    { path: '/proccess-payment', component: Client.Proccess, layout: ClientLayout}
+    { path: '/proccess-payment', component: Client.Proccess, layout: ClientLayout }
 
 ]
 const patientRouters = [
-    { path: '/account', component: Client.Account, layout: ClientLayout},
-    { path: '/checkout', component: Client.CheckOut, layout: ClientLayout},
-    
+    { path: '/account', component: Client.Account, layout: ClientLayout },
+    { path: '/checkout', component: Client.CheckOut, layout: ClientLayout },
+
 ]
 
 
@@ -36,6 +36,7 @@ const doctorRouters = [
     { path: '/dashboard/doctor', component: DashBoard.DashboardDoctor, layout: DashBoardLayout },
     { path: '/dashboard/doctor/profile', component: DashBoard.ProfileDoctor, layout: DashBoardLayout },
     { path: '/dashboard/doctor/schedule', component: DashBoard.Schedule, layout: DashBoardLayout },
+    { path: '/dashboard/doctor/list-patient', component: DashBoard.ListPatient, layout: DashBoardLayout },
     { path: '/dashboard/doctor/edit/:id', component: DashBoard.EditProfileDoctor, layout: DashBoardLayout },
 ]
 const adminRouters = [

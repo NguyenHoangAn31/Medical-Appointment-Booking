@@ -15,11 +15,13 @@ const DoctorDetail = () => {
   const { id } = useParams();
   const [doctor, setDoctor] = useState(null);
   const [workings, setWorkings] = useState([]);
+  const [qualifications, setQualifications] = useState([]);
   const [relateds, setRelateds] = useState([]);
 
   useEffect(() => {
     fetchDoctor();
     fetchWorkings();
+    fetchQualifications();
   }, [id]);
 
   const fetchDoctor = async () => {
@@ -39,7 +41,18 @@ const DoctorDetail = () => {
     try {
       const response = await axios.get(`http://localhost:8080/api/working/doctor/${id}`);
       const workings = response.data;
+      const qualifications = response.data;
       setWorkings(workings);
+      setQualifications(qualifications);
+    } catch (error) {
+      console.error('Error fetching workings:', error);
+    }
+  };
+  const fetchQualifications = async () => {
+    try {
+      const response = await axios.get(`http://localhost:8080/api/qualification/doctor/${id}`);
+      const qualifications = response.data;
+      setQualifications(qualifications);
     } catch (error) {
       console.error('Error fetching workings:', error);
     }
@@ -70,13 +83,20 @@ const DoctorDetail = () => {
       <div className="doctor__detail_background container">
         <div className="row bg-white doctor__detail_header">
           <div className="col-md-6 doctor__detail_header_left">
-            <img
-              src={doctor.gender === 'Male'
-                ? "../../../../public/images/doctors/2.png"
-                : "../../../../public/images/doctors/6.png"}
-              alt=""
-              className=""
-            />
+            <div className="doctor__list" key={id}>
+              <div className="doctor__list_background"></div>
+              <img
+                src={"http://localhost:8080/images/doctors/" + doctor.image}
+                alt=""
+                className="doctor__list_image"
+              />
+              <div className="doctor__list_background_title"></div>
+              <span className="doctor__list_title">{doctor.title} {doctor.fullName}</span>
+              <span className="doctor__list_department">Department: {doctor.department.name}</span>
+              <div className="doctor__list_rate">
+                {doctor.rate}&nbsp;<i class="bi bi-star-fill"></i>
+              </div>
+            </div>
           </div>
           <div className="col-md-6 doctor__detail_header_right">
             <h2>{doctor.title} {doctor.fullName}</h2>
@@ -85,24 +105,22 @@ const DoctorDetail = () => {
             <a href="" className='btn btn-primary'> Booking Doctor </a>
           </div>
         </div>
-        <div className="container mt-5 pb-5 doctor__detail_">
-          <strong>
-            Lĩnh vực chuyên môn:
-          </strong>
-          <p>
-            Tầm soát, giáo dục sức khỏe, dự phòng, điều trị cấp cứu và điều trị lâu dài các loại bệnh.
-            <br />
-            Chẩn đoán, tư vấn và điều trị cho tất cả các bệnh nhân.
-          </p>
-          <strong>
-            Tâm niệm nghề nghiệp:
-          </strong>
-          <p>
-            Góp phần đào tạo đội ngũ y tế chất lượng, làm hết khả năng để bảo vệ và trả lại cuộc sống có chất lượng (về sức khỏe) cho mọi người.
-          </p>
+        <div className="container mt-5 pb-5">
+          <strong>Qualifications experience:</strong>
+          <ul>
+            {Array.isArray(qualifications) && qualifications.map((qualification, index) => {
+              return (
+                <li key={index}>
+                  <strong>{qualification.universityName}</strong>
+                  <br />
+                  {qualification.course} - {qualification.degreeName}
+                </li>
+              );
+            })}
+          </ul>
         </div>
         <div className="container bg-white p-3 doctor__detail_woking">
-          <strong>Kinh nghiệm làm việc:</strong>
+          <strong>Work experience:</strong>
           <ol>
             {Array.isArray(workings) && workings.map((working, index) => {
               // Tách ngày thành các phần riêng biệt
@@ -122,8 +140,8 @@ const DoctorDetail = () => {
         </div>
         <div className="container">
           <div className="row doctor__detail_list">
-            <span className='doctor__detail_list_title'><FaUserDoctor />&nbsp;&nbsp;&nbsp;XEM THÊM CÁC BÁC SĨ CÙNG CHUYÊN KHOA&nbsp;&nbsp;&nbsp;<FaUserDoctor /></span>
-            {relateds.map((item,index) => (
+            <span className='doctor__detail_list_title'><FaUserDoctor />&nbsp;&nbsp;&nbsp;SEE MORE DOCTORS IN THE SAME SPECIFICATION&nbsp;&nbsp;&nbsp;<FaUserDoctor /></span>
+            {relateds.map((item, index) => (
               <div className="col-md-3" key={index}>
                 <DoctorItem item={item} key={index} />
               </div>

@@ -67,4 +67,12 @@ public class PatientController {
         return ResponseEntity.ok(result);
     }
 
+
+    @GetMapping("/patientsbydoctoridandfinishedstatus/{doctorId}")
+    public ResponseEntity<List<PatientDto>> getPatientsByDoctorIdAndFinishedStatus(
+            @PathVariable("doctorId") int doctorId) {
+        List<PatientDto> result = patientService.findPatientsByDoctorIdAndFinishedStatus(doctorId);
+        return ResponseEntity.ok(result);
+    }
+
 }

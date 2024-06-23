@@ -22,7 +22,8 @@ import {
     CarryOutTwoTone,
     SettingTwoTone,
     ContactsTwoTone,
-    AppstoreTwoTone
+    AppstoreTwoTone,
+    UserOutlined,
 } from '@ant-design/icons';
 import { Button, Breadcrumb, Layout, Menu, theme, Dropdown, Space, Badge } from 'antd';
 import openAlert from '../../openAlert';
@@ -114,6 +115,11 @@ const DashBoardLayout = ({ children }) => {
                     label: "Schedule",
                     key: "/dashboard/doctor/schedule",
                     icon: <ScheduleOutlined />,
+                },
+                {
+                    label: "List Patients",
+                    key: "/dashboard/doctor/list-patient",
+                    icon: <UserOutlined />,
                 }
             )
         }
