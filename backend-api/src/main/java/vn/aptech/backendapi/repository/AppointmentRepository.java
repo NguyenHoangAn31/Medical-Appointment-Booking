@@ -42,7 +42,7 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Intege
 
        @Query("SELECT a FROM Appointment a WHERE a.scheduledoctor.id = :scheduledoctorid AND a.clinicHours = :starttime")
        List<Appointment> findAppointmentsByScheduleDoctorIdAndStartTime(@Param("scheduledoctorid") int scheduleDoctorId, @Param("starttime") LocalTime startTime);
-}
+
 
        @Query("SELECT DISTINCT a FROM Appointment a " +
                      "WHERE a.scheduledoctor.doctor.id = :doctorId " +

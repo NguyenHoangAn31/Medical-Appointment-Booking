@@ -51,15 +51,25 @@ public class ApiAuthentication {
         return ResponseEntity.ok(session);
     }
 
-    @PostMapping(value = "/send-otp", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Boolean> sendOtp(@RequestBody AuthenticationWithUsernameAndKeycode body) {
+    @PostMapping(value = "/check-account", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Boolean> checkExitAccount(@RequestBody AuthenticationWithUsernameAndKeycode body) {
         String username = body.getUsername();
         String provider = body.getProvider();
         Optional<User> userOptional = userService.findByEmailOrPhone(username);
         if(userOptional.isPresent() && userOptional.get().getProvider().equals(provider)){
+            return ResponseEntity.ok(true);
+        }else{
+            return ResponseEntity.ok(false);
+        }
+    }
+
+    @PostMapping(value = "/send-otp", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Boolean> sendOtp(@RequestBody AuthenticationWithUsernameAndKeycode body) {
+        String username = body.getUsername();
+        String provider = body.getProvider();
+//        Optional<User> userOptional = userService.findByEmailOrPhone(username);
+//        if(userOptional.isPresent() && userOptional.get().getProvider().equals(provider)){
             Optional<RefreshToken> refreshTokenOptional = refreshTokenRepository.findRefreshTokenByUsername(username);
-            System.out.println("Tìm thấy user");
-            //System.out.println(refreshTokenOptional.isPresent());
             if (refreshTokenOptional.isPresent()) {
                 System.out.println("Tìm thấy token");
                 RefreshToken refreshToken = refreshTokenOptional.get();
@@ -68,22 +78,19 @@ public class ApiAuthentication {
                 LocalDateTime now = LocalDateTime.now();
                 // check tính hợp lệ của token
                 if (now.isBefore(expiredAt)) {
+                    System.out.println("Tìm token còn hạn");
                     return ResponseEntity.ok(false); // Token chưa hết hạn, no thực hiện gửi OTP
                 } else {
-                    refreshToken.setAvailable(true);
-                    refreshTokenRepository.save(refreshToken);
+                    System.out.println("Tìm token hết hạn");
+                    //refreshToken.setAvailable(false);
+                    refreshTokenRepository.delete(refreshToken);
                     return ResponseEntity.ok(true); // Token đã hết hạn, thực hiện login
                 }
             }
            else {
                 System.out.println("Token not found");
-                return ResponseEntity.ok(true); // User not found
+                return ResponseEntity.ok(true); // Token bằng null, thực hiện gửi OTP
             }
-        }
-        else{
-            System.out.println("Không tìm thấy user");
-            return ResponseEntity.ok(false);
-        }
 
     }
 

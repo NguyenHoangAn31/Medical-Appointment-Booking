@@ -43,7 +43,7 @@ class _EditDoctorScreenState extends State<EditDoctorScreen> {
   Future<void> fetchDoctorDetail() async {
     final response = await http.get(
       Uri.parse(
-          'http://${ipDevice}:8080/api/doctor/getdoctordetail/${currentUser['id']}'),
+          'http://$ipDevice:8080/api/doctor/getdoctordetail/${currentUser['id']}'),
     );
 
     if (response.statusCode == 200) {

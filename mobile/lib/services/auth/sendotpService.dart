@@ -5,7 +5,3 @@ import 'package:mobile/models/doctor.dart';
 
 
 // Lấy all doctor
-// Future<bool> sendOtp() async {
-//   var url = 'http://localhost:8080/api/auth/send-otp';
-  
-// }

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile/screens/auth/login_screen.dart';
+import 'package:mobile/screens/auth/sign_screen.dart';
 import 'package:mobile/widgets/navigation_menu_doctor.dart';
 //import 'package:mobile/screens/home_screen.dart';
 
@@ -23,7 +24,8 @@ class _WelcomeScreenState extends State<WelcomeScreen>
     super.initState();
     Timer(const Duration(seconds: 3), () {
       Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => const LoginScreen()),
+        //MaterialPageRoute(builder: (context) => const LoginScreen()),
+        MaterialPageRoute(builder: (context) => const SignInScreen()),
         // MaterialPageRoute(builder: (context) => const NavigationMenu()),
       );
     });
