@@ -7,6 +7,7 @@ import '../../services/Department/departmentApi.dart';
 import '../../ultils/color_app.dart';
 import '../../ultils/ip_app.dart';
 import '../../ultils/list_service.dart';
+import '../../ultils/storeCurrentUser.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -16,6 +17,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final currentUser = CurrentUser.to.user;
   late Future<List<Department>> departments;
   late Future<List<Doctor>>? doctors;
   final TextEditingController _searchController = TextEditingController();
@@ -29,6 +31,7 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     departments = getDepartments();
     doctors = getDoctorByDepartmentId(0);
+    print(currentUser['id']);
   }
 
   void _handleSelected(int index) {
@@ -56,29 +59,29 @@ class _HomeScreenState extends State<HomeScreen> {
                             ClipRRect(
                               borderRadius: BorderRadius.circular(50),
                               // Làm tròn các góc
-                              child: const Image(
+                              child: Image.network(
+                                'http://$ipDevice:8080/images/patients/${currentUser['image']}',
                                 width: 50,
                                 height: 50,
-                                image: AssetImage(
-                                    'assets/images/login_default.jpg'),
+                                fit: BoxFit.cover,
                               ),
                             ),
                             const SizedBox(
                               width: 15,
                             ),
-                            const Column(
+                            Column(
                               mainAxisAlignment: MainAxisAlignment.start,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
-                                Text('Hello,',
+                                const Text('Hello,',
                                     style: TextStyle(
                                         color: Colors.black26,
                                         fontSize: 14,
                                         fontWeight: FontWeight.bold),
                                     textAlign: TextAlign.start),
                                 Text(
-                                  'Nguyễn Khoa',
-                                  style: TextStyle(
+                                  '${currentUser['fullName']}',
+                                  style: const TextStyle(
                                       color: Colors.black87,
                                       fontSize: 16,
                                       fontWeight: FontWeight.w600,

@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:mobile/widgets/notication/success_widget.dart';
 
 import '../../models/doctor.dart';
 import '../../services/doctor/doctorService.dart';
