@@ -47,54 +47,66 @@ const LoginPhone = () => {
             username: username,
             provider: provider
         }
+        
         try {
-            const result = await axios.post('http://localhost:8080/api/auth/send-otp', data);
-            console.log(result);
-            if (false) {
-                onCaptchVerify();
-                const appVerifier = window.recaptchaVerifier;
-                const formatPh = "+84" + username.slice(1);
-                console.log(formatPh);
-                signInWithPhoneNumber(auth, formatPh, appVerifier)
-                    .then((confirmationResult) => {
-                        window.confirmationResult = confirmationResult;
-                        setLoading(false);
-                        toast.success("OTP sended successfully!", {
-                            position: "top-right"
-                        });
-                        navigateTo(`/login-by-phone-submit?username=${data.username}`);
-                    })
-                    .catch((error) => {
-                        setLoading(false);
-                    });
-            } else {
-                const checkToken = await axios.post('http://localhost:8080/api/auth/check-refresh-token', data);
-                console.log("token : ", checkToken.data.accessToken);
-                if (checkToken.data.accessToken == null) {
-                    toast.error("User not found or please try again with gmail!", {
-                        position: "bottom-right"
-                    });
-
-                } else {
-                    localStorage.setItem('Token', ecryptToken.encryptToken(JSON.stringify(checkToken.data)));
-                    if(checkToken.data.user.roles[0]=='USER'){
-                        setCurrentUser(checkToken.data)
+            const result = await axios.post('http://localhost:8080/api/auth/check-account', data);
+            if(result.data){
+               console.log('Xử lý send-otp');
+                try {
+                        const result = await axios.post('http://localhost:8080/api/auth/send-otp', data);
+                        
+                        if (result.data) {
+                            console.log('Bắt đầu gửi mã OTP');
+                            onCaptchVerify();
+                            const appVerifier = window.recaptchaVerifier;
+                            const formatPh = "+84" + username.slice(1);
+                            console.log(formatPh);
+                            signInWithPhoneNumber(auth, formatPh, appVerifier)
+                                .then((confirmationResult) => {
+                                    window.confirmationResult = confirmationResult;
+                                    setLoading(false);
+                                    toast.success("OTP sended successfully!", {
+                                        position: "top-right"
+                                    });
+                                    navigateTo(`/login-by-phone-submit?username=${data.username}`);
+                                })
+                                .catch((error) => {
+                                    setLoading(false);
+                                });
+                        } else {
+                            console.log('Check Refresh token');
+                            const checkToken = await axios.post('http://localhost:8080/api/auth/check-refresh-token', data);
+                            console.log("token : ", checkToken.data.accessToken);
+                            if (checkToken.data.accessToken != null) {
+                                localStorage.setItem('Token', ecryptToken.encryptToken(JSON.stringify(checkToken.data)));
+                                if(checkToken.data.user.roles[0]=='USER'){
+                                    setCurrentUser(checkToken.data)
+                                }
+                                if (getUserData().user.roles[0] == 'USER') {
+                                    navigateTo(`/`);
+                                }
+                                else if (getUserData().user.roles[0] == 'DOCTOR') {
+                                    navigateTo(`/dashboard/doctor`);
+                                }
+                                else if (getUserData().user.roles[0] == 'ADMIN') {
+                                    navigateTo(`/dashboard/admin`);
+                                }
+            
+                            } 
+                        }
+            
+                    } catch (error) {
+                        console.log(error)
                     }
-                    if (getUserData().user.roles[0] == 'USER') {
-                        navigateTo(`/`);
-                    }
-                    else if (getUserData().user.roles[0] == 'DOCTOR') {
-                        navigateTo(`/dashboard/doctor`);
-                    }
-                    else if (getUserData().user.roles[0] == 'ADMIN') {
-                        navigateTo(`/dashboard/admin`);
-                    }
-                }
+            }else{
+                toast.error("User not found or please try again with gmail!", {
+                    position: "bottom-right"
+                });
             }
-
         } catch (error) {
-            console.log(error)
+            
         }
+        
     };
 
     return (

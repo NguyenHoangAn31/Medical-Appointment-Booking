@@ -9,6 +9,7 @@ import '../screens/blog/blog_screen.dart';
 import '../screens/doctor/doctor_screen.dart';
 import '../screens/home/home_screen.dart';
 import '../ultils/awesome_dialog.dart';
+import '../ultils/storeCurrentUser.dart';
 
 class NavigationMenu extends StatelessWidget {
   const NavigationMenu({super.key});
@@ -16,6 +17,7 @@ class NavigationMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(NavigationControllerForDoctor());
+    final currentUser = CurrentUser.to.user;
     return Scaffold(
       bottomNavigationBar: Obx(
           () => NavigationBar(
@@ -38,6 +40,7 @@ class NavigationMenu extends StatelessWidget {
 }
 
 class NavigationControllerForDoctor extends GetxController {
+  final currentUser = CurrentUser.to.user;
   final Rx<int> selectedIndex = 0.obs;
   final RxBool loggedIn = false.obs;
   final screens = [
@@ -49,7 +52,7 @@ class NavigationControllerForDoctor extends GetxController {
   ];
 
   void onDestinationSelected(int index, BuildContext context) {
-    if(index == 4 && !loggedIn.value) {
+    if(index == 2 && currentUser.isEmpty) {
       AwesomeDialog.show(
         context: context,
         title: 'Notification!',
@@ -59,8 +62,16 @@ class NavigationControllerForDoctor extends GetxController {
         cancelText: 'Close',
         onCancel: () => Get.back(),
       );
-    }else{
-      selectedIndex.value = index;
+    }else if(index == 4 && currentUser.isEmpty){
+      AwesomeDialog.show(
+        context: context,
+        title: 'Notification!',
+        content: 'Please Sign in to use this function',
+        confirmText: 'Login',
+        route: '/sign-in',
+        cancelText: 'Close',
+        onCancel: () => Get.back(),
+      );
     }
     selectedIndex.value = index;
   }

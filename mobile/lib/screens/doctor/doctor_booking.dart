@@ -1,13 +1,18 @@
 import 'dart:async';
 import 'dart:ffi';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:mobile/models/schedule.dart';
 import 'package:mobile/services/doctor/doctorService.dart';
 //import 'package:mobile/widgets/notication/success_widget.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 import '../../models/doctor.dart';
+import '../../ultils/awesome_dialog.dart';
 import '../../ultils/ip_app.dart';
+import '../../ultils/storeCurrentUser.dart';
 import '../../widgets/notication/error_widget.dart';
 
 
@@ -20,7 +25,7 @@ class DoctorBookingScreen extends StatefulWidget {
 
 class _DoctorBookingScreenState extends State<DoctorBookingScreen> {
   final ipDevice = BaseClient().ip;
-
+  final currentUser = CurrentUser.to.user;
 
   int? _selectedIndex;
   int? _scheduleDoctorId;
@@ -28,6 +33,7 @@ class _DoctorBookingScreenState extends State<DoctorBookingScreen> {
   int? _patientId;
   double? price;
   late final DateTime _appointmentDay = DateTime.now();
+
 
 
   late final int doctorId;
@@ -304,27 +310,40 @@ class _DoctorBookingScreenState extends State<DoctorBookingScreen> {
             padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 30),
             child: InkWell(
               onTap: (){
-                var data = {
-                  'doctorId' : doctorId,
-                  'medicalExaminationDay': toDay.toIso8601String().split('T')[0],
-                  'clinicHour': _timeSelected,
-                  'scheduledoctorId': _scheduleDoctorId,
-                  'appointmentDate': _appointmentDay.toIso8601String().split('T')[0],
-                  'partientId': _patientId,
-                  'price': price != null ? price! * 0.3 : 0,
-                  'note': '',
-                  'payment': '',
-                  'status': 'waiting',
-                };
-                if (_selectedIndex != -1) {
-                  Navigator.pushNamed(context, '/doctor/booking/patient', arguments: data);
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Please choose a clinic hour'),
-                    ),
+                if(currentUser.isEmpty){
+                  AwesomeDialog.show(
+                    context: context,
+                    title: 'Notification!',
+                    content: 'Please Sign in to use this function',
+                    confirmText: 'Login',
+                    route: '/sign-in',
+                    cancelText: 'Close',
+                    onCancel: () => Get.back(),
                   );
+                }else{
+                  var data = {
+                    'doctorId' : doctorId,
+                    'medicalExaminationDay': toDay.toIso8601String().split('T')[0],
+                    'clinicHour': _timeSelected,
+                    'scheduledoctorId': _scheduleDoctorId,
+                    'appointmentDate': _appointmentDay.toIso8601String().split('T')[0],
+                    'partientId': _patientId,
+                    'price': price != null ? price! * 0.3 : 0,
+                    'note': '',
+                    'payment': '',
+                    'status': 'waiting',
+                  };
+                  if (_selectedIndex != -1) {
+                    Navigator.pushNamed(context, '/doctor/booking/patient', arguments: data);
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Please choose a clinic hour'),
+                      ),
+                    );
+                  }
                 }
+
               },
               child: Container(
                 height: 50,
