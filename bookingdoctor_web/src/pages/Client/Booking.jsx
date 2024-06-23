@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react'
-import { MdSearch, MdOutlineStarPurple500, MdCalendarMonth, MdOutlinePhoneInTalk, MdArrowBackIos, MdArrowForwardIos  } from "react-icons/md";
+import { MdSearch, MdOutlineStarPurple500, MdCalendarMonth, MdOutlinePhoneInTalk, MdArrowBackIos, MdArrowForwardIos, MdArrowBack } from "react-icons/md";
 import { BiCommentDots, BiSolidVideo } from "react-icons/bi";
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -14,6 +14,7 @@ import getUserData from '../../route/CheckRouters/token/Token'
 import Payment from '../../components/Card/Payment';
 import { formatDateFromJs } from '../../ultils/formatDate';
 import { UserContext } from '../../components/Layouts/Client';
+import { Flex } from 'antd';
 
 const Booking = () => {
   const slots = [
@@ -492,7 +493,12 @@ const Booking = () => {
                       )
                       )}
                     </div> */}
-                    <div className='body_day'>
+
+
+                    <div className='body_day align-items-center'>
+                      <button onClick={handlePreviousPage} disabled={currentPage === 0}>
+                        <MdArrowBackIos />
+                      </button>
                       {visibleDays.map((day, i) => (
                         <div
                           key={i}
@@ -503,15 +509,12 @@ const Booking = () => {
                           <span className='day-number'>{day.ngayOfMonth}</span>
                         </div>
                       ))}
-                    </div>
-                    <div className='pagination'>
-                      <button onClick={handlePreviousPage} disabled={currentPage === 0}>
-                        <MdArrowBackIos />
-                      </button>
                       <button onClick={handleNextPage} disabled={endIndex >= days.length}>
                         <MdArrowForwardIos />
                       </button>
                     </div>
+
+
                     <div className="body_date">
                       {slots.map((slot, index) => {
                         const matchedSchedule = isSlotAvailable(slot.startTime);

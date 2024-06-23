@@ -203,8 +203,8 @@
     }
     .body_day {
         display: grid;
-        grid-template-columns: repeat(7, 1fr);
-        gap: 40px;
+        grid-template-columns: repeat(9, 1fr);
+        gap: 20px;
         margin-top: 20px;
         padding: 0 20px;
         .day_item {
@@ -232,6 +232,14 @@
             & > .day-title {
                 color: #ddcccc;
             }
+        }
+        button{
+            width: 30px;
+            height: 30px;
+            border: 0;
+            background-color: transparent;
+            // background-color: #4C94FF;
+            // border-radius: 50%;
         }
     }
     .body_date {

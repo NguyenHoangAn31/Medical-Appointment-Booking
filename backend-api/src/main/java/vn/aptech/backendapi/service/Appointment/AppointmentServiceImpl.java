@@ -111,28 +111,28 @@ public class AppointmentServiceImpl implements AppointmentService {
         return toDto(result);
     }
 
-
-
     @Override
-    public List<AppointmentDto> findAppointmentsByScheduleDoctorIdAndStartTime(int scheduledoctorid, LocalTime starttime) {
+    public List<AppointmentDto> findAppointmentsByScheduleDoctorIdAndStartTime(int scheduledoctorid,
+            LocalTime starttime) {
         return appointmentRepository.findAppointmentsByScheduleDoctorIdAndStartTime(scheduledoctorid, starttime)
                 .stream()
                 .map(this::toDto)
                 .collect(Collectors.toList());
     }
 
-}
-
     @Override
-    public List<CustomAppointmentDto> findPatientsByDoctorIdAndAppointmentUpcoming(int doctorId , LocalDate startDate){
-        return appointmentRepository.findPatientsByDoctorIdAndAppointmentUpcoming(doctorId,startDate).stream().map(this::toCustomDto)
-        .collect(Collectors.toList());
+    public List<CustomAppointmentDto> findPatientsByDoctorIdAndAppointmentUpcoming(int doctorId, LocalDate startDate) {
+        return appointmentRepository.findPatientsByDoctorIdAndAppointmentUpcoming(doctorId, startDate).stream()
+                .map(this::toCustomDto)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public List<CustomAppointmentDto> findPatientsByDoctorIdAndMedicalExaminationToday(int doctorId , LocalDate startDate , LocalDate endDate){
-        return appointmentRepository.findPatientsByDoctorIdAndMedicalExaminationToday(doctorId,startDate,endDate).stream().map(this::toCustomDto)
-        .collect(Collectors.toList());
+    public List<CustomAppointmentDto> findPatientsByDoctorIdAndMedicalExaminationToday(int doctorId,
+            LocalDate startDate, LocalDate endDate) {
+        return appointmentRepository.findPatientsByDoctorIdAndMedicalExaminationToday(doctorId, startDate, endDate)
+                .stream().map(this::toCustomDto)
+                .collect(Collectors.toList());
     }
 
 }

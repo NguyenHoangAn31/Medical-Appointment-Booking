@@ -1204,6 +1204,22 @@ nav .nav-link:hover {
   line-height: 45px;
 }
 
+.home__about {
+  margin-top: 100px;
+  margin-bottom: 200px;
+}
+.home__about .home_about_title {
+  color: deeppink;
+  font-weight: bold;
+}
+.home__about .home_about_content {
+  margin-top: 50px;
+  font-size: 22px;
+}
+.home__about .home_about_image {
+  width: 500px;
+}
+
 .feedback_detail {
   padding: 0 40px;
 }
@@ -2056,8 +2072,8 @@ small.redtext {
 }
 .booking__date .body_day {
   display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 40px;
+  grid-template-columns: repeat(9, 1fr);
+  gap: 20px;
   margin-top: 20px;
   padding: 0 20px;
 }
@@ -2086,6 +2102,12 @@ small.redtext {
 }
 .booking__date .body_day .day_item.active > .day-title {
   color: #ddcccc;
+}
+.booking__date .body_day button {
+  width: 30px;
+  height: 30px;
+  border: 0;
+  background-color: transparent;
 }
 .booking__date .body_date {
   margin-top: 30px;
