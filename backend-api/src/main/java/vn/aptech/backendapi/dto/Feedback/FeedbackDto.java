@@ -1,10 +1,10 @@
 package vn.aptech.backendapi.dto.Feedback;
 
+
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import vn.aptech.backendapi.dto.PatientDto;
-import vn.aptech.backendapi.entities.Partient;
 
 
 
@@ -17,6 +17,7 @@ public class FeedbackDto {
     private String comment;
     private int patientId;
     private int doctorId;
-    private boolean status;
+    private byte status;
+    private String createdAt;
     private PatientDto patient;
 }

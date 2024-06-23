@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import bg_login from '../../public/images/image-login.png';
 import { motion } from 'framer-motion';
 import { auth } from "../services/auth/firebase.config";
-import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
+import { RecaptchaVerifier, signInWithPhoneNumber, signOut } from "firebase/auth";
 import { toast } from "react-hot-toast";
 import axios from 'axios';
 import ecryptToken from '../ultils/encrypt';
@@ -50,7 +50,7 @@ const LoginPhone = () => {
         try {
             const result = await axios.post('http://localhost:8080/api/auth/send-otp', data);
             console.log(result);
-            if (result && result.data) {
+            if (false) {
                 onCaptchVerify();
                 const appVerifier = window.recaptchaVerifier;
                 const formatPh = "+84" + username.slice(1);
@@ -67,7 +67,6 @@ const LoginPhone = () => {
                     .catch((error) => {
                         setLoading(false);
                     });
-
             } else {
                 const checkToken = await axios.post('http://localhost:8080/api/auth/check-refresh-token', data);
                 console.log("token : ", checkToken.data.accessToken);

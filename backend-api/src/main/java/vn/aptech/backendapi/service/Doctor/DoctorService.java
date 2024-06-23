@@ -1,5 +1,6 @@
 package vn.aptech.backendapi.service.Doctor;
 
+import vn.aptech.backendapi.dto.CustomDoctorForEdit;
 import vn.aptech.backendapi.dto.DoctorDto;
 
 import java.util.List;
@@ -27,5 +28,8 @@ public interface DoctorService {
     List<DoctorDto> doctorNotDepartment();
 
     boolean addDoctorToDepartment(int departmentId , int doctorId);
+
+    CustomDoctorForEdit getDoctorDetail(int doctorId);
+    boolean editDoctor(int doctorId , CustomDoctorForEdit doctor);
 
 }

@@ -39,6 +39,22 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Intege
                @Param("endDate") LocalDate endDate);
 
 
+
        @Query("SELECT a FROM Appointment a WHERE a.scheduledoctor.id = :scheduledoctorid AND a.clinicHours = :starttime")
        List<Appointment> findAppointmentsByScheduleDoctorIdAndStartTime(@Param("scheduledoctorid") int scheduleDoctorId, @Param("starttime") LocalTime startTime);
+}
+
+       @Query("SELECT DISTINCT a FROM Appointment a " +
+                     "WHERE a.scheduledoctor.doctor.id = :doctorId " +
+                     "AND a.medicalExaminationDay >= :startDate")
+       List<Appointment> findPatientsByDoctorIdAndAppointmentUpcoming(@Param("doctorId") int doctorId,
+                     @Param("startDate") LocalDate startDate);
+
+       @Query("SELECT DISTINCT a FROM Appointment a " +
+                     "WHERE a.scheduledoctor.doctor.id = :doctorId " +
+                     "AND a.medicalExaminationDay BETWEEN :startDate AND :endDate")
+       List<Appointment> findPatientsByDoctorIdAndMedicalExaminationToday(@Param("doctorId") int doctorId,
+                     @Param("startDate") LocalDate startDate,
+                     @Param("endDate") LocalDate endDate);
+
 }

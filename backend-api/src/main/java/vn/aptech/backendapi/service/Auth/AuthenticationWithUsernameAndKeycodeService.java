@@ -62,10 +62,10 @@ public class AuthenticationWithUsernameAndKeycodeService {
             String tokenCode = refreshToken.getCode();
             LocalDateTime expiredAt = refreshToken.getExpiredAt();
             LocalDateTime now = LocalDateTime.now();
-            if(now.isBefore(expiredAt)){
+            // if(now.isBefore(expiredAt)){
                 var accessToken = jwt.encode(user.getId(), user.getAuthorities(), expiredAt, TOKEN_SECRET);
                 auth = new Authentication(new UserInformation(user), accessToken, tokenCode, expiredAt);
-            }
+            // }
         }
         return  auth;
     }

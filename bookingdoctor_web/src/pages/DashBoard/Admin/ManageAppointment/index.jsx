@@ -47,6 +47,8 @@ const ManageAppointment = () => {
     let appointmensWithKeys = fetchedAppointments.map((appointment, index) => ({
       ...appointment,
       key: index.toString(),
+      image : appointment.patientDto.image,
+      fullName : appointment.patientDto.fullName,
     }));
     appointmensWithKeys = appointmensWithKeys.reverse();
     setAppointments(appointmensWithKeys);
@@ -59,7 +61,7 @@ const ManageAppointment = () => {
 
 
 
-
+  console.log(appointments)
 
 
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
@@ -244,13 +246,10 @@ const ManageAppointment = () => {
       ...getColumnSearchProps('payment'),
       render: (_, { payment }) => {
         var image;
-        if (payment == 'PayPal') {
+        if (payment == 'paypal') {
           image = paypal
-        }
-        else if (payment == 'Momo') {
-          image = momo
-        }
-        else if (payment == 'VN Pay') {
+
+        }else if (payment == 'vnpay') {
           image = vnpay
         }
         return (
@@ -264,16 +263,16 @@ const ManageAppointment = () => {
       width: '6%',
       filters: [
         {
-          text: 'finished',
-          value: 'finished',
+          text: 'completed',
+          value: 'completed',
         },
         {
           text: 'waiting',
           value: 'waiting',
         },
         {
-          text: 'canceled',
-          value: 'canceled',
+          text: 'cancelled',
+          value: 'cancelled',
         }
       ],
       filteredValue: filteredInfo.status || null,
@@ -282,7 +281,7 @@ const ManageAppointment = () => {
 
       render: (_, { status }) => {
         let color;
-        if (status == 'finished') {
+        if (status == 'completed') {
           color = 'green'
         }
         else if (status == 'waiting') {

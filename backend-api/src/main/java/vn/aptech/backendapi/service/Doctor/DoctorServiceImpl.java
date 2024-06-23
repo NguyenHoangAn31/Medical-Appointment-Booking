@@ -11,8 +11,11 @@ import vn.aptech.backendapi.entities.*;
 import vn.aptech.backendapi.repository.DepartmentRepository;
 import vn.aptech.backendapi.repository.DoctorRepository;
 import vn.aptech.backendapi.repository.ScheduleDoctorRepository;
+import vn.aptech.backendapi.repository.UserRepository;
 
 import java.time.LocalDate;
+import java.time.Period;
+import java.time.temporal.ChronoUnit;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -31,6 +34,9 @@ public class DoctorServiceImpl implements DoctorService {
     private DepartmentRepository departmentRepository;
 
     @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
     private ModelMapper mapper;
 
     private DoctorDto toDto(Doctor p) {
@@ -40,7 +46,6 @@ public class DoctorServiceImpl implements DoctorService {
     private DoctorDto mapToDoctorDto(Doctor doctor) {
         DoctorDto doctorDto = new DoctorDto();
         doctorDto.setId((doctor.getId()));
-
         doctorDto.setFullName(doctor.getFullName());
         doctorDto.setTitle(doctor.getTitle());
         doctorDto.setGender(doctor.getGender());
@@ -189,15 +194,38 @@ public class DoctorServiceImpl implements DoctorService {
                         .average()
                         .orElse(0);
             }
+            int totalYearsOfWorking = calculateTotalYearsOfWorking(workingList);
             DoctorDto doctorDto = mapToDoctorDto(doctor);
             doctorDto.setWorkings(workingList);
             doctorDto.setQualifications(qualificationList);
             doctorDto.setFeedbackDtoList(feedbackList);
             doctorDto.setRate(totalRating);
+            doctorDto.setExperience(totalYearsOfWorking);
             return Optional.of(doctorDto);
         } else {
             return Optional.empty(); // Trả về Optional rỗng nếu không tìm thấy Doctor
         }
+    }
+
+    private int calculateTotalYearsOfWorking(List<WorkingDto> workingList) {
+        long totalDays = workingList.stream()
+                .mapToLong(working -> {
+                    LocalDate startDate = LocalDate.parse(working.getStartWork());
+                    LocalDate endDate = working.getEndWork() != null ? LocalDate.parse(working.getEndWork()) : LocalDate.now();
+
+                    System.out.println("Start Date: " + startDate); // Debug log
+                    System.out.println("End Date: " + endDate);     // Debug log
+
+                    long days = ChronoUnit.DAYS.between(startDate, endDate);
+
+                    System.out.println("Days: " + days);            // Debug log
+
+                    return days;
+                })
+                .sum();
+
+        // Chuyển đổi tổng số ngày thành số năm (có thể sử dụng 365.25 để tính cả năm nhuận)
+        return (int) (totalDays / 365.25);
     }
 
     @Override
@@ -375,6 +403,45 @@ public class DoctorServiceImpl implements DoctorService {
                 de.ifPresent(doctor -> d.setDepartment(mapper.map(de, Department.class)));
             }
             doctorRepository.save(d);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    @Override
+    public CustomDoctorForEdit getDoctorDetail(int doctorId) {
+        Doctor doctor = doctorRepository.findById(doctorId).get();
+        CustomDoctorForEdit customDoctor = new CustomDoctorForEdit();
+        customDoctor.setFullName(doctor.getFullName());
+        customDoctor.setTitle(doctor.getTitle());
+        customDoctor.setGender(doctor.getGender());
+        customDoctor.setBirthday(doctor.getBirthday().toString());
+        customDoctor.setAddress(doctor.getAddress());
+        customDoctor.setBio(doctor.getBiography());
+        customDoctor.setPhone(doctor.getUser().getPhone());
+        customDoctor.setEmail(doctor.getUser().getEmail());
+
+        return customDoctor;
+    }
+
+    @Override
+    public boolean editDoctor(int doctorId, CustomDoctorForEdit dto) {
+        Doctor doctor = doctorRepository.findById(doctorId).get();
+        User user = doctorRepository.findUserByDoctorId(doctorId);
+        user.setPhone(dto.getPhone());
+        user.setEmail(dto.getEmail());
+        doctor.setFullName(dto.getFullName());
+        doctor.setTitle(dto.getTitle());
+        doctor.setGender(dto.getGender());
+        doctor.setBirthday(LocalDate.parse(dto.getBirthday()));
+        doctor.setAddress(dto.getAddress());
+        doctor.setBiography(dto.getBio());
+        try {
+
+            doctorRepository.save(doctor);
+            userRepository.save(user);
             return true;
         } catch (Exception e) {
             e.printStackTrace();

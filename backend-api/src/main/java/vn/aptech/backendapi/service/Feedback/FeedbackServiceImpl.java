@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import javax.swing.text.html.Option;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +47,7 @@ public class FeedbackServiceImpl implements FeedbackService {
         FeedbackDto feedback = mapper.map(f, FeedbackDto.class);
         feedback.setPatientId(f.getPartient().getId());
         feedback.setDoctorId(f.getDoctor().getId());
+        feedback.setCreatedAt(f.getCreatedAt().toString());
         feedback.setPatient(patientService.getPatientByPatientId(f.getPartient().getId()).get());
 
         return feedback;

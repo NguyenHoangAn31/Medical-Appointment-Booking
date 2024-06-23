@@ -4,11 +4,11 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import vn.aptech.backendapi.dto.CustomDoctorForEdit;
 import vn.aptech.backendapi.dto.DoctorCreateDto;
 import vn.aptech.backendapi.dto.DoctorDto;
-import vn.aptech.backendapi.dto.DoctorViewDto;
 import vn.aptech.backendapi.service.Doctor.DoctorService;
 
 import java.io.IOException;
@@ -127,6 +127,24 @@ public class DoctorController {
     public ResponseEntity<List<DoctorDto>> listDoctorsByDepartmentId(@PathVariable("departmentId") int departmentId) {
         List<DoctorDto> relatedDoctors = doctorService.findDoctorsByDepartmentIdWithAllStatus(departmentId);
         return ResponseEntity.ok(relatedDoctors);
+    }
+
+
+    @GetMapping(value = "/getdoctordetail/{doctorId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<CustomDoctorForEdit> getDoctorDetail(@PathVariable("doctorId") int doctorId) throws IOException {
+        CustomDoctorForEdit result = doctorService.getDoctorDetail(doctorId);
+        if (result != null) {
+            return ResponseEntity.ok(result);
+        }
+        return ResponseEntity.notFound().build();
+    }
+    @PutMapping(value = "/editdoctor/{doctorId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> editDoctor(@PathVariable("doctorId") int doctorId,@RequestBody CustomDoctorForEdit dto) throws IOException {
+        boolean result = doctorService.editDoctor(doctorId,dto);
+        if (result) {
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.notFound().build();
     }
 
 }

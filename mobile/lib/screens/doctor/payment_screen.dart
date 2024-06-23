@@ -1,6 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:mobile/widgets/notication/success_widget.dart';
+
+import '../../models/doctor.dart';
+import '../../services/doctor/doctorService.dart';
 
 class PaymentScreen extends StatefulWidget {
   const PaymentScreen({super.key});
@@ -10,9 +14,66 @@ class PaymentScreen extends StatefulWidget {
 }
 
 class _PaymentScreenState extends State<PaymentScreen> {
-  String _selectedPaymentMethod = 'VNPay';
+  String _selectedPaymentMethod = 'vnpay';
+  late Future<Doctor> _doctorFuture;
+  @override
+  void initState() {
+    super.initState();
+    // Khởi tạo TextEditingController với dữ liệu có sẵn
+  }
+
+  late String? fullNameDoctor;
+  late String? department;
+  late String? title;
+  late double? price;
+  late Map<String, dynamic> _data;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // final Map arguments = ModalRoute.of(context)?.settings.arguments as Map;
+    final Map<String, dynamic> data = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>;
+    _doctorFuture =  getDoctorById(data['doctorId']);
+    _data = data;
+    _doctorFuture.then((doctor) {
+      if (doctor != null) {
+        fullNameDoctor = doctor.fullName;
+        department = doctor.department.name;
+        title = doctor.title;
+        price = doctor.price;
+      } else {
+        // Handle case when patient data is null
+        print('Patient data is null.');
+      }
+    }).catchError((error) {
+      print('Error fetching patient data: $error');
+    });
+
+
+  }
+
+
+
+
+
   @override
   Widget build(BuildContext context) {
+    String clinicHours = _data['clinicHour'];
+    int durationMinutes = 30;
+
+    TimeOfDay startTime = TimeOfDay(
+      hour: int.parse(clinicHours.split(":")[0]),
+      minute: int.parse(clinicHours.split(":")[1]),
+    );
+
+    // Tính toán thời gian kết thúc
+    TimeOfDay endTime = startTime.replacing(
+      hour: (startTime.hour + (startTime.minute + durationMinutes) ~/ 60) % 24,
+      minute: (startTime.minute + durationMinutes) % 60,
+    );
+
+    // Tạo chuỗi hiển thị
+    String formattedClinicHours = "${startTime.format(context)} - ${endTime.format(context)}";
     return Scaffold(
       appBar: AppBar(
         title: const Text('Payment'),
@@ -26,27 +87,27 @@ class _PaymentScreenState extends State<PaymentScreen> {
             children: [
               const Text('Thông tin lịch book'),
               const SizedBox(height: 10,),
-              const Row(
+              Row(
                 children: [
-                  Text('Bác sĩ: '),
-                  SizedBox(width: 10),
-                  Text('Jonh Smith'),
+                  const Text('Bác sĩ: '),
+                  const SizedBox(width: 10),
+                  Text(fullNameDoctor!),
                 ],
               ),
               const SizedBox(height: 10,),
-              const Row(
+              Row(
                 children: [
-                  Text('Chuyên Khoa: '),
-                  SizedBox(width: 10),
-                  Text('Dentist'),
+                  const Text('Khoa: '),
+                  const SizedBox(width: 10),
+                  Text('$department'),
                 ],
               ),
               const SizedBox(height: 10,),
-              const Row(
+              Row(
                 children: [
-                  Text('Giá khám: '),
-                  SizedBox(width: 10),
-                  Text('500.000 VNĐ'),
+                  const Text('Giá khám: '),
+                  const SizedBox(width: 10),
+                  Text('$price VNĐ'),
                 ],
               ),
               const SizedBox(height: 10,),
@@ -66,33 +127,33 @@ class _PaymentScreenState extends State<PaymentScreen> {
                 ],
               ),
               const SizedBox(height: 10,),
-              const Row(
+              Row(
                 children: [
-                  Text('Giờ hẹn khám: '),
-                  SizedBox(width: 10),
-                  Text('08:00 - 08:30'),
+                  const Text('Giờ hẹn khám: '),
+                  const SizedBox(width: 10),
+                  Text(formattedClinicHours),
+                ],
+              ),
+              const SizedBox(height: 10,),
+              Row(
+                children: [
+                  const Text('Nội dung khám: '),
+                  const SizedBox(width: 10),
+                  Text('${_data['note']}'),
+                ],
+              ),
+              const SizedBox(height: 10,),
+              Row(
+                children: [
+                  const Text('Đặt cọc: '),
+                  const SizedBox(width: 10),
+                  Text('${_data['price']} VNĐ'),
                 ],
               ),
               const SizedBox(height: 10,),
               const Row(
                 children: [
-                  Text('Nội dung khám: '),
-                  SizedBox(width: 10),
-                  Text('Mắt trái bị sưng'),
-                ],
-              ),
-              SizedBox(height: 10,),
-              const Row(
-                children: [
-                  Text('Đặt cọc: '),
-                  SizedBox(width: 10),
-                  Text('150.000 VNĐ'),
-                ],
-              ),
-              const SizedBox(height: 10,),
-              const Row(
-                children: [
-                  Text('Chọn hình thức thanh toán đặt cọc: '),
+                  Text('Choose a deposit payment method: '),
                 ],
               ),
               const SizedBox(height: 10,),
@@ -106,7 +167,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                       ],
                     ),
                     leading: Radio<String>(
-                      value: 'VNPay',
+                      value: 'vnpay',
                       groupValue: _selectedPaymentMethod,
                       onChanged: (String? value) {
                         setState(() {
@@ -122,7 +183,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                       ],
                     ),
                     leading: Radio<String>(
-                      value: 'Paypal',
+                      value: 'paypal',
                       groupValue: _selectedPaymentMethod,
                       onChanged: (String? value) {
                         setState(() {
@@ -142,7 +203,18 @@ class _PaymentScreenState extends State<PaymentScreen> {
             padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 30),
             child: InkWell(
               onTap: (){
-                Navigator.pushNamed(context, '/doctor/booking');
+                // showDialog(
+                //   context: context,
+                //   builder: (BuildContext context) {
+                //     return const SuccessWidget(
+                //       title: 'Your Appointment Failed!',
+                //       message: 'Appointment with Dr. Jennie Thorn failed. Please check then try again.',
+                //     );
+                //   },
+                // );
+                _data['payment'] = _selectedPaymentMethod;
+                print(_data);
+                //Navigator.pushNamed(context, '/doctor/booking');
               },
               child: Container(
                 height: 50,

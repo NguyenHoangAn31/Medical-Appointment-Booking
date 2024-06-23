@@ -24,6 +24,7 @@ public class DoctorDto {
     private String biography;
     private Double rate;
     private Boolean status;
+        private  int experience;
     private int userId;
     private Department department;
     private List<WorkingDto> workings;

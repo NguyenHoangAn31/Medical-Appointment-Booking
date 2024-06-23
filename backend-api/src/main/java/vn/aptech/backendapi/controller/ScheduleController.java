@@ -16,8 +16,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import vn.aptech.backendapi.dto.CustomSlotWithScheduleDoctorId;
 import vn.aptech.backendapi.dto.Schedule.ScheduleWithDepartmentDto;
-import vn.aptech.backendapi.repository.AppointmentRepository;
+import vn.aptech.backendapi.entities.ScheduleDoctor;
+import vn.aptech.backendapi.repository.ScheduleDoctorRepository;
 import vn.aptech.backendapi.service.Schedule.ScheduleService;
+import vn.aptech.backendapi.service.ScheduleDoctor.ScheduleDoctorSerivce;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -27,6 +29,9 @@ import java.util.List;
 public class ScheduleController {
     @Autowired
     private ScheduleService scheduleService;
+
+    @Autowired
+    private ScheduleDoctorSerivce scheduleDoctorSerivce;
 
     @GetMapping(value = "/getdays", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Object[]>> findAllOnlyDay() {
@@ -96,6 +101,37 @@ public class ScheduleController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Đã xảy ra lỗi khi cập nhật lịch: " + e.getMessage());
         }
+    }
+
+    @PostMapping(value = "/checkcreate/{day}/{departmentid}/{doctorid}/{slotid}")
+    public ResponseEntity<?> checkCreate(
+            @PathVariable("day") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dayWorking,
+            @PathVariable("departmentid") int departmentId,
+            @PathVariable("doctorid") int doctorId,
+            @PathVariable("slotid") int slotId) {
+        boolean result = scheduleDoctorSerivce.create(dayWorking, departmentId, doctorId, slotId);
+
+        if (result) {
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @DeleteMapping(value = "/checkdelete/{day}/{departmentid}/{doctorid}/{slotid}")
+    public ResponseEntity<?> checkDelete(
+            @PathVariable("day") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dayWorking,
+            // @PathVariable("day") String dayWorking,
+            @PathVariable("departmentid") int departmentId,
+            @PathVariable("doctorid") int doctorId,
+            @PathVariable("slotid") int slotId) {
+        boolean result = scheduleDoctorSerivce.delete(dayWorking, departmentId, doctorId, slotId);
+        if (result) {
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+
     }
 
 }
