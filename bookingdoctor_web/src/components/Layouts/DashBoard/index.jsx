@@ -283,7 +283,7 @@ const DashBoardLayout = ({ children }) => {
                                         {
                                             key: '1',
                                             label: (
-                                                <a target="_blank" rel="noopener noreferrer" href="https://www.antgroup.com">
+                                                <a target="_blank" rel="noopener noreferrer">
                                                     1st menu item
                                                 </a>
                                             ),
@@ -291,7 +291,7 @@ const DashBoardLayout = ({ children }) => {
                                         {
                                             key: '2',
                                             label: (
-                                                <a target="_blank" rel="noopener noreferrer" href="https://www.aliyun.com">
+                                                <a target="_blank" rel="noopener noreferrer">
                                                     2nd menu item
                                                 </a>
                                             ),
@@ -299,7 +299,7 @@ const DashBoardLayout = ({ children }) => {
                                         {
                                             key: '3',
                                             label: (
-                                                <a target="_blank" rel="noopener noreferrer" href="https://www.luohanacademy.com">
+                                                <a target="_blank" rel="noopener noreferrer">
                                                     3rd menu item
                                                 </a>
                                             ),
@@ -320,7 +320,7 @@ const DashBoardLayout = ({ children }) => {
                                         {
                                             key: '1',
                                             label: (
-                                                <a target="_blank" rel="noopener noreferrer" href="https://www.antgroup.com">
+                                                <a target="_blank" rel="noopener noreferrer">
                                                     1st menu item
                                                 </a>
                                             ),
@@ -328,7 +328,7 @@ const DashBoardLayout = ({ children }) => {
                                         {
                                             key: '2',
                                             label: (
-                                                <a target="_blank" rel="noopener noreferrer" href="https://www.aliyun.com">
+                                                <a target="_blank" rel="noopener noreferrer">
                                                     2nd menu item
                                                 </a>
                                             ),
@@ -336,7 +336,7 @@ const DashBoardLayout = ({ children }) => {
                                         {
                                             key: '3',
                                             label: (
-                                                <a target="_blank" rel="noopener noreferrer" href="https://www.luohanacademy.com">
+                                                <a target="_blank" rel="noopener noreferrer">
                                                     3rd menu item
                                                 </a>
                                             ),

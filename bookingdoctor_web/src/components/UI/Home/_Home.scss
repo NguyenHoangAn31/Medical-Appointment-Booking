@@ -644,3 +644,22 @@
         }
     }
 }
+
+
+// Hien
+.home__about{
+    margin-top: 100px;
+    margin-bottom: 200px;
+    .home_about_title{
+        color: deeppink;
+        font-weight: bold;
+    }
+    .home_about_content{
+        margin-top: 50px;
+        font-size: 22px;
+    }
+    .home_about_image{
+        width: 500px;
+        
+    }
+}

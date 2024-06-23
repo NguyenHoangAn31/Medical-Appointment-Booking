@@ -1,6 +1,5 @@
 package vn.aptech.backendapi.controller;
 
-
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
@@ -69,10 +68,10 @@ public class AppointmentController {
     public ResponseEntity<List<AppointmentDto>> getAppointments(
             @PathVariable("starttime") @DateTimeFormat(iso = DateTimeFormat.ISO.TIME) LocalTime starttime,
             @PathVariable("scheduledoctorid") int scheduledoctorid) {
-        List<AppointmentDto> result = appointmentService.findAppointmentsByScheduleDoctorIdAndStartTime(scheduledoctorid, starttime);
+        List<AppointmentDto> result = appointmentService
+                .findAppointmentsByScheduleDoctorIdAndStartTime(scheduledoctorid, starttime);
         return ResponseEntity.ok(result);
     }
-
 
     @GetMapping(value = "/patientsbydoctoridandmedicalexaminationupcoming/{doctorid}/{startdate}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<CustomAppointmentDto>> findPatientsByDoctorIdAndAppointmentUpcoming(
@@ -93,4 +92,3 @@ public class AppointmentController {
         return ResponseEntity.ok(result);
     }
 }
-
