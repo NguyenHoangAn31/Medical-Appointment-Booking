@@ -94,11 +94,11 @@ function Schedule() {
     switch (status) {
       case 'waiting':
         return { border: '2px solid #1890ff' }; // blue
-      case 'NO SHOW':
+      case 'no show':
         return { border: '2px solid #fa8c16' }; // orange
-      case 'CANCEL':
+      case 'cancel':
         return { border: '2px solid #f5222d' }; // red
-      case 'FINISHED':
+      case 'finished':
         return { border: '2px solid #52c41a' }; // green
       default:
         return {};
@@ -133,9 +133,9 @@ function Schedule() {
               </div>
               <div className="card-body text-center p-0">
                 {appointments[`${slotItem.startTime}-${slotItem.scheduledoctorId}`]?.[0]?.status === 'waiting' ? 'waiting'
-                  : appointments[`${slotItem.startTime}-${slotItem.scheduledoctorId}`]?.[0]?.status === 'NO SHOW' ? 'NO SHOW'
-                    : appointments[`${slotItem.startTime}-${slotItem.scheduledoctorId}`]?.[0]?.status === 'CANCEL' ? 'CANCEL'
-                      : appointments[`${slotItem.startTime}-${slotItem.scheduledoctorId}`]?.[0]?.status === 'FINISHED' ? 'FINISHED'
+                  : appointments[`${slotItem.startTime}-${slotItem.scheduledoctorId}`]?.[0]?.status === 'no show' ? 'no show'
+                    : appointments[`${slotItem.startTime}-${slotItem.scheduledoctorId}`]?.[0]?.status === 'cancel' ? 'cancel'
+                      : appointments[`${slotItem.startTime}-${slotItem.scheduledoctorId}`]?.[0]?.status === 'finished' ? 'finished'
                         : ''}
               </div>
             </div>
@@ -170,9 +170,9 @@ function Schedule() {
                         {/* {appointment.status} */}
                         {/* <br /> */}
                         <Select value={appointment.status} style={{ width: 120 }} onChange={(value) => handleStatusChange(appointment.id, value)}>
-                          <Option value="NO SHOW">NO SHOW</Option>
+                          <Option value="no show">no show</Option>
                           {/* <Option value="CANCEL">Cancel</Option> */}
-                          <Option value="FINISHED">FINISHED</Option>
+                          <Option value="finished">finished</Option>
                         </Select>
                       </td>
                     </React.Fragment>

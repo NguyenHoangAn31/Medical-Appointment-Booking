@@ -14,4 +14,6 @@ public interface PatientService {
     List<PatientDto> getAll();
 
     List<PatientDto> findPatientsByScheduleDoctorIdAndStartTime( int scheduledoctorid, LocalTime starttime);
+
+    List<PatientDto> findPatientsByDoctorIdAndFinishedStatus(int doctorId);
 }
