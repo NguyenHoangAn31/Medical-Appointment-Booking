@@ -244,13 +244,9 @@ const ManageAppointment = () => {
       ...getColumnSearchProps('payment'),
       render: (_, { payment }) => {
         var image;
-        if (payment == 'PayPal') {
+        if (payment == 'paypal') {
           image = paypal
-        }
-        else if (payment == 'Momo') {
-          image = momo
-        }
-        else if (payment == 'VN Pay') {
+        }else if (payment == 'vnpay') {
           image = vnpay
         }
         return (

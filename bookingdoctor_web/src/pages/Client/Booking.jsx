@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react'
-import { MdSearch, MdOutlineStarPurple500, MdCalendarMonth, MdOutlinePhoneInTalk } from "react-icons/md";
+import { MdSearch, MdOutlineStarPurple500, MdCalendarMonth, MdOutlinePhoneInTalk, MdArrowBackIos, MdArrowForwardIos  } from "react-icons/md";
 import { BiCommentDots, BiSolidVideo } from "react-icons/bi";
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -132,6 +132,7 @@ const Booking = () => {
   const [doctors, setDoctors] = useState([]);
   const [doctor, setDoctor] = useState([]);
   const [days, setDays] = useState([]);
+  const [currentPage, setCurrentPage] = useState(0);
 
   const [doctorId, setDoctorId] = useState();
   const [doctorForSearch, setDoctorForSearch] = useState([]);
@@ -169,12 +170,11 @@ const Booking = () => {
     const ngayHienTai = new Date(); // Ngày hiện tại
     ngayHienTai.setDate(ngayHienTai.getDate());
 
-
     const ngayDauTuan = startOfWeek(ngayHienTai); // Ngày đầu tiên của tuần hiện tại
     const daysOfWeekNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
     const cacNgayTrongTuan = [];
     let activeDayIndex = -1;
-    for (let i = 0; i < 7; i++) {
+    for (let i = 0; i < 14; i++) {
       const ngay = addDays(ngayDauTuan, i);
       const ngayOfMonth = ngay.getDate(); // Lấy ngày trong tháng
       const thang = ngay.getMonth() + 1; // Tháng tính từ 0, nên cần cộng thêm 1
@@ -190,6 +190,17 @@ const Booking = () => {
     setDays(cacNgayTrongTuan);
 
   }
+
+  const handleNextPage = () => {
+    setCurrentPage((prevPage) => Math.min(prevPage + 1, Math.floor(days.length / 7) - 1));
+  };
+
+  const handlePreviousPage = () => {
+    setCurrentPage((prevPage) => Math.max(prevPage - 1, 0));
+  };
+  const startIndex = currentPage * 7;
+  const endIndex = startIndex + 7;
+  const visibleDays = days.slice(startIndex, endIndex);
 
 
   // thực hiện load dữ liệu 1 lần 
@@ -234,15 +245,6 @@ const Booking = () => {
     }
     setActiveDayIndex(index);
     const dayvalue = `${day.nam}-${String(day.thang).padStart(2, '0')}-${String(day.ngayOfMonth).padStart(2, '0')}`;
-
-    // xử lý không cho chọn những ngày cũ
-    // const inputDate = new Date(dayvalue);
-    // const currentDate = new Date();
-    // if (stripTime(inputDate) < stripTime(currentDate)) {
-    //   console.log("less than");
-    //   setSchedules([]);
-    //   return;
-    // }
     setDaySelected(dayvalue);
     const data = {
       doctorId: doctorId,
@@ -292,7 +294,7 @@ const Booking = () => {
     if (foundSlot) {
       const slotTime = parseTimeString(foundSlot.startTime);
       if (foundSlot.status === 1 && (slotTime > currentTime || (stripTime(now) < stripTime(new Date(daySelected) || stripTime(now) > stripTime(new Date(daySelected)))))) {
-      // if(foundSlot.status === 1){
+        // if(foundSlot.status === 1){
         return { status: 'true', scheduledoctorId: foundSlot.scheduledoctorId };
       } else if (foundSlot.status === 0) {
         return { status: 'booked' };
@@ -440,7 +442,7 @@ const Booking = () => {
                       name='searchName'
                       onChange={handleSearch} />
                   </div>
-                </div>    
+                </div>
                 <div className="col-12">
                   <div className="booking__list">
                     <div className="title">Choose doctor</div>
@@ -480,7 +482,7 @@ const Booking = () => {
                         </div>
                       </div>
                     </div>
-                    <div className='body_day'>
+                    {/* <div className='body_day'>
                       {days.map((day, i) => (
                         <div key={i} className={`day_item ${activeDayIndex === i ? 'active' : ''}`} onClick={() => handleDayClick(i, day)}>
                           <span className='day-title'>{day.tenThu}</span>
@@ -488,6 +490,26 @@ const Booking = () => {
                         </div>
                       )
                       )}
+                    </div> */}
+                    <div className='body_day'>
+                      {visibleDays.map((day, i) => (
+                        <div
+                          key={i}
+                          className={`day_item ${activeDayIndex === day.i ? 'active' : ''}`}
+                          onClick={() => handleDayClick(day.i, day)}
+                        >
+                          <span className='day-title'>{day.tenThu}</span>
+                          <span className='day-number'>{day.ngayOfMonth}</span>
+                        </div>
+                      ))}
+                    </div>
+                    <div className='pagination'>
+                      <button onClick={handlePreviousPage} disabled={currentPage === 0}>
+                        <MdArrowBackIos />
+                      </button>
+                      <button onClick={handleNextPage} disabled={endIndex >= days.length}>
+                        <MdArrowForwardIos />
+                      </button>
                     </div>
                     <div className="body_date">
                       {slots.map((slot, index) => {

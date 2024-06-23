@@ -1,5 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:mobile/services/patientService.dart';
+
+import '../../models/patient.dart';
+import 'package:intl/intl.dart';
 
 class DoctorBookingPatientScreen extends StatefulWidget {
   const DoctorBookingPatientScreen({super.key});
@@ -9,18 +13,63 @@ class DoctorBookingPatientScreen extends StatefulWidget {
 }
 
 class _DoctorBookingPatientScreenState extends State<DoctorBookingPatientScreen> {
-  late TextEditingController _fullNameTextController = TextEditingController();
-  late TextEditingController _ageTextController = TextEditingController();
-  late TextEditingController _genderTextController = TextEditingController();
-  late TextEditingController _contentTextController = TextEditingController();
+  late TextEditingController _fullNameTextController;
+  late TextEditingController _ageTextController;
+  late TextEditingController _genderTextController;
+  late final TextEditingController _contentTextController = TextEditingController();
+  late final int patientId;
+  late Future<Patient?> _patientFuture;
+  late Map<String, dynamic> _data;
+
+
+  int calculateAge(String birthday) {
+    DateTime birthDate = DateFormat('yyyy-MM-dd').parse(birthday);
+
+    DateTime currentDate = DateTime.now();
+
+    int age = currentDate.year - birthDate.year;
+
+    if (currentDate.month < birthDate.month ||
+        (currentDate.month == birthDate.month && currentDate.day < birthDate.day)) {
+      age--;
+    }
+    return age;
+  }
+
   @override
   void initState() {
     super.initState();
     // Khởi tạo TextEditingController với dữ liệu có sẵn
-    _fullNameTextController = TextEditingController(text: 'Nguyen Khoa');
-    _ageTextController = TextEditingController(text: '33');
-    _genderTextController = TextEditingController(text: 'Male');
+    _fullNameTextController = TextEditingController();
+    _genderTextController = TextEditingController();
+    _ageTextController = TextEditingController();
   }
+
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // final Map arguments = ModalRoute.of(context)?.settings.arguments as Map;
+    final Map<String, dynamic> data = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>;
+    patientId = data['partientId'];
+    _data = data;
+    _patientFuture = PatientClient().getPatientById(patientId);
+    _patientFuture.then((patient) {
+      if (patient != null) {
+        _fullNameTextController.text = patient.fullName;
+        _genderTextController.text = patient.gender;
+        _ageTextController.text = calculateAge(patient.birthday).toString();
+        debugPrint(_ageTextController.text);
+      } else {
+        // Handle case when patient data is null
+        print('Patient data is null.');
+      }
+    }).catchError((error) {
+      print('Error fetching patient data: $error');
+    });
+  }
+
+
 
   @override
   void dispose() {
@@ -157,7 +206,6 @@ class _DoctorBookingPatientScreenState extends State<DoctorBookingPatientScreen>
                   ),
                   child: Align(
                     child: TextField(
-                      maxLines: null,
                       minLines: 1,
                       controller: _contentTextController,
                       decoration: const InputDecoration(
@@ -192,7 +240,9 @@ class _DoctorBookingPatientScreenState extends State<DoctorBookingPatientScreen>
             padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 30),
             child: InkWell(
               onTap: (){
-                Navigator.pushNamed(context, '/doctor/booking/payment');
+                _data['note'] = _contentTextController.text;
+                print(_data);
+                Navigator.pushNamed(context, '/doctor/booking/payment', arguments: _data);
               },
               child: Container(
                 height: 50,
