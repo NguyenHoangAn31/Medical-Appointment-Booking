@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:mobile/ultils/ip_app.dart';
 import 'package:mobile/ultils/storeCurrentUser.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:intl/intl.dart';
@@ -19,28 +20,34 @@ class _ScheduleDoctorScreenState extends State<ScheduleDoctorScreen> {
   List<dynamic> hoursList = [];
   List<dynamic> doctorHoursList = [];
   bool isRegistered = false;
-  bool isShowButton = true;
+  bool isShowButton = false;
   bool noHoursList = false;
+  final ipDevice = BaseClient().ip;
 
   int? _slotIdSelect;
   String _daySelect = DateFormat('yyyy-MM-dd').format(DateTime.now());
-
   final currentUser = CurrentUser.to.user;
-
   DateTime toDay = DateTime.now();
+  DateTime daySelected = DateTime.now();
   void _onDaySelected(DateTime date, DateTime focusedDay) {
     String formattedDate = DateFormat('yyyy-MM-dd').format(focusedDay);
+
     setState(() {
-      DateTime today = DateTime.now();
-
-      isShowButton = today.isBefore(focusedDay) || isSameDay(today, focusedDay);
-
-      toDay = date;
+      daySelected = date;
       _daySelect = formattedDate;
       _slotIdSelect = 0;
-      // isShowButton = false;
+      isShowButton = false;
     });
     fetchHoursList(formattedDate);
+  }
+
+  void _onSlotSelected() {
+    log("date : $toDay");
+    log("focusedDay : $daySelected");
+    setState(() {
+      isShowButton =
+          toDay.isBefore(daySelected) || isSameDay(toDay, daySelected);
+    });
   }
 
   bool isSameDay(DateTime date1, DateTime date2) {
@@ -53,14 +60,14 @@ class _ScheduleDoctorScreenState extends State<ScheduleDoctorScreen> {
     if (_slotIdSelect != 0) {
       if (isRegistered) {
         final responseDelete = await http.delete(Uri.parse(
-            'http://192.168.1.2:8080/api/schedules/checkdelete/${_daySelect}/${currentUser['department']['id']}/${currentUser['id']}/${_slotIdSelect}'));
+            'http://${ipDevice}:8080/api/schedules/checkdelete/${_daySelect}/${currentUser['department']['id']}/${currentUser['id']}/${_slotIdSelect}'));
         if (responseDelete.statusCode == 200) {
           fetchHoursList(_daySelect);
           isRegistered = !isRegistered;
         }
       } else {
         final responseCreate = await http.post(Uri.parse(
-            'http://192.168.1.2:8080/api/schedules/checkcreate/${_daySelect}/${currentUser['department']['id']}/${currentUser['id']}/${_slotIdSelect}'));
+            'http://${ipDevice}:8080/api/schedules/checkcreate/${_daySelect}/${currentUser['department']['id']}/${currentUser['id']}/${_slotIdSelect}'));
         if (responseCreate.statusCode == 200) {
           fetchHoursList(_daySelect);
           isRegistered = !isRegistered;
@@ -71,9 +78,9 @@ class _ScheduleDoctorScreenState extends State<ScheduleDoctorScreen> {
 
   Future<void> fetchHoursList(String date) async {
     final responseHoursList = await http.get(Uri.parse(
-        'http://192.168.1.2:8080/api/slot/slotsbydepartmentidandday/${currentUser['id']}/${date}'));
+        'http://${ipDevice}:8080/api/slot/slotsbydepartmentidandday/${currentUser['id']}/${date}'));
     final responseDoctorHoursList = await http.get(Uri.parse(
-        'http://192.168.1.2:8080/api/slot/slotsbydepartmentiddoctoridandday/${currentUser['id']}/${currentUser['department']['id']}/${date}'));
+        'http://${ipDevice}:8080/api/slot/slotsbydepartmentiddoctoridandday/${currentUser['id']}/${currentUser['department']['id']}/${date}'));
     if (responseHoursList.statusCode == 200 &&
         responseDoctorHoursList.statusCode == 200) {
       setState(() {
@@ -99,11 +106,13 @@ class _ScheduleDoctorScreenState extends State<ScheduleDoctorScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Obx(
-            () => Text('Department - ${currentUser['department']['name']}')),
-        centerTitle: true,
-        automaticallyImplyLeading: false, // Ẩn nút back button
-      ),
+          backgroundColor: Colors.blue[300],
+          automaticallyImplyLeading: false, // Ẩn nút back button
+
+          title: Obx(() => Text(
+              'Department - ${currentUser['department']['name']}',
+              style: const TextStyle(color: Colors.white))),
+          centerTitle: true),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: Column(
@@ -139,10 +148,10 @@ class _ScheduleDoctorScreenState extends State<ScheduleDoctorScreen> {
                   titleCentered: true,
                 ),
                 availableGestures: AvailableGestures.all,
-                selectedDayPredicate: (day) => isSameDay(day, toDay),
+                selectedDayPredicate: (day) => isSameDay(day, daySelected),
                 firstDay: DateTime.utc(2010, 01, 01),
                 lastDay: DateTime.utc(2050, 12, 31),
-                focusedDay: toDay,
+                focusedDay: daySelected,
                 onDaySelected: _onDaySelected,
               ),
             ),
@@ -168,7 +177,8 @@ class _ScheduleDoctorScreenState extends State<ScheduleDoctorScreen> {
                           'No schedules have been created yet',
                           textAlign: TextAlign.center,
                           style: TextStyle(
-                              fontSize: 15,),
+                            fontSize: 15,
+                          ),
                         ),
                       ],
                     ),
@@ -193,6 +203,7 @@ class _ScheduleDoctorScreenState extends State<ScheduleDoctorScreen> {
                                       hoursList[index]['endTime']);
                           return InkWell(
                             onTap: () {
+                              _onSlotSelected();
                               setState(() {
                                 if (isDoctorHour) {
                                   isRegistered = true;

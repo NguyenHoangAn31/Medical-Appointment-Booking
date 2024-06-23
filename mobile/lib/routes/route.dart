@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:mobile/screens/doctor/dashboard_doctor/edit_doctor_screen.dart';
 import 'package:mobile/screens/doctor/dashboard_doctor/patient.dart';
 import 'package:mobile/screens/doctor/dashboard_doctor/qualification_doctor_screen.dart';
 import 'package:mobile/screens/doctor/dashboard_doctor/working_doctor_screen.dart';
@@ -32,6 +33,7 @@ class Routes {
       '/dashboard/doctor/patient':(contxt) => const PatientScreenInDoctorPage(),
       '/dashboard/doctor/qualification':(contxt) => const QualificationDoctorScreen(),
       '/dashboard/doctor/working':(contxt) => const WorkingDoctorScreen(),
+      '/dashboard/doctor/edit':(contxt) => const EditDoctorScreen(),
     };
   }
 }

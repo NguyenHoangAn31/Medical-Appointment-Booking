@@ -54,7 +54,7 @@ public class PatientServiceImpl implements PatientService {
     }
 
     public Optional<PatientDto> getPatientByUserId(int userId) {
-        Partient patient = partientRepository.getPatientByUserId(userId).get();
+        Partient patient = partientRepository.getPatientByUserId(userId);
         if (patient != null) {
             List<MedicalDto> medicalList = patient.getMedicals().stream()
                     .map(this::mapToMedicalDto)

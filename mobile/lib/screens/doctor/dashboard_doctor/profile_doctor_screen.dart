@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:mobile/ultils/ip_app.dart';
 import 'package:mobile/ultils/storeCurrentUser.dart';
 import 'package:mobile/widgets/navigation_menu_doctor.dart';
 import 'package:get/get.dart';
@@ -13,6 +14,7 @@ class ProfileDoctorScreen extends StatefulWidget {
 
 class _ProfileDoctorScreenState extends State<ProfileDoctorScreen> {
   final currentUser = CurrentUser.to.user;
+  final ipDevice = BaseClient().ip;
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +26,9 @@ class _ProfileDoctorScreenState extends State<ProfileDoctorScreen> {
           centerTitle: true,
           actions: <Widget>[
             TextButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.pushNamed(context, '/dashboard/doctor/edit');
+              },
               child: const Text(
                 "Edit",
                 style: TextStyle(
@@ -64,7 +68,7 @@ class _ProfileDoctorScreenState extends State<ProfileDoctorScreen> {
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(8.0),
                             child: Image.network(
-                              'http://192.168.1.2:8080/images/doctors/${currentUser['image']}', // Đặt URL của ảnh ở đây
+                              'http://${ipDevice}:8080/images/doctors/${currentUser['image']}', // Đặt URL của ảnh ở đây
                               width: 70,
                               height: 90,
                               fit: BoxFit.cover,
@@ -80,7 +84,7 @@ class _ProfileDoctorScreenState extends State<ProfileDoctorScreen> {
                         //   image: DecorationImage(
                         //     fit: BoxFit.cover,
                         //     image: NetworkImage(
-                        //       'http://192.168.1.2:8080/images/doctors/${currentUser['image']}', // Đặt URL của ảnh ở đây
+                        //       'http://${ipDevice}:8080/images/doctors/${currentUser['image']}', // Đặt URL của ảnh ở đây
                         //     ),
                         //   ),
                         // ),
@@ -92,8 +96,8 @@ class _ProfileDoctorScreenState extends State<ProfileDoctorScreen> {
                       const SizedBox(
                         height: 5,
                       ),
-                      const Text("anphung311002@gmail.com",
-                          style: TextStyle(fontWeight: FontWeight.w400)),
+                      Text("Department : ${currentUser['department']['name']}",
+                          style: const TextStyle(fontWeight: FontWeight.w400)),
                     ],
                   ))
                 ],

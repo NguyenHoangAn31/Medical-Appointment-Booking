@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:mobile/ultils/ip_app.dart';
 import 'package:mobile/ultils/storeCurrentUser.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:intl/intl.dart';
@@ -18,6 +19,7 @@ class _FeedbackDoctorScreenState extends State<FeedbackDoctorScreen> {
   bool notContent = false;
   final TextEditingController _dateController = TextEditingController();
   final currentUser = CurrentUser.to.user;
+  final ipDevice = BaseClient().ip;
 
   @override
   void initState() {
@@ -27,7 +29,7 @@ class _FeedbackDoctorScreenState extends State<FeedbackDoctorScreen> {
 
   Future<void> fetchFeedbacks() async {
     final response = await http.get(
-      Uri.parse('http://192.168.1.2:8080/api/feedback/${currentUser['id']}'),
+      Uri.parse('http://${ipDevice}:8080/api/feedback/${currentUser['id']}'),
     );
 
     if (response.statusCode == 200) {
@@ -131,7 +133,9 @@ class _FeedbackDoctorScreenState extends State<FeedbackDoctorScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('List Feedbacks'),
+        backgroundColor: Colors.blue[300],
+
+        title: const Text('List Feedbacks',style:TextStyle(color:  Colors.white)),
         centerTitle: true,
         automaticallyImplyLeading: false, // Ẩn nút back button
       ),
@@ -214,7 +218,7 @@ class _FeedbackDoctorScreenState extends State<FeedbackDoctorScreen> {
                                 child: ClipRRect(
                                   borderRadius: BorderRadius.circular(50),
                                   child: Image.network(
-                                    'http://192.168.1.2:8080/images/patients/${feedback['patient']['image']}',
+                                    'http://${ipDevice}:8080/images/patients/${feedback['patient']['image']}',
                                     fit: BoxFit.cover,
                                   ),
                                 ),

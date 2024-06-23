@@ -95,7 +95,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         a.setMedicalExaminationDay(LocalDate.parse(dto.getMedicalExaminationDay()));
         a.setClinicHours(LocalTime.parse(dto.getClinicHours()));
         if (dto.getPartientId() != 0) {
-            Partient p = partientRepository.getPatientByUserId(dto.getPartientId()).get();
+            Partient p = partientRepository.getPatientByUserId(dto.getPartientId());
             a.setPartient(mapper.map(p, Partient.class));
         }
         if (dto.getScheduledoctorId() != 0) {
@@ -107,14 +107,14 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public List<CustomAppointmentDto> findPatientsByDoctorIdAndAppointmentDates(int doctorId , LocalDate startDate , LocalDate endDate){
-        return appointmentRepository.findPatientsByDoctorIdAndAppointmentDates(doctorId,startDate,endDate).stream().map(this::toCustomDto)
+    public List<CustomAppointmentDto> findPatientsByDoctorIdAndAppointmentUpcoming(int doctorId , LocalDate startDate){
+        return appointmentRepository.findPatientsByDoctorIdAndAppointmentUpcoming(doctorId,startDate).stream().map(this::toCustomDto)
         .collect(Collectors.toList());
     }
 
     @Override
-    public List<CustomAppointmentDto> findPatientsByDoctorIdAndMedicalExaminationDates(int doctorId , LocalDate startDate , LocalDate endDate){
-        return appointmentRepository.findPatientsByDoctorIdAndMedicalExaminationDates(doctorId,startDate,endDate).stream().map(this::toCustomDto)
+    public List<CustomAppointmentDto> findPatientsByDoctorIdAndMedicalExaminationToday(int doctorId , LocalDate startDate , LocalDate endDate){
+        return appointmentRepository.findPatientsByDoctorIdAndMedicalExaminationToday(doctorId,startDate,endDate).stream().map(this::toCustomDto)
         .collect(Collectors.toList());
     }
 

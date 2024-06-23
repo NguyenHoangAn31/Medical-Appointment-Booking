@@ -148,8 +148,8 @@ function AppointmentDetail() {
           {appointmentDetail.status == 'waiting' ? <div><Form.Item className='float-end' label="Status" style={{ width: '20%', marginBottom: 10, marginTop: 40 }}>
             <Select allowClear placeholder="Choose Status" onChange={(e) => onInputChange(e)}>
               <Select.Option value="no show">No Show</Select.Option>
-              <Select.Option value="canceled">Cancel</Select.Option>
-              <Select.Option value="finished">Finish</Select.Option>
+              <Select.Option value="cancelled">Cancel</Select.Option>
+              <Select.Option value="completed">Complete</Select.Option>
             </Select>
           </Form.Item>
             <Button style={{ clear: 'both' }} className='float-end' disabled={status == ''} type='primary' onClick={handleSubmit}>Change</Button></div> : null}

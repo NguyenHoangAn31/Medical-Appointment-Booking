@@ -23,8 +23,8 @@ class _WelcomeScreenState extends State<WelcomeScreen>
     super.initState();
     Timer(const Duration(seconds: 3), () {
       Navigator.of(context).pushReplacement(
-        //MaterialPageRoute(builder: (context) => const LoginScreen()),
-        MaterialPageRoute(builder: (context) => const NavigationMenu()),
+        MaterialPageRoute(builder: (context) => const LoginScreen()),
+        // MaterialPageRoute(builder: (context) => const NavigationMenu()),
       );
     });
     _controller = AnimationController(

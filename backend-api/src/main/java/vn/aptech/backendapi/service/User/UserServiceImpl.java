@@ -122,7 +122,7 @@ public class UserServiceImpl implements UserService {
         User u = userRepository.findById(id).get();
         boolean newStatus = status ? false : true;
         Doctor d = doctorRepository.findDoctorByUserId(id);
-        Partient p = partientRepository.getPatientByUserId(id).get();
+        Partient p = partientRepository.getPatientByUserId(id);
         if (d != null) {
             d.setStatus(newStatus);
             doctorRepository.save(d);

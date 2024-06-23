@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'package:mobile/ultils/ip_app.dart';
 import 'package:mobile/ultils/storeCurrentUser.dart';
 
 class AppointmentDoctorScreen extends StatefulWidget {
@@ -15,30 +16,34 @@ class AppointmentDoctorScreen extends StatefulWidget {
 }
 
 class _AppointmentDoctorScreenState extends State<AppointmentDoctorScreen> {
-  List<dynamic> bookingToday = [];
-  List<dynamic> examinationToday = [];
-  List<dynamic> filteredBookingToday = [];
   List<dynamic> filteredExaminationToday = [];
+  List<dynamic> examinationToday = [];
+  List<dynamic> examinationUpcoming = [];
   final currentUser = CurrentUser.to.user;
   bool noAppointments = false;
   bool noBookings = false;
+  final ipDevice = BaseClient().ip;
 
-  String startDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
-  String endDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+  String today = DateFormat('yyyy-MM-dd').format(DateTime.now());
 
   // Filter options and current selection
   String bookingFilter = 'all'; // Default: show all
   String examinationFilter = 'all'; // Default: show all
 
-  Future<void> fetchBookingToday(String startDate, String endDate) async {
+  Future<void> fetchExaminationUpcoming() async {
+    DateTime now = DateTime.now();
+    DateTime tomorrow = now.add(Duration(days: 1));
+    String formattedDate = DateFormat('yyyy-MM-dd').format(tomorrow);
+    log("log : $formattedDate");
+
     final response = await http.get(Uri.parse(
-        'http://192.168.1.2:8080/api/appointment/patientsbydoctoridandappointmentdates/${currentUser['id']}/${startDate}/${endDate}'));
+        'http://${ipDevice}:8080/api/appointment/patientsbydoctoridandmedicalexaminationupcoming/${currentUser['id']}/${formattedDate}'));
 
     if (response.statusCode == 200) {
       setState(() {
         var result = jsonDecode(response.body);
-        bookingToday = result;
-        filteredBookingToday = result; // Initially show all
+        examinationUpcoming = result;
+        // filteredBookingToday = result; // Initially show all
         noBookings = result.isEmpty ? true : false;
       });
     } else {
@@ -46,9 +51,9 @@ class _AppointmentDoctorScreenState extends State<AppointmentDoctorScreen> {
     }
   }
 
-  Future<void> fetchExaminationToday(String startDate, String endDate) async {
+  Future<void> fetchExaminationToday() async {
     final response = await http.get(Uri.parse(
-        'http://192.168.1.2:8080/api/appointment/patientsbydoctoridandmedicalexaminationdates/${currentUser['id']}/${startDate}/${endDate}'));
+        'http://${ipDevice}:8080/api/appointment/patientsbydoctoridandmedicalexaminationtoday/${currentUser['id']}/${today}/${today}'));
 
     if (response.statusCode == 200) {
       setState(() {
@@ -65,23 +70,8 @@ class _AppointmentDoctorScreenState extends State<AppointmentDoctorScreen> {
   @override
   void initState() {
     super.initState();
-    fetchBookingToday(startDate, endDate);
-    fetchExaminationToday(startDate, endDate);
-  }
-
-  // Filter logic
-  void applyBookingFilter(String filter) {
-    setState(() {
-      bookingFilter = filter;
-      if (filter == 'all') {
-        filteredBookingToday = bookingToday;
-      } else {
-        filteredBookingToday = bookingToday
-            .where((booking) => booking['status'] == filter)
-            .toList();
-        noBookings = filteredBookingToday.isEmpty ? true : false;
-      }
-    });
+    fetchExaminationUpcoming();
+    fetchExaminationToday();
   }
 
   void applyExaminationFilter(String filter) {
@@ -104,13 +94,19 @@ class _AppointmentDoctorScreenState extends State<AppointmentDoctorScreen> {
       length: 2,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Appointment'),
+          backgroundColor: Colors.blue[300],
+          title:
+              const Text('Appointment', style: TextStyle(color: Colors.white)),
           automaticallyImplyLeading: false, // Ẩn nút back button
           centerTitle: true,
           bottom: const TabBar(
+            labelColor: Colors.white, // Màu của tab được chọn
+            unselectedLabelColor: Colors.white,
             tabs: [
-              Tab(text: 'Examination Today'),
-              Tab(text: 'Booking Today'),
+              Tab(
+                text: 'Examination Today',
+              ),
+              Tab(text: 'Examination Upcoming'),
             ],
           ),
         ),
@@ -127,13 +123,13 @@ class _AppointmentDoctorScreenState extends State<AppointmentDoctorScreen> {
                     children: [
                       filterButton('all', 'All', examinationFilter,
                           applyExaminationFilter),
-                      filterButton('finished', 'Finished', examinationFilter,
+                      filterButton('completed', 'Completed', examinationFilter,
                           applyExaminationFilter),
                       filterButton('waiting', 'Waiting', examinationFilter,
                           applyExaminationFilter),
                       filterButton('no show', 'No Show', examinationFilter,
                           applyExaminationFilter),
-                      filterButton('cancel', 'Cancel', examinationFilter,
+                      filterButton('cancelled', 'Cancelled', examinationFilter,
                           applyExaminationFilter),
                     ],
                   ),
@@ -177,8 +173,8 @@ class _AppointmentDoctorScreenState extends State<AppointmentDoctorScreen> {
                                     },
                                   );
                                   if (result == 'updatedStatus') {
-                                    fetchExaminationToday(startDate, endDate);
-                                    fetchBookingToday(startDate, endDate);
+                                    fetchExaminationToday();
+                                    fetchExaminationUpcoming();
                                   }
                                 },
                                 child: Padding(
@@ -203,7 +199,7 @@ class _AppointmentDoctorScreenState extends State<AppointmentDoctorScreen> {
                                           leading: CircleAvatar(
                                             radius: 30,
                                             backgroundImage: NetworkImage(
-                                              'http://192.168.1.2:8080/images/patients/${patient['image']}',
+                                              'http://${ipDevice}:8080/images/patients/${patient['image']}',
                                             ),
                                           ),
                                         ),
@@ -216,7 +212,7 @@ class _AppointmentDoctorScreenState extends State<AppointmentDoctorScreen> {
                                                   BorderRadius.circular(13),
                                               color: () {
                                                 if (examination['status'] ==
-                                                    'finished') {
+                                                    'completed') {
                                                   return Colors.green[
                                                       300]; // Màu xanh cho trạng thái đã hoàn thành
                                                 } else if (examination[
@@ -258,23 +254,6 @@ class _AppointmentDoctorScreenState extends State<AppointmentDoctorScreen> {
               // Tab Booking Today
               Column(
                 children: [
-                  // Filter buttons
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      filterButton(
-                          'all', 'All', bookingFilter, applyBookingFilter),
-                      filterButton('finished', 'Finished', bookingFilter,
-                          applyBookingFilter),
-                      filterButton('waiting', 'Waiting', bookingFilter,
-                          applyBookingFilter),
-                      filterButton('no show', 'No Show', bookingFilter,
-                          applyBookingFilter),
-                      filterButton('cancel', 'Cancel', bookingFilter,
-                          applyBookingFilter),
-                    ],
-                  ),
-
                   noBookings
                       ? Expanded(
                           child: Column(
@@ -296,9 +275,9 @@ class _AppointmentDoctorScreenState extends State<AppointmentDoctorScreen> {
                           child: ListView.builder(
                             padding: const EdgeInsets.symmetric(
                                 vertical: 8.0, horizontal: 7.0),
-                            itemCount: filteredBookingToday.length,
+                            itemCount: examinationUpcoming.length,
                             itemBuilder: (BuildContext context, int index) {
-                              final booking = filteredBookingToday[index];
+                              final booking = examinationUpcoming[index];
                               final patient = booking['patientDto'];
                               return InkWell(
                                 onTap: () async {
@@ -337,7 +316,7 @@ class _AppointmentDoctorScreenState extends State<AppointmentDoctorScreen> {
                                         leading: CircleAvatar(
                                           radius: 30,
                                           backgroundImage: NetworkImage(
-                                            'http://192.168.1.2:8080/images/patients/${patient['image']}',
+                                            'http://${ipDevice}:8080/images/patients/${patient['image']}',
                                           ),
                                         ),
                                       ),
@@ -350,7 +329,7 @@ class _AppointmentDoctorScreenState extends State<AppointmentDoctorScreen> {
                                                 BorderRadius.circular(13),
                                             color: () {
                                               if (booking['status'] ==
-                                                  'finished') {
+                                                  'completed') {
                                                 return Colors.green[
                                                     300]; // Màu xanh cho trạng thái đã hoàn thành
                                               } else if (booking['status'] ==

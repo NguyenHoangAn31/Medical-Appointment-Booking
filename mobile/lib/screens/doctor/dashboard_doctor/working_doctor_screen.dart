@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:mobile/ultils/ip_app.dart';
 import 'package:mobile/ultils/storeCurrentUser.dart';
 
 class WorkingDoctorScreen extends StatefulWidget {
@@ -14,6 +15,7 @@ class WorkingDoctorScreen extends StatefulWidget {
 class _WorkingDoctorScreenState extends State<WorkingDoctorScreen> {
   List<dynamic> workings = [];
   final currentUser = CurrentUser.to.user;
+  final ipDevice = BaseClient().ip;
 
   TextEditingController _companyController = TextEditingController();
   TextEditingController _addressController = TextEditingController();
@@ -25,7 +27,7 @@ class _WorkingDoctorScreenState extends State<WorkingDoctorScreen> {
   Future<void> fetchWorkings() async {
     try {
       final response = await http.get(Uri.parse(
-          'http://192.168.1.2:8080/api/working/doctor/${currentUser['id']}'));
+          'http://${ipDevice}:8080/api/working/doctor/${currentUser['id']}'));
 
       if (response.statusCode == 200) {
         setState(() {
@@ -50,7 +52,7 @@ class _WorkingDoctorScreenState extends State<WorkingDoctorScreen> {
     };
 
     final response = await http.post(
-      Uri.parse('http://192.168.1.2:8080/api/working/create'),
+      Uri.parse('http://${ipDevice}:8080/api/working/create'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
@@ -84,7 +86,7 @@ class _WorkingDoctorScreenState extends State<WorkingDoctorScreen> {
     };
 
     final response = await http.put(
-      Uri.parse('http://192.168.1.2:8080/api/working/update/$id'),
+      Uri.parse('http://${ipDevice}:8080/api/working/update/$id'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
@@ -108,7 +110,7 @@ class _WorkingDoctorScreenState extends State<WorkingDoctorScreen> {
   Future<void> deleteWorkExperience(int id) async {
     try {
       final response = await http
-          .delete(Uri.parse('http://192.168.1.2:8080/api/working/delete/$id'));
+          .delete(Uri.parse('http://${ipDevice}:8080/api/working/delete/$id'));
 
       if (response.statusCode == 200) {
         // If deletion is successful, refresh the work experiences list
@@ -132,8 +134,12 @@ class _WorkingDoctorScreenState extends State<WorkingDoctorScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('List Work Experiences'),
+        backgroundColor: Colors.blue[300],
+        title: const Text('List Workings', style: TextStyle(color: Colors.white)),
         centerTitle: true,
+        iconTheme: const IconThemeData(
+          color: Colors.white, // Đặt màu trắng cho nút back
+        ),
       ),
       body: workings.isEmpty
           ? const Center(
@@ -334,6 +340,8 @@ class _WorkingDoctorScreenState extends State<WorkingDoctorScreen> {
             },
           );
         },
+        backgroundColor: Colors.blue[300], // Đặt màu nền là màu xanh dương
+        foregroundColor: Colors.white, 
         tooltip: 'Create Working',
         child: const Icon(Icons.add),
       ),

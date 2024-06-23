@@ -58,21 +58,22 @@ public class AppointmentController {
         }
     }
 
-    @GetMapping(value = "/patientsbydoctoridandappointmentdates/{doctorid}/{startdate}/{enddate}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<CustomAppointmentDto>> findPatientsByDoctorIdAndAppointmentDates(
+    @GetMapping(value = "/patientsbydoctoridandmedicalexaminationupcoming/{doctorid}/{startdate}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<CustomAppointmentDto>> findPatientsByDoctorIdAndAppointmentUpcoming(
             @PathVariable("doctorid") int doctorId,
-            @PathVariable("startdate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
-            @PathVariable("enddate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
-        List<CustomAppointmentDto> result = appointmentService.findPatientsByDoctorIdAndAppointmentDates(doctorId,startDate,endDate);
+            @PathVariable("startdate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate) {
+        List<CustomAppointmentDto> result = appointmentService.findPatientsByDoctorIdAndAppointmentUpcoming(doctorId,
+                startDate);
         return ResponseEntity.ok(result);
     }
 
-    @GetMapping(value = "/patientsbydoctoridandmedicalexaminationdates/{doctorid}/{startdate}/{enddate}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<CustomAppointmentDto>> findPatientsByDoctorIdAndMedicalExaminationDates(
+    @GetMapping(value = "/patientsbydoctoridandmedicalexaminationtoday/{doctorid}/{startdate}/{enddate}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<CustomAppointmentDto>> findPatientsByDoctorIdAndMedicalExaminationToday(
             @PathVariable("doctorid") int doctorId,
             @PathVariable("startdate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
             @PathVariable("enddate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
-        List<CustomAppointmentDto> result = appointmentService.findPatientsByDoctorIdAndMedicalExaminationDates(doctorId,startDate,endDate);
+        List<CustomAppointmentDto> result = appointmentService
+                .findPatientsByDoctorIdAndMedicalExaminationToday(doctorId, startDate, endDate);
         return ResponseEntity.ok(result);
     }
 }

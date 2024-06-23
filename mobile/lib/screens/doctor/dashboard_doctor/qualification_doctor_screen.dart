@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:mobile/ultils/ip_app.dart';
 import 'package:mobile/ultils/storeCurrentUser.dart';
 
 class QualificationDoctorScreen extends StatefulWidget {
@@ -15,6 +16,8 @@ class QualificationDoctorScreen extends StatefulWidget {
 class _QualificationDoctorScreenState extends State<QualificationDoctorScreen> {
   List<dynamic> qualifications = [];
   final currentUser = CurrentUser.to.user;
+    final ipDevice = BaseClient().ip;
+
 
   TextEditingController _courseController = TextEditingController();
   TextEditingController _degreeNameController = TextEditingController();
@@ -28,7 +31,7 @@ class _QualificationDoctorScreenState extends State<QualificationDoctorScreen> {
 
   Future<void> fetchQualifications() async {
     final response = await http.get(Uri.parse(
-        'http://192.168.1.2:8080/api/qualification/doctor/${currentUser['id']}'));
+        'http://${ipDevice}:8080/api/qualification/doctor/${currentUser['id']}'));
 
     if (response.statusCode == 200) {
       setState(() {
@@ -49,7 +52,7 @@ class _QualificationDoctorScreenState extends State<QualificationDoctorScreen> {
     };
 
     final response = await http.post(
-      Uri.parse('http://192.168.1.2:8080/api/qualification/create'),
+      Uri.parse('http://${ipDevice}:8080/api/qualification/create'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
@@ -78,7 +81,7 @@ class _QualificationDoctorScreenState extends State<QualificationDoctorScreen> {
     };
 
     final response = await http.put(
-      Uri.parse('http://192.168.1.2:8080/api/qualification/update/$id'),
+      Uri.parse('http://${ipDevice}:8080/api/qualification/update/$id'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
@@ -95,7 +98,7 @@ class _QualificationDoctorScreenState extends State<QualificationDoctorScreen> {
 
   Future<void> deleteQualification(int id) async {
     final response = await http.delete(
-        Uri.parse('http://192.168.1.2:8080/api/qualification/delete/$id'));
+        Uri.parse('http://${ipDevice}:8080/api/qualification/delete/$id'));
 
     if (response.statusCode == 200) {
       fetchQualifications();
@@ -108,12 +111,17 @@ class _QualificationDoctorScreenState extends State<QualificationDoctorScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('List Qualifications'),
+        backgroundColor: Colors.blue[300],
+        title: const Text('List Qualifications',
+            style: TextStyle(color: Colors.white)),
         centerTitle: true,
+        iconTheme: const IconThemeData(
+          color: Colors.white, // Đặt màu trắng cho nút back
+        ),
       ),
       body: Column(
         children: [
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           Expanded(
             child: ListView.builder(
               itemCount: qualifications.length,
@@ -131,8 +139,8 @@ class _QualificationDoctorScreenState extends State<QualificationDoctorScreen> {
                 return Column(
                   children: [
                     ListTile(
-                      title:
-                          Text('Course : ${qualification['universityName']}'),
+                      title: Text(
+                          'University : ${qualification['universityName']}'),
                       subtitle: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -286,6 +294,8 @@ class _QualificationDoctorScreenState extends State<QualificationDoctorScreen> {
             },
           );
         },
+        backgroundColor: Colors.blue[300], // Đặt màu nền là màu xanh dương
+        foregroundColor: Colors.white, 
         tooltip: 'Create Qualification',
         child: const Icon(Icons.add),
       ),

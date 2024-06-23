@@ -1,9 +1,11 @@
 import 'dart:convert';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:mobile/ultils/storeCurrentUser.dart';
-import 'package:carousel_slider/carousel_slider.dart';
+import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
+import 'package:mobile/ultils/ip_app.dart';
+import 'package:mobile/ultils/storeCurrentUser.dart';
 
 class HomeDoctorScreen extends StatefulWidget {
   const HomeDoctorScreen({super.key});
@@ -16,8 +18,13 @@ class _HomeDoctorScreenState extends State<HomeDoctorScreen> {
   final TextEditingController _searchController = TextEditingController();
   final currentUser = CurrentUser.to.user;
   int currentIndex = 0;
+  bool noAppointments = false;
   List<dynamic> departments = [];
-  List<dynamic> doctors = [];
+  List<dynamic> patientsUpcoming = [];
+
+  final ipDevice = BaseClient().ip;
+
+  String today = DateFormat('yyyy-MM-dd').format(DateTime.now());
 
   final CarouselController carouselController = CarouselController();
   List<Map<String, String>> imageList = [
@@ -26,47 +33,45 @@ class _HomeDoctorScreenState extends State<HomeDoctorScreen> {
     {'image_path': 'assets/images/banner1.png'},
   ];
 
+  @override
+  void initState() {
+    super.initState();
+    fetchDepartment();
+    fetchPatientUpcoming();
+  }
+
   Future<void> fetchDepartment() async {
     final response =
-        await http.get(Uri.parse('http://192.168.1.2:8080/api/department/all'));
+        await http.get(Uri.parse('http://${ipDevice}:8080/api/department/all'));
 
     if (response.statusCode == 200) {
-      if (mounted) {
-        setState(() {
-          var result = jsonDecode(response.body);
-          departments = result;
-        });
-      }
+      setState(() {
+        departments = jsonDecode(response.body);
+      });
     } else {
       throw Exception('Failed to load departments');
     }
   }
 
-  Future<void> fetchAllDoctors() async {
-    final response =
-        await http.get(Uri.parse('http://192.168.1.2:8080/api/doctor/all'));
+  Future<void> fetchPatientUpcoming() async {
+    final response = await http.get(Uri.parse(
+        'http://${ipDevice}:8080/api/appointment/patientsbydoctoridandmedicalexaminationtoday/${currentUser['id']}/${today}/${today}'));
 
     if (response.statusCode == 200) {
       var result = jsonDecode(response.body);
-      List<dynamic> doctorList = result;
-
-      doctorList.sort((a, b) => b['rate'].compareTo(a['rate']));
+      List<dynamic> patientList = result;
 
       if (mounted) {
         setState(() {
-          doctors = doctorList;
+          patientsUpcoming = patientList
+              .where((patient) => patient["status"] == "waiting")
+              .toList();
+          noAppointments = patientsUpcoming.isEmpty ? true : false;
         });
       }
     } else {
-      throw Exception('Failed to load doctors');
+      throw Exception('Failed to load patientList');
     }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    fetchDepartment();
-    fetchAllDoctors();
   }
 
   @override
@@ -74,90 +79,7 @@ class _HomeDoctorScreenState extends State<HomeDoctorScreen> {
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(100.0),
-        child: Stack(
-          children: [
-            AppBar(
-              backgroundColor: const Color.fromARGB(255, 255, 255, 255),
-              automaticallyImplyLeading: false,
-              elevation: 0,
-              titleSpacing: 20,
-              title: Container(),
-            ),
-            Positioned(
-              top: 50.0,
-              left: 20.0,
-              right: 20.0,
-              child: Row(
-                children: [
-                  Obx(
-                    () => CircleAvatar(
-                      backgroundColor: const Color.fromARGB(255, 136, 165, 255),
-                      radius: 30,
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(
-                            0), // You can adjust the radius as needed
-                        child: Image.network(
-                          'http://192.168.1.2:8080/images/doctors/${currentUser['image']}',
-                          width: 40,
-                          height: 60,
-                          fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) {
-                            return const Icon(Icons.error);
-                          },
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Row(
-                        children: [
-                          Text(
-                            'Good Morning',
-                            style: TextStyle(
-                              color: Color.fromARGB(255, 125, 125, 125),
-                              fontSize: 15,
-                            ),
-                          ),
-                          SizedBox(width: 5),
-                          Icon(
-                            Icons.wb_sunny,
-                            color: Colors.orange,
-                            size: 20,
-                          ),
-                        ],
-                      ),
-                      Obx(() => Text(
-                            '${currentUser['fullName']}',
-                            style: const TextStyle(
-                              color: Colors.black,
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          )),
-                    ],
-                  ),
-                  const Spacer(),
-                  IconButton(
-                    icon: const Icon(Icons.notifications_active,
-                        color: Colors.black),
-                    onPressed: () {
-                      // Handle notification button press
-                    },
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.favorite, color: Colors.red),
-                    onPressed: () {
-                      // Handle favorite button press
-                    },
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
+        child: _buildAppBar(),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -165,131 +87,222 @@ class _HomeDoctorScreenState extends State<HomeDoctorScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-                decoration: ShapeDecoration(
-                  color: const Color(0xFFF2F4F7),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                ),
-                child: Row(
-                  children: [
-                    const Icon(
-                      Icons.search,
-                      color: Color(0xFF98A2B2),
-                      size: 30,
-                    ),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: TextField(
-                        controller: _searchController,
-                        decoration: const InputDecoration(
-                          border: InputBorder.none,
-                          hintText: 'Search',
-                          counter: SizedBox.shrink(),
-                          counterText: '',
-                          hintStyle: TextStyle(
-                            color: Color(0xFF98A2B2),
-                            fontSize: 14,
-                            fontFamily: 'Poppins',
-                            fontWeight: FontWeight.w300,
-                          ),
-                        ),
-                        style: const TextStyle(
-                          color: Colors.black,
-                          fontSize: 16,
-                          fontFamily: 'Poppins',
-                          fontWeight: FontWeight.w600,
-                        ),
-                        keyboardType: TextInputType.text,
-                      ),
-                    ),
-                    const SizedBox(width: 10),
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.pushNamed(context, '/filter');
-                      },
-                      child: const Icon(
-                        Icons.tune,
-                        color: Color.fromARGB(255, 0, 98, 255),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+              _buildSearchBar(),
               const SizedBox(height: 30),
-              Stack(
-                children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(15),
-                    child: CarouselSlider(
-                      items: imageList
-                          .map(
-                            (item) => Image.asset(
-                              item['image_path']!,
-                              fit: BoxFit.cover,
-                              width: double.infinity,
-                              height:
-                                  187, // Ensure the height is specified for BoxFit.cover
-                            ),
-                          )
-                          .toList(),
-                      carouselController: carouselController,
-                      options: CarouselOptions(
-                        scrollPhysics: const BouncingScrollPhysics(),
-                        autoPlay: true,
-                        aspectRatio: 335 / 187, // Maintain aspect ratio 335:201
-                        viewportFraction: 1,
-                        onPageChanged: (index, reason) {
-                          if (mounted) {
-                            setState(() {
-                              currentIndex = index;
-                            });
-                          }
-                        },
-                      ),
-                    ),
-                  ),
-                  Positioned(
-                    bottom: 20,
-                    right: 160,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: imageList.asMap().entries.map((entry) {
-                        return GestureDetector(
-                          onTap: () =>
-                              carouselController.animateToPage(entry.key),
-                          child: Container(
-                            width: currentIndex == entry.key ? 17 : 7,
-                            height: 7.0,
-                            margin: const EdgeInsets.symmetric(horizontal: 3.0),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              color: currentIndex == entry.key
-                                  ? const Color.fromARGB(255, 106, 170, 255)
-                                  : const Color.fromARGB(255, 209, 209, 209),
-                            ),
-                          ),
-                        );
-                      }).toList(),
-                    ),
-                  ),
-                ],
-              ),
+              _buildCarousel(),
               const SizedBox(height: 25),
-              _buildSectionTitle('Doctor Speciality'),
+              _buildSectionTitle('Statistical'),
               const SizedBox(height: 25),
               _buildDepartmentGrid(),
               const SizedBox(height: 25),
-              _buildSectionTitle('Top Doctors'),
+              _buildSectionTitle('Patients Upcoming'),
               const SizedBox(height: 15),
-              _buildDoctorGrid(),
+              _buildPatientGrid(),
             ],
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildAppBar() {
+    return Stack(
+      children: [
+        AppBar(
+          backgroundColor: const Color.fromARGB(255, 255, 255, 255),
+          automaticallyImplyLeading: false,
+          elevation: 0,
+          titleSpacing: 20,
+          title: Container(),
+        ),
+        Positioned(
+          top: 50.0,
+          left: 20.0,
+          right: 20.0,
+          child: Row(
+            children: [
+              Obx(
+                () => CircleAvatar(
+                  backgroundColor: const Color.fromARGB(255, 136, 165, 255),
+                  radius: 30,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(0),
+                    child: Image.network(
+                      'http://${ipDevice}:8080/images/doctors/${currentUser['image']}',
+                      width: 40,
+                      height: 60,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return const Icon(Icons.error);
+                      },
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 10),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Row(
+                    children: [
+                      Text(
+                        'Good Morning',
+                        style: TextStyle(
+                          color: Color.fromARGB(255, 125, 125, 125),
+                          fontSize: 15,
+                        ),
+                      ),
+                      SizedBox(width: 5),
+                      Icon(
+                        Icons.wb_sunny,
+                        color: Colors.orange,
+                        size: 20,
+                      ),
+                    ],
+                  ),
+                  Obx(() => Text(
+                        '${currentUser['fullName']}',
+                        style: const TextStyle(
+                          color: Colors.black,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      )),
+                ],
+              ),
+              const Spacer(),
+              IconButton(
+                icon:
+                    const Icon(Icons.notifications_active, color: Colors.black),
+                onPressed: () {
+                  // Handle notification button press
+                },
+              ),
+              IconButton(
+                icon: const Icon(Icons.favorite, color: Colors.red),
+                onPressed: () {
+                  // Handle favorite button press
+                },
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSearchBar() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+      decoration: ShapeDecoration(
+        color: const Color(0xFFF2F4F7),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15),
+        ),
+      ),
+      child: Row(
+        children: [
+          const Icon(
+            Icons.search,
+            color: Color(0xFF98A2B2),
+            size: 30,
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: TextField(
+              controller: _searchController,
+              decoration: const InputDecoration(
+                border: InputBorder.none,
+                hintText: 'Search',
+                counter: SizedBox.shrink(),
+                counterText: '',
+                hintStyle: TextStyle(
+                  color: Color(0xFF98A2B2),
+                  fontSize: 14,
+                  fontFamily: 'Poppins',
+                  fontWeight: FontWeight.w300,
+                ),
+              ),
+              style: const TextStyle(
+                color: Colors.black,
+                fontSize: 16,
+                fontFamily: 'Poppins',
+                fontWeight: FontWeight.w600,
+              ),
+              keyboardType: TextInputType.text,
+            ),
+          ),
+          const SizedBox(width: 10),
+          GestureDetector(
+            onTap: () {
+              // Navigator.pushNamed(context, '/filter');
+            },
+            child: const Icon(
+              Icons.tune,
+              color: Color.fromARGB(255, 0, 98, 255),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCarousel() {
+    return Stack(
+      children: [
+        ClipRRect(
+          borderRadius: BorderRadius.circular(15),
+          child: CarouselSlider(
+            items: imageList
+                .map(
+                  (item) => Image.asset(
+                    item['image_path']!,
+                    fit: BoxFit.cover,
+                    width: double.infinity,
+                    height: 187,
+                  ),
+                )
+                .toList(),
+            carouselController: carouselController,
+            options: CarouselOptions(
+              scrollPhysics: const BouncingScrollPhysics(),
+              autoPlay: true,
+              aspectRatio: 335 / 187,
+              viewportFraction: 1,
+              onPageChanged: (index, reason) {
+                if (mounted) {
+                  setState(() {
+                    currentIndex = index;
+                  });
+                }
+              },
+            ),
+          ),
+        ),
+        Positioned(
+          bottom: 20,
+          right: 160,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: imageList.asMap().entries.map((entry) {
+              return GestureDetector(
+                onTap: () => carouselController.animateToPage(entry.key),
+                child: Container(
+                  width: currentIndex == entry.key ? 17 : 7,
+                  height: 7.0,
+                  margin: const EdgeInsets.symmetric(horizontal: 3.0),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: currentIndex == entry.key
+                        ? const Color.fromARGB(255, 106, 170, 255)
+                        : const Color.fromARGB(255, 209, 209, 209),
+                  ),
+                ),
+              );
+            }).toList(),
+          ),
+        ),
+      ],
     );
   }
 
@@ -304,119 +317,106 @@ class _HomeDoctorScreenState extends State<HomeDoctorScreen> {
             fontWeight: FontWeight.bold,
           ),
         ),
-        TextButton(
-          onPressed: () {
-            // Handle "See All" button press
-          },
-          child: const Text(
-            'See All',
-            style: TextStyle(
-              color: Color.fromARGB(255, 0, 98, 255),
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
       ],
     );
   }
 
-  Widget _buildDoctorGrid() {
-    return ListView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      itemCount: doctors.length > 5 ? 5 : doctors.length,
-      itemBuilder: (BuildContext context, int index) {
-        var doctor = doctors[index];
-        return Padding(
-          padding: const EdgeInsets.only(bottom: 20.0),
-          child: Container(
-            decoration: BoxDecoration(
-              color: const Color(0xFFF2F4F7),
-              borderRadius: BorderRadius.circular(10.0),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    width: 100,
-                    height: 100,
-                    color: const Color.fromARGB(255, 255, 255, 255),
-                    child: Center(
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(8.0),
-                        child: Image.network(
-                          'http://192.168.1.2:8080/images/doctors/${doctor['image']}',
-                          width: 70,
-                          height: 90,
-                          fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) {
-                            return const Icon(Icons.error);
-                          },
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
+  Widget _buildPatientGrid() {
+    return noAppointments
+        ? Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Image.asset('assets/images/no_data.png'),
+              const SizedBox(height: 10),
+              const Text(
+                "You don't have any appointment today",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 15,
+                ),
+              ),
+            ],
+          )
+        : ListView.builder(
+            // padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 7.0),
+            itemCount: patientsUpcoming.length,
+            shrinkWrap: true,
+            itemBuilder: (BuildContext context, int index) {
+              final examination = patientsUpcoming[index];
+              final patient = examination['patientDto'];
+              return InkWell(
+                onTap: () async {
+                  final result = await Navigator.pushNamed(
+                    context,
+                    '/dashboard/doctor/patient',
+                    arguments: {
+                      'patient': patient,
+                      'status': examination['status'],
+                      'action': 'allow',
+                      'id': examination['id']
+                    },
+                  );
+                  if (result == 'updatedStatus') {
+                    fetchPatientUpcoming();
+                  }
+                },
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  child: Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      ListTile(
+                        title: Text(patient['fullName']),
+                        subtitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Expanded(
-                              child: Text(
-                                '${doctor['title']} ${doctor['fullName']}',
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 18,
-                                ),
-                              ),
-                            ),
-                            // Icon trái tim
-                            const Icon(
-                              Icons.favorite,
-                              color: Colors.red,
-                              size: 20,
-                            ),
+                            Text('Clinic Hours: ${examination['clinicHours']}'),
+                            Text(
+                                'Booking Date: ${examination['appointmentDate']}'),
                           ],
                         ),
-                        const Divider(),
-                        Text(
-                          'Department : ${doctor['department']['name']}',
-                          style: const TextStyle(
-                            fontSize: 14,
+                        leading: CircleAvatar(
+                          radius: 30,
+                          backgroundImage: NetworkImage(
+                            'http://${ipDevice}:8080/images/patients/${patient['image']}',
                           ),
                         ),
-                        const SizedBox(height: 5),
-                        Row(
-                          children: [
-                            // Star icon for rating
-                            const Icon(
-                              Icons.star,
-                              color: Color.fromARGB(255, 32, 166, 255),
-                              size: 16,
-                            ),
-                            const SizedBox(width: 5),
-                            Text(
-                              '${doctor['rate']} (${doctor['feedbackDtoList'].length} reviews)',
+                      ),
+                      Positioned(
+                        top: 5,
+                        right: 7,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(13),
+                            color: () {
+                              if (examination['status'] == 'finished') {
+                                return Colors.green[300];
+                              } else if (examination['status'] == 'waiting') {
+                                return Colors.orange[300];
+                              } else {
+                                return Colors.red[300];
+                              }
+                            }(),
+                          ),
+                          width: 75,
+                          height: 30,
+                          child: Center(
+                            child: Text(
+                              examination['status'],
                               style: const TextStyle(
-                                fontSize: 14,
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
-                          ],
+                          ),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
-            ),
-          ),
-        );
-      },
-    );
+                ),
+              );
+            },
+          );
   }
 
   Widget _buildDepartmentGrid() {
@@ -432,7 +432,6 @@ class _HomeDoctorScreenState extends State<HomeDoctorScreen> {
       itemCount: departments.length >= 8 ? 8 : departments.length,
       itemBuilder: (BuildContext context, int index) {
         if (index == 7) {
-          // Last item for "More" button
           return TextButton(
             onPressed: () {
               // Handle "More" button press
@@ -457,18 +456,16 @@ class _HomeDoctorScreenState extends State<HomeDoctorScreen> {
             ),
           );
         } else {
-          // Display department item
           final item = departments[index];
           return Column(
             children: [
               CircleAvatar(
                 radius: 30,
-                backgroundColor: Color.fromARGB(255, 213, 227, 255),
+                backgroundColor: const Color.fromARGB(255, 213, 227, 255),
                 child: ClipRRect(
-                  borderRadius:
-                      BorderRadius.circular(0), // Adjust the radius as needed
+                  borderRadius: BorderRadius.circular(0),
                   child: Image.network(
-                    'http://192.168.1.2:8080/images/department/${item['icon']}',
+                    'http://${ipDevice}:8080/images/department/${item['icon']}',
                     width: 30,
                     height: 30,
                     fit: BoxFit.cover,
@@ -479,14 +476,13 @@ class _HomeDoctorScreenState extends State<HomeDoctorScreen> {
                 ),
               ),
               const SizedBox(height: 5),
-              // Container to limit text overflow
               Container(
-                width: 60, // Limit width to 60 for consistent layout
+                width: 60,
                 child: Text(
                   item['name'],
                   textAlign: TextAlign.center,
-                  maxLines: 1, // Maximum 1 line
-                  overflow: TextOverflow.ellipsis, // Ellipsis (...) if overflow
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.bold,

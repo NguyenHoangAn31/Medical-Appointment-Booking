@@ -16,6 +16,6 @@ public interface AppointmentService {
 
         boolean changestatus(int id, String status);
 
-        List<CustomAppointmentDto> findPatientsByDoctorIdAndAppointmentDates(int doctorId , LocalDate startDate , LocalDate endDate);
-        List<CustomAppointmentDto> findPatientsByDoctorIdAndMedicalExaminationDates(int doctorId , LocalDate startDate , LocalDate endDate);
+        List<CustomAppointmentDto> findPatientsByDoctorIdAndAppointmentUpcoming(int doctorId , LocalDate startDate);
+        List<CustomAppointmentDto> findPatientsByDoctorIdAndMedicalExaminationToday(int doctorId , LocalDate startDate , LocalDate endDate);
 }

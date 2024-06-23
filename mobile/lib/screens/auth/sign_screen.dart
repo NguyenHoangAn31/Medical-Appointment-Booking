@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
+import 'package:mobile/ultils/ip_app.dart';
 import 'dart:convert';
 import 'package:mobile/ultils/storeCurrentUser.dart';
 
@@ -20,6 +21,8 @@ class SignInScreen extends StatefulWidget {
 }
 
 class _SignInScreenState extends State<SignInScreen> {
+  final ipDevice = BaseClient().ip;
+
   final TextEditingController _phoneNumberController = TextEditingController();
   final TextEditingController _otpNumber01Controller = TextEditingController();
   final TextEditingController _otpNumber02Controller = TextEditingController();
@@ -130,7 +133,7 @@ class _SignInScreenState extends State<SignInScreen> {
   Future<String> checkRefreshToken() async {
     //xử lý send otp
 
-    var url = 'http://192.168.1.2:8080/api/auth/check-refresh-token';
+    var url = 'http://${ipDevice}:8080/api/auth/check-refresh-token';
     var data = {'username': _phoneNumberController.text, 'provider': 'phone'};
 
     var response = await http.post(
@@ -147,7 +150,7 @@ class _SignInScreenState extends State<SignInScreen> {
           ? 'patient'
           : 'doctor/findbyuserid';
       var urlForCurrentUser =
-          'http://192.168.1.2:8080/api/${path}/${jsonResponse['user']['id']}';
+          'http://${ipDevice}:8080/api/${path}/${jsonResponse['user']['id']}';
       var response = await http.get(
         Uri.parse(urlForCurrentUser),
         headers: {'Content-Type': 'application/json'},
@@ -322,45 +325,43 @@ class _SignInScreenState extends State<SignInScreen> {
                       elevation: 0,
                       backgroundColor: const Color(0xFF92A3FD),
                     ),
-// <<<<<<< An
-//                     onPressed: _handleLogin,
-//                     child: const Text(
-//                       'Log In',
-//                       style: TextStyle(
-// =======
-                    onPressed: () async {
-                      if (_phoneNumberController.text.length <= 9) {
-                        log("if");
-                        Fluttertoast.showToast(
-                            msg:
-                                'Phone number invalid or phone is not be blank!',
-                            toastLength: Toast.LENGTH_SHORT,
-                            gravity: ToastGravity.BOTTOM,
-                            timeInSecForIosWeb: 1,
-                            backgroundColor: Colors.red,
-                            textColor: Colors.white,
-                            fontSize: 16.0);
-                      } else {
-                        log("else");
+                    onPressed: _handleLogin,
+                    // child: const Text(
+                    //   'Log In',
+                    // style: TextStyle(
+                    // onPressed: () async {
+                    //   if (_phoneNumberController.text.length <= 9) {
+                    //     log("if");
+                    //     Fluttertoast.showToast(
+                    //         msg:
+                    //             'Phone number invalid or phone is not be blank!',
+                    //         toastLength: Toast.LENGTH_SHORT,
+                    //         gravity: ToastGravity.BOTTOM,
+                    //         timeInSecForIosWeb: 1,
+                    //         backgroundColor: Colors.red,
+                    //         textColor: Colors.white,
+                    //         fontSize: 16.0);
+                    //   } else {
+                    //     log("else");
 
-                        // bool isLoggedIn = await AuthClient().checkToken(_phoneNumberController.text);
-                        // if(isLoggedIn){
-                        //   Navigator.of(context).pushReplacement(
-                        //     MaterialPageRoute(builder: (context) => const NavigationMenu()),
-                        //   );
-                        // }else{
-                        //
-                        // }
+                    //     // bool isLoggedIn = await AuthClient().checkToken(_phoneNumberController.text);
+                    //     // if(isLoggedIn){
+                    //     //   Navigator.of(context).pushReplacement(
+                    //     //     MaterialPageRoute(builder: (context) => const NavigationMenu()),
+                    //     //   );
+                    //     // }else{
+                    //     //
+                    //     // }
 
-                        if (otpVisibility) {
-                          log("else if");
-                          signInWithOTP();
-                        } else {
-                          log("else else");
-                          verifyPhoneNumber();
-                        }
-                      }
-                    },
+                    //     if (otpVisibility) {
+                    //       log("else if");
+                    //       signInWithOTP();
+                    //     } else {
+                    //       log("else else");
+                    //       verifyPhoneNumber();
+                    //     }
+                    //   }
+                    // },
                     child: Text(
                       otpVisibility ? 'SEND OTP' : 'VERIFY PHONE',
                       style: const TextStyle(
