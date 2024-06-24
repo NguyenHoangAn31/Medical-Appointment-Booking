@@ -36,7 +36,8 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
           appBar: AppBar(
             toolbarHeight: 80,
             //backgroundColor: Colors.blue,
-            title: const Text('My Appointment', style: TextStyle(color: Colors.black, fontSize: 22)),
+            title: const Text('My Appointment',
+                style: TextStyle(color: Colors.black, fontSize: 22)),
             actions: [
               IconButton(
                 icon: const Icon(Icons.search),
@@ -145,6 +146,7 @@ class ReceivingScreen extends StatelessWidget {
                         ),
                       ],
                     ),
+
                     child: Column(
                       children: [
                         Row(
@@ -720,8 +722,6 @@ class CancelledScreen extends StatelessWidget {
                                       ),
                                     ),
                                   ),
-
-
 
                             ],
                           ),
