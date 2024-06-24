@@ -67,8 +67,7 @@ class _EditDoctorScreenState extends State<EditDoctorScreen> {
 
   Future<void> saveChanges() async {
     final url =
-        'http://${ipDevice}:8080/api/doctor/editdoctor/${currentUser['id']}';
-
+        'http://$ipDevice:8080/api/doctor/editdoctor/${currentUser['id']}';
     final response = await http.put(
       Uri.parse(url),
       headers: <String, String>{
@@ -89,11 +88,11 @@ class _EditDoctorScreenState extends State<EditDoctorScreen> {
     if (response.statusCode == 200) {
       // Nếu cập nhật thành công
       ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Information updated successfully')));
+          const SnackBar(content: Text('Information updated successfully')));
     } else {
       // Nếu cập nhật thất bại
       ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to update information')));
+          const SnackBar(content: Text('Failed to update information')));
     }
   }
 
@@ -114,35 +113,35 @@ class _EditDoctorScreenState extends State<EditDoctorScreen> {
           children: <Widget>[
             TextField(
               controller: emailController,
-              decoration: InputDecoration(labelText: 'Email'),
+              decoration: const InputDecoration(labelText: 'Email'),
             ),
             TextField(
               controller: phoneController,
-              decoration: InputDecoration(labelText: 'Phone'),
+              decoration: const InputDecoration(labelText: 'Phone'),
             ),
             TextField(
               controller: fullNameController,
-              decoration: InputDecoration(labelText: 'Full Name'),
+              decoration: const InputDecoration(labelText: 'Full Name'),
             ),
             TextField(
               controller: titleController,
-              decoration: InputDecoration(labelText: 'Title'),
+              decoration: const InputDecoration(labelText: 'Title'),
             ),
             TextField(
               controller: genderController,
-              decoration: InputDecoration(labelText: 'Gender'),
+              decoration: const InputDecoration(labelText: 'Gender'),
             ),
             TextField(
               controller: birthdayController,
-              decoration: InputDecoration(labelText: 'Birthday'),
+              decoration: const InputDecoration(labelText: 'Birthday'),
             ),
             TextField(
               controller: addressController,
-              decoration: InputDecoration(labelText: 'Address'),
+              decoration: const InputDecoration(labelText: 'Address'),
             ),
             TextField(
               controller: bioController,
-              decoration: InputDecoration(labelText: 'Bio'),
+              decoration: const InputDecoration(labelText: 'Bio'),
             ),
             SizedBox(height: 20),
           ],

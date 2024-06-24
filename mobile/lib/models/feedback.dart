@@ -15,13 +15,14 @@ class Feedback{
   });
   factory Feedback.fromJson(Map<String, dynamic> json){
     return Feedback(
-      id: json['id'],
-      rate: json['rate'],
-      comment: json['comment'],
-      status: json['status'] as bool,
-      patient: Patient.fromJson(json['patient']),
+      id: json['id'] ?? 0,
+      rate: json['rate'] ?? 0.0,
+      comment: json['comment'] ?? '',
+      status: json['status'] ?? false,
+      patient: Patient.fromJson(json['patient'] ?? {}),
     );
   }
+
   Map<String, dynamic> toJson(){
     return {
       'id': id,

@@ -73,6 +73,15 @@ public class AppointmentController {
         return ResponseEntity.ok(result);
     }
 
+    // Tìm những lịch khám của patient ngày hôm nay dựa vào patientId và medical_exam_date
+    @GetMapping("/appointment-schedule-patientId-and-status/{patientId}/{status}")
+    public ResponseEntity<List<AppointmentDto>> getAppointmentsPatient(
+            @PathVariable("patientId") int patientId, @PathVariable("status") String status) {
+        List<AppointmentDto> result = appointmentService
+                .findAppointmentsPatientByPatientIdAndStatus(patientId, status);
+        return ResponseEntity.ok(result);
+    }
+
     @GetMapping(value = "/patientsbydoctoridandmedicalexaminationupcoming/{doctorid}/{startdate}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<CustomAppointmentDto>> findPatientsByDoctorIdAndAppointmentUpcoming(
             @PathVariable("doctorid") int doctorId,

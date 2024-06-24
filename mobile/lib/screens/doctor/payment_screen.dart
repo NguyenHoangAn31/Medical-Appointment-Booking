@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:intl/intl.dart';
 
 import '../../models/doctor.dart';
 import '../../services/doctor/doctorService.dart';
@@ -15,10 +16,12 @@ class PaymentScreen extends StatefulWidget {
 class _PaymentScreenState extends State<PaymentScreen> {
   String _selectedPaymentMethod = 'vnpay';
   late Future<Doctor> _doctorFuture;
+
   @override
   void initState() {
     super.initState();
     // Khởi tạo TextEditingController với dữ liệu có sẵn
+
   }
 
   late String? fullNameDoctor;
@@ -32,14 +35,17 @@ class _PaymentScreenState extends State<PaymentScreen> {
     super.didChangeDependencies();
     // final Map arguments = ModalRoute.of(context)?.settings.arguments as Map;
     final Map<String, dynamic> data = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>;
-    _doctorFuture =  getDoctorById(data['doctorId']);
     _data = data;
+    _doctorFuture =  getDoctorById(data['doctorId']);
+
     _doctorFuture.then((doctor) {
       if (doctor != null) {
-        fullNameDoctor = doctor.fullName;
-        department = doctor.department.name;
-        title = doctor.title;
-        price = doctor.price;
+        setState(() {
+          fullNameDoctor = doctor.fullName;
+          department = doctor.department.name;
+          title = doctor.title;
+          price = doctor.price;
+        });
       } else {
         // Handle case when patient data is null
         print('Patient data is null.');
@@ -47,7 +53,9 @@ class _PaymentScreenState extends State<PaymentScreen> {
     }).catchError((error) {
       print('Error fetching patient data: $error');
     });
+    setState(() {
 
+    });
 
   }
 
@@ -84,11 +92,14 @@ class _PaymentScreenState extends State<PaymentScreen> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text('Thông tin lịch book'),
-              const SizedBox(height: 10,),
+              const Text('Booking schedule information', style: TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+              ),),
+              const SizedBox(height: 30,),
               Row(
                 children: [
-                  const Text('Bác sĩ: '),
+                  const Text('Doctor: '),
                   const SizedBox(width: 10),
                   Text(fullNameDoctor!),
                 ],
@@ -96,7 +107,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
               const SizedBox(height: 10,),
               Row(
                 children: [
-                  const Text('Khoa: '),
+                  const Text('Specialist: '),
                   const SizedBox(width: 10),
                   Text('$department'),
                 ],
@@ -104,31 +115,39 @@ class _PaymentScreenState extends State<PaymentScreen> {
               const SizedBox(height: 10,),
               Row(
                 children: [
-                  const Text('Giá khám: '),
+                  const Text('Examination price: '),
                   const SizedBox(width: 10),
-                  Text('$price VNĐ'),
+                  Row(
+                    children: [
+                      Text(NumberFormat.currency(locale: 'vi_VN', symbol: '₫').format(price)),
+                      const SizedBox(width: 5,),
+                      const Text(' or '),
+                      const SizedBox(width: 5,),
+                      Text('${NumberFormat('#,##0.0', 'en_US').format(price! / 23000)} USD'),
+                    ],
+                  ),
                 ],
               ),
               const SizedBox(height: 10,),
               const Row(
                 children: [
-                  Text('Địa chỉ khám: '),
+                  Text('Address: '),
                   SizedBox(width: 10),
-                  Text('10, Nguyễn Thị Thập, Quận 7'),
-                ],
-              ),
-              const SizedBox(height: 10,),
-              const Row(
-                children: [
-                  Text('Ngày khám: '),
-                  SizedBox(width: 10),
-                  Text('04/06/2024'),
+                  Text('Medicare Plus - No590, CMT8, Q3. HCM'),
                 ],
               ),
               const SizedBox(height: 10,),
               Row(
                 children: [
-                  const Text('Giờ hẹn khám: '),
+                  const Text('Examination day: '),
+                  const SizedBox(width: 10),
+                  Text('${_data['medicalExaminationDay']}'),
+                ],
+              ),
+              const SizedBox(height: 10,),
+              Row(
+                children: [
+                  const Text('Appointment time: '),
                   const SizedBox(width: 10),
                   Text(formattedClinicHours),
                 ],
@@ -136,7 +155,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
               const SizedBox(height: 10,),
               Row(
                 children: [
-                  const Text('Nội dung khám: '),
+                  const Text('Examination content: '),
                   const SizedBox(width: 10),
                   Text('${_data['note']}'),
                 ],
@@ -144,9 +163,17 @@ class _PaymentScreenState extends State<PaymentScreen> {
               const SizedBox(height: 10,),
               Row(
                 children: [
-                  const Text('Đặt cọc: '),
+                  const Text('Deposits: '),
                   const SizedBox(width: 10),
-                  Text('${_data['price']} VNĐ'),
+                  Row(
+                    children: [
+                      Text(NumberFormat.currency(locale: 'vi_VN', symbol: '₫').format(_data['price'])),
+                      const SizedBox(width: 5,),
+                      const Text(' or '),
+                      const SizedBox(width: 5,),
+                      Text('${NumberFormat('#,##0.0', 'en_US').format(_data['price']! / 23000)} USD'),
+                    ],
+                  ),
                 ],
               ),
               const SizedBox(height: 10,),
@@ -156,42 +183,68 @@ class _PaymentScreenState extends State<PaymentScreen> {
                 ],
               ),
               const SizedBox(height: 10,),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  ListTile(
-                    title: Row(
-                      children: [
-                        Image.asset('assets/images/vnpay.png', width: 50, height: 50),
-                      ],
-                    ),
-                    leading: Radio<String>(
-                      value: 'vnpay',
-                      groupValue: _selectedPaymentMethod,
-                      onChanged: (String? value) {
+              Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Column(
+                  children: <Widget>[
+                    ListTile(
+                      title: Row(
+                        children: [
+                          InkWell(
+                            onTap: () {
+                              setState(() {
+                                _selectedPaymentMethod = 'vnpay';
+                              });
+                            },
+                            child: Image.asset('assets/images/vnpay.png', width: 50, height: 50),
+                          ),
+                        ],
+                      ),
+                      leading: Radio<String>(
+                        value: 'vnpay',
+                        groupValue: _selectedPaymentMethod,
+                        onChanged: (String? value) {
+                          setState(() {
+                            _selectedPaymentMethod = value!;
+                          });
+                        },
+                      ),
+                      onTap: () {
                         setState(() {
-                          _selectedPaymentMethod = value!;
+                          _selectedPaymentMethod = 'vnpay';
                         });
                       },
                     ),
-                  ),
-                  ListTile(
-                    title: Row(
-                      children: [
-                        Image.asset('assets/images/paypal.png', width: 50, height: 50),
-                      ],
-                    ),
-                    leading: Radio<String>(
-                      value: 'paypal',
-                      groupValue: _selectedPaymentMethod,
-                      onChanged: (String? value) {
+                    ListTile(
+                      title: Row(
+                        children: [
+                          InkWell(
+                            onTap: () {
+                              setState(() {
+                                _selectedPaymentMethod = 'paypal';
+                              });
+                            },
+                            child: Image.asset('assets/images/paypal.png', width: 50, height: 50),
+                          ),
+                        ],
+                      ),
+                      leading: Radio<String>(
+                        value: 'paypal',
+                        groupValue: _selectedPaymentMethod,
+                        onChanged: (String? value) {
+                          setState(() {
+                            _selectedPaymentMethod = value!;
+                          });
+                        },
+                      ),
+                      onTap: () {
                         setState(() {
-                          _selectedPaymentMethod = value!;
+                          _selectedPaymentMethod = 'paypal';
                         });
                       },
                     ),
-                  ),
-                ],
+                  ],
+                ),
               )
             ],
           ),
@@ -202,15 +255,6 @@ class _PaymentScreenState extends State<PaymentScreen> {
             padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 30),
             child: InkWell(
               onTap: (){
-                // showDialog(
-                //   context: context,
-                //   builder: (BuildContext context) {
-                //     return const SuccessWidget(
-                //       title: 'Your Appointment Failed!',
-                //       message: 'Appointment with Dr. Jennie Thorn failed. Please check then try again.',
-                //     );
-                //   },
-                // );
                 _data['payment'] = _selectedPaymentMethod;
                 print(_data);
                 //Navigator.pushNamed(context, '/doctor/booking');

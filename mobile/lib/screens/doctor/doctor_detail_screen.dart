@@ -1,10 +1,12 @@
+import 'dart:convert';
+import 'dart:core';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import '../../models/doctor.dart';
-import '../../services/doctor/doctorService.dart';
-import '../../services/feedbackService.dart';
 import '../../ultils/color_app.dart';
 import '../../ultils/ip_app.dart';
+import 'package:http/http.dart' as http;
 
 class DoctorDetailScreen extends StatefulWidget {
   const DoctorDetailScreen({super.key});
@@ -15,8 +17,10 @@ class DoctorDetailScreen extends StatefulWidget {
 
 class _DoctorDetailScreenState extends State<DoctorDetailScreen> {
   final ipDevice = BaseClient().ip;
-  late final int doctorId;
-  late final Future<List<Feedback>> _feedback;
+
+  late int doctorId;
+  List<dynamic> feedbacks = [];
+  late  Future<Doctor> _doctor;
   @override
   void initState() {
     super.initState();
@@ -26,8 +30,33 @@ class _DoctorDetailScreenState extends State<DoctorDetailScreen> {
     super.didChangeDependencies();
     final Map arguments = ModalRoute.of(context)?.settings.arguments as Map;
     doctorId = arguments['doctorId'] as int;
-   // _feedback = getFeedbackByDoctorId(doctorId) as Future<List<Feedback>>;
+    _doctor = getDoctorById(doctorId);
+     //feedbacks = getFeedbackByDoctorId(doctorId) as List;
   }
+
+  Future<Doctor> getDoctorById(int doctorId) async {
+    final response = await http.get(
+      Uri.parse('http://$ipDevice:8080/api/doctor/$doctorId'),
+    );
+    if (response.statusCode == 200) {
+      return Doctor.fromJson(json.decode(response.body));
+    } else {
+      throw Exception('Failed to load doctor');
+    }
+  }
+
+  // Future<List<Feedback>> getFeedbackByDoctorId(int doctorId) async {// Replace with your IP address
+  //   final response = await http.get(
+  //     Uri.parse('http://$ipDevice:8080/api/feedback/doctor/$doctorId'),
+  //   );
+  //   if (response.statusCode == 200) {
+  //     List<dynamic> result = json.decode(response.body);
+  //     return result.map((feedbackJson) => Feedback.fromJson(feedbackJson)).toList();
+  //   } else {
+  //     throw Exception('Failed to load feedback');
+  //   }
+  // }
+
 
 
 
@@ -50,7 +79,7 @@ class _DoctorDetailScreenState extends State<DoctorDetailScreen> {
         ],
       ),
       body: FutureBuilder<Doctor>(
-          future: getDoctorById(doctorId),
+          future: _doctor,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: CircularProgressIndicator());
@@ -139,7 +168,7 @@ class _DoctorDetailScreenState extends State<DoctorDetailScreen> {
                                 SizedBox(
                                   width: 10,
                                 ),
-                                Text('Medicare Hopital'),
+                                Text('Medicare Hospital'),
                               ])
                             ],
                           )
@@ -294,7 +323,7 @@ class _DoctorDetailScreenState extends State<DoctorDetailScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const Text(
-                          'About me',
+                          'Biography',
                           style: TextStyle(
                             fontSize: 22,
                             fontWeight: FontWeight.bold,
@@ -329,7 +358,7 @@ class _DoctorDetailScreenState extends State<DoctorDetailScreen> {
                                 SizedBox(
                                   width: 15,
                                 ),
-                                Text('Monday - Friday 10:00 - 18:00',
+                                Text('Monday - Friday 08:00 - 22:00',
                                     style: TextStyle(
                                       color: Colors.black,
                                       fontWeight: FontWeight.w400,
@@ -346,11 +375,11 @@ class _DoctorDetailScreenState extends State<DoctorDetailScreen> {
                                 SizedBox(
                                   width: 15,
                                 ),
-                                Text('Medicare Hospital, 590, CMT8, Q3',
+                                Text('Medicare Plus - No590, CMT8, Q3. HCM',
                                     style: TextStyle(
                                       color: Colors.blueAccent,
                                       fontWeight: FontWeight.w400,
-                                      fontSize: 18.0,
+                                      fontSize: 16.0,
                                     ))
                               ],
                             )
@@ -515,8 +544,8 @@ class _DoctorDetailScreenState extends State<DoctorDetailScreen> {
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                   colors: [
-                    Color(0xFF9AC3FF), // Đầu gradient color
-                    Color(0xFF93A6FD), // Cuối gradient color
+                    Color(0xFF9AC3FF),
+                    Color(0xFF93A6FD),
                   ],
                 ),
               ),

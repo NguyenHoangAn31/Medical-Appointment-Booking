@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:mobile/screens/account/account_edit.dart';
 import 'package:mobile/screens/doctor/dashboard_doctor/edit_doctor_screen.dart';
 import 'package:mobile/screens/doctor/dashboard_doctor/patient.dart';
 import 'package:mobile/screens/doctor/dashboard_doctor/qualification_doctor_screen.dart';
@@ -28,6 +29,7 @@ class Routes {
       '/doctor/booking': (context) => const DoctorBookingScreen(),
       '/doctor/booking/patient': (context) => const DoctorBookingPatientScreen(),
       '/doctor/booking/payment': (context) => const PaymentScreen(),
+      '/patient/account/edit': (context) => const AccountEditScreen(),
 
       '/dashboard/doctor/home':(contxt) => const NavigationMenuDoctor(),
       '/dashboard/doctor/patient':(contxt) => const PatientScreenInDoctorPage(),

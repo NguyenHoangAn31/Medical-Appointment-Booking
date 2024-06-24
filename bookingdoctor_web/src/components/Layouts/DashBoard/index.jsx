@@ -386,7 +386,7 @@ const DashBoardLayout = ({ children }) => {
                                         marginRight: '10px'
                                     }}
                                 />
-                                <span>{currentUser != null ? currentUser.user.email : null}</span>
+                                <span>{currentUser != null ? currentUser.user.fullName : null}</span>
 
                             </div>
                         </div>

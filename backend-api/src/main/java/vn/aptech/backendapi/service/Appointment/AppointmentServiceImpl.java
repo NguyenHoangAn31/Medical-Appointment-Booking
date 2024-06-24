@@ -2,6 +2,7 @@ package vn.aptech.backendapi.service.Appointment;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -117,6 +118,35 @@ public class AppointmentServiceImpl implements AppointmentService {
         return appointmentRepository.findAppointmentsByScheduleDoctorIdAndStartTime(scheduledoctorid, starttime)
                 .stream()
                 .map(this::toDto)
+                .collect(Collectors.toList());
+    }
+
+    private AppointmentDto mapAppointmentDto(Appointment appointment) {
+        AppointmentDto app = new AppointmentDto();
+        app.setId(appointment.getId());
+        app.setPartientId(appointment.getPartient().getId());
+        app.setScheduledoctorId(appointment.getScheduledoctor().getId());
+        app.setImage(appointment.getScheduledoctor().getDoctor().getImage());
+        app.setFullName(appointment.getScheduledoctor().getDoctor().getFullName());
+        app.setDepartmentName(appointment.getScheduledoctor().getDoctor().getDepartment().getName());
+        app.setAppointmentDate(String.valueOf(appointment.getAppointmentDate()));
+        app.setNote(appointment.getNote());
+        app.setPayment(appointment.getPayment());
+        app.setTitle(appointment.getScheduledoctor().getDoctor().getTitle());
+        app.setClinicHours(String.valueOf(appointment.getClinicHours()));
+        app.setStatus(appointment.getStatus());
+        app.setMedicalExaminationDay(String.valueOf(appointment.getMedicalExaminationDay()));
+        app.setPrice(appointment.getScheduledoctor().getDoctor().getPrice());
+        return app;
+    }
+
+    @Override
+    public List<AppointmentDto> findAppointmentsPatientByPatientIdAndStatus(int patientId,
+                                                                            String status) {
+        return appointmentRepository.findAppointmentsPatientByPatientIdAndStatus(patientId, status)
+                .stream()
+                .map(this::mapAppointmentDto)
+                .sorted(Comparator.comparing(AppointmentDto::getMedicalExaminationDay))
                 .collect(Collectors.toList());
     }
 

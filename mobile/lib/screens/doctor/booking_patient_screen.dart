@@ -240,9 +240,20 @@ class _DoctorBookingPatientScreenState extends State<DoctorBookingPatientScreen>
             padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 30),
             child: InkWell(
               onTap: (){
-                _data['note'] = _contentTextController.text;
-                print(_data);
-                Navigator.pushNamed(context, '/doctor/booking/payment', arguments: _data);
+                // if(_contentTextController.text.isEmpty){
+                //   ScaffoldMessenger.of(context).showSnackBar(
+                //     const SnackBar(
+                //       content: Text('Please enter your problem'),
+                //       duration: Duration(seconds: 2),
+                //     ),
+                //   );
+                //   return;
+                // }else{
+                  _data['note'] = _contentTextController.text;
+                  Navigator.pushNamed(context, '/doctor/booking/payment', arguments: _data);
+                //}
+
+
               },
               child: Container(
                 height: 50,

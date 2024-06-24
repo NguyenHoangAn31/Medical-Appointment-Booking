@@ -5,17 +5,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import vn.aptech.backendapi.dto.CustomDoctorForEdit;
+import vn.aptech.backendapi.dto.CustomPatientEditDto;
 import vn.aptech.backendapi.dto.PatientDto;
 import vn.aptech.backendapi.entities.Partient;
 import vn.aptech.backendapi.repository.PartientRepository;
 import vn.aptech.backendapi.service.Patient.PatientService;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
@@ -73,6 +72,24 @@ public class PatientController {
             @PathVariable("doctorId") int doctorId) {
         List<PatientDto> result = patientService.findPatientsByDoctorIdAndFinishedStatus(doctorId);
         return ResponseEntity.ok(result);
+    }
+
+    @PutMapping(value = "/edit-patient/{patientId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> editPatient(@PathVariable("patientId") int patientId,@RequestBody CustomPatientEditDto dto) throws IOException {
+        boolean result = patientService.editPatient(patientId, dto);
+        if (result) {
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    @GetMapping(value = "/get-patient-detail/{patientId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<CustomPatientEditDto> getPatientDetail(@PathVariable("patientId") int patientId) throws IOException {
+        CustomPatientEditDto result = patientService.getPatientDetail(patientId);
+        if (result != null) {
+            return ResponseEntity.ok(result);
+        }
+        return ResponseEntity.notFound().build();
     }
 
 }

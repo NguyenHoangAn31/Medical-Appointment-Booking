@@ -20,7 +20,13 @@ public interface AppointmentService {
 
         //boolean changestatus(int id, String status);
 
-        List<CustomAppointmentDto> findPatientsByDoctorIdAndAppointmentUpcoming(int doctorId , LocalDate startDate);
+
+
+
+    List<AppointmentDto> findAppointmentsPatientByPatientIdAndStatus(int patientId,
+                                                                     String status);
+
+    List<CustomAppointmentDto> findPatientsByDoctorIdAndAppointmentUpcoming(int doctorId , LocalDate startDate);
         List<CustomAppointmentDto> findPatientsByDoctorIdAndMedicalExaminationToday(int doctorId , LocalDate startDate , LocalDate endDate);
 }
 

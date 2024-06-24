@@ -3,7 +3,10 @@ import 'package:flutter/material.dart';
 class SuccessWidget extends StatelessWidget {
   final String title;
   final String message;
-  const SuccessWidget({super.key, required this.title, required this.message});
+  final String routeName;
+  final String titleButton;
+
+  const SuccessWidget({super.key, required this.title, required this.message, required this.routeName, required this.titleButton});
 
   @override
   Widget build(BuildContext context) {
@@ -128,24 +131,30 @@ class SuccessWidget extends StatelessWidget {
                    borderRadius: BorderRadius.circular(40),
                  ),
                ),
-               child: const Row(
-                 mainAxisSize: MainAxisSize.min,
-                 mainAxisAlignment: MainAxisAlignment.center,
-                 crossAxisAlignment: CrossAxisAlignment.center,
-                 children: [
-                   Text(
-                     'View Appointment',
-                     style: TextStyle(
-                       color: Colors.white,
-                       fontSize: 16,
-                       fontFamily: 'Poppins',
-                       fontWeight: FontWeight.w600,
-                       height: 0.08,
-                       letterSpacing: 0.02,
+               child: InkWell(
+                 onTap: () {
+                   Navigator.pushNamed(context, routeName);
+                 },
+                 child: Row(
+                   mainAxisSize: MainAxisSize.min,
+                   mainAxisAlignment: MainAxisAlignment.center,
+                   crossAxisAlignment: CrossAxisAlignment.center,
+                   children: [
+                     Text(
+                       titleButton,
+                       style: const TextStyle(
+                         color: Colors.white,
+                         fontSize: 16,
+                         fontFamily: 'Poppins',
+                         fontWeight: FontWeight.w600,
+                         height: 0.08,
+                         letterSpacing: 0.02,
+                       ),
                      ),
-                   ),
-                 ],
-               ),
+                   ],
+                 ),
+               )
+
              ),
 
            ],
