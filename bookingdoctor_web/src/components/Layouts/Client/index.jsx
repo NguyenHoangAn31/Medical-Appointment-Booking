@@ -3,6 +3,7 @@ import Footer from './Footer';
 import { Toaster } from "react-hot-toast";
 import { createContext, useEffect, useState } from 'react';
 import getUserData from '../../../route/CheckRouters/token/Token';
+import { Link } from 'react-router-dom';
 
 export const UserContext = createContext();
 
@@ -27,18 +28,18 @@ function ClientLayout({ children, isForPatient }) {
                         <div className='row'>
                             <div className='col-md-2'>
                                 <div className='col-12'>
-                                    <ul className='sidebar'>
-                                        <li className='item active'>
-                                            <a href="#" className='link'>Profile</a>
+                                    <ul className='sidebar bg-light'>
+                                        <li className={`item ${location.pathname === "/account" ? "active" : ""}`}>
+                                            <Link to="/account" className='link'>Profile</Link>
                                         </li>
-                                        <li className='item'>
-                                            <a href="#" className='link'>Booking</a>
+                                        <li className={`item ${location.pathname === "/booking-history" ? "active" : ""}`}>
+                                            <Link to="/booking-history" className='link'>Booking</Link>
                                         </li>
-                                        <li className='item'>
-                                            <a href="#" className='link'>Fauvorite</a>
+                                        <li className={`item ${location.pathname === "/favourite" ? "active" : ""}`}>
+                                            <Link to="/favourite" className='link'>Favourite</Link>
                                         </li>
-                                        <li className='item'>
-                                            <a href="#" className='link'>Medical history</a>
+                                        <li className={`item ${location.pathname === "/medical-history" ? "active" : ""}`}>
+                                            <Link to="/medical-history" className='link'>Medical history</Link>
                                         </li>
                                     </ul>
                                 </div>

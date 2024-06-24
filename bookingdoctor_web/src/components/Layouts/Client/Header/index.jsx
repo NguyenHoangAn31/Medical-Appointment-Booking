@@ -12,7 +12,7 @@ const Header = () => {
   const location = useLocation();
   const currentPath = location.pathname;
   const navigate = useNavigate();
-  const [user, setUser] = useState([]);
+  const [user, setUser] = useState({});
   const [isMenuVisible, setIsMenuVisible] = useState(false);
 
   const { currentUser , setCurrentUser} = useContext(UserContext);
@@ -24,6 +24,7 @@ const Header = () => {
   const fetchApi = async () => {
     try {
       if(currentUser!= null){
+        console.log("first")
         const result = await axios.get(`http://localhost:8080/api/patient/${currentUser.user.id}`);
         setUser(result.data);
       }
@@ -50,7 +51,6 @@ const Header = () => {
   }
 
   const handleSignOut = () => {
-    console.log("alo");
     localStorage.removeItem("Token");
     const auth = getAuth();
     signOut(auth).then(() => {
@@ -63,7 +63,7 @@ const Header = () => {
   };
 
 
-
+  console.log(user.image)
 
   return (
     <>
@@ -95,12 +95,11 @@ const Header = () => {
               </li>
             </ul>
             <motion.div>
-              {currentUser != null && currentUser.user.roles[0] != 'ADMIN' && currentUser.user.roles[0] != 'DOCTOR' ? (
+              {currentUser != null && currentUser.user.roles[0] == 'USER' ? (
                 <div className='icon_login'>
                   <div>
-                    {user!=null?<img src={"http://localhost:8080/images/patients/" + user.image} alt="" id='user-login' onClick={handleMenuToggle} className='img__icon_login img-fluid' />:null}
-
-
+                    {Object.keys(user).length != 0 && user.image != ''?<img src={"http://localhost:8080/images/patients/" + user.image} alt="" id='user-login' onClick={handleMenuToggle} className='img__icon_login img-fluid' />:
+                    <img src="/images/login_default.jpg" alt="" id='user-login' onClick={handleMenuToggle} className='img__icon_login img-fluid' />                    }
                   </div>
                   {isMenuVisible && (
                     <ul className='list-unstyled dropdown__user' ref={menuRef} onMouseLeave={handleMouseLeave}>
