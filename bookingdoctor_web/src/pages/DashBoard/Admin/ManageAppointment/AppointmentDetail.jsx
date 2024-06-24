@@ -94,8 +94,8 @@ function AppointmentDetail() {
                       <p>{appointmentDetail.patient.fullName}</p>
                     </div>
                     <div>
-                      <p style={{ fontWeight: 500 }}>Birthday</p>
-                      <p>{formatDate(appointmentDetail.patient.birthday)}</p>
+                      {/* <p style={{ fontWeight: 500 }}>Birthday</p>
+                      <p>{formatDate(appointmentDetail.patient.birthday)}</p> */}
                     </div>
                     <div>
                       <p style={{ fontWeight: 500 }}>Address</p>

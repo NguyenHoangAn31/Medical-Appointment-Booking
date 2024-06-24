@@ -6,7 +6,7 @@ class BlogDetailScreen extends StatelessWidget {
   final String imageUrl;
   final String content;
 
-  const BlogDetailScreen({
+  const BlogDetailScreen({super.key,
     required this.title,
     required this.imageUrl,
     required this.content,
@@ -19,12 +19,12 @@ class BlogDetailScreen extends StatelessWidget {
         title: Text(title),
       ),
       body: SingleChildScrollView(
-        padding: EdgeInsets.all(20.0),
+        padding: const EdgeInsets.all(20.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Image.network(imageUrl),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             Html(data: content),
           ],
         ),
