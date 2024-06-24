@@ -1,14 +1,15 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter/foundation.dart';
 import 'package:mobile/ultils/ip_app.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-class AuthClient{
+class AuthClient {
   final ipDevice = BaseClient().ip;
   final storage = const FlutterSecureStorage();
-  Future<String> login(String phone, String smsCode) async{
+  Future<String> login(String phone, String smsCode) async {
     var data = {
       'username': phone,
       'keyCode': smsCode,
@@ -16,19 +17,17 @@ class AuthClient{
     };
     var url = Uri.parse('https://$ipDevice:8080/api/auth/login');
     var response = await http.post(url,
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode(data)
-    );
+        headers: {'Content-Type': 'application/json'}, body: jsonEncode(data));
 
-    if(response.statusCode == 200){
+    if (response.statusCode == 200) {
       var jsonResponse = jsonDecode(response.body);
       return jsonResponse;
-    }else{
+    } else {
       return 'Otp is Invalid';
     }
   }
 
-  Future<bool> checkToken(String phone) async{
+  Future<bool> checkToken(String phone) async {
     var data = {
       'username': phone,
       'provider': 'phone',
@@ -47,7 +46,6 @@ class AuthClient{
     } else {
       return false;
     }
-
   }
 
   Future<bool> sendOtp(String username) async {
@@ -59,13 +57,11 @@ class AuthClient{
 
     var url = Uri.parse('http://$ipDevice:8080/api/auth/send-otp');
     var response = await http.post(url,
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode(data)
-    );
+        headers: {'Content-Type': 'application/json'}, body: jsonEncode(data));
 
     if (response.statusCode == 200 && response.body == 'true') {
       return true;
-    }else{
+    } else {
       return false;
     }
   }
@@ -75,15 +71,10 @@ class AuthClient{
   }
 
   Future<void> setKeyCode(String phone, String keyCode) async {
-    var data = {
-      'username': phone,
-      'keycode' : keyCode,
-      'provider' : 'phone'
-    } ;
+    var data = {'username': phone, 'keycode': keyCode, 'provider': 'phone'};
     var url = Uri.parse('http://$ipDevice:8080/api/auth/set-keycode');
-    await http.post(url, headers: {'Content-Type': 'application/json'},
-        body: jsonEncode(data)
-    );
+    await http.post(url,
+        headers: {'Content-Type': 'application/json'}, body: jsonEncode(data));
   }
 
   Future<void> logout() async {
@@ -96,7 +87,7 @@ class AuthClient{
     if (response.statusCode == 200) {
       print(response.body);
       return true;
-    }else{
+    } else {
       return false;
     }
   }
@@ -108,16 +99,22 @@ class AuthClient{
     };
     var url = Uri.parse('http://$ipDevice:8080/api/auth/check-account');
 
-      var response = await http.post(url, headers: {'Content-Type': 'application/json'}, body: jsonEncode(data));
-      if (response.statusCode == 200 && response.body == 'true') {
-        return true;
-      }else{
-       return false;
-      }
+    var response = await http.post(url,
+        headers: {'Content-Type': 'application/json'}, body: jsonEncode(data));
+    var responseBody = jsonDecode(response.body);
+
+    if (response.statusCode == 200 && responseBody['result'] == 'true') {
+      return true;
+    } else if (responseBody['result'] == 'disable') {
+      log("This account has been disabled");
+      return false;
+    } else {
+      return false;
+    }
   }
 
-
-  Future<String?> register(String fullName, String phone, String email, String keyCode) async {
+  Future<String?> register(
+      String fullName, String phone, String email, String keyCode) async {
     var data = {
       'fullName': fullName,
       'phone': phone,
@@ -129,14 +126,11 @@ class AuthClient{
     };
     var url = Uri.parse('http://$ipDevice:8080/api/user/register');
     var response = await http.post(url, body: data);
-    if(response.statusCode == 200){
+    if (response.statusCode == 200) {
       var jsonResponse = jsonDecode(response.body);
       return jsonResponse;
-    }else{
+    } else {
       return null;
     }
   }
-
-
-
 }

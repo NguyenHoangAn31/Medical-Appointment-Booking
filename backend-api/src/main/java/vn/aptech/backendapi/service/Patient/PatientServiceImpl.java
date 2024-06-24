@@ -3,14 +3,21 @@ package vn.aptech.backendapi.service.Patient;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import vn.aptech.backendapi.dto.CustomDoctorForEdit;
+import vn.aptech.backendapi.dto.CustomPatientForEdit;
 import vn.aptech.backendapi.dto.MedicalDto;
 import vn.aptech.backendapi.dto.PatientDto;
-
+import vn.aptech.backendapi.entities.Department;
+import vn.aptech.backendapi.entities.Doctor;
 import vn.aptech.backendapi.entities.Medical;
 import vn.aptech.backendapi.entities.Partient;
+import vn.aptech.backendapi.entities.User;
 import vn.aptech.backendapi.repository.MedicalRepository;
 import vn.aptech.backendapi.repository.PartientRepository;
+import vn.aptech.backendapi.repository.UserRepository;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
@@ -24,6 +31,10 @@ public class PatientServiceImpl implements PatientService {
     // end
     @Autowired
     private PartientRepository partientRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
     @Autowired
     private ModelMapper mapper;
 
@@ -107,6 +118,64 @@ public class PatientServiceImpl implements PatientService {
                 .stream()
                 .map(this::toDto)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public CustomPatientForEdit getPatientDetail(int userId) {
+        Partient p = partientRepository.getPatientByUserId(userId);
+        CustomPatientForEdit customPatient = new CustomPatientForEdit();
+
+        customPatient.setFullName(p.getFullName());
+        customPatient.setImage(p.getImage());
+        customPatient.setGender(p.getGender());
+        customPatient.setBirthday(p.getBirthday().toString());
+        customPatient.setAddress(p.getAddress());
+        customPatient.setPhone(p.getUser().getPhone());
+        customPatient.setEmail(p.getUser().getEmail());
+        customPatient.setMedicalDto(medicalRepository.findByPartientId(p.getId()).stream().map(this::toMedicalDto)
+                .collect(Collectors.toList()));
+        return customPatient;
+    }
+
+    @Override
+    public boolean editPatient(int userId, CustomPatientForEdit dto) {
+        Partient p = partientRepository.getPatientByUserId(userId);
+        User user = partientRepository.findUserByPatientId(p.getId());
+        user.setPhone(dto.getPhone());
+        user.setEmail(dto.getEmail());
+        p.setFullName(dto.getFullName());
+        p.setGender(dto.getGender());
+        p.setBirthday(LocalDate.parse(dto.getBirthday()));
+        p.setAddress(dto.getAddress());
+        p.setImage(dto.getImage());
+        try {
+            partientRepository.save(p);
+            userRepository.save(user);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    @Override
+    public boolean Create(int userId , CustomPatientForEdit dto) {
+        Partient p = new Partient();
+        p.setAddress(dto.getAddress());
+        p.setImage(dto.getImage());
+        p.setFullName(dto.getFullName());
+        p.setBirthday(LocalDate.parse(dto.getBirthday()));
+        p.setGender(dto.getGender());
+        Optional<User> u = userRepository.findById(userId);
+        u.ifPresent(user -> p.setUser(mapper.map(u, User.class)));
+
+        try {
+            partientRepository.save(p);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
     
 

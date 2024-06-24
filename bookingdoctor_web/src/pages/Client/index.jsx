@@ -20,3 +20,9 @@ export {default as LoginGmailStep} from '../LoginGmailStep';
 export {default as Signup} from '../Signup';
 export {default as Proccess} from './Proccess';
 
+export {default as BookingInProfile} from './BookingInProfile';
+
+export {default as FavourieInProfile} from './FavouriteInProfile';
+export {default as MedicalHistoryInProfile} from './MedicalHistoryInProfile';
+
+

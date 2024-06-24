@@ -17,7 +17,7 @@ import { UserContext } from '../components/Layouts/Client';
 //import { toast, Toaster } from "react-hot-toast";
 
 const LoginPhone = () => {
-    const {currentUser,setCurrentUser } = useContext(UserContext);
+    const { currentUser, setCurrentUser } = useContext(UserContext);
     const [username, setUsername] = useState('');
     const [loading, setLoading] = useState(false);
     const provider = 'phone';
@@ -47,66 +47,70 @@ const LoginPhone = () => {
             username: username,
             provider: provider
         }
-        
+
         try {
             const result = await axios.post('http://localhost:8080/api/auth/check-account', data);
-            if(result.data){
-               console.log('Xử lý send-otp');
+            console.log(result.data.result)
+            if (result.data.result == 'true') {
+                console.log('Xử lý send-otp');
                 try {
-                        const result = await axios.post('http://localhost:8080/api/auth/send-otp', data);
-                        
-                        if (result.data) {
-                            console.log('Bắt đầu gửi mã OTP');
-                            onCaptchVerify();
-                            const appVerifier = window.recaptchaVerifier;
-                            const formatPh = "+84" + username.slice(1);
-                            console.log(formatPh);
-                            signInWithPhoneNumber(auth, formatPh, appVerifier)
-                                .then((confirmationResult) => {
-                                    window.confirmationResult = confirmationResult;
-                                    setLoading(false);
-                                    toast.success("OTP sended successfully!", {
-                                        position: "top-right"
-                                    });
-                                    navigateTo(`/login-by-phone-submit?username=${data.username}`);
-                                })
-                                .catch((error) => {
-                                    setLoading(false);
+                    const result = await axios.post('http://localhost:8080/api/auth/send-otp', data);
+
+                    if (result.data) {
+                        console.log('Bắt đầu gửi mã OTP');
+                        onCaptchVerify();
+                        const appVerifier = window.recaptchaVerifier;
+                        const formatPh = "+84" + username.slice(1);
+                        console.log(formatPh);
+                        signInWithPhoneNumber(auth, formatPh, appVerifier)
+                            .then((confirmationResult) => {
+                                window.confirmationResult = confirmationResult;
+                                setLoading(false);
+                                toast.success("OTP sended successfully!", {
+                                    position: "top-right"
                                 });
-                        } else {
-                            console.log('Check Refresh token');
-                            const checkToken = await axios.post('http://localhost:8080/api/auth/check-refresh-token', data);
-                            console.log("token : ", checkToken.data.accessToken);
-                            if (checkToken.data.accessToken != null) {
-                                localStorage.setItem('Token', ecryptToken.encryptToken(JSON.stringify(checkToken.data)));
-                                if(checkToken.data.user.roles[0]=='USER'){
-                                    setCurrentUser(checkToken.data)
-                                }
-                                if (getUserData().user.roles[0] == 'USER') {
-                                    navigateTo(`/`);
-                                }
-                                else if (getUserData().user.roles[0] == 'DOCTOR') {
-                                    navigateTo(`/dashboard/doctor`);
-                                }
-                                else if (getUserData().user.roles[0] == 'ADMIN') {
-                                    navigateTo(`/dashboard/admin`);
-                                }
-            
-                            } 
+                                navigateTo(`/login-by-phone-submit?username=${data.username}`);
+                            })
+                            .catch((error) => {
+                                setLoading(false);
+                            });
+                    } else {
+                        console.log('Check Refresh token');
+                        const checkToken = await axios.post('http://localhost:8080/api/auth/check-refresh-token', data);
+                        console.log("token : ", checkToken.data.accessToken);
+                        if (checkToken.data.accessToken != null) {
+                            localStorage.setItem('Token', ecryptToken.encryptToken(JSON.stringify(checkToken.data)));
+                            if (checkToken.data.user.roles[0] == 'USER') {
+                                setCurrentUser(checkToken.data)
+                            }
+                            if (getUserData().user.roles[0] == 'USER') {
+                                navigateTo(`/`);
+                            }
+                            else if (getUserData().user.roles[0] == 'DOCTOR') {
+                                navigateTo(`/dashboard/doctor`);
+                            }
+                            else if (getUserData().user.roles[0] == 'ADMIN') {
+                                navigateTo(`/dashboard/admin`);
+                            }
+
                         }
-            
-                    } catch (error) {
-                        console.log(error)
                     }
-            }else{
+
+                } catch (error) {
+                    console.log(error)
+                }
+            } else if(result.data.result == 'disable'){
+                alert("Your account has been disabled. Please contact the administrator for processing")
+                console.log('this account has been disabled')
+            } else {
                 toast.error("User not found or please try again with gmail!", {
                     position: "bottom-right"
                 });
             }
         } catch (error) {
-            
+
         }
-        
+
     };
 
     return (

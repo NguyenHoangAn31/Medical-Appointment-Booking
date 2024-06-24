@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import vn.aptech.backendapi.entities.Partient;
+import vn.aptech.backendapi.entities.User;
 
 import java.time.LocalTime;
 import java.util.List;
@@ -32,4 +33,7 @@ public interface PartientRepository extends JpaRepository<Partient, Integer> {
 
     @Query("SELECT DISTINCT a.partient FROM Appointment a WHERE a.scheduledoctor.doctor.id = :doctorId AND a.status = 'FINISHED'")
     List<Partient> findPatientsByDoctorIdAndFinishedStatus(@Param("doctorId") int doctorId);
+
+    @Query("SELECT d.user FROM Partient d WHERE d.id = :patientId")
+    User findUserByPatientId(@Param("patientId") int patientId);
 }

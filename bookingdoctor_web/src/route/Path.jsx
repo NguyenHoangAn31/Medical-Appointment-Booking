@@ -26,6 +26,9 @@ const publicRouters = [
 const patientRouters = [
     { path: '/account', component: Client.Account, layout: ClientLayout },
     { path: '/checkout', component: Client.CheckOut, layout: ClientLayout },
+    { path: '/booking-history', component: Client.BookingInProfile, layout: ClientLayout },
+    { path: '/favourite', component: Client.FavourieInProfile, layout: ClientLayout },
+    { path: '/medical-history', component: Client.MedicalHistoryInProfile, layout: ClientLayout },
 
 ]
 
