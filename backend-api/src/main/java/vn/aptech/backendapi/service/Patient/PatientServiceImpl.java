@@ -3,14 +3,20 @@ package vn.aptech.backendapi.service.Patient;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import vn.aptech.backendapi.dto.CustomDoctorForEdit;
+import vn.aptech.backendapi.dto.CustomPatientEditDto;
 import vn.aptech.backendapi.dto.MedicalDto;
 import vn.aptech.backendapi.dto.PatientDto;
 
+import vn.aptech.backendapi.entities.Doctor;
 import vn.aptech.backendapi.entities.Medical;
 import vn.aptech.backendapi.entities.Partient;
+import vn.aptech.backendapi.entities.User;
 import vn.aptech.backendapi.repository.MedicalRepository;
 import vn.aptech.backendapi.repository.PartientRepository;
+import vn.aptech.backendapi.repository.UserRepository;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
@@ -24,6 +30,10 @@ public class PatientServiceImpl implements PatientService {
     // end
     @Autowired
     private PartientRepository partientRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
     @Autowired
     private ModelMapper mapper;
 
@@ -36,9 +46,10 @@ public class PatientServiceImpl implements PatientService {
         patientDto.setId(partient.getId());
         patientDto.setFullName(partient.getFullName());
         patientDto.setGender(partient.getGender());
-        patientDto.setBirthday(partient.getBirthday().toString());
+        patientDto.setBirthday(partient.getBirthday());
         patientDto.setAddress(partient.getAddress());
         patientDto.setImage(partient.getImage());
+        patientDto.setCreatedAt(partient.getCreatedAt());
         // patientDto.setMedicals(partient.getMedicals());
         // Không gán WorkingDto ở đây vì sẽ gán sau trong findById
         return patientDto;
@@ -107,6 +118,40 @@ public class PatientServiceImpl implements PatientService {
                 .stream()
                 .map(this::toDto)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public CustomPatientEditDto getPatientDetail(int patientId) {
+        Partient partient = partientRepository.findById(patientId).get();
+        CustomPatientEditDto customPatient = new CustomPatientEditDto();
+        customPatient.setFullName(partient.getFullName());
+        customPatient.setGender(partient.getGender());
+        customPatient.setBirthday(partient.getBirthday().toString());
+        customPatient.setAddress(partient.getAddress());
+        customPatient.setPhone(partient.getUser().getPhone());
+        customPatient.setEmail(partient.getUser().getEmail());
+
+        return customPatient;
+    }
+
+    @Override
+    public boolean editPatient(int patientId, CustomPatientEditDto dto) {
+        Partient patient = partientRepository.findById(patientId).get();
+        User user = partientRepository.findUserByPatientId(patientId);
+        user.setPhone(dto.getPhone());
+        user.setEmail(dto.getEmail());
+        patient.setFullName(dto.getFullName());
+        patient.setGender(dto.getGender());
+        patient.setBirthday(LocalDate.parse(dto.getBirthday()));
+        patient.setAddress(dto.getAddress());
+        try {
+            partientRepository.save(patient);
+            userRepository.save(user);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
     
 

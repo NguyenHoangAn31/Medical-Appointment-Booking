@@ -54,7 +54,7 @@ public class DoctorController {
     // @PreAuthorize("hasAnyAuthority('ADMIN')")
     public ResponseEntity<DoctorDto> findByUserId(@PathVariable("id") int id) {
         Optional<DoctorDto> result = doctorService.findByUserId(id);
-        if (result != null) {
+        if (result.isPresent()) {
             return ResponseEntity.ok(result.get());
         } else {
             return ResponseEntity.notFound().build();
