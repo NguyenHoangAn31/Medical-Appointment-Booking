@@ -18,11 +18,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import vn.aptech.backendapi.dto.CustomDoctorForEdit;
-import vn.aptech.backendapi.dto.CustomPatientForEdit;
-import vn.aptech.backendapi.dto.DepartmentDto;
+import vn.aptech.backendapi.dto.*;
 
-import vn.aptech.backendapi.dto.PatientDto;
 import vn.aptech.backendapi.entities.Partient;
 import vn.aptech.backendapi.repository.PartientRepository;
 import vn.aptech.backendapi.service.File.FileService;
@@ -146,6 +143,25 @@ public class PatientController {
 
         if (result) {
             return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    @PutMapping(value = "/edit-patient/{patientId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> editPatient01(@PathVariable("patientId") int patientId,@RequestBody CustomPatientEditDto dto) throws IOException {
+        System.out.println(dto);
+        boolean result = patientService.editPatient01(patientId, dto);
+        if (result) {
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    @GetMapping(value = "/get-patient-detail/{patientId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<CustomPatientEditDto> getPatientDetail(@PathVariable("patientId") int patientId) throws IOException {
+        CustomPatientEditDto result = patientService.getPatientDetail01(patientId);
+        if (result != null) {
+            return ResponseEntity.ok(result);
         }
         return ResponseEntity.notFound().build();
     }

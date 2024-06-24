@@ -16,13 +16,15 @@ const Proccess = () => {
       const status = queryParams.get('status');
       if (status === 'success') {
         const storedPaymentData = sessionStorage.getItem('paymentData');
+        var check = JSON.parse(storedPaymentData)
+        console.log(storedPaymentData);
         if (storedPaymentData) {
-          setPaymentData(JSON.parse(storedPaymentData));
+          setPaymentData(check);
         }
         setMessage('Thanh toán thành công!');
 
         // try{
-        //     await addAppointment(paymentData);
+        //     await addAppointment(check);
         //     sessionStorage.removeItem('paymentData');
         //   }catch(error){
         // }

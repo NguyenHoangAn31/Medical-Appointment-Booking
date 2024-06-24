@@ -28,6 +28,7 @@ class _AccountEditScreenState extends State<AccountEditScreen> {
   @override
   void initState() {
     super.initState();
+    print(currentUser['id']);
     // Khởi tạo các TextEditingController với giá trị rỗng tạm thời
     emailController = TextEditingController();
     phoneController = TextEditingController();
@@ -45,7 +46,7 @@ class _AccountEditScreenState extends State<AccountEditScreen> {
 
     if (response.statusCode == 200) {
       var result = jsonDecode(response.body);
-
+      print(result);
       setState(() {
         // Gán giá trị từ API vào các TextEditingController
         emailController.text = result['email'];
@@ -54,7 +55,6 @@ class _AccountEditScreenState extends State<AccountEditScreen> {
         genderController.text = result['gender'];
         birthdayController.text = result['birthday'];
         addressController.text = result['address'];
-
       });
     } else {
       throw Exception('Failed to load doctor detail');
