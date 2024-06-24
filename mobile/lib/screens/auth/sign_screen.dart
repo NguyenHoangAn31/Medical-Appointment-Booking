@@ -107,7 +107,6 @@ class _SignInScreenState extends State<SignInScreen> {
               );
         }
       else {
-          print("Kết quả 1: $isAccount");
           String result = await checkRefreshToken();
           if (result == 'USER') {
             Navigator.pushNamed(context, '/home');
@@ -131,7 +130,6 @@ class _SignInScreenState extends State<SignInScreen> {
 
   Future signInWithOTP() async {
     String smsCode = _getOtpCode();
-    print(smsCode);
     PhoneAuthCredential credential = PhoneAuthProvider.credential(
       verificationId: verificationId,
       smsCode: smsCode,
@@ -141,7 +139,6 @@ class _SignInScreenState extends State<SignInScreen> {
       await auth.signInWithCredential(credential);
       await AuthClient().setKeyCode(_phoneNumberController.text, smsCode);
       // check Login
-      //final result = await AuthClient().login(_phoneNumberController.text, smsCode);
       var data = {
         'username': _phoneNumberController.text,
         'keycode': smsCode,
@@ -155,10 +152,8 @@ class _SignInScreenState extends State<SignInScreen> {
       var result = jsonDecode(response.body);
       print(result);
       if (result['user'] == null) {
-        print('errr: lỗi 1');
         return "Error";
       } else {
-        print('success: Thành công 1');
         print(result['user']['roles'][0]);
         var path = result['user']['roles'][0] == 'USER'
             ? 'patient'
@@ -179,8 +174,6 @@ class _SignInScreenState extends State<SignInScreen> {
         }
 
       }
-
-
     } catch (e) {
       if (kDebugMode) {
         print('Failed to sign in: $e');
@@ -199,7 +192,6 @@ class _SignInScreenState extends State<SignInScreen> {
 
   Future<String> checkRefreshToken() async {
     //xử lý send otp
-
     var url = 'http://$ipDevice:8080/api/auth/check-refresh-token';
     var data = {'username': _phoneNumberController.text, 'provider': 'phone'};
 

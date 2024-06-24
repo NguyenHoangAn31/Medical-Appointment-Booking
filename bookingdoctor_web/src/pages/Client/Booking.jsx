@@ -273,8 +273,6 @@ const Booking = () => {
   }
 
 
-  console.log(schedules)
-
 
   function parseTimeString(timeString) {
     const [hours, minutes] = timeString.split(':').map(Number);

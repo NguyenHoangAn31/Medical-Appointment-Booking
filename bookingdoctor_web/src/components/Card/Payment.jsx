@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import { format } from 'date-fns';
@@ -16,27 +16,42 @@ const Payment = ({ setActiveHourIndex, setSlotName, setSchedules, isOpen, data, 
     const formattedDate = `${year}-${month}-${day}`;
     const [paymentUrl, setPaymentUrl] = useState('');
     const [paymentMethod, setPaymentMethod] = useState('');
+    const [countdown, setCountdown] = useState(7); // Initialize countdown timer to 10 seconds
+    const [isDisabled, setIsDisabled] = useState(false);
 
     const [note, setNote] = useState('')
     const handleChangeContent = (value) => {
         setNote(value)
     }
+
+    console.log(data);
+
+    useEffect(() => {
+        if (countdown > 0) {
+            const timer = setTimeout(() => setCountdown(countdown - 1), 1000); // Decrement countdown every second
+            return () => clearTimeout(timer); // Clear timeout if component unmounts or countdown changes
+        } else {
+            setIsDisabled(false); // Enable button when countdown reaches 0
+        }
+    }, [countdown]);
+
     const handlePaymentChange = async (method) => {
+        setIsDisabled(true); // Disable button when countdown reaches 0
         setPaymentMethod(method);
-        if(method === 'vnpay'){
+        if (method === 'vnpay') {
             try {
                 const response = await axios.get('http://localhost:8080/api/payment/create_payment_url', {
                     params: {
                         amount: data?.price * 0.3, // Số tiền cần thanh toán
                         orderType: 'billpayment',
-                        returnUrl: 'http://localhost:5173/proccess-payment',
+                        returnUrl: 'http://localhost:5173/process-payment',
                     },
                 });
                 setPaymentUrl(response.data.url);
             } catch (error) {
                 console.error('Error creating payment URL:', error);
             }
-        }else if(method === 'paypal'){
+        } else if (method === 'paypal') {
             const paymentResponse = await axios.post('http://localhost:8080/paypal/pay', null, {
                 params: {
                     sum: (data.price * 0.3) / 25455, // Số tiền thanh toán
@@ -45,29 +60,38 @@ const Payment = ({ setActiveHourIndex, setSlotName, setSchedules, isOpen, data, 
 
             // Chuyển hướng người dùng sang trang thanh toán của PayPal
             setPaymentUrl(paymentResponse.data);
-        }else{
+        } else {
             console.log('Payment method is not recognized, handle accordingly');
         }
     }
 
-    console.log(paymentUrl)
-
+    
+  
     const handleSubmitBook = async () => {
-        data.price = data.price * 0.3;
+        // data.price = data.price * 0.3;
         data.note = note
         data.appointmentDate = formattedDate
         data.payment = paymentMethod
-        // 
-        try {
-            // Đặt lịch hẹn
-            await addAppointment(data);
-            window.location.href = paymentUrl;
-            
-        } catch (error) {
-            console.log(error);
-        }
+        const paymentData = {
+            partientId: data.partientId,
+            partientName: data.partientName,
+            doctorId: data.doctorId,
+            doctorName: data.doctorName,
+            scheduledoctorId: data.scheduledoctorId,
+            medicalExaminationDay: data.medicalExaminationDay,
+            clinicHours: data.clinicHours,
+            price: data.price * 0.3,
+            note: data.note,
+            appointmentDate: data.appointmentDate,
+            payment: data.payment,
+            status: data.status,
+        };
+        // const params = new URLSearchParams(paymentData).toString();
+        console.log(paymentUrl)
+        sessionStorage.setItem('paymentData', JSON.stringify(paymentData));
+        window.location.href = `${paymentUrl}`;
     };
-    
+
 
     return (
         <Modal show={isOpen} onHide={onClose}
@@ -98,7 +122,7 @@ const Payment = ({ setActiveHourIndex, setSlotName, setSchedules, isOpen, data, 
                     </div>
                     <div className=''>
                         <input type="radio" name="payment" id="paypal_check" onClick={() => handlePaymentChange('paypal')} />
-                        <label htmlFor="paypal_check"><img src="/images/paypal.png" alt="" className='img_payment'/></label>
+                        <label htmlFor="paypal_check"><img src="/images/paypal.png" alt="" className='img_payment' /></label>
                     </div>
                 </div>
 
@@ -107,8 +131,8 @@ const Payment = ({ setActiveHourIndex, setSlotName, setSchedules, isOpen, data, 
                 <Button variant="secondary" onClick={onClose}>
                     Close
                 </Button>
-                <Button variant="primary" onClick={handleSubmitBook}>
-                    Thanh toán để hoàn tất booking
+                <Button variant="primary" onClick={handleSubmitBook} disabled={isDisabled}>
+                    {isDisabled ? `Chờ ${countdown}s để thanh toán` : 'Thanh toán để hoàn tất booking'}
                 </Button>
             </Modal.Footer>
         </Modal>

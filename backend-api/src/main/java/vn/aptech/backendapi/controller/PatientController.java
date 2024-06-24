@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,6 +21,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import vn.aptech.backendapi.dto.CustomDoctorForEdit;
 import vn.aptech.backendapi.dto.CustomPatientForEdit;
 import vn.aptech.backendapi.dto.DepartmentDto;
+
 import vn.aptech.backendapi.dto.PatientDto;
 import vn.aptech.backendapi.entities.Partient;
 import vn.aptech.backendapi.repository.PartientRepository;
@@ -109,11 +111,13 @@ public class PatientController {
         }
         return ResponseEntity.notFound().build();
 
+
     }
 
     @GetMapping(value = "/getpatientdetail/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<CustomPatientForEdit> getDoctorDetail(@PathVariable("userId") int userId) throws IOException {
         CustomPatientForEdit result = patientService.getPatientDetail(userId);
+
         if (result != null) {
             return ResponseEntity.ok(result);
         }

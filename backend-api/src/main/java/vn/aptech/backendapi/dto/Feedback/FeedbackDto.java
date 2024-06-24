@@ -13,11 +13,11 @@ import vn.aptech.backendapi.dto.PatientDto;
 @Getter
 public class FeedbackDto {
     private int id;
-    private double rate;
     private String comment;
     private int patientId;
     private int doctorId;
-    private byte status;
+    private double rate;
+    private boolean status;
     private String createdAt;
     private PatientDto patient;
 }
