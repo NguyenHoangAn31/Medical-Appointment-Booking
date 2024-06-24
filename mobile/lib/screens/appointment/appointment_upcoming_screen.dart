@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:get/get.dart';
 
 class AppointmentUpcomingScreen extends StatefulWidget {
   const AppointmentUpcomingScreen({super.key});
@@ -29,28 +28,6 @@ class _AppointmentUpcomingScreen extends State<AppointmentUpcomingScreen> {
               },
             ),
           ],
-          // bottom: PreferredSize(
-          //   preferredSize: const Size.fromHeight(60.0),
-          //   child: Container(
-          //     child: const TabBar(
-          //       labelColor: Colors.blue,
-          //       // Active tab text color
-          //       unselectedLabelColor: Colors.grey,
-          //       indicatorColor: Colors.blue,
-          //       labelStyle: TextStyle(
-          //         fontSize: 15,
-          //         fontWeight: FontWeight.w500,
-          //       ),
-          //       // Inactive tab text color
-          //       tabs: [
-          //         Tab(text: 'Receiving'),
-          //         Tab(text: 'Received'),
-          //         Tab(text: 'Completed'),
-          //         Tab(text: 'Cancelled'),
-          //       ],
-          //     ),
-          //   ),
-          // ),
         ),
         body: (
             SingleChildScrollView(

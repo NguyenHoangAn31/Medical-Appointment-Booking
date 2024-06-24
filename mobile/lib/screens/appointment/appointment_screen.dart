@@ -235,6 +235,7 @@ class ReceivingScreen extends StatelessWidget {
                             GestureDetector(
                               onTap: () {
                                 // Navigator.pushNamed(context, '/register');
+                                // xử lý code hủy appointment booking
                               },
                               child: Container(
                                 width: 160,
@@ -266,7 +267,7 @@ class ReceivingScreen extends StatelessWidget {
                             ),
                             GestureDetector(
                               onTap: () {
-                                // Navigator.pushNamed(context, '/register');
+                                Navigator.pushNamed(context, '/appointment/upcoming/detail');
                               },
                               child: Container(
                                 width: 160,
@@ -315,7 +316,6 @@ class ReceivingScreen extends StatelessWidget {
 class CompletedScreen extends StatelessWidget {
   final String ipDevice;
   final Future<List<Appointment>> appointmentsFutureCompleted;
-
   const CompletedScreen({super.key, required this.appointmentsFutureCompleted, required this.ipDevice});
 
   @override
@@ -505,7 +505,7 @@ class CompletedScreen extends StatelessWidget {
                                   ),
                                   GestureDetector(
                                     onTap: () {
-                                      // Navigator.pushNamed(context, '/register');
+                                      Navigator.pushNamed(context, '/appointment/completed/detail');
                                     },
                                     child: Container(
                                       width: 160,
@@ -656,10 +656,10 @@ class CancelledScreen extends StatelessWidget {
                                           ),
                                           const SizedBox(width: 5,),
                                           Container(
-                                            padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10), // Padding around the text
+                                            padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                                             decoration: BoxDecoration(
-                                              color: Colors.red.withOpacity(0.2), // Lighter background color
-                                              borderRadius: BorderRadius.circular(5.0), // Rounded corners
+                                              color: Colors.red.withOpacity(0.2),
+                                              borderRadius: BorderRadius.circular(5.0),
                                             ),
                                             child: const Text(
                                                 'Cancelled',
@@ -686,16 +686,16 @@ class CancelledScreen extends StatelessWidget {
                                 ],
                               ),
                               Divider(
-                                color: Colors.black26.withOpacity(0.2), // Color of the divider
-                                thickness: 1, // Thickness of the divider
-                                indent: 20, // Left indent of the divider
-                                endIndent: 20, // Right indent of the divider
+                                color: Colors.black26.withOpacity(0.2),
+                                thickness: 1,
+                                indent: 20,
+                                endIndent: 20,
                               ),
                               const SizedBox(height: 10,),
 
                               GestureDetector(
                                     onTap: () {
-                                      // Navigator.pushNamed(context, '/register');
+                                     // Navigator.pushNamed(context, '/doctor/booking');
                                     },
                                     child: Container(
                                       width: 355,
