@@ -50,8 +50,6 @@ public class PatientServiceImpl implements PatientService {
         patientDto.setAddress(partient.getAddress());
         patientDto.setImage(partient.getImage());
         patientDto.setCreatedAt(partient.getCreatedAt());
-        // patientDto.setMedicals(partient.getMedicals());
-        // Không gán WorkingDto ở đây vì sẽ gán sau trong findById
         return patientDto;
     }
 

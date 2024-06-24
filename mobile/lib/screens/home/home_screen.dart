@@ -317,7 +317,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               return Center(
                                 child: InkWell(
                                   onTap: (){
-                                    //Navigator.pushNamed(context, '/appointment', arguments: appointment);
+                                    Navigator.pushNamed(context, '/appointment/upcoming/detail', arguments: appointment);
                                   },
                                   child: Container(
                                     height: 200,

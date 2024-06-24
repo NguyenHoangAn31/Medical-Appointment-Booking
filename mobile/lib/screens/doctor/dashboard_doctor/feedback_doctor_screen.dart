@@ -135,7 +135,8 @@ class _FeedbackDoctorScreenState extends State<FeedbackDoctorScreen> {
       appBar: AppBar(
         backgroundColor: Colors.blue[300],
 
-        title: const Text('List Feedbacks',style:TextStyle(color:  Colors.white)),
+        title:
+            const Text('List Feedbacks', style: TextStyle(color: Colors.white)),
         centerTitle: true,
         automaticallyImplyLeading: false, // Ẩn nút back button
       ),

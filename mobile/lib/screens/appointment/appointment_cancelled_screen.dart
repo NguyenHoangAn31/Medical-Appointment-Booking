@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-class AppointmentScreen extends StatefulWidget {
-  const AppointmentScreen({super.key});
+class AppointmentCancelledScreen extends StatefulWidget {
+  const AppointmentCancelledScreen({super.key});
 
   @override
-  State<AppointmentScreen> createState() => _AppointmentScreenState();
+  State<AppointmentCancelledScreen> createState() => _AppointmentCancelledScreenState();
 }
 
-class _AppointmentScreenState extends State<AppointmentScreen> {
+class _AppointmentCancelledScreenState extends State<AppointmentCancelledScreen> {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
