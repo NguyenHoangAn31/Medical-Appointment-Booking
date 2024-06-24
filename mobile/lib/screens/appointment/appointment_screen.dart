@@ -128,14 +128,14 @@ class ReceivingScreen extends StatelessWidget {
           itemCount: appointments.length,
           itemBuilder: (context, index) {
             return Container(
-              padding: const EdgeInsets.symmetric(vertical: 25, horizontal: 20),
+              padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 15),
               child: Column(
                 children: [
                   Container(
                     //height: 200,
                     padding: const EdgeInsets.all(30),
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(30.0),
+                      borderRadius: BorderRadius.circular(15.0),
                       color: Colors.white,
                       boxShadow: const [
                         BoxShadow(

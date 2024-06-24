@@ -86,10 +86,11 @@ const Payment = ({ setActiveHourIndex, setSlotName, setSchedules, isOpen, data, 
             payment: data.payment,
             status: data.status,
         };
-        // const params = new URLSearchParams(paymentData).toString();
+        await addAppointment(data);
         console.log(paymentUrl)
         sessionStorage.setItem('paymentData', JSON.stringify(paymentData));
         window.location.href = `${paymentUrl}`;
+        
     };
 
 

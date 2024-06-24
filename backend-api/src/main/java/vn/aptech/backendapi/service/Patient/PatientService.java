@@ -25,10 +25,12 @@ public interface PatientService {
 
     CustomPatientForEdit getPatientDetail(int userId);
 
+    CustomPatientEditDto getPatientDetail01(int userId);
+
     boolean editPatient(int userId , CustomPatientForEdit dto);
+
+    boolean editPatient01(int userId, CustomPatientEditDto dto);
+
     boolean Create(int userId , CustomPatientForEdit dto);
 
-    CustomPatientEditDto getPatientDetail(int doctorId);
-
-    boolean editPatient(int patientId, CustomPatientEditDto dto);
 }
