@@ -15,7 +15,11 @@ public class AppointmentDto {
     private int id;
     private int partientId;
     private int scheduledoctorId;
-    private int price;
+    private double price;
+    private String image;
+    private String title;
+    private String fullName;
+    private String departmentName;
     private String payment;
     private String status;
     private String note;

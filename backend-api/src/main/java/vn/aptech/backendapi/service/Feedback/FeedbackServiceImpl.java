@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import vn.aptech.backendapi.dto.DoctorDto;
 import vn.aptech.backendapi.dto.Feedback.FeedbackDto;
+import vn.aptech.backendapi.dto.PatientDto;
 import vn.aptech.backendapi.entities.Doctor;
 import vn.aptech.backendapi.entities.Feedback;
 import vn.aptech.backendapi.entities.Partient;
@@ -63,6 +64,38 @@ public class FeedbackServiceImpl implements FeedbackService {
         DoctorDto d = doctorService.findById(doctorId).get();
         d.setFeedbackDtoList(findList(doctorId));
         return d;
+    }
+
+    @Override
+    public List<FeedbackDto> feedbackDetailDoctorId(int doctorId) {
+        List<Feedback> feedbacks = feedbackRepository.findAllByDoctorId(doctorId);
+
+        return feedbacks.stream()
+                .map(this::convertToDto)
+                .sorted((f1, f2) -> Integer.compare((int) f2.getRate(), (int) f1.getRate()))
+                .collect(Collectors.toList());
+    }
+
+    private FeedbackDto convertToDto(Feedback feedback) {
+        FeedbackDto dto = new FeedbackDto();
+        dto.setId(feedback.getId());
+        dto.setComment(feedback.getComment());
+        dto.setDoctorId(feedback.getDoctor().getId());
+        dto.setPatientId(feedback.getPartient().getId());
+        dto.setRate(feedback.getRate());
+        dto.setStatus(feedback.isStatus());
+        dto.setCreatedAt(feedback.getCreatedAt().toString());
+
+        PatientDto patientDto = new PatientDto();
+        patientDto.setId(feedback.getPartient().getId());
+        patientDto.setFullName(feedback.getPartient().getFullName());
+        patientDto.setGender(feedback.getPartient().getGender());
+        patientDto.setBirthday(feedback.getPartient().getBirthday()); // Chuyển đổi LocalDate thành String
+        patientDto.setAddress(feedback.getPartient().getAddress());
+        patientDto.setImage(feedback.getPartient().getImage());
+        // Gán thông tin của bệnh nhân vào dto
+        dto.setPatient(patientDto);
+        return dto;
     }
 
     @Override

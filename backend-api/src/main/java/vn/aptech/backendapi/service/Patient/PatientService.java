@@ -1,5 +1,6 @@
 package vn.aptech.backendapi.service.Patient;
 
+import vn.aptech.backendapi.dto.CustomPatientEditDto;
 import vn.aptech.backendapi.dto.PatientDto;
 
 import java.time.LocalTime;
@@ -16,4 +17,8 @@ public interface PatientService {
     List<PatientDto> findPatientsByScheduleDoctorIdAndStartTime( int scheduledoctorid, LocalTime starttime);
 
     List<PatientDto> findPatientsByDoctorIdAndFinishedStatus(int doctorId);
+
+    CustomPatientEditDto getPatientDetail(int doctorId);
+
+    boolean editPatient(int patientId, CustomPatientEditDto dto);
 }

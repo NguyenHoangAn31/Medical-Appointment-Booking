@@ -45,6 +45,15 @@ public class FeedbackController {
             return ResponseEntity.notFound().build();
         }
     }
+    @GetMapping(value = "/doctor/{doctorId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<FeedbackDto>> findFeedbackByDoctorId(@PathVariable("doctorId") int doctorId) {
+        List<FeedbackDto> result = feedbackService.feedbackDetailDoctorId(doctorId);
+        if (!result.isEmpty()) {
+            return ResponseEntity.ok(result);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
 
     @PostMapping(value = "/create", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<FeedbackDto> Create(@RequestBody FeedbackDto dto) {

@@ -1,6 +1,8 @@
+import 'dart:core';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-
+import 'package:intl/intl.dart';
+import 'package:mobile/models/appointment.dart';
 import '../../models/department.dart';
 import '../../models/doctor.dart';
 import '../../services/Department/departmentApi.dart';
@@ -8,6 +10,7 @@ import '../../ultils/color_app.dart';
 import '../../ultils/ip_app.dart';
 import '../../ultils/list_service.dart';
 import '../../ultils/storeCurrentUser.dart';
+import 'package:mobile/services/appointmentService.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -19,19 +22,71 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final currentUser = CurrentUser.to.user;
   late Future<List<Department>> departments;
+  late Future<List<Appointment>> _appointmentFutureWaiting;
+  late final Future<Appointment> _appointmentFuture;
   late Future<List<Doctor>>? doctors;
   final TextEditingController _searchController = TextEditingController();
   late int _selectedIndex = 0;
 
   bool _isSelectedHeart = false;
+  late  String status;
   final ipDevice = BaseClient().ip;
+
 
   @override
   void initState() {
     super.initState();
     departments = getDepartments();
     doctors = getDoctorByDepartmentId(0);
-    print(currentUser['id']);
+    _appointmentFuture = getAppointmentsWaiting();
+  }
+
+  String formatTime(String time) {
+    try {
+
+      final DateTime parsedTime = DateFormat('HH:mm').parse(time);
+      return DateFormat('HH:mm a').format(parsedTime);
+    } catch (e) {
+      // Trả về chuỗi giờ gốc nếu có lỗi khi parsing
+      return time;
+    }
+  }
+
+  String formatDate(String date) {
+    try {
+
+      final DateTime parsedDate = DateFormat('yyyy-MM-dd').parse(date);
+      return DateFormat('MMM dd, yyyy').format(parsedDate);
+    } catch (e) {
+      return date;
+    }
+  }
+
+  Future<Appointment> getAppointmentsWaiting() async {
+    _appointmentFutureWaiting =
+        AppointmentClient().fetchAppointmentPatient(currentUser['id'], 'waiting');
+    final appointments = await _appointmentFutureWaiting;
+    if (appointments.isNotEmpty) {
+      print(appointments.first);
+      return appointments.first;
+    } else {
+      return Appointment(
+        id: 0,
+        partientId: currentUser['id'],
+        scheduledoctorId: 1,
+        price: 1,
+        image: '',
+        title: '',
+        fullName: '',
+        departmentName: '',
+        status: '',
+        note: '',
+        appointmentDate: '',
+        clinicHours: '',
+        medicalExaminationDay: '',
+        payment: '',
+      );
+    }
   }
 
   void _handleSelected(int index) {
@@ -40,7 +95,6 @@ class _HomeScreenState extends State<HomeScreen> {
       doctors = getDoctorByDepartmentId(index);
     });
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -187,7 +241,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   const SizedBox(
                     height: 20,
                   ),
-                  // Upcoming
+                  // Upcoming xử lý
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: Column(
@@ -225,169 +279,209 @@ class _HomeScreenState extends State<HomeScreen> {
                         const SizedBox(
                           height: 15,
                         ),
-                        Center(
-                          child: Container(
-                            height: 200,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(20),
-                              gradient: const LinearGradient(
-                                begin: Alignment.topLeft,
-                                end: Alignment.bottomRight,
-                                colors: [
-                                  Color(0xFF9AC3FF), // Đầu gradient color
-                                  Color(0xFF93A6FD), // Cuối gradient color
-                                ],
-                              ),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(25),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: <Widget>[
-                                      Row(
-                                        children: [
-                                          Center(
-                                            child: Container(
-                                              width: 60,
-                                              height: 60,
-                                              decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(50),
-                                                // Làm tròn các góc
-                                                color: Colors.white, // Màu nền
-                                              ),
-                                              child: ClipRRect(
-                                                borderRadius:
-                                                    BorderRadius.circular(50),
-                                                child: Image.asset(
-                                                  'assets/images/doctor_01.png',
-                                                  width: 70,
-                                                  height: 70,
-                                                  fit: BoxFit.cover,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                          const SizedBox(
-                                            width: 10,
-                                          ),
-                                          const Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                'DR William Smith',
-                                                style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 18,
-                                                  fontFamily: 'Poppins',
-                                                  fontWeight: FontWeight.w600,
-                                                ),
-                                              ),
-                                              SizedBox(
-                                                height: 4,
-                                              ),
-                                              Text(
-                                                'Dentist | Medicare Hospital',
-                                                style: TextStyle(
-                                                  color: Colors.white70,
-                                                  fontSize: 14,
-                                                  fontFamily: 'Poppins',
-                                                  fontWeight: FontWeight.w500,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
+
+                          FutureBuilder<Appointment>(
+                          future: _appointmentFuture,
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return const Center(
+                                  child: CircularProgressIndicator());
+                            } else if (snapshot.hasError) {
+                              return Center(
+                                  child: Text('Error: ${snapshot.error}'));
+                            } else
+                            if (!snapshot.hasData) {
+                              return Center(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Image.asset(
+                                        'assets/images/no_result_default.png',
+                                        width: 50,
+                                        height: 50,
+                                    ),
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                    const Text(
+                                      'No Result Default',
+                                      style: TextStyle(fontSize: 16,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            } else {
+                              Appointment appointment = snapshot.data!;
+                              return Center(
+                                child: InkWell(
+                                  onTap: (){
+                                    //Navigator.pushNamed(context, '/appointment', arguments: appointment);
+                                  },
+                                  child: Container(
+                                    height: 200,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(20),
+                                      gradient: const LinearGradient(
+                                        begin: Alignment.topLeft,
+                                        end: Alignment.bottomRight,
+                                        colors: [
+                                          Color(0xFF9AC3FF), // Đầu gradient color
+                                          Color(0xFF93A6FD), // Cuối gradient color
                                         ],
                                       ),
-                                      IconButton(
-                                          alignment: Alignment.topRight,
-                                          onPressed: () {},
-                                          icon: const FaIcon(
-                                            FontAwesomeIcons.ellipsisVertical,
-                                            color: Colors.white,
-                                          ))
-                                    ],
-                                  ),
-                                  const SizedBox(height: 25),
-                                  Row(
-                                    children: [
-                                      Container(
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(20),
-                                            color: const Color(0xFF8AABE7),
-                                          ),
-                                          child: const Padding(
-                                              padding: EdgeInsets.all(15),
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                // Căn chỉnh các thành phần theo chiều dọc
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(25),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Row(
+                                            mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                            crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                            children: <Widget>[
+                                              Row(
                                                 children: [
-                                                  Icon(Icons.date_range,
-                                                      color: Colors.red),
-                                                  // Biểu tượng
-                                                  SizedBox(width: 10),
-                                                  // Khoảng cách giữa biểu tượng và văn bản
-                                                  Text(
-                                                    'Sep 10, 2024',
-                                                    style: TextStyle(
-                                                      color: Colors.white,
-                                                      fontSize: 16,
-                                                      fontWeight:
-                                                          FontWeight.w600,
+                                                  Center(
+                                                    child: Container(
+                                                      width: 60,
+                                                      height: 60,
+                                                      decoration: BoxDecoration(
+                                                        borderRadius:
+                                                        BorderRadius.circular(50),
+                                                        // Làm tròn các góc
+                                                        color: Colors.white, // Màu nền
+                                                      ),
+                                                      child: ClipRRect(
+                                                        borderRadius:
+                                                        BorderRadius.circular(50),
+                                                        child: Image.network(
+                                                          'http://$ipDevice:8080/images/doctors/${appointment.image}',
+                                                          width: 60,
+                                                          height: 60,
+                                                          fit: BoxFit.contain,
+                                                        ),
+                                                      ),
                                                     ),
                                                   ),
-                                                  // Văn bản
+                                                  const SizedBox(
+                                                    width: 10,
+                                                  ),
+                                                  Column(
+                                                    crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                    children: [
+                                                      Text(
+                                                        '${appointment.title} ${appointment.fullName}',
+                                                        style: const TextStyle(
+                                                          color: Colors.white,
+                                                          fontSize: 18,
+                                                          fontFamily: 'Poppins',
+                                                          fontWeight: FontWeight.w600,
+                                                        ),
+                                                      ),
+                                                      const SizedBox(
+                                                        height: 4,
+                                                      ),
+                                                      Text(
+                                                        '${appointment.departmentName} | Medicare Hospital',
+                                                        style: const TextStyle(
+                                                          color: Colors.white70,
+                                                          fontSize: 14,
+                                                          fontFamily: 'Poppins',
+                                                          fontWeight: FontWeight.w500,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
                                                 ],
-                                              ))),
-                                      const SizedBox(
-                                        width: 10,
+                                              ),
+                                              IconButton(
+                                                  alignment: Alignment.topRight,
+                                                  onPressed: () {},
+                                                  icon: const FaIcon(
+                                                    FontAwesomeIcons.ellipsisVertical,
+                                                    color: Colors.white,
+                                                  ))
+                                            ],
+                                          ),
+                                          const SizedBox(height: 25),
+                                          Row(
+                                            children: [
+                                              Container(
+                                                  decoration: BoxDecoration(
+                                                    borderRadius:
+                                                    BorderRadius.circular(20),
+                                                    color: const Color(0xFF8AABE7),
+                                                  ),
+                                                  child: Padding(
+                                                      padding: const EdgeInsets.all(15),
+                                                      child: Row(
+                                                        mainAxisAlignment:
+                                                        MainAxisAlignment.center,
+                                                        children: [
+                                                          const Icon(Icons.date_range,
+                                                              color: Colors.red),
+                                                          const SizedBox(width: 10),
+                                                          Text(
+                                                            formatDate(appointment.medicalExaminationDay),
+                                                            //Sep 10, 2024
+                                                            style: const TextStyle(
+                                                              color: Colors.white,
+                                                              fontSize: 16,
+                                                              fontWeight:
+                                                              FontWeight.w600,
+                                                            ),
+                                                          ),
+                                                          // Văn bản
+                                                        ],
+                                                      ))),
+                                              const SizedBox(
+                                                width: 10,
+                                              ),
+                                              Container(
+                                                  decoration: BoxDecoration(
+                                                    borderRadius:
+                                                    BorderRadius.circular(20),
+                                                    color: const Color(0xFF8AABE7),
+                                                  ),
+                                                  child: Padding(
+                                                      padding: const EdgeInsets.all(15),
+                                                      child: Row(
+                                                        mainAxisAlignment:
+                                                        MainAxisAlignment.center,
+                                                        children: [
+                                                          const Icon(Icons.alarm,
+                                                              color: Colors.red),
+                                                          const SizedBox(width: 10),
+                                                          Text(
+                                                            formatTime(appointment.clinicHours),
+                                                            //'17:00 PM',
+                                                            style: const TextStyle(
+                                                              color: Colors.white,
+                                                              fontSize: 16,
+                                                              fontWeight:
+                                                              FontWeight.w600,
+                                                            ),
+                                                          ),
+                                                          // Văn bản
+                                                        ],
+                                                      ))),
+                                            ],
+                                          )
+                                        ],
                                       ),
-                                      Container(
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(20),
-                                            color: const Color(0xFF8AABE7),
-                                          ),
-                                          child: const Padding(
-                                              padding: EdgeInsets.all(15),
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                // Căn chỉnh các thành phần theo chiều dọc
-                                                children: [
-                                                  Icon(Icons.alarm,
-                                                      color: Colors.red),
-                                                  // Biểu tượng
-                                                  SizedBox(width: 10),
-                                                  // Khoảng cách giữa biểu tượng và văn bản
-                                                  Text(
-                                                    '17:00 PM',
-                                                    style: TextStyle(
-                                                      color: Colors.white,
-                                                      fontSize: 16,
-                                                      fontWeight:
-                                                          FontWeight.w600,
-                                                    ),
-                                                  ),
-                                                  // Văn bản
-                                                ],
-                                              ))),
-                                    ],
-                                  )
-                                ],
-                              ),
-                            ),
-                          ),
+                                    ),
+                                  ),
+                                )
+                              );
+                            }
+                          }
                         ),
+
                         // List
                       ],
                     ),

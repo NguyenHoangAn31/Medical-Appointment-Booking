@@ -1,4 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:mobile/services/patientService.dart';
+
+import '../../models/patient.dart';
+import '../../ultils/ip_app.dart';
+import '../../ultils/storeCurrentUser.dart';
+import '../../widgets/navigation_menu.dart';
 
 
 class AccountScreen extends StatefulWidget {
@@ -9,6 +17,16 @@ class AccountScreen extends StatefulWidget {
 }
 
 class _AccountScreenState extends State<AccountScreen> {
+  final currentUser = CurrentUser.to.user;
+  final ipDevice = BaseClient().ip;
+  late Future<Patient> _patientFuture;
+  late DateTime joinedSince;
+
+  @override
+  void initState() {
+    super.initState();
+    _patientFuture = PatientClient().getPatientById(currentUser['id']);
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,31 +60,31 @@ class _AccountScreenState extends State<AccountScreen> {
                            height: 60,
                            padding: const EdgeInsets.all(5),
                            decoration: BoxDecoration(
-                             color: Colors.grey.withOpacity(0.5),
+                             //color: Colors.grey.withOpacity(0.5),
                              borderRadius: BorderRadius.circular(50),
                            ),
-                           child: Image.asset(
-                             'assets/images/doctor_01.png',
-                             width: 60,
-                             height: 60,
+                           child: Image.network(
+                             'http://$ipDevice:8080/images/patients/${currentUser['image']}',
+                             width: 45,
+                             height: 45,
                              fit: BoxFit.cover,
                            ),
                          ),
                        ),
                        const SizedBox(width: 15),
-                       const Column(
+                       Column(
                          mainAxisAlignment: MainAxisAlignment.start,
                          crossAxisAlignment: CrossAxisAlignment.start,
                          children: [
-                           Text('Nguyễn Khoa',
-                                style: TextStyle(
+                           Text('${currentUser['fullName']}',
+                                style: const TextStyle(
                                   color: Colors.black,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 18,
                                 ),
                            ),
-                           SizedBox(height: 10,),
-                           Row(
+                           const SizedBox(height: 10,),
+                           const Row(
                              children: [
                                Text('Joined since',
                                  style: TextStyle(
@@ -75,12 +93,12 @@ class _AccountScreenState extends State<AccountScreen> {
                                    fontSize: 14,
                                  ),),
                                SizedBox(width: 5),
-                               Text('27 Dec 2020',
-                                 style: TextStyle(
-                                   color: Colors.black,
-                                   fontWeight: FontWeight.bold,
-                                   fontSize: 14,
-                                 ),),
+                               // Text('$joinedSince',
+                               //   style: const TextStyle(
+                               //     color: Colors.black,
+                               //     fontWeight: FontWeight.bold,
+                               //     fontSize: 14,
+                               //   ),),
                              ],
                            )
                          ]
@@ -89,7 +107,11 @@ class _AccountScreenState extends State<AccountScreen> {
                    ),
                    InkWell(
                      onTap: (){
-                       // Logic
+                       // Logic /patient/account/edit
+                       var data = {
+                         'patientId': currentUser['id'],
+                       };
+                       Navigator.pushNamed(context, '/patient/account/edit');
                      },
                      child: Container(
                        width: 100,
@@ -311,7 +333,16 @@ class _AccountScreenState extends State<AccountScreen> {
                           ],
                         ),
                         IconButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              CurrentUser.to.clearUser();
+                              final controller = Get.find<NavigationControllerForDoctor>();
+                              controller.selectedIndex.value = 0; // Reset to home
+                              Navigator.pushNamedAndRemoveUntil(
+                                context,
+                                '/login',
+                                    (Route<dynamic> route) => false,
+                              );
+                            },
                             icon: const Icon(Icons.chevron_right)
                         )
                       ],
