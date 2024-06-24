@@ -16,7 +16,8 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
           appBar: AppBar(
             toolbarHeight: 80,
             //backgroundColor: Colors.blue,
-            title: const Text('My Appointment', style: TextStyle(color: Colors.black, fontSize: 22)),
+            title: const Text('My Appointment',
+                style: TextStyle(color: Colors.black, fontSize: 22)),
             actions: [
               IconButton(
                 icon: const Icon(Icons.search),
@@ -113,67 +114,73 @@ class ReceivingScreen extends StatelessWidget {
                         ),
                       ),
                     ),
-                    const SizedBox(width: 10,),
+                    const SizedBox(
+                      width: 10,
+                    ),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const Text(
                           'DR William Smith',
                           style: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.w600,
-                            fontSize: 16
-                          ),
+                              color: Colors.black,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 16),
                         ),
-                        const SizedBox(height: 5,),
+                        const SizedBox(
+                          height: 5,
+                        ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             const Text('Dentist |',
-                              style: TextStyle(
-                                  color: Colors.grey,
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 14
-                              )
+                                style: TextStyle(
+                                    color: Colors.grey,
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 14)),
+                            const SizedBox(
+                              width: 5,
                             ),
-                            const SizedBox(width: 5,),
                             Container(
-                              padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10), // Padding around the text
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 5,
+                                  horizontal: 10), // Padding around the text
                               decoration: BoxDecoration(
-                                color: Colors.yellow.withOpacity(0.2), // Lighter background color
-                                borderRadius: BorderRadius.circular(5.0), // Rounded corners
+                                color: Colors.yellow.withOpacity(
+                                    0.2), // Lighter background color
+                                borderRadius: BorderRadius.circular(
+                                    5.0), // Rounded corners
                               ),
-                              child: const Text(
-                                  'Receiving',
+                              child: const Text('Receiving',
                                   style: TextStyle(
                                       color: Colors.yellow,
                                       fontWeight: FontWeight.bold,
-                                      fontSize: 14
-                                  )
-                                  ),
+                                      fontSize: 14)),
                             ),
-
                           ],
                         ),
-                        const SizedBox(height: 5,),
+                        const SizedBox(
+                          height: 5,
+                        ),
                         const Text('Aug 17, 2023 | 11:00 AM',
                             style: TextStyle(
                                 color: Colors.black26,
                                 fontWeight: FontWeight.bold,
-                                fontSize: 14
-                            )
-                        ),
+                                fontSize: 14)),
                       ],
                     )
                   ],
                 ),
                 Divider(
-                  color: Colors.black26.withOpacity(0.2), // Color of the divider
+                  color:
+                  Colors.black26.withOpacity(0.2), // Color of the divider
                   thickness: 1, // Thickness of the divider
                   indent: 20, // Left indent of the divider
                   endIndent: 20, // Right indent of the divider
                 ),
-                const SizedBox(height: 10,),
+                const SizedBox(
+                  height: 10,
+                ),
                 Row(
                   children: [
                     GestureDetector(
@@ -295,7 +302,9 @@ class ReceivedScreen extends StatelessWidget {
                         ),
                       ),
                     ),
-                    const SizedBox(width: 10,),
+                    const SizedBox(
+                      width: 10,
+                    ),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -304,10 +313,11 @@ class ReceivedScreen extends StatelessWidget {
                           style: TextStyle(
                               color: Colors.black,
                               fontWeight: FontWeight.w600,
-                              fontSize: 16
-                          ),
+                              fontSize: 16),
                         ),
-                        const SizedBox(height: 5,),
+                        const SizedBox(
+                          height: 5,
+                        ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
@@ -315,47 +325,50 @@ class ReceivedScreen extends StatelessWidget {
                                 style: TextStyle(
                                     color: Colors.grey,
                                     fontWeight: FontWeight.w600,
-                                    fontSize: 14
-                                )
+                                    fontSize: 14)),
+                            const SizedBox(
+                              width: 5,
                             ),
-                            const SizedBox(width: 5,),
                             Container(
-                              padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10), // Padding around the text
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 5,
+                                  horizontal: 10), // Padding around the text
                               decoration: BoxDecoration(
-                                color: Colors.yellow.withOpacity(0.2), // Lighter background color
-                                borderRadius: BorderRadius.circular(5.0), // Rounded corners
+                                color: Colors.yellow.withOpacity(
+                                    0.2), // Lighter background color
+                                borderRadius: BorderRadius.circular(
+                                    5.0), // Rounded corners
                               ),
-                              child: const Text(
-                                  'Received',
+                              child: const Text('Received',
                                   style: TextStyle(
                                       color: Colors.yellow,
                                       fontWeight: FontWeight.bold,
-                                      fontSize: 14
-                                  )
-                              ),
+                                      fontSize: 14)),
                             ),
-
                           ],
                         ),
-                        const SizedBox(height: 5,),
+                        const SizedBox(
+                          height: 5,
+                        ),
                         const Text('Aug 17, 2023 | 11:00 AM',
                             style: TextStyle(
                                 color: Colors.black26,
                                 fontWeight: FontWeight.bold,
-                                fontSize: 14
-                            )
-                        ),
+                                fontSize: 14)),
                       ],
                     )
                   ],
                 ),
                 Divider(
-                  color: Colors.black26.withOpacity(0.2), // Color of the divider
+                  color:
+                  Colors.black26.withOpacity(0.2), // Color of the divider
                   thickness: 1, // Thickness of the divider
                   indent: 20, // Left indent of the divider
                   endIndent: 20, // Right indent of the divider
                 ),
-                const SizedBox(height: 10,),
+                const SizedBox(
+                  height: 10,
+                ),
                 Row(
                   children: [
                     GestureDetector(
@@ -478,7 +491,9 @@ class CompletedScreen extends StatelessWidget {
                         ),
                       ),
                     ),
-                    const SizedBox(width: 10,),
+                    const SizedBox(
+                      width: 10,
+                    ),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -487,10 +502,11 @@ class CompletedScreen extends StatelessWidget {
                           style: TextStyle(
                               color: Colors.black,
                               fontWeight: FontWeight.w600,
-                              fontSize: 16
-                          ),
+                              fontSize: 16),
                         ),
-                        const SizedBox(height: 5,),
+                        const SizedBox(
+                          height: 5,
+                        ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
@@ -498,47 +514,50 @@ class CompletedScreen extends StatelessWidget {
                                 style: TextStyle(
                                     color: Colors.grey,
                                     fontWeight: FontWeight.w600,
-                                    fontSize: 14
-                                )
+                                    fontSize: 14)),
+                            const SizedBox(
+                              width: 5,
                             ),
-                            const SizedBox(width: 5,),
                             Container(
-                              padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10), // Padding around the text
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 5,
+                                  horizontal: 10), // Padding around the text
                               decoration: BoxDecoration(
-                                color: Colors.lightGreenAccent.withOpacity(0.2), // Lighter background color
-                                borderRadius: BorderRadius.circular(5.0), // Rounded corners
+                                color: Colors.lightGreenAccent.withOpacity(
+                                    0.2), // Lighter background color
+                                borderRadius: BorderRadius.circular(
+                                    5.0), // Rounded corners
                               ),
-                              child: const Text(
-                                  'Completed',
+                              child: const Text('Completed',
                                   style: TextStyle(
                                       color: Colors.lightGreenAccent,
                                       fontWeight: FontWeight.bold,
-                                      fontSize: 14
-                                  )
-                              ),
+                                      fontSize: 14)),
                             ),
-
                           ],
                         ),
-                        const SizedBox(height: 5,),
+                        const SizedBox(
+                          height: 5,
+                        ),
                         const Text('Aug 17, 2023 | 11:00 AM',
                             style: TextStyle(
                                 color: Colors.black26,
                                 fontWeight: FontWeight.bold,
-                                fontSize: 14
-                            )
-                        ),
+                                fontSize: 14)),
                       ],
                     )
                   ],
                 ),
                 Divider(
-                  color: Colors.black26.withOpacity(0.2), // Color of the divider
+                  color:
+                  Colors.black26.withOpacity(0.2), // Color of the divider
                   thickness: 1, // Thickness of the divider
                   indent: 20, // Left indent of the divider
                   endIndent: 20, // Right indent of the divider
                 ),
-                const SizedBox(height: 10,),
+                const SizedBox(
+                  height: 10,
+                ),
                 Row(
                   children: [
                     GestureDetector(
