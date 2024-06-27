@@ -38,4 +38,13 @@ public class User extends BaseEntity {
         return roles.stream().map(o -> new SimpleGrantedAuthority(o.getShortName())).toList();
     }
 
+    @Override
+    public String toString() {
+        // Avoid referencing collections directly in toString to prevent Hibernate lazy loading issues
+        return "User{" +
+                "id=" + id +
+                ", username='" + fullName + '\'' +
+                '}';
+    }
+
 }

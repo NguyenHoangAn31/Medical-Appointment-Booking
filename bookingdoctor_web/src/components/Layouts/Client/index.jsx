@@ -33,7 +33,7 @@ function ClientLayout({ children, isForPatient }) {
                                             <Link to="/account" className='link'>Profile</Link>
                                         </li>
                                         <li className={`item ${location.pathname === "/booking-history" ? "active" : ""}`}>
-                                            <Link to="/booking-history" className='link'>Booking</Link>
+                                            <Link to="/booking-history" className='link'>Appointment</Link>
                                         </li>
                                         <li className={`item ${location.pathname === "/favourite" ? "active" : ""}`}>
                                             <Link to="/favourite" className='link'>Favourite</Link>

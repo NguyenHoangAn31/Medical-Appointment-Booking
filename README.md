@@ -96,3 +96,29 @@ Nhiệm vụ tuần tới:
     - Hoàn thiện Các entity. 
 2: Hoàn thành web: 26/05/2024.
 
+
+
+
+Nội dung cuộc họp ngày: 24/06/2024:
+
+Website: 
+    - Patient: Edit, Appointment, medical history, Xử lý Payment, Contact, Rating bác sỹ trong  booking history, 
+    Xứ lý logic: 
+    
+        + Appointment booking bắt lỗi chỉ cho book 1 BS trong 1 ngày, có thể book nhiều bắc sỹ khác nhau
+        + Login dang bị sai. An nghiên cứu
+
+    - doctor: 
+
+
+
+
+
+
+App mobile: 
+  Xử lý validate, 
+  - Xử lý lưu thông tin 5 ngày, nếu hết 5 ngày thì bắt đăng nhập lại: An 
+  - Màn hình Search: Doctor, patient. filter patient
+  - Rating của patient: Hiển
+
+

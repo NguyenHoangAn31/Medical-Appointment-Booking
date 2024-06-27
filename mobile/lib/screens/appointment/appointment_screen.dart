@@ -23,11 +23,16 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
     super.initState();
     _fetchAppointments();
   }
+
   void _fetchAppointments() {
-    _appointmentsFutureWaiting = AppointmentClient().fetchAppointmentPatient(currentUser['id'], 'waiting');
-    _appointmentsFutureCompleted = AppointmentClient().fetchAppointmentPatient(currentUser['id'], 'finished');
-    _appointmentsFutureCancelled = AppointmentClient().fetchAppointmentPatient(currentUser['id'], 'no show');
+    _appointmentsFutureWaiting = AppointmentClient()
+        .fetchAppointmentPatient(currentUser['id'], 'waiting');
+    _appointmentsFutureCompleted = AppointmentClient()
+        .fetchAppointmentPatient(currentUser['id'], 'completed');
+    _appointmentsFutureCancelled = AppointmentClient()
+        .fetchAppointmentPatient(currentUser['id'], 'cancelled');
   }
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -67,7 +72,7 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                   ),
                   // Inactive tab text color
                   tabs: [
-                    Tab(text: 'Waiting'),
+                    Tab(text: 'Upcoming'),
                     Tab(text: 'Completed'),
                     Tab(text: 'Cancelled'),
                   ],
@@ -77,9 +82,15 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
           ),
           body: TabBarView(
             children: [
-              ReceivingScreen( appointmentsFutureWaiting: _appointmentsFutureWaiting, ipDevice : ipDevice),
-              CompletedScreen(appointmentsFutureCompleted: _appointmentsFutureCompleted, ipDevice : ipDevice),
-              CancelledScreen(appointmentsFutureCancelled: _appointmentsFutureCancelled, ipDevice : ipDevice),
+              ReceivingScreen(
+                  appointmentsFutureWaiting: _appointmentsFutureWaiting,
+                  ipDevice: ipDevice),
+              CompletedScreen(
+                  appointmentsFutureCompleted: _appointmentsFutureCompleted,
+                  ipDevice: ipDevice),
+              CancelledScreen(
+                  appointmentsFutureCancelled: _appointmentsFutureCancelled,
+                  ipDevice: ipDevice),
             ],
           ),
         ));
@@ -87,236 +98,264 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
 }
 
 class ReceivingScreen extends StatelessWidget {
-    final Future<List<Appointment>> appointmentsFutureWaiting;
-    final String ipDevice;
-    const ReceivingScreen({super.key, required this.appointmentsFutureWaiting, required this.ipDevice});
+  final Future<List<Appointment>> appointmentsFutureWaiting;
+  final String ipDevice;
+  const ReceivingScreen(
+      {super.key,
+      required this.appointmentsFutureWaiting,
+      required this.ipDevice});
 
-    @override
-    Widget build(BuildContext context) {
-
+  @override
+  Widget build(BuildContext context) {
     return FutureBuilder<List<Appointment>>(
         future: appointmentsFutureWaiting,
         builder: (context, snapshot) {
-      if (snapshot.connectionState == ConnectionState.waiting) {
-        return const Center(child: CircularProgressIndicator());
-      } else if (snapshot.hasError) {
-        return Center(child: Text('Error: ${snapshot.error}'));
-      } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-        return Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Image.asset('assets/images/no_result_default.png'),
-              const SizedBox(
-                height: 10,
-              ),
-              const Text(
-                'No Result Default',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              const Text('There is no waiting appointment'),
-              const Text('Book your appointment now.'),
-            ],
-          ),
-        );
-      } else {
-        List<Appointment> appointments = snapshot.data!;
-        return ListView.builder(
-          itemCount: appointments.length,
-          itemBuilder: (context, index) {
-            return Container(
-              padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 15),
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return Center(
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Container(
-                    //height: 200,
-                    padding: const EdgeInsets.all(30),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(15.0),
-                      color: Colors.white,
-                      boxShadow: const [
-                        BoxShadow(
-                          color: Colors.black26,
-                          spreadRadius: 1,
-                          blurRadius: 20,
-                          offset: Offset(0, 0),
-                        ),
-                      ],
-                    ),
-
-                    child: Column(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Container(
-                              width: 74,
-                              height: 74,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(50),
-                                // Làm tròn các góc
-                                color: Colors.grey, // Màu nền
-                              ),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(50),
-                                child: Image.network(
-                                  'http://$ipDevice:8080/images/doctors/${appointments[index].image}',
-                                  width: 74,
-                                  height: 74,
-                                ),
-                              ),
-                            ),
-                            const SizedBox(width: 10,),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  '${appointments[index].title} ${appointments[index].fullName}',
-                                  style: const TextStyle(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 16
-                                  ),
-                                ),
-                                const SizedBox(height: 5,),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Text('${appointments[index].departmentName} |',
-                                        style: const TextStyle(
-                                            color: Colors.grey,
-                                            fontWeight: FontWeight.w600,
-                                            fontSize: 14
-                                        )
-                                    ),
-                                    const SizedBox(width: 5,),
-                                    Container(
-                                      padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10), // Padding around the text
-                                      decoration: BoxDecoration(
-                                        color: Colors.yellow.withOpacity(0.2), // Lighter background color
-                                        borderRadius: BorderRadius.circular(5.0), // Rounded corners
-                                      ),
-                                      child: const Text(
-                                          'Waiting',
-                                          style: TextStyle(
-                                              color: Colors.yellow,
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 14
-                                          )
-                                      ),
-                                    ),
-
-                                  ],
-                                ),
-                                const SizedBox(height: 5,),
-                                Text('${appointments[index].medicalExaminationDay} | ${appointments[index].clinicHours}',
-                                    style: const TextStyle(
-                                        color: Colors.black26,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 14
-                                    )
-                                ),
-                              ],
-                            )
-                          ],
-                        ),
-                        Divider(
-                          color: Colors.black26.withOpacity(0.2), // Color of the divider
-                          thickness: 1, // Thickness of the divider
-                          indent: 20, // Left indent of the divider
-                          endIndent: 20, // Right indent of the divider
-                        ),
-                        const SizedBox(height: 10,),
-                        Row(
-                          children: [
-                            GestureDetector(
-                              onTap: () {
-                                // Navigator.pushNamed(context, '/register');
-                                // xử lý code hủy appointment booking
-                              },
-                              child: Container(
-                                width: 160,
-                                height: 55,
-                                padding: const EdgeInsets.all(16),
-                                decoration: ShapeDecoration(
-                                  color: Colors.red,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(40),
-                                  ),
-                                ),
-                                child: const Center(
-                                  child: Text(
-                                    'Cancel Booking',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 16,
-                                      fontFamily: 'Poppins',
-                                      fontWeight: FontWeight.w600,
-                                      height: 1.25,
-                                      letterSpacing: 0.02,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(
-                              width: 10,
-                            ),
-                            GestureDetector(
-                              onTap: () {
-                                Navigator.pushNamed(context, '/appointment/upcoming/detail');
-                              },
-                              child: Container(
-                                width: 160,
-                                height: 55,
-                                padding: const EdgeInsets.all(16),
-                                decoration: ShapeDecoration(
-                                  color: Colors.blueAccent,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(40),
-                                  ),
-                                ),
-                                child: const Center(
-                                  child: Text(
-                                    'Reschedule',
-                                    style: TextStyle(
-                                      //color: Color(0xFF92A3FD),
-                                      fontSize: 16,
-                                      fontFamily: 'Poppins',
-                                      fontWeight: FontWeight.w600,
-                                      height: 1.25,
-                                      letterSpacing: 0.02,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  )
+                  Image.asset('assets/images/no_result_default.png'),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  const Text(
+                    'No Result Default',
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  const Text('There is no waiting appointment'),
+                  const Text('Book your appointment now.'),
                 ],
               ),
             );
+          } else {
+            List<Appointment> appointments = snapshot.data!;
+            return ListView.builder(
+                itemCount: appointments.length,
+                itemBuilder: (context, index) {
+                  return Container(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 10, horizontal: 15),
+                    child: Column(
+                      children: [
+                        Container(
+                          //height: 200,
+                          padding: const EdgeInsets.all(30),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(15.0),
+                            color: Colors.white,
+                            boxShadow: const [
+                              BoxShadow(
+                                color: Colors.black26,
+                                spreadRadius: 1,
+                                blurRadius: 20,
+                                offset: Offset(0, 0),
+                              ),
+                            ],
+                          ),
+
+                          child: Column(
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Container(
+                                    width: 74,
+                                    height: 74,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(50),
+                                      // Làm tròn các góc
+                                      color: Colors.grey, // Màu nền
+                                    ),
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(50),
+                                      child: Image.network(
+                                        'http://$ipDevice:8080/images/doctors/${appointments[index].image}',
+                                        width: 74,
+                                        height: 74,
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    width: 10,
+                                  ),
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        '${appointments[index].title} ${appointments[index].fullName}',
+                                        style: const TextStyle(
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 16),
+                                      ),
+                                      const SizedBox(
+                                        height: 5,
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                              '${appointments[index].departmentName} |',
+                                              style: const TextStyle(
+                                                  color: Colors.grey,
+                                                  fontWeight: FontWeight.w600,
+                                                  fontSize: 14)),
+                                          const SizedBox(
+                                            width: 5,
+                                          ),
+                                          Container(
+                                            padding: const EdgeInsets.symmetric(
+                                                vertical: 5,
+                                                horizontal:
+                                                    10), // Padding around the text
+                                            decoration: BoxDecoration(
+                                              color: Colors.yellow.withOpacity(
+                                                  0.2), // Lighter background color
+                                              borderRadius:
+                                                  BorderRadius.circular(
+                                                      5.0), // Rounded corners
+                                            ),
+                                            child: Text(
+                                                appointments[index].status ==
+                                                        'waiting'
+                                                    ? 'Upcoming'
+                                                    : '',
+                                                style: const TextStyle(
+                                                  color: Colors.yellow,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 14,
+                                                )),
+                                          ),
+                                        ],
+                                      ),
+                                      const SizedBox(
+                                        height: 5,
+                                      ),
+                                      Text(
+                                          '${appointments[index].medicalExaminationDay} | ${appointments[index].clinicHours}',
+                                          style: const TextStyle(
+                                              color: Colors.black26,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 14)),
+                                    ],
+                                  )
+                                ],
+                              ),
+                              Divider(
+                                color: Colors.black26
+                                    .withOpacity(0.2), // Color of the divider
+                                thickness: 1, // Thickness of the divider
+                                indent: 20, // Left indent of the divider
+                                endIndent: 20, // Right indent of the divider
+                              ),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              Row(
+                                children: [
+                                  GestureDetector(
+                                    onTap: () {
+                                      // Navigator.pushNamed(context, '/register');
+                                      // xử lý code hủy appointment booking
+                                    },
+                                    child: Container(
+                                      width: 160,
+                                      height: 55,
+                                      padding: const EdgeInsets.all(16),
+                                      decoration: ShapeDecoration(
+                                        color: Colors.red,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(40),
+                                        ),
+                                      ),
+                                      child: const Center(
+                                        child: Text(
+                                          'Cancel Booking',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 16,
+                                            fontFamily: 'Poppins',
+                                            fontWeight: FontWeight.w600,
+                                            height: 1.25,
+                                            letterSpacing: 0.02,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    width: 10,
+                                  ),
+                                  GestureDetector(
+                                    onTap: () {
+                                      Navigator.pushNamed(context,
+                                          '/appointment/upcoming/detail',
+                                          arguments: {
+                                            'appointmentId':
+                                                appointments[index].id,
+                                            'patientId':
+                                                appointments[index].partientId,
+                                          });
+                                    },
+                                    child: Container(
+                                      width: 160,
+                                      height: 55,
+                                      padding: const EdgeInsets.all(16),
+                                      decoration: ShapeDecoration(
+                                        color: Colors.blueAccent,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(40),
+                                        ),
+                                      ),
+                                      child: const Center(
+                                        child: Text(
+                                          'Reschedule',
+                                          style: TextStyle(
+                                            //color: Color(0xFF92A3FD),
+                                            fontSize: 16,
+                                            fontFamily: 'Poppins',
+                                            fontWeight: FontWeight.w600,
+                                            height: 1.25,
+                                            letterSpacing: 0.02,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
+                  );
+                });
+          }
         });
-      }
-      }
-    );
-
-
   }
 }
-
 
 class CompletedScreen extends StatelessWidget {
   final String ipDevice;
   final Future<List<Appointment>> appointmentsFutureCompleted;
-  const CompletedScreen({super.key, required this.appointmentsFutureCompleted, required this.ipDevice});
+  const CompletedScreen(
+      {super.key,
+      required this.appointmentsFutureCompleted,
+      required this.ipDevice});
 
   @override
   Widget build(BuildContext context) {
@@ -355,7 +394,7 @@ class CompletedScreen extends StatelessWidget {
                 itemBuilder: (context, index) {
                   return Container(
                     padding: const EdgeInsets.symmetric(
-                        vertical: 25, horizontal: 20),
+                        vertical: 10, horizontal: 15),
                     child: Column(
                       children: [
                         Container(
@@ -395,32 +434,36 @@ class CompletedScreen extends StatelessWidget {
                                       ),
                                     ),
                                   ),
-                                  const SizedBox(width: 10,),
+                                  const SizedBox(
+                                    width: 10,
+                                  ),
                                   Column(
-                                    crossAxisAlignment: CrossAxisAlignment
-                                        .start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Text(
                                         '${appointments[index].title} ${appointments[index].fullName}',
                                         style: const TextStyle(
                                             color: Colors.black,
                                             fontWeight: FontWeight.w600,
-                                            fontSize: 16
-                                        ),
+                                            fontSize: 16),
                                       ),
-                                      const SizedBox(height: 5,),
+                                      const SizedBox(
+                                        height: 5,
+                                      ),
                                       Row(
-                                        mainAxisAlignment: MainAxisAlignment
-                                            .start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
                                         children: [
-                                          Text('${appointments[index].departmentName} |',
+                                          Text(
+                                              '${appointments[index].departmentName} |',
                                               style: const TextStyle(
                                                   color: Colors.grey,
                                                   fontWeight: FontWeight.w600,
-                                                  fontSize: 14
-                                              )
+                                                  fontSize: 14)),
+                                          const SizedBox(
+                                            width: 5,
                                           ),
-                                          const SizedBox(width: 5,),
                                           Container(
                                             padding: const EdgeInsets.symmetric(
                                                 vertical: 5, horizontal: 10),
@@ -429,31 +472,32 @@ class CompletedScreen extends StatelessWidget {
                                               color: Colors.lightGreenAccent
                                                   .withOpacity(0.2),
                                               // Lighter background color
-                                              borderRadius: BorderRadius
-                                                  .circular(
-                                                  5.0), // Rounded corners
+                                              borderRadius:
+                                                  BorderRadius.circular(
+                                                      5.0), // Rounded corners
                                             ),
-                                            child: const Text(
-                                                'Completed',
-                                                style: TextStyle(
-                                                    color: Colors
-                                                        .lightGreenAccent,
+                                            child: Text(
+                                                appointments[index].status ==
+                                                        'finished'
+                                                    ? 'Completed'
+                                                    : '',
+                                                style: const TextStyle(
+                                                    color:
+                                                        Colors.lightGreenAccent,
                                                     fontWeight: FontWeight.bold,
-                                                    fontSize: 14
-                                                )
-                                            ),
+                                                    fontSize: 14)),
                                           ),
-
                                         ],
                                       ),
-                                      const SizedBox(height: 5,),
-                                      Text('${appointments[index].medicalExaminationDay} | ${appointments[index].clinicHours}',
+                                      const SizedBox(
+                                        height: 5,
+                                      ),
+                                      Text(
+                                          '${appointments[index].medicalExaminationDay} | ${appointments[index].clinicHours}',
                                           style: const TextStyle(
                                               color: Colors.black26,
                                               fontWeight: FontWeight.bold,
-                                              fontSize: 14
-                                          )
-                                      ),
+                                              fontSize: 14)),
                                     ],
                                   )
                                 ],
@@ -467,7 +511,9 @@ class CompletedScreen extends StatelessWidget {
                                 // Left indent of the divider
                                 endIndent: 20, // Right indent of the divider
                               ),
-                              const SizedBox(height: 10,),
+                              const SizedBox(
+                                height: 10,
+                              ),
                               Row(
                                 children: [
                                   GestureDetector(
@@ -481,8 +527,8 @@ class CompletedScreen extends StatelessWidget {
                                       decoration: ShapeDecoration(
                                         color: Colors.blueAccent,
                                         shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(
-                                              40),
+                                          borderRadius:
+                                              BorderRadius.circular(40),
                                         ),
                                       ),
                                       child: const Center(
@@ -505,7 +551,8 @@ class CompletedScreen extends StatelessWidget {
                                   ),
                                   GestureDetector(
                                     onTap: () {
-                                      Navigator.pushNamed(context, '/appointment/completed/detail');
+                                      Navigator.pushNamed(context,
+                                          '/appointment/completed/detail');
                                     },
                                     child: Container(
                                       width: 160,
@@ -514,8 +561,8 @@ class CompletedScreen extends StatelessWidget {
                                       decoration: ShapeDecoration(
                                         color: Colors.blueAccent,
                                         shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(
-                                              40),
+                                          borderRadius:
+                                              BorderRadius.circular(40),
                                         ),
                                       ),
                                       child: const Center(
@@ -542,18 +589,19 @@ class CompletedScreen extends StatelessWidget {
                       ],
                     ),
                   );
-                }
-            );
+                });
           }
-        }
-    );
+        });
   }
 }
 
 class CancelledScreen extends StatelessWidget {
   final String ipDevice;
   final Future<List<Appointment>> appointmentsFutureCancelled;
-  const CancelledScreen({super.key, required this.appointmentsFutureCancelled, required this.ipDevice});
+  const CancelledScreen(
+      {super.key,
+      required this.appointmentsFutureCancelled,
+      required this.ipDevice});
 
   @override
   Widget build(BuildContext context) {
@@ -591,7 +639,8 @@ class CancelledScreen extends StatelessWidget {
                 itemCount: appointments.length,
                 itemBuilder: (context, index) {
                   return Container(
-                    padding: const EdgeInsets.symmetric(vertical: 25, horizontal: 20),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 10, horizontal: 15),
                     child: Column(
                       children: [
                         Container(
@@ -631,56 +680,66 @@ class CancelledScreen extends StatelessWidget {
                                       ),
                                     ),
                                   ),
-                                  const SizedBox(width: 10,),
+                                  const SizedBox(
+                                    width: 10,
+                                  ),
                                   Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Text(
                                         '${appointments[index].title} ${appointments[index].fullName}',
                                         style: const TextStyle(
                                             color: Colors.black,
                                             fontWeight: FontWeight.w600,
-                                            fontSize: 16
-                                        ),
+                                            fontSize: 16),
                                       ),
-                                      const SizedBox(height: 5,),
+                                      const SizedBox(
+                                        height: 5,
+                                      ),
                                       Row(
-                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
                                         children: [
-                                          Text('${appointments[index].departmentName} |',
+                                          Text(
+                                              '${appointments[index].departmentName} |',
                                               style: const TextStyle(
                                                   color: Colors.grey,
                                                   fontWeight: FontWeight.w600,
-                                                  fontSize: 14
-                                              )
+                                                  fontSize: 14)),
+                                          const SizedBox(
+                                            width: 5,
                                           ),
-                                          const SizedBox(width: 5,),
                                           Container(
-                                            padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                                            padding: const EdgeInsets.symmetric(
+                                                vertical: 5, horizontal: 10),
                                             decoration: BoxDecoration(
-                                              color: Colors.red.withOpacity(0.2),
-                                              borderRadius: BorderRadius.circular(5.0),
+                                              color:
+                                                  Colors.red.withOpacity(0.2),
+                                              borderRadius:
+                                                  BorderRadius.circular(5.0),
                                             ),
-                                            child: const Text(
-                                                'Cancelled',
-                                                style: TextStyle(
+                                            child: Text(
+                                                appointments[index].status ==
+                                                        'no show'
+                                                    ? 'Cancelled'
+                                                    : '',
+                                                style: const TextStyle(
                                                     color: Colors.red,
                                                     fontWeight: FontWeight.bold,
-                                                    fontSize: 14
-                                                )
-                                            ),
+                                                    fontSize: 14)),
                                           ),
-
                                         ],
                                       ),
-                                      const SizedBox(height: 5,),
-                                      Text('${appointments[index].medicalExaminationDay} | ${appointments[index].clinicHours}',
+                                      const SizedBox(
+                                        height: 5,
+                                      ),
+                                      Text(
+                                          '${appointments[index].medicalExaminationDay} | ${appointments[index].clinicHours}',
                                           style: const TextStyle(
                                               color: Colors.black26,
                                               fontWeight: FontWeight.bold,
-                                              fontSize: 14
-                                          )
-                                      ),
+                                              fontSize: 14)),
                                     ],
                                   )
                                 ],
@@ -691,38 +750,38 @@ class CancelledScreen extends StatelessWidget {
                                 indent: 20,
                                 endIndent: 20,
                               ),
-                              const SizedBox(height: 10,),
-
+                              const SizedBox(
+                                height: 10,
+                              ),
                               GestureDetector(
-                                    onTap: () {
-                                     // Navigator.pushNamed(context, '/doctor/booking');
-                                    },
-                                    child: Container(
-                                      width: 355,
-                                      height: 55,
-                                      padding: const EdgeInsets.all(16),
-                                      decoration: ShapeDecoration(
-                                        color: Colors.blueAccent,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(40),
-                                        ),
-                                      ),
-                                      child: const Center(
-                                        child: Text(
-                                          'Book Again',
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 16,
-                                            fontFamily: 'Poppins',
-                                            fontWeight: FontWeight.w600,
-                                            height: 1.25,
-                                            letterSpacing: 0.02,
-                                          ),
-                                        ),
+                                onTap: () {
+                                  // Navigator.pushNamed(context, '/doctor/booking');
+                                },
+                                child: Container(
+                                  width: 355,
+                                  height: 55,
+                                  padding: const EdgeInsets.all(16),
+                                  decoration: ShapeDecoration(
+                                    color: Colors.blueAccent,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(40),
+                                    ),
+                                  ),
+                                  child: const Center(
+                                    child: Text(
+                                      'Book Again',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 16,
+                                        fontFamily: 'Poppins',
+                                        fontWeight: FontWeight.w600,
+                                        height: 1.25,
+                                        letterSpacing: 0.02,
                                       ),
                                     ),
                                   ),
-
+                                ),
+                              ),
                             ],
                           ),
                         )
@@ -730,11 +789,7 @@ class CancelledScreen extends StatelessWidget {
                     ),
                   );
                 });
-
           }
-
-        }
-
-    );
+        });
   }
 }

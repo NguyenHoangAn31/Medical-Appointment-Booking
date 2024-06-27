@@ -46,7 +46,6 @@ class _AccountEditScreenState extends State<AccountEditScreen> {
 
     if (response.statusCode == 200) {
       var result = jsonDecode(response.body);
-      print(result);
       setState(() {
         // Gán giá trị từ API vào các TextEditingController
         emailController.text = result['email'];

@@ -1,9 +1,6 @@
 package vn.aptech.backendapi.dto;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+
+import lombok.*;
 
 
 @Data
@@ -11,15 +8,11 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-public class AppointmentDto {
+public class AppointmentCreateDto {
     private int id;
     private int partientId;
     private int scheduledoctorId;
     private double price;
-    private String image;
-    private String title;
-    private String fullName;
-    private String departmentName;
     private String payment;
     private String status;
     private String note;
