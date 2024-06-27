@@ -1,3 +1,3 @@
 class BaseClient {
-  final String ip = '172.16.1.92';
+  final String ip = '192.168.1.4';
 }

@@ -20,4 +20,18 @@ class AppointmentClient{
     }
   }
 
+  Future<Appointment> fetchAppointmentById(int appointmentId) async {
+    final response = await http.get(
+      Uri.parse(
+          'http://$ipDevice:8080/api/appointment/$appointmentId'),
+    );
+    if (response.statusCode == 200) {
+      final result = json.decode(response.body);
+      print(result);
+      return Appointment.fromJson(result);
+    } else {
+      throw Exception('Failed to load appointment');
+    }
+  }
+
 }

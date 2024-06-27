@@ -10,14 +10,9 @@ import org.springframework.http.HttpStatus;
 
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import vn.aptech.backendapi.dto.AppointmentCreateDto;
 import vn.aptech.backendapi.dto.AppointmentDto;
 import vn.aptech.backendapi.dto.Appointment.AppointmentDetail;
 import vn.aptech.backendapi.dto.Appointment.CustomAppointmentDto;
@@ -51,19 +46,8 @@ public class AppointmentController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to update appointment status");
         }
-    }
 
-    @PostMapping(value = "/create")
-    public ResponseEntity<AppointmentDto> test(@RequestBody AppointmentDto dto) {
-        System.out.println(dto);
-        AppointmentDto result = appointmentService.save(dto);
-        if (result != null) {
-            return ResponseEntity.ok(result);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
     }
-
     @GetMapping("/appointmentbyscheduledoctoridandstarttime/{scheduledoctorid}/{starttime}")
     public ResponseEntity<List<AppointmentDto>> getAppointments(
             @PathVariable("starttime") @DateTimeFormat(iso = DateTimeFormat.ISO.TIME) LocalTime starttime,
@@ -79,6 +63,12 @@ public class AppointmentController {
             @PathVariable("patientId") int patientId, @PathVariable("status") String status) {
         List<AppointmentDto> result = appointmentService
                 .findAppointmentsPatientByPatientIdAndStatus(patientId, status);
+        return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<AppointmentDto> getAppointmentById( @PathVariable("id") int id){
+        AppointmentDto result = appointmentService.getAppointmentById(id);
         return ResponseEntity.ok(result);
     }
 
@@ -100,4 +90,45 @@ public class AppointmentController {
                 .findPatientsByDoctorIdAndMedicalExaminationToday(doctorId, startDate, endDate);
         return ResponseEntity.ok(result);
     }
+    @PostMapping(value = "/create")
+    public ResponseEntity<AppointmentDto> test(@RequestBody AppointmentDto dto) {
+        System.out.println(dto);
+        AppointmentDto result = appointmentService.save(dto);
+        if (result != null) {
+            return ResponseEntity.ok(result);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    // Xử lý check patient book cùng 1 bác sỹ trong 1 ngày,
+    @GetMapping("/check-schedule-for-patient/{doctorId}/{patientId}/{medicalExaminationDay}")
+    public ResponseEntity<Boolean> checkAppointment(
+            @PathVariable("doctorId") int doctorId,
+            @PathVariable("patientId") int patientId,
+            @PathVariable("medicalExaminationDay") LocalDate medicalExaminationDay) {
+        boolean exists = appointmentService.checkExistAppointmentByDayAndPatientIdAndDoctorId(doctorId, patientId, medicalExaminationDay);
+        if (exists) {
+            return ResponseEntity.ok(true);
+        } else {
+            return ResponseEntity.ok(false);
+        }
+    }
+    @GetMapping("/check-schedule-for-patient-clinic/check/{patientId}/{medicalExaminationDay}/{clinicHours}")
+    public ResponseEntity<Boolean> checkAppointment(
+            @PathVariable("patientId") int patientId,
+            @PathVariable("medicalExaminationDay") LocalDate medicalExaminationDay,
+            @PathVariable("clinicHours") String clinicHours
+            ) {
+        System.out.println(LocalTime.parse(clinicHours));
+        LocalTime time = LocalTime.parse(clinicHours);
+        boolean exists = appointmentService.checkExistAppointmentByDayAndPatientIdAndDoctorId( patientId, medicalExaminationDay, time);
+        if (exists) {
+            return ResponseEntity.ok(true);
+        } else {
+            return ResponseEntity.ok(false);
+        }
+    }
+
+
 }

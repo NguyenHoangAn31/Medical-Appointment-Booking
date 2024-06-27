@@ -459,7 +459,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                                           const SizedBox(width: 10),
                                                           Text(
                                                             formatTime(appointment.clinicHours),
-                                                            //'17:00 PM',
                                                             style: const TextStyle(
                                                               color: Colors.white,
                                                               fontSize: 16,
