@@ -43,7 +43,6 @@
          return "redirect:/";
      }
 
-     // hàm này nó trả link api của ngân hàng nên k xử lý dc
 
 
      @GetMapping("/success")
