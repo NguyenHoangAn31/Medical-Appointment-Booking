@@ -43,6 +43,9 @@
          return "redirect:/";
      }
 
+     // hàm này nó trả link api của ngân hàng nên k xử lý dc
+
+
      @GetMapping("/success")
      public void successPay(@RequestParam("paymentId") String paymentId, @RequestParam("PayerID") String payerId, HttpServletResponse response) {
          try {
@@ -62,7 +65,7 @@
      }
 
      @GetMapping("/cancel")
-     public String cancelPay() {
-         return "Payment canceled";
+     public void cancelPay(HttpServletResponse response) throws IOException {
+         response.sendRedirect("http://localhost:5173/proccess-payment?status=failed");
      }
  }

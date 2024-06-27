@@ -1,6 +1,7 @@
 package vn.aptech.backendapi.service.Appointment;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Comparator;
 import java.util.List;
@@ -9,8 +10,10 @@ import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import vn.aptech.backendapi.dto.AppointmentCreateDto;
 import vn.aptech.backendapi.dto.AppointmentDto;
 import vn.aptech.backendapi.dto.PatientDto;
 import vn.aptech.backendapi.dto.Appointment.AppointmentDetail;
@@ -50,8 +53,6 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     private CustomAppointmentDto toCustomDto(Appointment appointment) {
         CustomAppointmentDto a = mapper.map(appointment, CustomAppointmentDto.class);
-        // a.setImage(partientRepository.findById(appointment.getPartient().getId()).get().getImage());
-        // a.setFullName(partientRepository.findById(appointment.getPartient().getId()).get().getFullName());
         a.setPatientDto(mapper.map(appointment.getPartient(), PatientDto.class));
         return a;
     }
@@ -94,14 +95,17 @@ public class AppointmentServiceImpl implements AppointmentService {
         return toAppointmentDetail(a);
     }
 
+
+
     @Override
+
     public AppointmentDto save(AppointmentDto dto) {
         Appointment a = mapper.map(dto, Appointment.class);
         a.setAppointmentDate(LocalDate.parse(dto.getAppointmentDate()));
         a.setMedicalExaminationDay(LocalDate.parse(dto.getMedicalExaminationDay()));
         a.setClinicHours(LocalTime.parse(dto.getClinicHours()));
         if (dto.getPartientId() != 0) {
-            Partient p = partientRepository.getPatientByUserId(dto.getPartientId());
+            Partient p = partientRepository.getPatientById(dto.getPartientId());
             a.setPartient(mapper.map(p, Partient.class));
         }
         if (dto.getScheduledoctorId() != 0) {
@@ -110,8 +114,8 @@ public class AppointmentServiceImpl implements AppointmentService {
         }
         Appointment result = appointmentRepository.save(a);
         return toDto(result);
-    }
 
+    }
     @Override
     public List<AppointmentDto> findAppointmentsByScheduleDoctorIdAndStartTime(int scheduledoctorid,
             LocalTime starttime) {
@@ -141,6 +145,13 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
+    public AppointmentDto getAppointmentById(int appointmentId) {
+        Appointment appointment = appointmentRepository.findById(appointmentId)
+                .orElseThrow(() -> new RuntimeException("Appointment not found"));
+        return mapAppointmentDto(appointment);
+    }
+
+    @Override
     public List<AppointmentDto> findAppointmentsPatientByPatientIdAndStatus(int patientId,
                                                                             String status) {
         return appointmentRepository.findAppointmentsPatientByPatientIdAndStatus(patientId, status)
@@ -164,5 +175,35 @@ public class AppointmentServiceImpl implements AppointmentService {
                 .stream().map(this::toCustomDto)
                 .collect(Collectors.toList());
     }
+
+    // hàm check lịch book trễ hơn 30p so với ngày hiện tại thì tự hủy lịch
+    @Scheduled(fixedRate = 60000) // Chạy mỗi phút
+    public void checkAndCancelAppointments() {
+        LocalDate today = LocalDate.now(); // Lấy ngày hiện tại
+        String statusWaiting = "waiting";
+        List<Appointment> appointments = appointmentRepository.findByAppointmentDateAndStatus(today, statusWaiting);
+        LocalDateTime now = LocalDateTime.now();
+        for (Appointment appointment : appointments) {
+            LocalDate appointmentDate = appointment.getMedicalExaminationDay();
+            LocalTime appointmentTime = appointment.getClinicHours();
+            LocalDateTime appointmentDateTime = LocalDateTime.of(appointmentDate, appointmentTime);
+            if (now.isAfter(appointmentDateTime.plusMinutes(30))) {
+                appointment.setStatus("cancelled");
+                appointmentRepository.save(appointment);
+            }
+        }
+    }
+
+    @Override
+    public boolean checkExistAppointmentByDayAndPatientIdAndDoctorId(int doctorId, int patientId, LocalDate medicalExaminationDay) {
+        return appointmentRepository.findByDoctorIddAndPatientIdAndMedicalExaminationDay(doctorId, patientId, medicalExaminationDay).isPresent();
+    }
+
+    @Override
+    public boolean checkExistAppointmentByDayAndPatientIdAndDoctorId( int patientId, LocalDate medicalExaminationDay, LocalTime clinicHours) {
+        return appointmentRepository.findByDoctorIddAndPatientIdAndMedicalExaminationDayAndClinicHours(patientId, medicalExaminationDay, clinicHours).isPresent();
+    }
+
+
 
 }

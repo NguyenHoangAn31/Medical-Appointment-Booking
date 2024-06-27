@@ -1,6 +1,7 @@
  package vn.aptech.backendapi.controller;
 
  import jakarta.servlet.http.HttpServletRequest;
+ import jakarta.servlet.http.HttpServletResponse;
  import org.springframework.http.HttpStatus;
  import org.springframework.http.MediaType;
  import org.springframework.http.ResponseEntity;
@@ -11,6 +12,7 @@
  import vn.aptech.backendapi.config.PaymentConfiguration;
  import vn.aptech.backendapi.dto.PaymentResDto;
 
+ import java.io.IOException;
  import java.io.UnsupportedEncodingException;
  import java.net.URLEncoder;
  import java.nio.charset.StandardCharsets;
@@ -99,14 +101,14 @@
          return ResponseEntity.status(HttpStatus.OK).body(paymentResDto);
      }
 
-     @GetMapping("/success")
-     public String handleVNPaySuccess(HttpServletRequest request) {
-         String vnp_ResponseCode = request.getParameter("vnp_ResponseCode");
-         System.out.println("vnp_ResponseCode: " + vnp_ResponseCode);
-         if ("00".equals(vnp_ResponseCode)) { // VNPay response code for successful payment
-             return "redirect:/process-payment?status=success";
+     @GetMapping("/vn-pay-callback")
+     public void payCallbackHandler(HttpServletRequest request, HttpServletResponse response) throws IOException {
+         String status = request.getParameter("vnp_ResponseCode");
+         if ("00".equals(status)) {
+             response.sendRedirect("http://localhost:5173/proccess-payment?status=success");
          } else {
-             return "redirect:/process-payment?status=failed";
+             response.sendRedirect("http://localhost:5173/proccess-payment?status=failed");
          }
      }
+
  }

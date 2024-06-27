@@ -24,7 +24,6 @@ const Header = () => {
   const fetchApi = async () => {
     try {
       if(currentUser!= null){
-        console.log("first")
         const result = await axios.get(`http://localhost:8080/api/patient/${currentUser.user.id}`);
         setUser(result.data);
       }
@@ -62,8 +61,6 @@ const Header = () => {
     });
   };
 
-
-  console.log(user.image)
 
   return (
     <>
@@ -106,9 +103,9 @@ const Header = () => {
                       <li><Link to="" className='user__link'>Hello! {user.fullName}</Link></li>
                       <li><Link to="" className='user__link'><BiBell /> Notication</Link></li>
                       <li><Link to="/account" className='user__link'><BiSolidUserRectangle /> Profile</Link></li>
-                      <li><Link to="/booking" className='user__link'><BiCalendarCheck /> Booking</Link></li>
-                      <li><Link to="" className='user__link'><BiHeart /> Fauvorite</Link></li>
-                      <li><Link to="/checkout" className='user__link'><BiSolidUserRectangle /> CheckOut</Link></li>
+                      <li><Link to="/booking-history" className='user__link'><BiCalendarCheck /> Appointment</Link></li>
+                      <li><Link to="favourite" className='user__link'><BiHeart /> Fauvorite</Link></li>
+                      <li><Link to="/medical-history" className='user__link'><BiSolidUserRectangle /> Medical history</Link></li>
                       <li onClick={handleSignOut}><a className='user__link'><BiLogIn /> Sign out</a></li>
                     </ul>
                   )}
@@ -117,7 +114,6 @@ const Header = () => {
               ) : (
                 <div onClick={handleLogin} className="login">Login</div>
               )}
-              {/* <div onClick={handleLogin}  className="login">Login</div> */}
             </motion.div>
           </div>
         </div>

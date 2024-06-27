@@ -23,4 +23,13 @@ public class Role {
 
     @ManyToMany(mappedBy = "roles")
     private List<User> users;
+
+    @Override
+    public String toString() {
+        // Avoid referencing collections directly in toString to prevent Hibernate lazy loading issues
+        return "Role{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
+    }
 }

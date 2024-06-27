@@ -16,7 +16,7 @@ const Payment = ({ setActiveHourIndex, setSlotName, setSchedules, isOpen, data, 
     const formattedDate = `${year}-${month}-${day}`;
     const [paymentUrl, setPaymentUrl] = useState('');
     const [paymentMethod, setPaymentMethod] = useState('');
-    const [countdown, setCountdown] = useState(7); // Initialize countdown timer to 10 seconds
+    const [countdown, setCountdown] = useState(10); // Initialize countdown timer to 10 seconds
     const [isDisabled, setIsDisabled] = useState(false);
 
     const [note, setNote] = useState('')
@@ -24,7 +24,6 @@ const Payment = ({ setActiveHourIndex, setSlotName, setSchedules, isOpen, data, 
         setNote(value)
     }
 
-    console.log(data);
 
     useEffect(() => {
         if (countdown > 0) {
@@ -36,15 +35,16 @@ const Payment = ({ setActiveHourIndex, setSlotName, setSchedules, isOpen, data, 
     }, [countdown]);
 
     const handlePaymentChange = async (method) => {
-        setIsDisabled(true); // Disable button when countdown reaches 0
+         // Disable button when countdown reaches 0
         setPaymentMethod(method);
         if (method === 'vnpay') {
+            setIsDisabled(true);
             try {
                 const response = await axios.get('http://localhost:8080/api/payment/create_payment_url', {
                     params: {
                         amount: data?.price * 0.3, // Số tiền cần thanh toán
                         orderType: 'billpayment',
-                        returnUrl: 'http://localhost:5173/process-payment',
+                        returnUrl: 'http://localhost:8080/api/payment/vn-pay-callback',
                     },
                 });
                 setPaymentUrl(response.data.url);
@@ -52,6 +52,7 @@ const Payment = ({ setActiveHourIndex, setSlotName, setSchedules, isOpen, data, 
                 console.error('Error creating payment URL:', error);
             }
         } else if (method === 'paypal') {
+            setIsDisabled(true);
             const paymentResponse = await axios.post('http://localhost:8080/paypal/pay', null, {
                 params: {
                     sum: (data.price * 0.3) / 25455, // Số tiền thanh toán
@@ -75,20 +76,22 @@ const Payment = ({ setActiveHourIndex, setSlotName, setSchedules, isOpen, data, 
         const paymentData = {
             partientId: data.partientId,
             partientName: data.partientName,
-            doctorId: data.doctorId,
-            doctorName: data.doctorName,
             scheduledoctorId: data.scheduledoctorId,
+            appointmentDate: data.appointmentDate,
             medicalExaminationDay: data.medicalExaminationDay,
             clinicHours: data.clinicHours,
             price: data.price * 0.3,
             note: data.note,
-            appointmentDate: data.appointmentDate,
             payment: data.payment,
             status: data.status,
+            image: data.image,
+            doctorId: data.doctorId,
+            doctorTitle: data.doctorTitle,
+            doctorName: data.doctorName,
+            departmentName: data.departmentName,    
         };
-        await addAppointment(data);
-        console.log(paymentUrl)
-        sessionStorage.setItem('paymentData', JSON.stringify(paymentData));
+       // console.log(data);
+        localStorage.setItem('paymentData', JSON.stringify(paymentData));
         window.location.href = `${paymentUrl}`;
         
     };
@@ -133,7 +136,7 @@ const Payment = ({ setActiveHourIndex, setSlotName, setSchedules, isOpen, data, 
                     Close
                 </Button>
                 <Button variant="primary" onClick={handleSubmitBook} disabled={isDisabled}>
-                    {isDisabled ? `Chờ ${countdown}s để thanh toán` : 'Thanh toán để hoàn tất booking'}
+                    {isDisabled ? `Waiting for ${countdown}s to payment` : 'Payment to complete booking'}
                 </Button>
             </Modal.Footer>
         </Modal>
