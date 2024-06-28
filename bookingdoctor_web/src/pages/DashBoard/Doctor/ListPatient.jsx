@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
+import dayjs from 'dayjs';
 import { AlertContext } from '../../../components/Layouts/DashBoard';
 
 const ListPatient = () => {
@@ -60,11 +61,10 @@ const ListPatient = () => {
                                 </td>
                                 <td>{patient.fullName}</td>
                                 <td>{patient.gender}</td>
-                                <td>{patient.birthday}</td>
+                                <td>{dayjs(patient.birthday).format('DD/MM/YYYY')}</td>
                                 <td>{patient.address}</td>
                             </tr>
                         ))}
-
                     </tbody>
                 </table>
             )}

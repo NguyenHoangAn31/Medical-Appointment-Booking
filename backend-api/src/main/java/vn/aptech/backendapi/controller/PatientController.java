@@ -108,7 +108,6 @@ public class PatientController {
         }
         return ResponseEntity.notFound().build();
 
-
     }
 
     @GetMapping(value = "/getpatientdetail/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -148,7 +147,8 @@ public class PatientController {
     }
 
     @PutMapping(value = "/edit-patient/{patientId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> editPatient01(@PathVariable("patientId") int patientId,@RequestBody CustomPatientEditDto dto) throws IOException {
+    public ResponseEntity<?> editPatient01(@PathVariable("patientId") int patientId,
+            @RequestBody CustomPatientEditDto dto) throws IOException {
         System.out.println(dto);
         boolean result = patientService.editPatient01(patientId, dto);
         if (result) {
@@ -158,12 +158,20 @@ public class PatientController {
     }
 
     @GetMapping(value = "/get-patient-detail/{patientId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<CustomPatientEditDto> getPatientDetail(@PathVariable("patientId") int patientId) throws IOException {
+    public ResponseEntity<CustomPatientEditDto> getPatientDetail(@PathVariable("patientId") int patientId)
+            throws IOException {
         CustomPatientEditDto result = patientService.getPatientDetail01(patientId);
         if (result != null) {
             return ResponseEntity.ok(result);
         }
         return ResponseEntity.notFound().build();
+    }
+
+    // Hien 23/6/2024
+    @GetMapping("/history/{patientId}")
+    public ResponseEntity<List<MedicalDto>> getMedicalHistory(@PathVariable Integer patientId) {
+        List<MedicalDto> medicalHistory = patientService.getMedicalHistoryByPatientId(patientId);
+        return ResponseEntity.ok(medicalHistory);
     }
 
 }
