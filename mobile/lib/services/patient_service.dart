@@ -3,7 +3,7 @@
 import 'dart:convert';
 
 import '../models/patient.dart';
-import '../ultils/ip_app.dart';
+import '../utils/ip_app.dart';
 import 'package:http/http.dart' as http;
 
 class PatientClient{
@@ -14,7 +14,7 @@ class PatientClient{
     final result = await http.get(url);
       if (result.statusCode == 200) {
         var jsonResponse = json.decode(result.body);
-        // print(jsonResponse);
+        print(jsonResponse);
         return Patient.fromJson(jsonResponse);
       } else {
         throw Exception('Failed to load patient by patientId');
@@ -26,7 +26,6 @@ class PatientClient{
       final result = await http.get(url);
       if(result.statusCode == 200){
         var jsonResponse = json.decode(result.body);
-        print(jsonResponse);
         return Patient.fromJson(jsonResponse);
       }else{
         throw Exception('Failed to load patient by userId');

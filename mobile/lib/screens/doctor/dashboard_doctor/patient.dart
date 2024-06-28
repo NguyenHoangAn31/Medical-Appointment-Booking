@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:mobile/screens/doctor/dashboard_doctor/appointment_doctor_screen.dart';
-import 'package:mobile/ultils/ip_app.dart';
+import 'package:mobile/utils/ip_app.dart';
 
 class PatientScreenInDoctorPage extends StatefulWidget {
   const PatientScreenInDoctorPage({super.key});
@@ -37,7 +36,7 @@ class _PatientScreenInDoctorPageState extends State<PatientScreenInDoctorPage> {
 
   Future<void> _handleChangeStatus(String status) async {
     final responseChangeStatus = await http.put(Uri.parse(
-        'http://${ipDevice}:8080/api/appointment/changestatus/$id/$status'));
+        'http://$ipDevice:8080/api/appointment/changestatus/$id/$status'));
     if (responseChangeStatus.statusCode == 200) {
       Navigator.of(context).pop("updatedStatus");
       setState(() {
@@ -62,7 +61,7 @@ class _PatientScreenInDoctorPageState extends State<PatientScreenInDoctorPage> {
               // Hiển thị hình ảnh bệnh nhân
               Center(
                 child: Image.network(
-                  'http://${ipDevice}:8080/images/patients/${patient['image']}', // Thay thế bằng URL của ảnh từ dữ liệu bệnh nhân
+                  'http://$ipDevice:8080/images/patients/${patient['image']}', // Thay thế bằng URL của ảnh từ dữ liệu bệnh nhân
                   width: MediaQuery.of(context).size.width * 0.8,
                   // height: 150,
                   fit: BoxFit.cover,

@@ -1,5 +1,4 @@
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
@@ -8,8 +7,8 @@ import '../screens/appointment/appointment_screen.dart';
 import '../screens/blog/blog_screen.dart';
 import '../screens/doctor/doctor_screen.dart';
 import '../screens/home/home_screen.dart';
-import '../ultils/awesome_dialog.dart';
-import '../ultils/storeCurrentUser.dart';
+import 'package:awesome_dialog/awesome_dialog.dart';
+import '../utils/store_current_user.dart';
 
 class NavigationMenu extends StatelessWidget {
   const NavigationMenu({super.key});
@@ -53,25 +52,33 @@ class NavigationControllerForDoctor extends GetxController {
 
   void onDestinationSelected(int index, BuildContext context) {
     if(index == 2 && currentUser.isEmpty) {
-      AwesomeDialog.show(
+      AwesomeDialog(
         context: context,
-        title: 'Notification!',
-        content: 'Please Sign in to use this function',
-        confirmText: 'Login',
-        route: '/sign-in',
-        cancelText: 'Close',
-        onCancel: () => Get.back(),
-      );
+        animType: AnimType.bottomSlide,
+        dialogType: DialogType.warning,
+        body: Center(child: Text(
+          'Please Sign in to use this function',
+          style: TextStyle(fontStyle: FontStyle.italic),
+          textAlign: TextAlign.center,
+        ),),
+        btnOkOnPress: () {
+          Navigator.pushNamed(context, '/sign-in');
+        },
+      )..show();
     }else if(index == 4 && currentUser.isEmpty){
-      AwesomeDialog.show(
+      AwesomeDialog(
         context: context,
-        title: 'Notification!',
-        content: 'Please Sign in to use this function',
-        confirmText: 'Login',
-        route: '/sign-in',
-        cancelText: 'Close',
-        onCancel: () => Get.back(),
-      );
+        animType: AnimType.bottomSlide,
+        dialogType: DialogType.warning,
+        body: Center(child: Text(
+          'Please Sign in to use this function',
+          style: TextStyle(fontStyle: FontStyle.italic),
+          textAlign: TextAlign.center,
+        ),),
+        btnOkOnPress: () {
+          Navigator.pushNamed(context, '/sign-in');
+        },
+      )..show();
     }
     selectedIndex.value = index;
   }

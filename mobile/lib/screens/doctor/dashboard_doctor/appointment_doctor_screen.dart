@@ -1,11 +1,12 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
-import 'package:mobile/ultils/ip_app.dart';
-import 'package:mobile/ultils/storeCurrentUser.dart';
+import 'package:mobile/utils/ip_app.dart';
+import 'package:mobile/utils/store_current_user.dart';
 
 class AppointmentDoctorScreen extends StatefulWidget {
   const AppointmentDoctorScreen({super.key});
@@ -32,12 +33,12 @@ class _AppointmentDoctorScreenState extends State<AppointmentDoctorScreen> {
 
   Future<void> fetchExaminationUpcoming() async {
     DateTime now = DateTime.now();
-    DateTime tomorrow = now.add(Duration(days: 1));
+    DateTime tomorrow = now.add(const Duration(days: 1));
     String formattedDate = DateFormat('yyyy-MM-dd').format(tomorrow);
     log("log : $formattedDate");
 
     final response = await http.get(Uri.parse(
-        'http://${ipDevice}:8080/api/appointment/patientsbydoctoridandmedicalexaminationupcoming/${currentUser['id']}/${formattedDate}'));
+        'http://$ipDevice:8080/api/appointment/patientsbydoctoridandmedicalexaminationupcoming/${currentUser['id']}/$formattedDate'));
 
     if (response.statusCode == 200) {
       setState(() {
@@ -53,7 +54,7 @@ class _AppointmentDoctorScreenState extends State<AppointmentDoctorScreen> {
 
   Future<void> fetchExaminationToday() async {
     final response = await http.get(Uri.parse(
-        'http://${ipDevice}:8080/api/appointment/patientsbydoctoridandmedicalexaminationtoday/${currentUser['id']}/${today}/${today}'));
+        'http://$ipDevice:8080/api/appointment/patientsbydoctoridandmedicalexaminationtoday/${currentUser['id']}/$today/$today'));
 
     if (response.statusCode == 200) {
       setState(() {
@@ -199,7 +200,7 @@ class _AppointmentDoctorScreenState extends State<AppointmentDoctorScreen> {
                                           leading: CircleAvatar(
                                             radius: 30,
                                             backgroundImage: NetworkImage(
-                                              'http://${ipDevice}:8080/images/patients/${patient['image']}',
+                                              'http://$ipDevice:8080/images/patients/${patient['image']}',
                                             ),
                                           ),
                                         ),
@@ -291,8 +292,10 @@ class _AppointmentDoctorScreenState extends State<AppointmentDoctorScreen> {
                                       'id': booking['id']
                                     },
                                   );
-                                  print(
+                                  if (kDebugMode) {
+                                    print(
                                       'Result from PatientScreenInDoctorPage: $result');
+                                  }
                                 },
                                 child: Padding(
                                   padding: const EdgeInsets.symmetric(
@@ -316,7 +319,7 @@ class _AppointmentDoctorScreenState extends State<AppointmentDoctorScreen> {
                                         leading: CircleAvatar(
                                           radius: 30,
                                           backgroundImage: NetworkImage(
-                                            'http://${ipDevice}:8080/images/patients/${patient['image']}',
+                                            'http://$ipDevice:8080/images/patients/${patient['image']}',
                                           ),
                                         ),
                                       ),

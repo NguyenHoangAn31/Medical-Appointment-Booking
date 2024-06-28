@@ -1,19 +1,14 @@
 import 'dart:async';
-import 'dart:ffi';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:mobile/models/schedule.dart';
-import 'package:mobile/services/doctor/doctorService.dart';
-//import 'package:mobile/widgets/notication/success_widget.dart';
+import 'package:mobile/services/appointment_service.dart';
+import 'package:mobile/services/doctor/doctor_service.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:awesome_dialog/awesome_dialog.dart';
 
 import '../../models/doctor.dart';
-import '../../ultils/awesome_dialog.dart';
-import '../../ultils/ip_app.dart';
-import '../../ultils/storeCurrentUser.dart';
-import '../../widgets/notication/error_widget.dart';
+import '../../utils/ip_app.dart';
+import '../../utils/store_current_user.dart';
 
 
 class DoctorBookingScreen extends StatefulWidget {
@@ -26,15 +21,15 @@ class DoctorBookingScreen extends StatefulWidget {
 class _DoctorBookingScreenState extends State<DoctorBookingScreen> {
   final ipDevice = BaseClient().ip;
   final currentUser = CurrentUser.to.user;
-
   int? _selectedIndex;
   int? _scheduleDoctorId;
   String? _timeSelected;
   int? _patientId;
+  int? _doctorId;
+  String? doctorName;
   double? price;
+  bool checkHours = false;
   late final DateTime _appointmentDay = DateTime.now();
-
-
 
   late final int doctorId;
   late Future<Doctor> _doctorFuture;
@@ -46,13 +41,13 @@ class _DoctorBookingScreenState extends State<DoctorBookingScreen> {
   void initState() {
     super.initState();
     _selectedIndex = -1;
+    _patientId = currentUser['id'];
   }
 
 
   void _onDaySelected(DateTime date, DateTime focusedDay){
     setState(() {
-      toDay = date;
-      _patientId = 5;
+        toDay = date;
     });
     _scheduleFuture =  getScheduleByDoctorIdAndDay(doctorId, toDay);
   }
@@ -60,6 +55,7 @@ class _DoctorBookingScreenState extends State<DoctorBookingScreen> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     final Map arguments = ModalRoute.of(context)?.settings.arguments as Map;
+
     doctorId = arguments['doctorId'] as int;
      _doctorFuture = getDoctorById(doctorId);
     toDay = DateTime.now();
@@ -69,6 +65,100 @@ class _DoctorBookingScreenState extends State<DoctorBookingScreen> {
         validHours = schedules.map((schedule) => schedule.startTime).toList();
       });
     });
+  }
+
+  void checkSelectedTime(String selectedDate, String slotName) {
+    // Tách các phần của slotName
+
+  }
+
+  void handleSlotClick(data) async{
+
+    List<String> parts = data['slotName'].split(':');
+    int hoursInt = int.parse(parts[0]);
+    int minutesInt = int.parse(parts[1]);
+    DateTime currentTime = new DateTime.now();
+
+    List<String> dateParts = data['daySelected'].split('-');
+    int yearInt = int.parse(dateParts[0]);
+    int monthInt = int.parse(dateParts[1]);
+    int dayInt = int.parse(dateParts[2]);
+    DateTime selectedDateTime = DateTime(yearInt, monthInt, dayInt, hoursInt, minutesInt);
+
+    Duration difference = selectedDateTime.difference(DateTime.now());
+
+    if (difference.inMinutes > 120) {
+      bool result = await AppointmentClient().checkAppointmentForPatient(data['doctorId'], data['patientId'], data['daySelected']);
+      if(result){
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('You are booking with one doctor for one day. Please select again.'),
+            backgroundColor: Colors.red,
+          ),
+        );
+        AwesomeDialog(
+          context: context,
+          animType: AnimType.bottomSlide,
+          dialogType: DialogType.error,
+          body: Center(child: Text(
+            'You are booking with 1 doctor for 1 day. Please select again.',
+            style: TextStyle(fontStyle: FontStyle.italic),
+            textAlign: TextAlign.center,
+          ),),
+          title: 'This is Ignored',
+          desc:   'This is also Ignored',
+          btnOkOnPress: () {},
+        )..show();
+        return;
+      }else{
+        bool response = await AppointmentClient().checkAppointmentForPatientClinic(
+            data['patientId'],
+            data['daySelected'],
+            data['slotName']
+        );
+        if(response){
+          AwesomeDialog(
+            context: context,
+            animType: AnimType.bottomSlide,
+            dialogType: DialogType.error,
+            body: Center(child: Text(
+              'You have another schedule at ${data['slotName']}. Please book another time!',
+              style: TextStyle(fontStyle: FontStyle.italic),
+              textAlign: TextAlign.center,
+            ),),
+            title: 'This is Ignored',
+            desc:   'This is also Ignored',
+            btnOkOnPress: () {},
+            )..show();
+        }else{
+
+
+          // xử lý các hàm khác trong này
+        }
+
+      }
+    } else {
+      AwesomeDialog(
+        context: context,
+        animType: AnimType.bottomSlide,
+        dialogType: DialogType.error,
+        body: Center(child: Text(
+          'YPlease book an appointment two hours in advance!.!',
+          style: TextStyle(fontStyle: FontStyle.italic),
+          textAlign: TextAlign.center,
+        ),),
+        title: 'This is Ignored',
+        desc:   'This is also Ignored',
+        btnOkOnPress: () {},
+      )..show();
+
+    }
+  }
+
+  bool isSameDay(DateTime date1, DateTime date2) {
+    return date1.year == date2.year &&
+        date1.month == date2.month &&
+        date1.day == date2.day;
   }
 
   @override
@@ -225,8 +315,25 @@ class _DoctorBookingScreenState extends State<DoctorBookingScreen> {
                     child: CircularProgressIndicator());
                     } else if (!snapshot.hasData ||
                     snapshot.data!.isEmpty || snapshot.hasError) {
-                    return const Center(
-                        child: Text('Bác sĩ không có lịch khám bệnh ngày hôm nay'));
+                    return Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text('The doctor has no appointment scheduled today', style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                              textAlign: TextAlign.center,
+                              ),
+                            const SizedBox(height: 10,),
+                            Image.asset(
+                              'assets/images/no_result_default.png',
+                              width: 200,
+                              height: 200,
+                            ),
+                            const SizedBox(height: 10,),
+                          ],
+                        ));
                     } else {
                           return SizedBox(// Đặt chiều cao phù hợp cho GridView
                             height: 700,
@@ -252,8 +359,16 @@ class _DoctorBookingScreenState extends State<DoctorBookingScreen> {
                                         _selectedIndex = index;
                                         _scheduleDoctorId = scheduleDoctorId;
                                         _timeSelected = timeSelected;
-                                       //print('Selected Index: $index, ScheduleDoctorId: $scheduleDoctorId');
                                       });
+                                      var data = {
+                                        "patientId": _patientId,
+                                        "doctorId": doctorId,
+                                        "slotName": timeSelected,
+                                        "daySelected": toDay.toIso8601String().split('T')[0],
+                                      };
+
+                                      handleSlotClick(data);
+                                      // int patientId, int doctorId, String slotName, String daySelected
                                     }
                                   },
                                   child: Container(
@@ -275,7 +390,7 @@ class _DoctorBookingScreenState extends State<DoctorBookingScreen> {
                                         ),
                                       ],
                                     ),
-                                    child: Container(
+                                    child: SizedBox(
                                       height: 30,
                                       child: Center(
                                         child: Text(
@@ -295,7 +410,6 @@ class _DoctorBookingScreenState extends State<DoctorBookingScreen> {
                             ),
                           );
                     }
-
                 },
               ),
 
@@ -311,20 +425,27 @@ class _DoctorBookingScreenState extends State<DoctorBookingScreen> {
             child: InkWell(
               onTap: (){
                 if(currentUser.isEmpty){
-                  AwesomeDialog.show(
+                  AwesomeDialog(
                     context: context,
-                    title: 'Notification!',
-                    content: 'Please Sign in to use this function',
-                    confirmText: 'Login',
-                    route: '/sign-in',
-                    cancelText: 'Close',
-                    onCancel: () => Get.back(),
-                  );
+                    animType: AnimType.bottomSlide,
+                    dialogType: DialogType.error,
+                    body: Center(child: Text(
+                      'Please Sign in to use this function.',
+                      style: TextStyle(fontStyle: FontStyle.italic),
+                      textAlign: TextAlign.center,
+                    ),),
+                    title: 'This is Ignored',
+                    desc:   'This is also Ignored',
+                    btnOkOnPress: () {},
+                  )..show();
                 }else{
+
                   var data = {
                     'doctorId' : doctorId,
+                    'doctorName' : '',
                     'medicalExaminationDay': toDay.toIso8601String().split('T')[0],
-                    'clinicHour': _timeSelected,
+                    'clinicHours': _timeSelected,
+                    'patientName': '',
                     'scheduledoctorId': _scheduleDoctorId,
                     'appointmentDate': _appointmentDay.toIso8601String().split('T')[0],
                     'partientId': _patientId,
@@ -332,15 +453,23 @@ class _DoctorBookingScreenState extends State<DoctorBookingScreen> {
                     'note': '',
                     'payment': '',
                     'status': 'waiting',
+                    'reason': ''
                   };
+                  print(data);
                   if (_selectedIndex != -1) {
-                    Navigator.pushNamed(context, '/doctor/booking/patient', arguments: data);
+                   Navigator.pushNamed(context, '/doctor/booking/patient', arguments: data);
                   } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Please choose a clinic hour'),
-                      ),
-                    );
+                    AwesomeDialog(
+                      context: context,
+                      animType: AnimType.bottomSlide,
+                      dialogType: DialogType.warning,
+                      body: Center(child: Text(
+                        'Please choose a clinic hour',
+                        style: TextStyle(fontStyle: FontStyle.italic),
+                        textAlign: TextAlign.center,
+                      ),),
+                      btnOkOnPress: () {},
+                    )..show();
                   }
                 }
 

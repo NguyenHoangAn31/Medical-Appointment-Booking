@@ -1,8 +1,9 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
-import 'package:mobile/ultils/ip_app.dart';
-import 'package:mobile/ultils/storeCurrentUser.dart';
+import 'package:mobile/utils/ip_app.dart';
+import 'package:mobile/utils/store_current_user.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:intl/intl.dart';
 
@@ -29,7 +30,7 @@ class _FeedbackDoctorScreenState extends State<FeedbackDoctorScreen> {
 
   Future<void> fetchFeedbacks() async {
     final response = await http.get(
-      Uri.parse('http://${ipDevice}:8080/api/feedback/${currentUser['id']}'),
+      Uri.parse('http://$ipDevice:8080/api/feedback/${currentUser['id']}'),
     );
 
     if (response.statusCode == 200) {
@@ -125,7 +126,9 @@ class _FeedbackDoctorScreenState extends State<FeedbackDoctorScreen> {
       DateTime selectedDate = DateTime.parse(input);
       filterFeedbacksByDate(selectedDate);
     } catch (e) {
-      print('Invalid date format: $e');
+      if (kDebugMode) {
+        print('Invalid date format: $e');
+      }
     }
   }
 
@@ -175,7 +178,7 @@ class _FeedbackDoctorScreenState extends State<FeedbackDoctorScreen> {
             ),
             notContent
                 ? Container(
-                    margin: EdgeInsets.only(top: 75.0),
+                    margin: const EdgeInsets.only(top: 75.0),
                     child: Center(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -213,13 +216,13 @@ class _FeedbackDoctorScreenState extends State<FeedbackDoctorScreen> {
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Container(
+                              SizedBox(
                                 width: 75.0,
                                 height: 75.0,
                                 child: ClipRRect(
                                   borderRadius: BorderRadius.circular(50),
                                   child: Image.network(
-                                    'http://${ipDevice}:8080/images/patients/${feedback['patient']['image']}',
+                                    'http://$ipDevice:8080/images/patients/${feedback['patient']['image']}',
                                     fit: BoxFit.cover,
                                   ),
                                 ),

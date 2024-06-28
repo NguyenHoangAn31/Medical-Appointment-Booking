@@ -21,5 +21,6 @@ public class PatientDto {
     private String image; // Image
     private Boolean status;
     private LocalDateTime createdAt;
+    private UserDto user;
     private List<MedicalDto> medicals;
 }

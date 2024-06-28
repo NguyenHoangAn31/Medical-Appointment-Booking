@@ -1,11 +1,9 @@
-
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
-import 'package:mobile/ultils/ip_app.dart';
-import 'dart:convert';
-import 'package:mobile/ultils/storeCurrentUser.dart';
-
+import 'package:mobile/utils/ip_app.dart';
+import 'package:mobile/utils/store_current_user.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -30,8 +28,7 @@ class _SignInScreenState extends State<SignInScreen> {
   final TextEditingController _otpNumber06Controller = TextEditingController();
 
   bool _isShowOtp = false;
-  bool _showError = false;
-  // bool _isShowButtonHandleOpt = false;
+  //bool _isShowButtonHandleOpt = false;
 
   bool isShowBtn = false;
   bool otpVisibility = false;
@@ -150,11 +147,10 @@ class _SignInScreenState extends State<SignInScreen> {
           body: jsonEncode(data)
       );
       var result = jsonDecode(response.body);
-      print(result);
+
       if (result['user'] == null) {
         return "Error";
       } else {
-        print(result['user']['roles'][0]);
         var path = result['user']['roles'][0] == 'USER'
             ? 'patient'
             : 'doctor/findbyuserid';

@@ -16,7 +16,7 @@ class _AppointmentCancelledScreenState extends State<AppointmentCancelledScreen>
         appBar: AppBar(
           toolbarHeight: 80,
           //backgroundColor: Colors.blue,
-          title: const Text('Appointment Upcoming',
+          title: const Text('Appointment Cancelled',
               style: TextStyle(color: Colors.black, fontSize: 22)),
           centerTitle: true,
           actions: [
@@ -222,7 +222,7 @@ class _AppointmentCancelledScreenState extends State<AppointmentCancelledScreen>
                         TableRow(
                           children: [
                             Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 5.0),
+                              padding: EdgeInsets.symmetric(vertical: 5.0),
                               child: Text(
                                 'Full Name',
                                 style: TextStyle(
@@ -232,7 +232,7 @@ class _AppointmentCancelledScreenState extends State<AppointmentCancelledScreen>
                               ),
                             ),
                             Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 5.0),
+                              padding: EdgeInsets.symmetric(vertical: 5.0),
                               child: Text(
                                 'Samata Shin',
                                 style: TextStyle(
@@ -247,7 +247,7 @@ class _AppointmentCancelledScreenState extends State<AppointmentCancelledScreen>
                         TableRow(
                           children: [
                             Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 5.0),
+                              padding: EdgeInsets.symmetric(vertical: 5.0),
                               child: Text(
                                 'Age',
                                 style: TextStyle(
@@ -257,7 +257,7 @@ class _AppointmentCancelledScreenState extends State<AppointmentCancelledScreen>
                               ),
                             ),
                             Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 5.0),
+                              padding: EdgeInsets.symmetric(vertical: 5.0),
                               child: Text(
                                 '27',
                                 style: TextStyle(
@@ -272,7 +272,7 @@ class _AppointmentCancelledScreenState extends State<AppointmentCancelledScreen>
                         TableRow(
                           children: [
                             Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 5.0),
+                              padding: EdgeInsets.symmetric(vertical: 5.0),
                               child: Text(
                                 'Gender',
                                 style: TextStyle(
@@ -282,7 +282,7 @@ class _AppointmentCancelledScreenState extends State<AppointmentCancelledScreen>
                               ),
                             ),
                             Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 5.0),
+                              padding: EdgeInsets.symmetric(vertical: 5.0),
                               child: Text(
                                 'Female',
                                 style: TextStyle(
@@ -297,7 +297,7 @@ class _AppointmentCancelledScreenState extends State<AppointmentCancelledScreen>
                         TableRow(
                           children: [
                             Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 5.0),
+                              padding: EdgeInsets.symmetric(vertical: 5.0),
                               child: Text(
                                 'Problem',
                                 style: TextStyle(
@@ -307,7 +307,7 @@ class _AppointmentCancelledScreenState extends State<AppointmentCancelledScreen>
                               ),
                             ),
                             Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 5.0),
+                              padding: EdgeInsets.symmetric(vertical: 5.0),
                               child: Text(
                                 'Hello, simply dummy text or the printing and typesetting industry. Lorem Ipsum 1500s. View More',
                                 style: TextStyle(

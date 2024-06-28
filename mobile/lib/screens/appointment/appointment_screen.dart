@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/models/appointment.dart';
-import 'package:mobile/services/appointmentService.dart';
-
-import '../../ultils/ip_app.dart';
-import '../../ultils/storeCurrentUser.dart';
+import 'package:mobile/services/appointment_service.dart';
+import '../../utils/ip_app.dart';
+import '../../utils/store_current_user.dart';
 
 class AppointmentScreen extends StatefulWidget {
   const AppointmentScreen({super.key});
@@ -478,7 +477,7 @@ class CompletedScreen extends StatelessWidget {
                                             ),
                                             child: Text(
                                                 appointments[index].status ==
-                                                        'finished'
+                                                        'completed'
                                                     ? 'Completed'
                                                     : '',
                                                 style: const TextStyle(
@@ -518,7 +517,16 @@ class CompletedScreen extends StatelessWidget {
                                 children: [
                                   GestureDetector(
                                     onTap: () {
-                                      // Navigator.pushNamed(context, '/register');
+                                     print(appointments[index].id);
+                                     print(appointments[index].partientId);
+                                      Navigator.pushNamed(context,
+                                          '/appointment/completed/detail',
+                                          arguments: {
+                                            'appointmentId':
+                                            appointments[index].id,
+                                            'patientId':
+                                            appointments[index].partientId,
+                                          });
                                     },
                                     child: Container(
                                       width: 160,
@@ -551,8 +559,9 @@ class CompletedScreen extends StatelessWidget {
                                   ),
                                   GestureDetector(
                                     onTap: () {
-                                      Navigator.pushNamed(context,
-                                          '/appointment/completed/detail');
+                                      Navigator.pushNamed(context, '/doctor', arguments: {
+                                        "doctorId" : appointments[index].doctorId
+                                      });
                                     },
                                     child: Container(
                                       width: 160,
@@ -602,7 +611,6 @@ class CancelledScreen extends StatelessWidget {
       {super.key,
       required this.appointmentsFutureCancelled,
       required this.ipDevice});
-
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<Appointment>>(
@@ -721,7 +729,7 @@ class CancelledScreen extends StatelessWidget {
                                             ),
                                             child: Text(
                                                 appointments[index].status ==
-                                                        'no show'
+                                                        'cancelled'
                                                     ? 'Cancelled'
                                                     : '',
                                                 style: const TextStyle(
@@ -755,7 +763,9 @@ class CancelledScreen extends StatelessWidget {
                               ),
                               GestureDetector(
                                 onTap: () {
-                                  // Navigator.pushNamed(context, '/doctor/booking');
+                                  Navigator.pushNamed(context, '/doctor', arguments: {
+                                    "doctorId" : appointments[index].doctorId
+                                  });
                                 },
                                 child: Container(
                                   width: 355,

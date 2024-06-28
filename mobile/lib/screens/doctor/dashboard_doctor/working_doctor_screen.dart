@@ -1,12 +1,13 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:mobile/ultils/ip_app.dart';
-import 'package:mobile/ultils/storeCurrentUser.dart';
+import 'package:mobile/utils/ip_app.dart';
+import 'package:mobile/utils/store_current_user.dart';
 
 class WorkingDoctorScreen extends StatefulWidget {
-  const WorkingDoctorScreen({Key? key}) : super(key: key);
+  const WorkingDoctorScreen({super.key});
 
   @override
   State<WorkingDoctorScreen> createState() => _WorkingDoctorScreenState();
@@ -17,17 +18,17 @@ class _WorkingDoctorScreenState extends State<WorkingDoctorScreen> {
   final currentUser = CurrentUser.to.user;
   final ipDevice = BaseClient().ip;
 
-  TextEditingController _companyController = TextEditingController();
-  TextEditingController _addressController = TextEditingController();
-  TextEditingController _startWorkController = TextEditingController();
-  TextEditingController _endWorkController = TextEditingController();
+  final TextEditingController _companyController = TextEditingController();
+  final TextEditingController _addressController = TextEditingController();
+  final TextEditingController _startWorkController = TextEditingController();
+  final TextEditingController _endWorkController = TextEditingController();
 
   int? editingIndex;
 
   Future<void> fetchWorkings() async {
     try {
       final response = await http.get(Uri.parse(
-          'http://${ipDevice}:8080/api/working/doctor/${currentUser['id']}'));
+          'http://$ipDevice:8080/api/working/doctor/${currentUser['id']}'));
 
       if (response.statusCode == 200) {
         setState(() {
@@ -37,7 +38,9 @@ class _WorkingDoctorScreenState extends State<WorkingDoctorScreen> {
         throw Exception('Failed to load work experiences');
       }
     } catch (e) {
-      print('Error fetching work experiences: $e');
+      if (kDebugMode) {
+        print('Error fetching work experiences: $e');
+      }
       // You can add error handling logic as needed, e.g., show an error message.
     }
   }
@@ -52,7 +55,7 @@ class _WorkingDoctorScreenState extends State<WorkingDoctorScreen> {
     };
 
     final response = await http.post(
-      Uri.parse('http://${ipDevice}:8080/api/working/create'),
+      Uri.parse('http://$ipDevice:8080/api/working/create'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
@@ -86,7 +89,7 @@ class _WorkingDoctorScreenState extends State<WorkingDoctorScreen> {
     };
 
     final response = await http.put(
-      Uri.parse('http://${ipDevice}:8080/api/working/update/$id'),
+      Uri.parse('http://$ipDevice:8080/api/working/update/$id'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
@@ -119,7 +122,9 @@ class _WorkingDoctorScreenState extends State<WorkingDoctorScreen> {
         throw Exception('Failed to delete work experience');
       }
     } catch (e) {
-      print('Error deleting work experience: $e');
+      if (kDebugMode) {
+        print('Error deleting work experience: $e');
+      }
       // You can add error handling logic as needed, e.g., show an error message.
     }
   }
@@ -147,7 +152,7 @@ class _WorkingDoctorScreenState extends State<WorkingDoctorScreen> {
             )
           : Column(
               children: [
-                SizedBox(height: 20,),
+                const SizedBox(height: 20,),
                 Expanded(
                   child: ListView.builder(
                     itemCount: workings.length,

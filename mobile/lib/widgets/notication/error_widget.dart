@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class ErrorsWidget extends StatelessWidget {
@@ -40,7 +39,7 @@ class ErrorsWidget extends StatelessWidget {
         child: Center(
           child: Column(
             children: [
-              Container(
+              SizedBox(
                 width: 142,
                 height: 142,
                 child: Stack(

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:mobile/ultils/ip_app.dart';
+import 'package:mobile/utils/ip_app.dart';
 import 'dart:convert';
-import 'package:mobile/ultils/storeCurrentUser.dart';
+import 'package:mobile/utils/store_current_user.dart';
 
 class EditDoctorScreen extends StatefulWidget {
   const EditDoctorScreen({super.key});
@@ -143,7 +143,7 @@ class _EditDoctorScreenState extends State<EditDoctorScreen> {
               controller: bioController,
               decoration: const InputDecoration(labelText: 'Bio'),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
           ],
         ),
       ),

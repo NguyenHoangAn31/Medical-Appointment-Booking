@@ -15,9 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import vn.aptech.backendapi.dto.CustomSlotWithScheduleDoctorId;
+import vn.aptech.backendapi.dto.Schedule.ScheduleDoctorDto;
 import vn.aptech.backendapi.dto.Schedule.ScheduleWithDepartmentDto;
-import vn.aptech.backendapi.entities.ScheduleDoctor;
-import vn.aptech.backendapi.repository.ScheduleDoctorRepository;
 import vn.aptech.backendapi.service.Schedule.ScheduleService;
 import vn.aptech.backendapi.service.ScheduleDoctor.ScheduleDoctorSerivce;
 
@@ -37,6 +36,16 @@ public class ScheduleController {
     public ResponseEntity<List<Object[]>> findAllOnlyDay() {
         List<Object[]> result = scheduleService.findAllOnlyDay();
         return ResponseEntity.ok(result);
+    }
+
+    @GetMapping(value = "/schedule-doctor/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ScheduleDoctorDto> findScheduleDoctorById(@PathVariable("id") int id){
+            ScheduleDoctorDto scheduleDoctor = scheduleDoctorSerivce.findDoctorIdById(id).get();
+            if(scheduleDoctor != null){
+                return ResponseEntity.ok(scheduleDoctor);
+            }else {
+                return ResponseEntity.noContent().build();
+            }
     }
 
     @GetMapping(value = "findschedulebyday/{day}")

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import '../../models/department.dart';
 import '../../models/doctor.dart';
-import '../../services/Department/departmentApi.dart';
-import '../../ultils/ip_app.dart';
-import '../../ultils/list_service.dart';
+import '../../services/Department/department_api.dart';
+import '../../utils/ip_app.dart';
+import '../../utils/list_service.dart';
 
 
 class DoctorScreen extends StatefulWidget {

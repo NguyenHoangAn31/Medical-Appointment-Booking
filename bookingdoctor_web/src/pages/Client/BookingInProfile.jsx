@@ -1,12 +1,15 @@
 import axios from 'axios';
 import React, { useEffect, useState, useContext } from 'react'
 import getUserData from '../../route/CheckRouters/token/Token'
+import { FaEye } from "react-icons/fa";
+import { UserContext } from '../../components/Layouts/Client';
 
 const BookingInProfile = () => {
+  const { currentUser } = useContext(UserContext);
   const [activeServiceIndex, setActiveServiceIndex] = useState(null);
   const [appointments, setAppointments] = useState([]);
-  console.log(appointments);
   const [patient, setPatient] = useState([]);
+  const [patientId, setPatientId] = useState();
   const appointTitle = [
     { id: 1, name: "waiting" },
     { id: 2, name: "completed" },
@@ -17,16 +20,28 @@ const BookingInProfile = () => {
     const loadService = async () => {
       setActiveServiceIndex(1);
     };
+    
     loadService();
     fetchApi();
-
-  }, []);
+    fetchAppointmentInit(patientId);
+  }, [patientId]);
   const fetchApi = async () => {
     try {
       if (getUserData() != null) {
         const result = await axios.get(`http://localhost:8080/api/patient/${getUserData().user.id}`);
         setPatient(result.data);
+        setPatientId(result.data.id);
       }
+    } catch (error) {
+    }
+  }
+  const fetchAppointmentInit= async (patientId) => {
+    //const patientId = patientId;
+    console.log(patientId);
+    const status = 'waiting'
+    try {
+      const response = await axios.get(`http://localhost:8080/api/appointment/appointment-schedule-patientId-and-status/${patientId}/${status}`);
+      setAppointments(response.data);
     } catch (error) {
     }
   }
@@ -94,8 +109,7 @@ const BookingInProfile = () => {
                             <td>{appointment.note}</td>
                             <td>{appointment.status}</td>
                             <td>
-                              <a href="#">Detail</a>
-                              <a href="#">Hủy</a>
+                              <a href="#" className='text-text-decoration-noner'><FaEye/> view </a> 
                             </td>
                           </tr>
 

@@ -54,7 +54,7 @@ class _BlogScreenScreenState extends State<BlogScreen> {
         ),
         body: SingleChildScrollView(
           child: isLoading
-              ? Center(child: CircularProgressIndicator())
+              ? const Center(child: CircularProgressIndicator())
               : Padding(
                   padding: const EdgeInsets.all(20),
                   child: Column(
@@ -67,7 +67,7 @@ class _BlogScreenScreenState extends State<BlogScreen> {
                             Row(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Container(
+                                SizedBox(
                                   width: 80,
                                   height: 50,
                                   child: Image.network(
@@ -75,14 +75,14 @@ class _BlogScreenScreenState extends State<BlogScreen> {
                                     fit: BoxFit.cover,
                                   ),
                                 ),
-                                SizedBox(width: 10),
+                                const SizedBox(width: 10),
                                 Expanded(
                                   child: Text(
                                     articles[i].title,
                                     maxLines: 2, // Giới hạn số dòng là 2
                                     overflow: TextOverflow
                                         .ellipsis, // Xử lý khi vượt quá số dòng giới hạn
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                         fontSize: 18, fontFamily: 'Roboto'),
                                   ),
                                 ),

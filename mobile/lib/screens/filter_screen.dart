@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class FilterScreen extends StatefulWidget {
@@ -41,7 +41,9 @@ class _FilterScreenState extends State<FilterScreen> {
         activeBoxIndices.add(i);
       }
     }
-    print(activeBoxIndices);
+    if (kDebugMode) {
+      print(activeBoxIndices);
+    }
   }
   void _printActiveRating() {
     List<int> activeRateIndices = [];
@@ -50,7 +52,9 @@ class _FilterScreenState extends State<FilterScreen> {
         activeRateIndices.add(i);
       }
     }
-    print(activeRateIndices);
+    if (kDebugMode) {
+      print(activeRateIndices);
+    }
   }
   @override
   Widget build(BuildContext context) {

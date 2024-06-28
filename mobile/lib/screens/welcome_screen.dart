@@ -1,12 +1,8 @@
 import 'dart:async';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:mobile/screens/auth/login_screen.dart';
 import 'package:mobile/screens/auth/sign_screen.dart';
-import 'package:mobile/widgets/navigation_menu_doctor.dart';
 //import 'package:mobile/screens/home_screen.dart';
 
-import '../widgets/navigation_menu.dart';
 //import 'package:mobile/screens/login_screen.dart';
 
 class WelcomeScreen extends StatefulWidget {

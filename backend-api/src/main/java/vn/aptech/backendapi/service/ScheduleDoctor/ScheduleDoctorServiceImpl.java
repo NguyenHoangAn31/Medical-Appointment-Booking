@@ -3,12 +3,11 @@ package vn.aptech.backendapi.service.ScheduleDoctor;
 import java.time.LocalDate;
 import java.util.Optional;
 
-import javax.print.Doc;
-
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import vn.aptech.backendapi.dto.Schedule.ScheduleDoctorDto;
 import vn.aptech.backendapi.entities.Doctor;
 import vn.aptech.backendapi.entities.Schedule;
 import vn.aptech.backendapi.entities.ScheduleDoctor;
@@ -48,6 +47,52 @@ public class ScheduleDoctorServiceImpl implements ScheduleDoctorSerivce {
             return false;
         }
 
+    }
+
+    public static ScheduleDoctor dtoToEntity(ScheduleDoctorDto dto) {
+        ScheduleDoctor entity = new ScheduleDoctor();
+        entity.setId(dto.getId());
+
+        // Tạo đối tượng Schedule từ scheduleId
+        Schedule schedule = new Schedule();
+        schedule.setId(dto.getScheduleId());
+        entity.setSchedule(schedule);
+
+        // Tạo đối tượng Doctor từ doctorId
+        Doctor doctor = new Doctor();
+        doctor.setId(dto.getDoctorId());
+        entity.setDoctor(doctor);
+
+        return entity;
+    }
+
+    public static ScheduleDoctorDto entityToDto(ScheduleDoctor entity) {
+        ScheduleDoctorDto dto = new ScheduleDoctorDto();
+        dto.setId(entity.getId());
+
+        // Lấy scheduleId từ đối tượng Schedule
+        dto.setScheduleId(entity.getSchedule().getId());
+
+        // Lấy doctorId từ đối tượng Doctor
+        dto.setDoctorId(entity.getDoctor().getId());
+
+        return dto;
+    }
+    @Override
+    public Optional<ScheduleDoctorDto> findDoctorIdById(int scheduleDoctorId){
+        Optional<ScheduleDoctor> optionalScheduleDoctor = scheduleDoctorRepository.findById(scheduleDoctorId);
+        if (optionalScheduleDoctor.isPresent()) {
+            ScheduleDoctor scheduleDoctor = optionalScheduleDoctor.get();
+            // Tạo đối tượng ScheduleDoctorDto từ ScheduleDoctor
+            ScheduleDoctorDto scheduleDoctorDto = new ScheduleDoctorDto();
+            scheduleDoctorDto.setId(scheduleDoctor.getId());
+            scheduleDoctorDto.setScheduleId(scheduleDoctor.getSchedule().getId());
+            scheduleDoctorDto.setDoctorId(scheduleDoctor.getDoctor().getId());
+
+            return Optional.of(scheduleDoctorDto);
+        } else {
+            return Optional.empty();
+        }
     }
 
     @Override

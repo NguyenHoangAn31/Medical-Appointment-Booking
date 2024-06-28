@@ -1,10 +1,9 @@
 import 'dart:convert';
-import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:mobile/models/doctor.dart';
 import 'package:mobile/models/schedule.dart';
 
-import '../../ultils/ip_app.dart';
+import '../../utils/ip_app.dart';
 
 // Lấy all doctor
 Future<List<Doctor>> getDoctors() async {
@@ -29,6 +28,18 @@ Future<Doctor> getDoctorById(int id) async {
     return Doctor.fromJson(jsonData);
   } else {
     throw Exception('Failed to load doctors');
+  }
+}
+
+Future<void> getDoctorIdByScheduleId(int scheduleId) async {
+  final ipDevice = BaseClient().ip;
+  final response = await http.get(Uri.parse("http://$ipDevice:8080/api/schedules//schedule-doctor/$scheduleId"));
+  if (response.statusCode == 200) {
+    var jsonData = jsonDecode(response.body);
+    print(jsonData);
+    return jsonData;
+  } else {
+    throw Exception('Failed to load schedule');
   }
 }
 

@@ -1,6 +1,7 @@
 class Appointment{
   late final int id;
   late final int partientId;
+  late final int doctorId;
   late final int scheduledoctorId;
   late final double price;
   late final String image;
@@ -16,6 +17,7 @@ class Appointment{
   Appointment({
     required this.id,
     required this.partientId,
+    required this.doctorId,
     required this.scheduledoctorId,
     required this.price,
     required this.image,
@@ -33,6 +35,7 @@ class Appointment{
     return Appointment(
       id: json['id'],
       partientId: json['partientId'],
+      doctorId: json['doctorId'],
       scheduledoctorId: json['scheduledoctorId'],
       price: json['price'],
       image: json['image'],
@@ -51,6 +54,7 @@ class Appointment{
     return {
       'id': id,
       'partientId': partientId,
+      'doctorId': doctorId,
       'scheduledoctorId': scheduledoctorId,
       'price': price,
       'image': image,

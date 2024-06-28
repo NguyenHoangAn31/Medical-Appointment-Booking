@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:mobile/models/department.dart';
 import 'package:mobile/models/doctor.dart';
-import 'package:mobile/ultils/ip_app.dart';
+import 'package:mobile/utils/ip_app.dart';
 
 
 Future<List<Department>> getDepartments() async{

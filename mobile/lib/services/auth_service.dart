@@ -1,8 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 
-import 'package:flutter/foundation.dart';
-import 'package:mobile/ultils/ip_app.dart';
+import 'package:mobile/utils/ip_app.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
@@ -53,7 +52,6 @@ class AuthClient {
       'username': username,
       'provider': 'phone',
     };
-    print("phone : $username");
 
     var url = Uri.parse('http://$ipDevice:8080/api/auth/send-otp');
     var response = await http.post(url,
@@ -85,7 +83,6 @@ class AuthClient {
     var url = Uri.parse('http://$ipDevice:8080/api/user/search/$username');
     var response = await http.get(url);
     if (response.statusCode == 200) {
-      print(response.body);
       return true;
     } else {
       return false;
@@ -93,6 +90,8 @@ class AuthClient {
   }
 
   Future<bool> checkAccount(String username) async {
+    log("Call function to check account");
+
     var data = {
       'username': username,
       'provider': 'phone',
@@ -104,11 +103,14 @@ class AuthClient {
     var responseBody = jsonDecode(response.body);
 
     if (response.statusCode == 200 && responseBody['result'] == 'true') {
+      log("This account exists");
       return true;
     } else if (responseBody['result'] == 'disable') {
       log("This account has been disabled");
       return false;
     } else {
+      log("This account not exist");
+
       return false;
     }
   }

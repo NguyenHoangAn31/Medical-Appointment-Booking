@@ -37,4 +37,5 @@ public class Appointment extends BaseEntity {
     private LocalDate medicalExaminationDay;
     @Column(name = "clinic_hours")
     private LocalTime clinicHours;
+    private String reason;
 }

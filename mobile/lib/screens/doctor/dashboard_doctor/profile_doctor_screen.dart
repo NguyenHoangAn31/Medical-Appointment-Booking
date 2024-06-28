@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:mobile/ultils/ip_app.dart';
-import 'package:mobile/ultils/storeCurrentUser.dart';
+import 'package:mobile/utils/ip_app.dart';
+import 'package:mobile/utils/store_current_user.dart';
 import 'package:mobile/widgets/navigation_menu_doctor.dart';
 import 'package:get/get.dart';
 
@@ -68,7 +67,7 @@ class _ProfileDoctorScreenState extends State<ProfileDoctorScreen> {
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(8.0),
                             child: Image.network(
-                              'http://${ipDevice}:8080/images/doctors/${currentUser['image']}', // Đặt URL của ảnh ở đây
+                              'http://$ipDevice:8080/images/doctors/${currentUser['image']}', // Đặt URL của ảnh ở đây
                               width: 70,
                               height: 90,
                               fit: BoxFit.cover,

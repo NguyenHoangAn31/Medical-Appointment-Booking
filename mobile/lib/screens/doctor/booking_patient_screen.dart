@@ -1,6 +1,6 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:mobile/services/patientService.dart';
+import 'package:mobile/services/patient_service.dart';
 
 import '../../models/patient.dart';
 import 'package:intl/intl.dart';
@@ -18,6 +18,7 @@ class _DoctorBookingPatientScreenState extends State<DoctorBookingPatientScreen>
   late TextEditingController _genderTextController;
   late final TextEditingController _contentTextController = TextEditingController();
   late final int patientId;
+  late String? patientName;
   late Future<Patient?> _patientFuture;
   late Map<String, dynamic> _data;
 
@@ -57,15 +58,20 @@ class _DoctorBookingPatientScreenState extends State<DoctorBookingPatientScreen>
     _patientFuture.then((patient) {
       if (patient != null) {
         _fullNameTextController.text = patient.fullName;
+        patientName = patient.fullName;
         _genderTextController.text = patient.gender;
-        _ageTextController.text = calculateAge(patient.birthday).toString();
+        _ageTextController.text = calculateAge(patient.birthday.toString()).toString();
         debugPrint(_ageTextController.text);
       } else {
         // Handle case when patient data is null
-        print('Patient data is null.');
+        if (kDebugMode) {
+          print('Patient data is null.');
+        }
       }
     }).catchError((error) {
-      print('Error fetching patient data: $error');
+      if (kDebugMode) {
+        print('Error fetching patient data: $error');
+      }
     });
   }
 
@@ -250,10 +256,9 @@ class _DoctorBookingPatientScreenState extends State<DoctorBookingPatientScreen>
                 //   return;
                 // }else{
                   _data['note'] = _contentTextController.text;
+                  _data['patientName'] = patientName;
                   Navigator.pushNamed(context, '/doctor/booking/payment', arguments: _data);
                 //}
-
-
               },
               child: Container(
                 height: 50,

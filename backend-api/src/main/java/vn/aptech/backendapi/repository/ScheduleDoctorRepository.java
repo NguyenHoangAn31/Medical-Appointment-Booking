@@ -36,4 +36,6 @@ public interface ScheduleDoctorRepository extends JpaRepository<ScheduleDoctor, 
                         @Param("departmentId") int departmentId,
                         @Param("doctorId") int doctorId,
                         @Param("slotId") int slotId);
+
+        Optional<ScheduleDoctor> findById(int id);
 }

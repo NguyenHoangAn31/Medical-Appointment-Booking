@@ -25,4 +25,5 @@ public class AppointmentDetail {
     private String appointmentDate;
     private String medicalExaminationDay;   
     private String clinicHours;
+    private String reason;
 }

@@ -141,6 +141,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         app.setStatus(appointment.getStatus());
         app.setMedicalExaminationDay(String.valueOf(appointment.getMedicalExaminationDay()));
         app.setPrice(appointment.getScheduledoctor().getDoctor().getPrice());
+        app.setReason(appointment.getReason());
         return app;
     }
 
@@ -188,6 +189,7 @@ public class AppointmentServiceImpl implements AppointmentService {
             LocalTime appointmentTime = appointment.getClinicHours();
             LocalDateTime appointmentDateTime = LocalDateTime.of(appointmentDate, appointmentTime);
             if (now.isAfter(appointmentDateTime.plusMinutes(30))) {
+                appointment.setReason("The patient did not come");
                 appointment.setStatus("cancelled");
                 appointmentRepository.save(appointment);
             }
@@ -196,14 +198,23 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public boolean checkExistAppointmentByDayAndPatientIdAndDoctorId(int doctorId, int patientId, LocalDate medicalExaminationDay) {
-        return appointmentRepository.findByDoctorIddAndPatientIdAndMedicalExaminationDay(doctorId, patientId, medicalExaminationDay).isPresent();
+        Optional<Appointment> dto = appointmentRepository.findByDoctorIddAndPatientIdAndMedicalExaminationDay(doctorId, patientId, medicalExaminationDay);
+        if(dto.isPresent()){
+            return true;
+        }else{
+            return false;
+        }
+
     }
 
     @Override
     public boolean checkExistAppointmentByDayAndPatientIdAndDoctorId( int patientId, LocalDate medicalExaminationDay, LocalTime clinicHours) {
-        return appointmentRepository.findByDoctorIddAndPatientIdAndMedicalExaminationDayAndClinicHours(patientId, medicalExaminationDay, clinicHours).isPresent();
+        Optional<Appointment> result = appointmentRepository.findByDoctorIddAndPatientIdAndMedicalExaminationDayAndClinicHours(patientId, medicalExaminationDay, clinicHours);
+        if(result.isPresent()){
+            return true;
+        }else {
+            return false;
+        }
     }
-
-
 
 }

@@ -49,7 +49,7 @@ public class SecurityConfiguration {
 
 
         PublicRoutes.PublicRoutesManager.publicRoutes().add(HttpMethod.POST, "/api/auth/**", "/paypal/**").injectOn(http);
-        PublicRoutes.PublicRoutesManager.publicRoutes().add(HttpMethod.GET, "/api/payment/**").injectOn(http);
+        PublicRoutes.PublicRoutesManager.publicRoutes().add(HttpMethod.GET, "/api/payment/**","/api/schedules/**" ).injectOn(http);
         http.csrf(AbstractHttpConfigurer::disable).securityMatcher("/api/**")
                 .authorizeHttpRequests(request -> {
                     request.requestMatchers("/api/slot/**").permitAll();

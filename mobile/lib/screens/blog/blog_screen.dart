@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import '../../ultils/ip_app.dart';
+import '../../utils/ip_app.dart';
 import 'package:mobile/screens/blog/blog_detail_screen.dart';
 
 class BlogScreen extends StatefulWidget {
-  const BlogScreen({Key? key}) : super(key: key);
+  const BlogScreen({super.key});
 
   @override
   State<BlogScreen> createState() => _BlogScreenScreenState();
@@ -56,7 +56,7 @@ class _BlogScreenScreenState extends State<BlogScreen> {
         ],
       ),
       body: isLoading
-          ? Center(child: CircularProgressIndicator())
+          ? const Center(child: CircularProgressIndicator())
           : Padding(
               padding: const EdgeInsets.all(20),
               child: ListView.builder(
@@ -74,14 +74,14 @@ class _BlogScreenScreenState extends State<BlogScreen> {
                               width: 150,
                               // height: 80,
                               color: Colors.grey[200],
-                              child: Center(child: CircularProgressIndicator()),
+                              child: const Center(child: CircularProgressIndicator()),
                             );
                           } else if (snapshot.hasError) {
                             return Container(
                               width: 150,
                               // height: 80,
                               color: Colors.grey[200],
-                              child: Center(child: Icon(Icons.error)),
+                              child: const Center(child: Icon(Icons.error)),
                             );
                           } else if (snapshot.hasData) {
                             return Row(
@@ -97,13 +97,13 @@ class _BlogScreenScreenState extends State<BlogScreen> {
                                     ),
                                   ),
                                 ),
-                                SizedBox(width: 10),
+                                const SizedBox(width: 10),
                                 Expanded(
                                   child: Text(
                                     articles[index].title,
                                     maxLines: 3,
                                     overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                         fontSize: 18, fontFamily: 'Roboto'),
                                   ),
                                 ),
@@ -124,7 +124,7 @@ class _BlogScreenScreenState extends State<BlogScreen> {
                           // Xử lý khi nhấn nút "Read more"
                           navigateToArticleDetail(articles[index]);
                         },
-                        child: Text(
+                        child: const Text(
                           'Read more',
                           style: TextStyle(color: Colors.blue),
                         ),
