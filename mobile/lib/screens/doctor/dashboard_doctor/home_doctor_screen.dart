@@ -397,7 +397,7 @@ class _HomeDoctorScreenState extends State<HomeDoctorScreen> {
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(13),
                             color: () {
-                              if (examination['status'] == 'finished') {
+                              if (examination['status'] == 'completed') {
                                 return Colors.green[300];
                               } else if (examination['status'] == 'waiting') {
                                 return Colors.orange[300];

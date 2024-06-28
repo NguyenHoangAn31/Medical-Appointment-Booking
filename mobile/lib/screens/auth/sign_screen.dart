@@ -134,8 +134,8 @@ class _SignInScreenState extends State<SignInScreen> {
       smsCode: smsCode,
     );
     try {
-      // await auth.signInWithCredential(credential);
-      // await AuthClient().setKeyCode(_phoneNumberController.text, smsCode);
+      await auth.signInWithCredential(credential);
+      await AuthClient().setKeyCode(_phoneNumberController.text, smsCode);
       // check Login
       var data = {
         'username': _phoneNumberController.text,

@@ -427,7 +427,7 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     @Override
-    public boolean editDoctor(int doctorId, CustomDoctorForEdit dto) {
+    public DoctorDto editDoctor(int doctorId, CustomDoctorForEdit dto) {
         Doctor doctor = doctorRepository.findById(doctorId).get();
         User user = doctorRepository.findUserByDoctorId(doctorId);
         // user.setPhone(dto.getPhone());
@@ -435,17 +435,19 @@ public class DoctorServiceImpl implements DoctorService {
         doctor.setFullName(dto.getFullName());
         doctor.setTitle(dto.getTitle());
         doctor.setGender(dto.getGender());
+        if(dto.getImage() != null){
+            doctor.setImage(dto.getImage());
+        }
         doctor.setBirthday(LocalDate.parse(dto.getBirthday()));
         doctor.setAddress(dto.getAddress());
         doctor.setBiography(dto.getBio());
         try {
-
-            doctorRepository.save(doctor);
+            // doctorRepository.save(doctor);
             userRepository.save(user);
-            return true;
+            return findByUserId(user.getId()).get();
         } catch (Exception e) {
             e.printStackTrace();
-            return false;
+            return null;
         }
     }
 

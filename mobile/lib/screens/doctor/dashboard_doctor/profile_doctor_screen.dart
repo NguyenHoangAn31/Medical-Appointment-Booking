@@ -1,8 +1,12 @@
+import 'dart:developer';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:mobile/utils/ip_app.dart';
 import 'package:mobile/utils/store_current_user.dart';
 import 'package:mobile/widgets/navigation_menu_doctor.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 
 class ProfileDoctorScreen extends StatefulWidget {
   const ProfileDoctorScreen({super.key});
@@ -12,7 +16,7 @@ class ProfileDoctorScreen extends StatefulWidget {
 }
 
 class _ProfileDoctorScreenState extends State<ProfileDoctorScreen> {
-  final currentUser = CurrentUser.to.user;
+  late Map<String, dynamic> currentUser = CurrentUser.to.user;
   final ipDevice = BaseClient().ip;
 
   @override
@@ -25,8 +29,16 @@ class _ProfileDoctorScreenState extends State<ProfileDoctorScreen> {
           centerTitle: true,
           actions: <Widget>[
             TextButton(
-              onPressed: () {
-                Navigator.pushNamed(context, '/dashboard/doctor/edit');
+              onPressed: () async {
+                final result = await Navigator.pushNamed(
+                  context,
+                  '/dashboard/doctor/edit',
+                );
+                if (result == 'updated') {
+                  setState(() {
+                    currentUser = CurrentUser.to.user;
+                  });
+                }
               },
               child: const Text(
                 "Edit",
@@ -64,16 +76,19 @@ class _ProfileDoctorScreenState extends State<ProfileDoctorScreen> {
                           border: Border.all(color: Colors.white, width: 4),
                         ),
                         child: Center(
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(8.0),
-                            child: Image.network(
-                              'http://$ipDevice:8080/images/doctors/${currentUser['image']}', // Đặt URL của ảnh ở đây
-                              width: 70,
-                              height: 90,
-                              fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) {
-                                return const Icon(Icons.error);
-                              },
+                          child: GestureDetector(
+                            onTap: () {},
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(8.0),
+                              child: Image.network(
+                                'http://$ipDevice:8080/images/doctors/${currentUser['image']}',
+                                width: 70,
+                                height: 90,
+                                fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) {
+                                  return const Icon(Icons.error);
+                                },
+                              ),
                             ),
                           ),
                         ),

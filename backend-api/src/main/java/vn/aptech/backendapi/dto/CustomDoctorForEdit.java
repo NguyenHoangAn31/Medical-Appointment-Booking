@@ -17,6 +17,7 @@ public class CustomDoctorForEdit {
     private String email;
     // private String phone;
     private String fullName;
+    private String image;
     private String title; 
     private String gender; 
     private String birthday; 

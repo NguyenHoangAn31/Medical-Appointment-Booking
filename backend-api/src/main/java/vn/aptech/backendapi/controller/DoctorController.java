@@ -5,11 +5,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import vn.aptech.backendapi.dto.CustomDoctorForEdit;
+import vn.aptech.backendapi.dto.CustomPatientForEdit;
 import vn.aptech.backendapi.dto.DoctorCreateDto;
 import vn.aptech.backendapi.dto.DoctorDto;
 import vn.aptech.backendapi.service.Doctor.DoctorService;
+import vn.aptech.backendapi.service.File.FileService;
 
 import java.io.IOException;
 import java.util.List;
@@ -21,6 +26,9 @@ public class DoctorController {
 
     @Autowired
     private DoctorService doctorService;
+
+    @Autowired
+    private FileService fileService;
 
     @Autowired
     private ModelMapper mapper;
@@ -67,7 +75,6 @@ public class DoctorController {
         List<DoctorDto> relatedDoctors = doctorService.findDoctorsByDepartmentId(departmentId);
         return ResponseEntity.ok(relatedDoctors);
     }
-    
 
     // writed by An in 5/11
     @GetMapping(value = "/allwithallstatus", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -116,33 +123,54 @@ public class DoctorController {
     }
 
     @PutMapping(value = "/adddoctortodepartment/{departmentId}/{doctorId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> addDoctorToDepartment(@PathVariable("departmentId") int departmentId ,@PathVariable("doctorId") int doctorId) throws IOException {
-        boolean result = doctorService.addDoctorToDepartment(departmentId,doctorId);
+    public ResponseEntity<?> addDoctorToDepartment(@PathVariable("departmentId") int departmentId,
+            @PathVariable("doctorId") int doctorId) throws IOException {
+        boolean result = doctorService.addDoctorToDepartment(departmentId, doctorId);
         if (result) {
             return ResponseEntity.ok().build();
         }
         return ResponseEntity.notFound().build();
     }
+
     @GetMapping(value = "/listdoctorsbydepartmentid/{departmentId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<DoctorDto>> listDoctorsByDepartmentId(@PathVariable("departmentId") int departmentId) {
         List<DoctorDto> relatedDoctors = doctorService.findDoctorsByDepartmentIdWithAllStatus(departmentId);
         return ResponseEntity.ok(relatedDoctors);
     }
 
-
     @GetMapping(value = "/getdoctordetail/{doctorId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<CustomDoctorForEdit> getDoctorDetail(@PathVariable("doctorId") int doctorId) throws IOException {
+    public ResponseEntity<CustomDoctorForEdit> getDoctorDetail(@PathVariable("doctorId") int doctorId)
+            throws IOException {
         CustomDoctorForEdit result = doctorService.getDoctorDetail(doctorId);
         if (result != null) {
             return ResponseEntity.ok(result);
         }
         return ResponseEntity.notFound().build();
     }
+
     @PutMapping(value = "/editdoctor/{doctorId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> editDoctor(@PathVariable("doctorId") int doctorId,@RequestBody CustomDoctorForEdit dto) throws IOException {
-        boolean result = doctorService.editDoctor(doctorId,dto);
-        if (result) {
-            return ResponseEntity.ok().build();
+    public ResponseEntity<DoctorDto> editDoctor(
+            @PathVariable("doctorId") int doctorId,
+            @RequestParam(name = "image", required = false) MultipartFile image,
+            @RequestParam("doctor") String doctor) throws IOException {
+
+                System.out.println("doctor : " + doctor);
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        CustomDoctorForEdit dto = objectMapper.readValue(doctor,
+                CustomDoctorForEdit.class);
+
+        if (image != null) {
+            if (dto.getImage() != null) {
+                fileService.deleteFile("doctors", dto.getImage());
+            }
+            dto.setImage(fileService.uploadFile("doctors", image));
+
+        }
+
+        DoctorDto result = doctorService.editDoctor(doctorId, dto);
+        if (result != null) {
+            return ResponseEntity.ok(result);
         }
         return ResponseEntity.notFound().build();
     }

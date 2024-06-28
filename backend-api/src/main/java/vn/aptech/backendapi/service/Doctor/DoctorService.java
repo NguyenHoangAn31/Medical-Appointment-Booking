@@ -30,6 +30,6 @@ public interface DoctorService {
     boolean addDoctorToDepartment(int departmentId , int doctorId);
 
     CustomDoctorForEdit getDoctorDetail(int doctorId);
-    boolean editDoctor(int doctorId , CustomDoctorForEdit doctor);
+    DoctorDto editDoctor(int doctorId , CustomDoctorForEdit doctor);
 
 }
