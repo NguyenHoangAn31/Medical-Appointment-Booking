@@ -1,10 +1,9 @@
 import 'dart:convert';
-import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:mobile/models/doctor.dart';
 import 'package:mobile/models/schedule.dart';
 
-import '../../ultils/ip_app.dart';
+import '../../utils/ip_app.dart';
 
 // Lấy all doctor
 Future<List<Doctor>> getDoctors() async {

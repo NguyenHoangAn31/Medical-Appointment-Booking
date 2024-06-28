@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:mobile/models/appointment.dart';
-import '../ultils/ip_app.dart';
+import '../utils/ip_app.dart';
 
 class AppointmentClient{
   final ipDevice = BaseClient().ip;
@@ -27,7 +27,6 @@ class AppointmentClient{
     );
     if (response.statusCode == 200) {
       final result = json.decode(response.body);
-      print(result);
       return Appointment.fromJson(result);
     } else {
       throw Exception('Failed to load appointment');
