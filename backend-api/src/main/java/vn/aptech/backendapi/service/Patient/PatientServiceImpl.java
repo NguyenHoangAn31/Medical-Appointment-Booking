@@ -5,13 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import vn.aptech.backendapi.dto.*;
-// =======
-// import vn.aptech.backendapi.dto.CustomDoctorForEdit;
-// import vn.aptech.backendapi.dto.CustomPatientEditDto;
-// import vn.aptech.backendapi.dto.MedicalDto;
-// import vn.aptech.backendapi.dto.PatientDto;
-
-// >>>>>>> main
 import vn.aptech.backendapi.entities.Medical;
 import vn.aptech.backendapi.entities.Partient;
 import vn.aptech.backendapi.entities.User;
@@ -61,7 +54,9 @@ public class PatientServiceImpl implements PatientService {
         medicalDto.setId(m.getId());
         medicalDto.setName(m.getName());
         medicalDto.setContent(m.getContent());
+        medicalDto.setPrescription(m.getPrescription());
         medicalDto.setPatientId(m.getId());
+        // create_at tự tạo
         return medicalDto;
     }
 
@@ -77,12 +72,6 @@ public class PatientServiceImpl implements PatientService {
         } else {
             return Optional.empty();
         }
-    }
-
-    // writed by An in 5/6
-    private MedicalDto toMedicalDto(Medical m) {
-        MedicalDto dto = mapper.map(m, MedicalDto.class);
-        return dto;
     }
 
     private PatientDto toPatientDto(Partient p) {
@@ -105,13 +94,14 @@ public class PatientServiceImpl implements PatientService {
         return p.stream().map(this::toDto)
                 .collect(Collectors.toList());
     }
+
     @Override
-    public List<PatientDto> findPatientsByScheduleDoctorIdAndStartTime( int scheduledoctorid, LocalTime starttime){
-        List<PatientDto> patientDtoList = partientRepository.findPatientsByScheduleDoctorIdAndStartTime(scheduledoctorid,starttime).stream().map(this::toDto)
+    public List<PatientDto> findPatientsByScheduleDoctorIdAndStartTime(int scheduledoctorid, LocalTime starttime) {
+        List<PatientDto> patientDtoList = partientRepository
+                .findPatientsByScheduleDoctorIdAndStartTime(scheduledoctorid, starttime).stream().map(this::toDto)
                 .collect(Collectors.toList());
         return patientDtoList;
     }
-
 
     @Override
     public List<PatientDto> findPatientsByDoctorIdAndFinishedStatus(int doctorId) {
@@ -150,7 +140,6 @@ public class PatientServiceImpl implements PatientService {
         customPatient.setEmail(p.getUser().getEmail());
         return customPatient;
     }
-
 
     @Override
     public boolean editPatient(int userId, CustomPatientForEdit dto) {
@@ -193,9 +182,8 @@ public class PatientServiceImpl implements PatientService {
         }
     }
 
-
     @Override
-    public boolean Create(int userId , CustomPatientForEdit dto) {
+    public boolean Create(int userId, CustomPatientForEdit dto) {
         Partient p = new Partient();
         p.setAddress(dto.getAddress());
         p.setImage(dto.getImage());
@@ -214,5 +202,17 @@ public class PatientServiceImpl implements PatientService {
         }
     }
 
+    // Hien 23/6/2024
+    private MedicalDto toMedicalDto(Medical m) {
+        MedicalDto dto = mapper.map(m, MedicalDto.class);
+        dto.setPatientId(m.getPartient().getId());
+        return dto;
+    }
+
+    // Hien 23/6/2024
+    public List<MedicalDto> getMedicalHistoryByPatientId(Integer patientId) {
+        return medicalRepository.findByPartientId(patientId).stream().map(this::toMedicalDto)
+                .collect(Collectors.toList());
+    }
 
 }

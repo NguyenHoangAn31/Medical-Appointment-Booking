@@ -1,20 +1,20 @@
 package vn.aptech.backendapi.dto;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 @Data
 @Getter
 @Setter
-public class MedicalDto {
+public class MedicalViewDto {
     private int id;
     private String name;
     private String content;
     private String prescription;
     private int patientId;
-    private String dayCreate;
+    private LocalDate dayCreate;
 }

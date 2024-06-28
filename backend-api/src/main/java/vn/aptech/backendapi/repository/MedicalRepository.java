@@ -13,5 +13,4 @@ public interface MedicalRepository extends JpaRepository<Medical, Integer> {
     // writed by An in 5/6
     @Query("SELECT m FROM Medical m WHERE m.partient.id = :partientId")
     List<Medical> findByPartientId(@Param("partientId") Integer partientId);
-
 }

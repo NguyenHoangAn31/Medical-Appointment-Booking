@@ -37,6 +37,8 @@ const CreateWorking = ({ isOpen, onClose, doctorId }) => {
         }
     };
 
+    console.log(newWork);
+
     const validateForm = () => {
         const errors = {};
         let isValid = true;

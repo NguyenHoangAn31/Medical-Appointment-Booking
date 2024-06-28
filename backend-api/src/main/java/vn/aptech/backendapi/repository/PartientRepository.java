@@ -33,7 +33,7 @@ public interface PartientRepository extends JpaRepository<Partient, Integer> {
 
 
 
-    @Query("SELECT DISTINCT a.partient FROM Appointment a WHERE a.scheduledoctor.doctor.id = :doctorId AND a.status = 'FINISHED'")
+    @Query("SELECT DISTINCT a.partient FROM Appointment a WHERE a.scheduledoctor.doctor.id = :doctorId AND a.status = 'completed'")
     List<Partient> findPatientsByDoctorIdAndFinishedStatus(@Param("doctorId") int doctorId);
 
 
