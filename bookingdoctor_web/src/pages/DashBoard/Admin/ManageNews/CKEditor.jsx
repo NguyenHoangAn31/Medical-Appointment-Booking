@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
-import Editor from 'ckeditor5-custom-build/build/ckeditor';
+import * as Editor from 'ckeditor5-custom-build/build/ckeditor';
 import axios from 'axios';
 import { Form, Button, Space } from 'antd';
 // import React, { Component } from 'react';

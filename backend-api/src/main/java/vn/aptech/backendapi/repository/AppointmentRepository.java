@@ -33,7 +33,7 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Intege
        @Query("SELECT COUNT(a) FROM Appointment a " +
                "WHERE (:doctorId IS NULL OR a.scheduledoctor.doctor.id = :doctorId) " +
                "AND a.medicalExaminationDay BETWEEN :startDate AND :endDate " +
-               "AND a.status = 'finished'")
+               "AND a.status = 'completed'")
        Integer countSuccessfulAppointmentsByDoctorIdAndDateRange(
                @Param("doctorId") Integer doctorId,
                @Param("startDate") LocalDate startDate,

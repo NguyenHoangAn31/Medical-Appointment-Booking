@@ -420,7 +420,7 @@ public class DoctorServiceImpl implements DoctorService {
         customDoctor.setBirthday(doctor.getBirthday().toString());
         customDoctor.setAddress(doctor.getAddress());
         customDoctor.setBio(doctor.getBiography());
-        customDoctor.setPhone(doctor.getUser().getPhone());
+        // customDoctor.setPhone(doctor.getUser().getPhone());
         customDoctor.setEmail(doctor.getUser().getEmail());
 
         return customDoctor;
@@ -430,7 +430,7 @@ public class DoctorServiceImpl implements DoctorService {
     public boolean editDoctor(int doctorId, CustomDoctorForEdit dto) {
         Doctor doctor = doctorRepository.findById(doctorId).get();
         User user = doctorRepository.findUserByDoctorId(doctorId);
-        user.setPhone(dto.getPhone());
+        // user.setPhone(dto.getPhone());
         user.setEmail(dto.getEmail());
         doctor.setFullName(dto.getFullName());
         doctor.setTitle(dto.getTitle());

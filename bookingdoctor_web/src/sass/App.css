@@ -1776,7 +1776,7 @@ small.redtext {
   pointer-events: none;
 }
 .calendar .react-calendar__month-view__days__day {
-  color: red;
+  color: gray;
   border-radius: 8px;
   font-size: 23px;
   background-color: rgba(234, 234, 234, 0.3);

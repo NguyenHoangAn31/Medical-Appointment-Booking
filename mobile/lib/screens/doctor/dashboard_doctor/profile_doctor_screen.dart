@@ -77,16 +77,6 @@ class _ProfileDoctorScreenState extends State<ProfileDoctorScreen> {
                             ),
                           ),
                         ),
-                        // decoration: BoxDecoration(
-                        //   shape: BoxShape.circle,
-                        //   border: Border.all(color: Colors.white, width: 4),
-                        //   image: DecorationImage(
-                        //     fit: BoxFit.cover,
-                        //     image: NetworkImage(
-                        //       'http://${ipDevice}:8080/images/doctors/${currentUser['image']}', // Đặt URL của ảnh ở đây
-                        //     ),
-                        //   ),
-                        // ),
                       ),
                       Text(
                         "${currentUser['fullName']}",

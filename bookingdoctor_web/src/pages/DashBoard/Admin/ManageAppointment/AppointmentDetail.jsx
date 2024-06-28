@@ -5,7 +5,7 @@ import { useInternalNotification } from 'antd/es/notification/useNotification';
 import { AlertContext } from '../../../../components/Layouts/DashBoard';
 import { Link, useLocation } from 'react-router-dom';
 import Spinner from '../../../../components/Spinner';
-import { formatDate } from '../../../../ultils/formatDate';
+import { formatDate, formatDateFromArray } from '../../../../ultils/formatDate';
 
 function AppointmentDetail() {
   const { openNotificationWithIcon } = useContext(AlertContext);
@@ -94,8 +94,8 @@ function AppointmentDetail() {
                       <p>{appointmentDetail.patient.fullName}</p>
                     </div>
                     <div>
-                      {/* <p style={{ fontWeight: 500 }}>Birthday</p>
-                      <p>{formatDate(appointmentDetail.patient.birthday)}</p> */}
+                      <p style={{ fontWeight: 500 }}>Birthday</p>
+                      <p>{formatDateFromArray(appointmentDetail.patient.birthday)}</p>
                     </div>
                     <div>
                       <p style={{ fontWeight: 500 }}>Address</p>
@@ -145,14 +145,14 @@ function AppointmentDetail() {
 
           </div>
 
-          {appointmentDetail.status == 'waiting' ? <div><Form.Item className='float-end' label="Status" style={{ width: '20%', marginBottom: 10, marginTop: 40 }}>
+          <div><Form.Item className='float-end' label="Status" style={{ width: '20%', marginBottom: 10, marginTop: 40 }}>
             <Select allowClear placeholder="Choose Status" onChange={(e) => onInputChange(e)}>
               <Select.Option value="no show">No Show</Select.Option>
               <Select.Option value="cancelled">Cancel</Select.Option>
               <Select.Option value="completed">Complete</Select.Option>
             </Select>
           </Form.Item>
-            <Button style={{ clear: 'both' }} className='float-end' disabled={status == ''} type='primary' onClick={handleSubmit}>Change</Button></div> : null}
+            <Button style={{ clear: 'both' }} className='float-end' disabled={status == ''} type='primary' onClick={handleSubmit}>Change</Button></div>
 
 
         </>

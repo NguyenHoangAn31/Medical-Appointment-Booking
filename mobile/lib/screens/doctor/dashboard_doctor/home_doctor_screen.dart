@@ -1,5 +1,7 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -36,41 +38,47 @@ class _HomeDoctorScreenState extends State<HomeDoctorScreen> {
   @override
   void initState() {
     super.initState();
-    fetchDepartment();
+    // fetchDepartment();
     fetchPatientUpcoming();
   }
 
-  Future<void> fetchDepartment() async {
-    final response =
-        await http.get(Uri.parse('http://$ipDevice:8080/api/department/all'));
 
-    if (response.statusCode == 200) {
-      setState(() {
-        departments = jsonDecode(response.body);
-      });
-    } else {
-      throw Exception('Failed to load departments');
-    }
-  }
+
+  // Future<void> fetchDepartment() async {
+  //   final response =
+  //       await http.get(Uri.parse('http://${ipDevice}:8080/api/department/all'));
+
+  //   if (response.statusCode == 200) {
+  //     setState(() {
+  //       departments = jsonDecode(response.body);
+  //     });
+  //   } else {
+  //     throw Exception('Failed to load departments');
+  //   }
+  // }
 
   Future<void> fetchPatientUpcoming() async {
-    final response = await http.get(Uri.parse(
-        'http://$ipDevice:8080/api/appointment/patientsbydoctoridandmedicalexaminationtoday/${currentUser['id']}/$today/$today'));
+    try {
+      final response = await http.get(Uri.parse(
+          'http://${ipDevice}:8080/api/appointment/patientsbydoctoridandmedicalexaminationtoday/${currentUser['id']}/${today}/${today}'));
 
-    if (response.statusCode == 200) {
-      var result = jsonDecode(response.body);
-      List<dynamic> patientList = result;
+      if (response.statusCode == 200) {
+        var result = jsonDecode(response.body);
+        List<dynamic> patientList = result;
 
-      if (mounted) {
-        setState(() {
-          patientsUpcoming = patientList
-              .where((patient) => patient["status"] == "waiting")
-              .toList();
-          noAppointments = patientsUpcoming.isEmpty ? true : false;
-        });
+        if (mounted) {
+          setState(() {
+            patientsUpcoming = patientList
+                .where((patient) => patient["status"] == "waiting")
+                .toList();
+            noAppointments = patientsUpcoming.isEmpty ? true : false;
+          });
+        }
       }
-    } else {
-      throw Exception('Failed to load patientList');
+    } catch (e) {
+      if (kDebugMode) {
+        print('Failed to sign in: $e');
+      }
     }
   }
 

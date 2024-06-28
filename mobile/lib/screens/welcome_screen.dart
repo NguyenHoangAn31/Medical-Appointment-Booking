@@ -4,6 +4,16 @@ import 'package:mobile/screens/auth/sign_screen.dart';
 //import 'package:mobile/screens/home_screen.dart';
 
 //import 'package:mobile/screens/login_screen.dart';
+import 'dart:convert';
+import 'dart:developer';
+
+import 'package:flutter/material.dart';
+import 'package:mobile/utils/store_current_user.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../screens/auth/sign_screen.dart';
+import '../widgets/navigation_menu.dart';
+import '../widgets/navigation_menu_doctor.dart';
 
 class WelcomeScreen extends StatefulWidget {
   const WelcomeScreen({super.key});
@@ -15,20 +25,44 @@ class WelcomeScreen extends StatefulWidget {
 class _WelcomeScreenState extends State<WelcomeScreen>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
+
   @override
   void initState() {
     super.initState();
-    Timer(const Duration(seconds: 3), () {
-      Navigator.of(context).pushReplacement(
-        //MaterialPageRoute(builder: (context) => const LoginScreen()),
-        MaterialPageRoute(builder: (context) => const SignInScreen()),
-        // MaterialPageRoute(builder: (context) => const NavigationMenu()),
-      );
-    });
     _controller = AnimationController(
       duration: const Duration(seconds: 3),
       vsync: this,
     )..repeat();
+
+    // Wait for 3 seconds then check if user data is available
+    Timer(const Duration(seconds: 3), _loadUser);
+  }
+
+  _loadUser() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? userDataString = prefs.getString('user_data');
+    String? role = prefs.getString('role');
+    if (userDataString != null) {
+      Map<String, dynamic> user = jsonDecode(userDataString);
+      CurrentUser.to.setUser(user);
+
+      log(userDataString);
+
+      if (role == 'USER') {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => NavigationMenu()),
+        );
+      } else if (role == 'DOCTOR') {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => NavigationMenuDoctor()),
+        );
+      }
+    } else {
+      // No user data found, navigate to SignInScreen
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (context) => SignInScreen()),
+      );
+    }
   }
 
   @override

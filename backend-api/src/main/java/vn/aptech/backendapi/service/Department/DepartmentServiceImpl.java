@@ -42,6 +42,11 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     @Override
+    public Optional<DepartmentDto> findBySlug(String id) {
+        Optional<Department> result = departmentRepository.findByUrl(id);
+        return result.map(this::toDto);
+    }
+    @Override
     public Optional<DepartmentDto> findById(int id) {
         Optional<Department> result = departmentRepository.findById(id);
         return result.map(this::toDto);

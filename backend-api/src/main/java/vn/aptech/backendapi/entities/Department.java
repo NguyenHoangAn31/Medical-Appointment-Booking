@@ -9,12 +9,17 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name="departments")
+@Table(name = "departments", uniqueConstraints = {
+    @UniqueConstraint(columnNames = "name")
+})
 public class Department extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    
+    @Column(unique = true) // Optional: You can also annotate with @Column(unique = true)
     private String name;
+    
     private String icon;
     private String url;
     private boolean status;

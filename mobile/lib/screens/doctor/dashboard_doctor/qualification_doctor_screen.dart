@@ -1,12 +1,13 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:mobile/utils/ip_app.dart';
+
 import 'package:mobile/utils/store_current_user.dart';
 
+
 class QualificationDoctorScreen extends StatefulWidget {
-  const QualificationDoctorScreen({super.key});
+  const QualificationDoctorScreen({Key? key}) : super(key: key);
 
   @override
   State<QualificationDoctorScreen> createState() =>
@@ -16,12 +17,13 @@ class QualificationDoctorScreen extends StatefulWidget {
 class _QualificationDoctorScreenState extends State<QualificationDoctorScreen> {
   List<dynamic> qualifications = [];
   final currentUser = CurrentUser.to.user;
-    final ipDevice = BaseClient().ip;
+  final ipDevice = BaseClient().ip;
 
+  TextEditingController _courseController = TextEditingController();
+  TextEditingController _degreeNameController = TextEditingController();
+  TextEditingController _universityNameController = TextEditingController();
 
-  final TextEditingController _courseController = TextEditingController();
-  final TextEditingController _degreeNameController = TextEditingController();
-  final TextEditingController _universityNameController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
@@ -31,7 +33,7 @@ class _QualificationDoctorScreenState extends State<QualificationDoctorScreen> {
 
   Future<void> fetchQualifications() async {
     final response = await http.get(Uri.parse(
-        'http://$ipDevice:8080/api/qualification/doctor/${currentUser['id']}'));
+        'http://${ipDevice}:8080/api/qualification/doctor/${currentUser['id']}'));
 
     if (response.statusCode == 200) {
       setState(() {
@@ -43,62 +45,66 @@ class _QualificationDoctorScreenState extends State<QualificationDoctorScreen> {
   }
 
   Future<void> createQualification() async {
-    final Map<String, dynamic> newQualification = {
-      'course': _courseController.text,
-      'degreeName': _degreeNameController.text,
-      'universityName': _universityNameController.text,
-      'status': 1,
-      'doctor_id': currentUser['id'],
-    };
+    if (_formKey.currentState!.validate()) {
+      final Map<String, dynamic> newQualification = {
+        'course': _courseController.text,
+        'degreeName': _degreeNameController.text,
+        'universityName': _universityNameController.text,
+        'status': 1,
+        'doctor_id': currentUser['id'],
+      };
 
-    final response = await http.post(
-      Uri.parse('http://$ipDevice:8080/api/qualification/create'),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode(newQualification),
-    );
+      final response = await http.post(
+        Uri.parse('http://${ipDevice}:8080/api/qualification/create'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(newQualification),
+      );
 
-    if (response.statusCode == 200) {
-      fetchQualifications();
-      _courseController.clear();
-      _degreeNameController.clear();
-      _universityNameController.clear();
-      Navigator.pop(context);
-    } else {
-      throw Exception('Failed to create qualification');
+      if (response.statusCode == 200) {
+        fetchQualifications();
+        _courseController.clear();
+        _degreeNameController.clear();
+        _universityNameController.clear();
+        Navigator.pop(context);
+      } else {
+        throw Exception('Failed to create qualification');
+      }
     }
   }
 
   Future<void> updateQualification(int id) async {
-    final Map<String, dynamic> updatedQualification = {
-      'id': id,
-      'course': _courseController.text,
-      'degreeName': _degreeNameController.text,
-      'universityName': _universityNameController.text,
-      'status': 1,
-      'doctor_id': currentUser['id'],
-    };
+    if (_formKey.currentState!.validate()) {
+      final Map<String, dynamic> updatedQualification = {
+        'id': id,
+        'course': _courseController.text,
+        'degreeName': _degreeNameController.text,
+        'universityName': _universityNameController.text,
+        'status': 1,
+        'doctor_id': currentUser['id'],
+      };
 
-    final response = await http.put(
-      Uri.parse('http://$ipDevice:8080/api/qualification/update/$id'),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode(updatedQualification),
-    );
+      final response = await http.put(
+        Uri.parse('http://${ipDevice}:8080/api/qualification/update/$id'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(updatedQualification),
+      );
 
-    if (response.statusCode == 200) {
-      fetchQualifications();
-      Navigator.pop(context);
-    } else {
-      throw Exception('Failed to update qualification');
+      if (response.statusCode == 200) {
+        fetchQualifications();
+        Navigator.pop(context);
+      } else {
+        throw Exception('Failed to update qualification');
+      }
     }
   }
 
   Future<void> deleteQualification(int id) async {
     final response = await http.delete(
-        Uri.parse('http://$ipDevice:8080/api/qualification/delete/$id'));
+        Uri.parse('http://${ipDevice}:8080/api/qualification/delete/$id'));
 
     if (response.statusCode == 200) {
       fetchQualifications();
@@ -153,7 +159,7 @@ class _QualificationDoctorScreenState extends State<QualificationDoctorScreen> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           IconButton(
-                            icon: const Icon(Icons.edit),
+                            icon: Icon(Icons.edit),
                             onPressed: () {
                               _courseController.text = qualification['course'];
                               _degreeNameController.text =
@@ -172,37 +178,64 @@ class _QualificationDoctorScreenState extends State<QualificationDoctorScreen> {
                                           .bottom,
                                     ),
                                     child: Container(
-                                      padding: const EdgeInsets.all(16.0),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.stretch,
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          TextField(
-                                            controller: _courseController,
-                                            decoration: const InputDecoration(
-                                                labelText: 'Course'),
-                                          ),
-                                          TextField(
-                                            controller: _degreeNameController,
-                                            decoration: const InputDecoration(
-                                                labelText: 'Degree Name'),
-                                          ),
-                                          TextField(
-                                            controller:
-                                                _universityNameController,
-                                            decoration: const InputDecoration(
-                                                labelText: 'University Name'),
-                                          ),
-                                          const SizedBox(height: 20),
-                                          ElevatedButton(
-                                            onPressed: () {
-                                              updateQualification(
-                                                  qualification['id']);
-                                            },
-                                            child: const Text('Update Qualification'),
-                                          ),
-                                        ],
+                                      padding: EdgeInsets.all(16.0),
+                                      child: Form(
+                                        key: _formKey,
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.stretch,
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            TextFormField(
+                                              controller: _courseController,
+                                              decoration: InputDecoration(
+                                                  labelText: 'Course'),
+                                              validator: (value) {
+                                                if (value == null ||
+                                                    value.isEmpty) {
+                                                  return 'Please enter Course';
+                                                }
+                                                return null;
+                                              },
+                                            ),
+                                            TextFormField(
+                                              controller:
+                                                  _degreeNameController,
+                                              decoration: InputDecoration(
+                                                  labelText: 'Degree Name'),
+                                              validator: (value) {
+                                                if (value == null ||
+                                                    value.isEmpty) {
+                                                  return 'Please enter Degree Name';
+                                                }
+                                                return null;
+                                              },
+                                            ),
+                                            TextFormField(
+                                              controller:
+                                                  _universityNameController,
+                                              decoration: InputDecoration(
+                                                  labelText:
+                                                      'University Name'),
+                                              validator: (value) {
+                                                if (value == null ||
+                                                    value.isEmpty) {
+                                                  return 'Please enter University Name';
+                                                }
+                                                return null;
+                                              },
+                                            ),
+                                            SizedBox(height: 20),
+                                            ElevatedButton(
+                                              onPressed: () {
+                                                updateQualification(
+                                                    qualification['id']);
+                                              },
+                                              child: Text(
+                                                  'Update Qualification'),
+                                            ),
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   );
@@ -211,7 +244,7 @@ class _QualificationDoctorScreenState extends State<QualificationDoctorScreen> {
                             },
                           ),
                           IconButton(
-                            icon: const Icon(Icons.delete),
+                            icon: Icon(Icons.delete),
                             onPressed: () {
                               showDialog(
                                 context: context,
@@ -253,6 +286,10 @@ class _QualificationDoctorScreenState extends State<QualificationDoctorScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
+          _courseController.clear();
+          _degreeNameController.clear();
+          _universityNameController.clear();
+
           showModalBottomSheet(
             isScrollControlled: true,
             context: context,
@@ -262,32 +299,53 @@ class _QualificationDoctorScreenState extends State<QualificationDoctorScreen> {
                   bottom: MediaQuery.of(context).viewInsets.bottom,
                 ),
                 child: Container(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      TextField(
-                        controller: _courseController,
-                        decoration: const InputDecoration(labelText: 'Course'),
-                      ),
-                      TextField(
-                        controller: _degreeNameController,
-                        decoration: const InputDecoration(labelText: 'Degree Name'),
-                      ),
-                      TextField(
-                        controller: _universityNameController,
-                        decoration:
-                            const InputDecoration(labelText: 'University Name'),
-                      ),
-                      const SizedBox(height: 20),
-                      ElevatedButton(
-                        onPressed: () {
-                          createQualification();
-                        },
-                        child: const Text('Create Qualification'),
-                      ),
-                    ],
+                  padding: EdgeInsets.all(16.0),
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        TextFormField(
+                          controller: _courseController,
+                          decoration: InputDecoration(labelText: 'Course'),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter Course';
+                            }
+                            return null;
+                          },
+                        ),
+                        TextFormField(
+                          controller: _degreeNameController,
+                          decoration: InputDecoration(labelText: 'Degree Name'),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter Degree Name';
+                            }
+                            return null;
+                          },
+                        ),
+                        TextFormField(
+                          controller: _universityNameController,
+                          decoration:
+                              InputDecoration(labelText: 'University Name'),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter University Name';
+                            }
+                            return null;
+                          },
+                        ),
+                        SizedBox(height: 20),
+                        ElevatedButton(
+                          onPressed: () {
+                            createQualification();
+                          },
+                          child: Text('Create Qualification'),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               );
@@ -295,7 +353,7 @@ class _QualificationDoctorScreenState extends State<QualificationDoctorScreen> {
           );
         },
         backgroundColor: Colors.blue[300], // Đặt màu nền là màu xanh dương
-        foregroundColor: Colors.white, 
+        foregroundColor: Colors.white,
         tooltip: 'Create Qualification',
         child: const Icon(Icons.add),
       ),
