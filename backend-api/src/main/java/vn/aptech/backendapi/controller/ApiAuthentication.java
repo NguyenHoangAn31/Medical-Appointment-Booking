@@ -68,9 +68,6 @@ public class ApiAuthentication {
     public ResponseEntity<Boolean> sendOtp(@RequestBody AuthenticationWithUsernameAndKeycode body) {
         String username = body.getUsername();
         String provider = body.getProvider();
-        // Optional<User> userOptional = userService.findByEmailOrPhone(username);
-        // if(userOptional.isPresent() &&
-        // userOptional.get().getProvider().equals(provider)){
         Optional<RefreshToken> refreshTokenOptional = refreshTokenRepository.findRefreshTokenByUsername(username);
         if (refreshTokenOptional.isPresent()) {
             System.out.println("Tìm thấy token");

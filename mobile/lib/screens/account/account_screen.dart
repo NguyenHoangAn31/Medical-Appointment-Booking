@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:mobile/services/patientService.dart';
+import 'package:mobile/services/patient_service.dart';
 
 import '../../models/patient.dart';
-import '../../ultils/ip_app.dart';
-import '../../ultils/storeCurrentUser.dart';
+import '../../utils/ip_app.dart';
+import '../../utils/store_current_user.dart';
 import '../../widgets/navigation_menu.dart';
 
 
@@ -108,9 +107,9 @@ class _AccountScreenState extends State<AccountScreen> {
                    InkWell(
                      onTap: (){
                        // Logic /patient/account/edit
-                       var data = {
-                         'patientId': currentUser['id'],
-                       };
+                       // var data = {
+                       //   'patientId': currentUser['id'],
+                       // };
                        Navigator.pushNamed(context, '/patient/account/edit');
                      },
                      child: Container(

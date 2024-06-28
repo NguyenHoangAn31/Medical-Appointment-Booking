@@ -31,6 +31,18 @@ Future<Doctor> getDoctorById(int id) async {
   }
 }
 
+Future<void> getDoctorIdByScheduleId(int scheduleId) async {
+  final ipDevice = BaseClient().ip;
+  final response = await http.get(Uri.parse("http://$ipDevice:8080/api/schedules//schedule-doctor/$scheduleId"));
+  if (response.statusCode == 200) {
+    var jsonData = jsonDecode(response.body);
+    print(jsonData);
+    return jsonData;
+  } else {
+    throw Exception('Failed to load schedule');
+  }
+}
+
 
 // get schedule with doctorId and daySelected
 

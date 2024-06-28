@@ -2,8 +2,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
-import '../../ultils/ip_app.dart';
-import '../../ultils/storeCurrentUser.dart';
+import '../../utils/ip_app.dart';
+import '../../utils/store_current_user.dart';
 
 
 
@@ -28,7 +28,6 @@ class _AccountEditScreenState extends State<AccountEditScreen> {
   @override
   void initState() {
     super.initState();
-    print(currentUser['id']);
     // Khởi tạo các TextEditingController với giá trị rỗng tạm thời
     emailController = TextEditingController();
     phoneController = TextEditingController();

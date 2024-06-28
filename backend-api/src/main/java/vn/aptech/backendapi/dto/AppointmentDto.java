@@ -14,6 +14,7 @@ import lombok.Setter;
 public class AppointmentDto {
     private int id;
     private int partientId;
+    private int doctorId;
     private int scheduledoctorId;
     private double price;
     private String image;
@@ -26,4 +27,5 @@ public class AppointmentDto {
     private String appointmentDate;
     private String medicalExaminationDay;
     private String clinicHours;
+    private String reason;
 }

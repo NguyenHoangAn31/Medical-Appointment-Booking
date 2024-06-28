@@ -3,26 +3,45 @@ package vn.aptech.backendapi.controller;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Optional;
 
+import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.web.bind.annotation.*;
 
-import vn.aptech.backendapi.dto.AppointmentCreateDto;
 import vn.aptech.backendapi.dto.AppointmentDto;
 import vn.aptech.backendapi.dto.Appointment.AppointmentDetail;
 import vn.aptech.backendapi.dto.Appointment.CustomAppointmentDto;
+import vn.aptech.backendapi.dto.PatientDto;
+import vn.aptech.backendapi.dto.Schedule.ScheduleDoctorDto;
+import vn.aptech.backendapi.dto.UserDto;
+import vn.aptech.backendapi.entities.ScheduleDoctor;
+import vn.aptech.backendapi.repository.PartientRepository;
 import vn.aptech.backendapi.service.Appointment.AppointmentService;
+import vn.aptech.backendapi.service.Patient.PatientService;
+import vn.aptech.backendapi.service.ScheduleDoctor.ScheduleDoctorSerivce;
+import vn.aptech.backendapi.service.User.UserService;
 
 @RestController
 @RequestMapping(value = "/api/appointment", produces = MediaType.APPLICATION_JSON_VALUE)
 public class AppointmentController {
     @Autowired
     private AppointmentService appointmentService;
+    @Autowired
+    private PatientService patientService;
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private ScheduleDoctorSerivce scheduleDoctorSerivce;
+    @Autowired
+    private JavaMailSender javaMailSender;
 
     @GetMapping(value = "/all", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<CustomAppointmentDto>> findAll() {
@@ -63,6 +82,12 @@ public class AppointmentController {
             @PathVariable("patientId") int patientId, @PathVariable("status") String status) {
         List<AppointmentDto> result = appointmentService
                 .findAppointmentsPatientByPatientIdAndStatus(patientId, status);
+        for(AppointmentDto appointmentDto : result){
+            Optional<ScheduleDoctorDto> scheduleDoctor = scheduleDoctorSerivce.findDoctorIdById(appointmentDto.getScheduledoctorId());
+            if(scheduleDoctor.isPresent()){
+                appointmentDto.setDoctorId(scheduleDoctor.get().getDoctorId());
+            }
+        }
         return ResponseEntity.ok(result);
     }
 
@@ -94,7 +119,22 @@ public class AppointmentController {
     public ResponseEntity<AppointmentDto> test(@RequestBody AppointmentDto dto) {
         System.out.println(dto);
         AppointmentDto result = appointmentService.save(dto);
+        PatientDto patient = patientService.getPatientByPatientId(result.getPartientId()).get();
         if (result != null) {
+            UserDto userDto = userService.findById(patient.getUser().getId()).get();
+            ScheduleDoctorDto scheduleDoctor = scheduleDoctorSerivce.findDoctorIdById(result.getScheduledoctorId()).get();
+            result.setDoctorId(scheduleDoctor.getDoctorId());
+                try {
+                    String Message = "Hello "+ userDto.getFullName() + ". You have successfully booked your appointment. Please visit http://localhost:5173/booking-history to see more details. Thank You.";
+                    MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+                    MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage);
+                    mimeMessageHelper.setTo(userDto.getEmail());
+                    mimeMessageHelper.setSubject("Booking appointment successfully");
+                    mimeMessageHelper.setText(Message);
+                    javaMailSender.send(mimeMessage);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             return ResponseEntity.ok(result);
         } else {
             return ResponseEntity.notFound().build();

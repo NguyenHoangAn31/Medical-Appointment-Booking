@@ -4,8 +4,8 @@ import 'dart:core';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import '../../models/doctor.dart';
-import '../../ultils/color_app.dart';
-import '../../ultils/ip_app.dart';
+import '../../utils/color_app.dart';
+import '../../utils/ip_app.dart';
 import 'package:http/http.dart' as http;
 
 class DoctorDetailScreen extends StatefulWidget {
@@ -18,7 +18,7 @@ class DoctorDetailScreen extends StatefulWidget {
 class _DoctorDetailScreenState extends State<DoctorDetailScreen> {
   final ipDevice = BaseClient().ip;
 
-  late int doctorId;
+  late int? doctorId;
   List<dynamic> feedbacks = [];
   late  Future<Doctor> _doctor;
   @override
@@ -29,8 +29,8 @@ class _DoctorDetailScreenState extends State<DoctorDetailScreen> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     final Map arguments = ModalRoute.of(context)?.settings.arguments as Map;
-    doctorId = arguments['doctorId'] as int;
-    _doctor = getDoctorById(doctorId);
+    doctorId = arguments['doctorId'];
+    _doctor = getDoctorById(doctorId!);
      //feedbacks = getFeedbackByDoctorId(doctorId) as List;
   }
 

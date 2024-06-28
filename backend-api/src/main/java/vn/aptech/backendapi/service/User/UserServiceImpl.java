@@ -69,7 +69,6 @@ public class UserServiceImpl implements UserService {
     }
 
     public Optional<UserDto> findById(int id) {
-        System.out.println(id);
         Optional<User> result = userRepository.findById(id);
         return result.map(this::toDto);
     }

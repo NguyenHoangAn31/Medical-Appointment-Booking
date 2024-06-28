@@ -43,7 +43,7 @@ class SuccessWidget extends StatelessWidget {
       child: Center(
         child: Column(
            children: [
-             Container(
+             SizedBox(
                width: 142,
                height: 142,
                child: Stack(
@@ -156,7 +156,6 @@ class SuccessWidget extends StatelessWidget {
                )
 
              ),
-
            ],
         ),
       )

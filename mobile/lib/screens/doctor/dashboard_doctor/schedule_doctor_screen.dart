@@ -4,8 +4,8 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
-import 'package:mobile/ultils/ip_app.dart';
-import 'package:mobile/ultils/storeCurrentUser.dart';
+import 'package:mobile/utils/ip_app.dart';
+import 'package:mobile/utils/store_current_user.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:intl/intl.dart';
 
@@ -60,14 +60,14 @@ class _ScheduleDoctorScreenState extends State<ScheduleDoctorScreen> {
     if (_slotIdSelect != 0) {
       if (isRegistered) {
         final responseDelete = await http.delete(Uri.parse(
-            'http://${ipDevice}:8080/api/schedules/checkdelete/${_daySelect}/${currentUser['department']['id']}/${currentUser['id']}/${_slotIdSelect}'));
+            'http://$ipDevice:8080/api/schedules/checkdelete/$_daySelect/${currentUser['department']['id']}/${currentUser['id']}/$_slotIdSelect'));
         if (responseDelete.statusCode == 200) {
           fetchHoursList(_daySelect);
           isRegistered = !isRegistered;
         }
       } else {
         final responseCreate = await http.post(Uri.parse(
-            'http://${ipDevice}:8080/api/schedules/checkcreate/${_daySelect}/${currentUser['department']['id']}/${currentUser['id']}/${_slotIdSelect}'));
+            'http://$ipDevice:8080/api/schedules/checkcreate/$_daySelect/${currentUser['department']['id']}/${currentUser['id']}/$_slotIdSelect'));
         if (responseCreate.statusCode == 200) {
           fetchHoursList(_daySelect);
           isRegistered = !isRegistered;
@@ -78,9 +78,9 @@ class _ScheduleDoctorScreenState extends State<ScheduleDoctorScreen> {
 
   Future<void> fetchHoursList(String date) async {
     final responseHoursList = await http.get(Uri.parse(
-        'http://${ipDevice}:8080/api/slot/slotsbydepartmentidandday/${currentUser['id']}/${date}'));
+        'http://$ipDevice:8080/api/slot/slotsbydepartmentidandday/${currentUser['id']}/$date'));
     final responseDoctorHoursList = await http.get(Uri.parse(
-        'http://${ipDevice}:8080/api/slot/slotsbydepartmentiddoctoridandday/${currentUser['id']}/${currentUser['department']['id']}/${date}'));
+        'http://$ipDevice:8080/api/slot/slotsbydepartmentiddoctoridandday/${currentUser['id']}/${currentUser['department']['id']}/$date'));
     if (responseHoursList.statusCode == 200 &&
         responseDoctorHoursList.statusCode == 200) {
       setState(() {

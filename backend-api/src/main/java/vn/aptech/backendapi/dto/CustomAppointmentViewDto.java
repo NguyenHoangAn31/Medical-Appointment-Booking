@@ -20,4 +20,5 @@ public class CustomAppointmentViewDto {
     private String appointmentDate;
     private String medicalExaminationDay;
     private String clinicHours;
+    private  String reason;
 }

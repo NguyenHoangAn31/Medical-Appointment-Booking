@@ -606,8 +606,6 @@ const Booking = () => {
                         <MdArrowForwardIos />
                       </button>
                     </div>
-
-
                     <div className="body_date">
                       {slots.map((slot, index) => {
                         const currentHour = new Date().getHours(); // giờ hiện tại

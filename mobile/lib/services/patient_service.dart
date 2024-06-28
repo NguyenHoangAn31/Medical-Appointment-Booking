@@ -14,7 +14,7 @@ class PatientClient{
     final result = await http.get(url);
       if (result.statusCode == 200) {
         var jsonResponse = json.decode(result.body);
-        // print(jsonResponse);
+        print(jsonResponse);
         return Patient.fromJson(jsonResponse);
       } else {
         throw Exception('Failed to load patient by patientId');

@@ -5,12 +5,12 @@ import 'package:intl/intl.dart';
 import 'package:mobile/models/appointment.dart';
 import '../../models/department.dart';
 import '../../models/doctor.dart';
-import '../../services/Department/departmentApi.dart';
-import '../../ultils/color_app.dart';
-import '../../ultils/ip_app.dart';
-import '../../ultils/list_service.dart';
-import '../../ultils/storeCurrentUser.dart';
-import 'package:mobile/services/appointmentService.dart';
+import '../../services/Department/department_api.dart';
+import '../../utils/color_app.dart';
+import '../../utils/ip_app.dart';
+import '../../utils/list_service.dart';
+import '../../utils/store_current_user.dart';
+import 'package:mobile/services/appointment_service.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -54,7 +54,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   String formatDate(String date) {
     try {
-
       final DateTime parsedDate = DateFormat('yyyy-MM-dd').parse(date);
       return DateFormat('MMM dd, yyyy').format(parsedDate);
     } catch (e) {
@@ -67,12 +66,12 @@ class _HomeScreenState extends State<HomeScreen> {
         AppointmentClient().fetchAppointmentPatient(currentUser['id'], 'waiting');
     final appointments = await _appointmentFutureWaiting;
     if (appointments.isNotEmpty) {
-      print(appointments.first);
       return appointments.first;
     } else {
       return Appointment(
         id: 0,
         partientId: currentUser['id'],
+        doctorId: currentUser['id'],
         scheduledoctorId: 1,
         price: 1,
         image: '',
@@ -285,13 +284,10 @@ class _HomeScreenState extends State<HomeScreen> {
                           builder: (context, snapshot) {
                             if (snapshot.connectionState ==
                                 ConnectionState.waiting) {
-                              return const Center(
-                                  child: CircularProgressIndicator());
-                            } else if (snapshot.hasError) {
                               return Center(
-                                  child: Text('Error: ${snapshot.error}'));
-                            } else
-                            if (!snapshot.hasData) {
+                                  child: CircularProgressIndicator());
+                            } else if (!snapshot.hasData ||
+                                 snapshot.hasError) {
                               return Center(
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
@@ -480,7 +476,6 @@ class _HomeScreenState extends State<HomeScreen> {
                             }
                           }
                         ),
-
                         // List
                       ],
                     ),

@@ -2,11 +2,11 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:mobile/ultils/ip_app.dart';
-import 'package:mobile/ultils/storeCurrentUser.dart';
+import 'package:mobile/utils/ip_app.dart';
+import 'package:mobile/utils/store_current_user.dart';
 
 class QualificationDoctorScreen extends StatefulWidget {
-  const QualificationDoctorScreen({Key? key}) : super(key: key);
+  const QualificationDoctorScreen({super.key});
 
   @override
   State<QualificationDoctorScreen> createState() =>
@@ -19,9 +19,9 @@ class _QualificationDoctorScreenState extends State<QualificationDoctorScreen> {
     final ipDevice = BaseClient().ip;
 
 
-  TextEditingController _courseController = TextEditingController();
-  TextEditingController _degreeNameController = TextEditingController();
-  TextEditingController _universityNameController = TextEditingController();
+  final TextEditingController _courseController = TextEditingController();
+  final TextEditingController _degreeNameController = TextEditingController();
+  final TextEditingController _universityNameController = TextEditingController();
 
   @override
   void initState() {
@@ -31,7 +31,7 @@ class _QualificationDoctorScreenState extends State<QualificationDoctorScreen> {
 
   Future<void> fetchQualifications() async {
     final response = await http.get(Uri.parse(
-        'http://${ipDevice}:8080/api/qualification/doctor/${currentUser['id']}'));
+        'http://$ipDevice:8080/api/qualification/doctor/${currentUser['id']}'));
 
     if (response.statusCode == 200) {
       setState(() {
@@ -52,7 +52,7 @@ class _QualificationDoctorScreenState extends State<QualificationDoctorScreen> {
     };
 
     final response = await http.post(
-      Uri.parse('http://${ipDevice}:8080/api/qualification/create'),
+      Uri.parse('http://$ipDevice:8080/api/qualification/create'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
@@ -81,7 +81,7 @@ class _QualificationDoctorScreenState extends State<QualificationDoctorScreen> {
     };
 
     final response = await http.put(
-      Uri.parse('http://${ipDevice}:8080/api/qualification/update/$id'),
+      Uri.parse('http://$ipDevice:8080/api/qualification/update/$id'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
@@ -98,7 +98,7 @@ class _QualificationDoctorScreenState extends State<QualificationDoctorScreen> {
 
   Future<void> deleteQualification(int id) async {
     final response = await http.delete(
-        Uri.parse('http://${ipDevice}:8080/api/qualification/delete/$id'));
+        Uri.parse('http://$ipDevice:8080/api/qualification/delete/$id'));
 
     if (response.statusCode == 200) {
       fetchQualifications();
@@ -153,7 +153,7 @@ class _QualificationDoctorScreenState extends State<QualificationDoctorScreen> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           IconButton(
-                            icon: Icon(Icons.edit),
+                            icon: const Icon(Icons.edit),
                             onPressed: () {
                               _courseController.text = qualification['course'];
                               _degreeNameController.text =
@@ -172,7 +172,7 @@ class _QualificationDoctorScreenState extends State<QualificationDoctorScreen> {
                                           .bottom,
                                     ),
                                     child: Container(
-                                      padding: EdgeInsets.all(16.0),
+                                      padding: const EdgeInsets.all(16.0),
                                       child: Column(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.stretch,
@@ -180,27 +180,27 @@ class _QualificationDoctorScreenState extends State<QualificationDoctorScreen> {
                                         children: [
                                           TextField(
                                             controller: _courseController,
-                                            decoration: InputDecoration(
+                                            decoration: const InputDecoration(
                                                 labelText: 'Course'),
                                           ),
                                           TextField(
                                             controller: _degreeNameController,
-                                            decoration: InputDecoration(
+                                            decoration: const InputDecoration(
                                                 labelText: 'Degree Name'),
                                           ),
                                           TextField(
                                             controller:
                                                 _universityNameController,
-                                            decoration: InputDecoration(
+                                            decoration: const InputDecoration(
                                                 labelText: 'University Name'),
                                           ),
-                                          SizedBox(height: 20),
+                                          const SizedBox(height: 20),
                                           ElevatedButton(
                                             onPressed: () {
                                               updateQualification(
                                                   qualification['id']);
                                             },
-                                            child: Text('Update Qualification'),
+                                            child: const Text('Update Qualification'),
                                           ),
                                         ],
                                       ),
@@ -211,7 +211,7 @@ class _QualificationDoctorScreenState extends State<QualificationDoctorScreen> {
                             },
                           ),
                           IconButton(
-                            icon: Icon(Icons.delete),
+                            icon: const Icon(Icons.delete),
                             onPressed: () {
                               showDialog(
                                 context: context,
@@ -262,30 +262,30 @@ class _QualificationDoctorScreenState extends State<QualificationDoctorScreen> {
                   bottom: MediaQuery.of(context).viewInsets.bottom,
                 ),
                 child: Container(
-                  padding: EdgeInsets.all(16.0),
+                  padding: const EdgeInsets.all(16.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       TextField(
                         controller: _courseController,
-                        decoration: InputDecoration(labelText: 'Course'),
+                        decoration: const InputDecoration(labelText: 'Course'),
                       ),
                       TextField(
                         controller: _degreeNameController,
-                        decoration: InputDecoration(labelText: 'Degree Name'),
+                        decoration: const InputDecoration(labelText: 'Degree Name'),
                       ),
                       TextField(
                         controller: _universityNameController,
                         decoration:
-                            InputDecoration(labelText: 'University Name'),
+                            const InputDecoration(labelText: 'University Name'),
                       ),
-                      SizedBox(height: 20),
+                      const SizedBox(height: 20),
                       ElevatedButton(
                         onPressed: () {
                           createQualification();
                         },
-                        child: Text('Create Qualification'),
+                        child: const Text('Create Qualification'),
                       ),
                     ],
                   ),

@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
-import 'package:mobile/ultils/ip_app.dart';
-import 'package:mobile/ultils/storeCurrentUser.dart';
+import 'package:mobile/utils/ip_app.dart';
+import 'package:mobile/utils/store_current_user.dart';
 
 class HomeDoctorScreen extends StatefulWidget {
   const HomeDoctorScreen({super.key});
@@ -42,7 +42,7 @@ class _HomeDoctorScreenState extends State<HomeDoctorScreen> {
 
   Future<void> fetchDepartment() async {
     final response =
-        await http.get(Uri.parse('http://${ipDevice}:8080/api/department/all'));
+        await http.get(Uri.parse('http://$ipDevice:8080/api/department/all'));
 
     if (response.statusCode == 200) {
       setState(() {
@@ -55,7 +55,7 @@ class _HomeDoctorScreenState extends State<HomeDoctorScreen> {
 
   Future<void> fetchPatientUpcoming() async {
     final response = await http.get(Uri.parse(
-        'http://${ipDevice}:8080/api/appointment/patientsbydoctoridandmedicalexaminationtoday/${currentUser['id']}/${today}/${today}'));
+        'http://$ipDevice:8080/api/appointment/patientsbydoctoridandmedicalexaminationtoday/${currentUser['id']}/$today/$today'));
 
     if (response.statusCode == 200) {
       var result = jsonDecode(response.body);
@@ -128,7 +128,7 @@ class _HomeDoctorScreenState extends State<HomeDoctorScreen> {
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(0),
                     child: Image.network(
-                      'http://${ipDevice}:8080/images/doctors/${currentUser['image']}',
+                      'http://$ipDevice:8080/images/doctors/${currentUser['image']}',
                       width: 40,
                       height: 60,
                       fit: BoxFit.cover,
@@ -378,7 +378,7 @@ class _HomeDoctorScreenState extends State<HomeDoctorScreen> {
                         leading: CircleAvatar(
                           radius: 30,
                           backgroundImage: NetworkImage(
-                            'http://${ipDevice}:8080/images/patients/${patient['image']}',
+                            'http://$ipDevice:8080/images/patients/${patient['image']}',
                           ),
                         ),
                       ),
@@ -465,7 +465,7 @@ class _HomeDoctorScreenState extends State<HomeDoctorScreen> {
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(0),
                   child: Image.network(
-                    'http://${ipDevice}:8080/images/department/${item['icon']}',
+                    'http://$ipDevice:8080/images/department/${item['icon']}',
                     width: 30,
                     height: 30,
                     fit: BoxFit.cover,
@@ -476,7 +476,7 @@ class _HomeDoctorScreenState extends State<HomeDoctorScreen> {
                 ),
               ),
               const SizedBox(height: 5),
-              Container(
+              SizedBox(
                 width: 60,
                 child: Text(
                   item['name'],

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:mobile/services/Department/departmentApi.dart';
-import 'package:mobile/ultils/color_app.dart';
-import 'package:mobile/ultils/list_service.dart';
+import 'package:mobile/services/Department/department_api.dart';
+import 'package:mobile/utils/color_app.dart';
+import 'package:mobile/utils/list_service.dart';
 
 import '../../models/department.dart';
 import '../../models/doctor.dart';
-import '../../ultils/ip_app.dart';
+import '../../utils/ip_app.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mobile/models/patient.dart';
-import 'package:mobile/services/appointmentService.dart';
+import 'package:mobile/services/appointment_service.dart';
 
 import '../../models/appointment.dart';
-import '../../services/patientService.dart';
-import '../../ultils/ip_app.dart';
+import '../../services/patient_service.dart';
+import '../../utils/ip_app.dart';
 
 class AppointmentUpcomingScreen extends StatefulWidget {
   const AppointmentUpcomingScreen({super.key});
@@ -19,12 +19,24 @@ class _AppointmentUpcomingScreen extends State<AppointmentUpcomingScreen> {
   final ipDevice = BaseClient().ip;
   late int? appointmentId;
   late int? patientId;
-  late  String patientName;
-  late  String gender;
-  late  int age;
-
+  late String? patientName;
+  late String? gender;
+  late int? age;
   late Future<Appointment> _appointmentFutureWaiting;
   late Future<Patient> _patientFuture;
+
+
+  String getDayOfWeek(String date) {
+    // List các tên thứ trong tuần
+    List<String> daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+
+    DateTime day01 = DateTime.parse(date);
+    // Lấy chỉ số thứ của ngày
+    int dayIndex = day01.weekday - 1; // Chú ý: DateTime.weekday trả về 1 cho Thứ Hai và 7 cho Chủ Nhật
+
+    // Trả về tên thứ tương ứng
+    return daysOfWeek[dayIndex];
+  }
 
   int calculateAge(String birthday) {
     DateTime birthDate = DateFormat('yyyy-MM-dd').parse(birthday);
@@ -54,14 +66,23 @@ class _AppointmentUpcomingScreen extends State<AppointmentUpcomingScreen> {
     _appointmentFutureWaiting =
         AppointmentClient().fetchAppointmentById(appointmentId!);
     _patientFuture = PatientClient().getPatientById(patientId!);
+
     _patientFuture.then((patient) {
-      patientName = patient.fullName;
-      gender = patient.gender;
-      age = calculateAge(patient.birthday).toString() as int;
-        }).catchError((error) {
-             print('Error fetching patient data: $error');
+      setState(() {
+        patientId = patient.id;
+        patientName = patient.fullName;
+        gender = patient.gender;
+        age = calculateAge(patient.birthday.toString());
+      });
+
     });
+
+
   }
+
+  late TextEditingController txtCancelledReason = TextEditingController();
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -192,13 +213,13 @@ class _AppointmentUpcomingScreen extends State<AppointmentUpcomingScreen> {
                           const SizedBox(height: 15),
                           Column(
                             children: [
-                              const Row(
+                              Row(
                                 children: [
                                   Icon(Icons.calendar_month),
                                   SizedBox(
                                     width: 15,
                                   ),
-                                  Text('Monday - Friday 08:00 - 22:00',
+                                  Text('${getDayOfWeek(item.medicalExaminationDay)}: ${item.medicalExaminationDay}',
                                       style: TextStyle(
                                         color: Colors.black,
                                         fontWeight: FontWeight.w400,
@@ -233,7 +254,7 @@ class _AppointmentUpcomingScreen extends State<AppointmentUpcomingScreen> {
                       const Column(
                         children: [
                           Text(
-                            'Patient Infomation',
+                            'Patient Information',
                             style: TextStyle(
                               fontSize: 22,
                               fontWeight: FontWeight.bold,
@@ -271,7 +292,7 @@ class _AppointmentUpcomingScreen extends State<AppointmentUpcomingScreen> {
                             ),
                           ],
                         ),
-                        const TableRow(
+                        TableRow(
                           children: [
                             Padding(
                               padding:
@@ -288,7 +309,7 @@ class _AppointmentUpcomingScreen extends State<AppointmentUpcomingScreen> {
                               padding:
                                   EdgeInsets.symmetric(vertical: 5.0),
                               child: Text(
-                                '27',
+                                '${age!}',
                                 style: TextStyle(
                                   color: Colors.black,
                                   fontWeight: FontWeight.w400,
@@ -298,7 +319,7 @@ class _AppointmentUpcomingScreen extends State<AppointmentUpcomingScreen> {
                             ),
                           ],
                         ),
-                        const TableRow(
+                        TableRow(
                           children: [
                             Padding(
                               padding:
@@ -315,7 +336,7 @@ class _AppointmentUpcomingScreen extends State<AppointmentUpcomingScreen> {
                               padding:
                                   EdgeInsets.symmetric(vertical: 5.0),
                               child: Text(
-                                'Female',
+                                '${gender!}',
                                 style: TextStyle(
                                   color: Colors.black,
                                   fontWeight: FontWeight.w400,
@@ -329,7 +350,7 @@ class _AppointmentUpcomingScreen extends State<AppointmentUpcomingScreen> {
                           children: [
                             Padding(
                               padding:
-                                  const EdgeInsets.symmetric(vertical: 5.0),
+                                  EdgeInsets.symmetric(vertical: 5.0),
                               child: Text(
                                 'Problem',
                                 style: TextStyle(
@@ -340,9 +361,9 @@ class _AppointmentUpcomingScreen extends State<AppointmentUpcomingScreen> {
                             ),
                             Padding(
                               padding:
-                                  const EdgeInsets.symmetric(vertical: 5.0),
+                                  EdgeInsets.symmetric(vertical: 5.0),
                               child: Text(
-                                'Hello, simply dummy text or the printing and typesetting industry. Lorem Ipsum 1500s. View More',
+                                item.note,
                                 style: TextStyle(
                                   color: Colors.black,
                                   fontWeight: FontWeight.w400,
@@ -353,6 +374,17 @@ class _AppointmentUpcomingScreen extends State<AppointmentUpcomingScreen> {
                           ],
                         ),
                       ]),
+                      const SizedBox(
+                        height: 25,
+                      ),
+                      TextField(
+                        controller: txtCancelledReason,
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: 'Cancelled Reason',
+                        ),
+                      )
+
                     ],
                   ),
                   //)
