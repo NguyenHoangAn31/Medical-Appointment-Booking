@@ -167,10 +167,9 @@ class _SignInScreenState extends State<SignInScreen> {
         CurrentUser.to.setUser(dataForCurrentUser);
       
         SharedPreferences prefs = await SharedPreferences.getInstance();
-        String userDataString = jsonEncode(dataForCurrentUser);
+        // String userDataString = jsonEncode();
         String role = result['user']['roles'][0];
-        await prefs.setString('user_data', userDataString);
-        await prefs.setString('role', role);
+        await prefs.setString('id_and_role', '{"id":"${dataForCurrentUser['id']}","role":"${role}"}');
 
         if (result['user']['roles'][0] == 'USER') {
           Navigator.pushNamed(context, '/home');

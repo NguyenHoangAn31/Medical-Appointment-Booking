@@ -5,9 +5,11 @@ import 'package:mobile/screens/auth/sign_screen.dart';
 
 //import 'package:mobile/screens/login_screen.dart';
 import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:mobile/utils/ip_app.dart';
 import 'package:mobile/utils/store_current_user.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -25,6 +27,7 @@ class WelcomeScreen extends StatefulWidget {
 class _WelcomeScreenState extends State<WelcomeScreen>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
+  final ipDevice = BaseClient().ip;
 
   @override
   void initState() {
@@ -40,19 +43,28 @@ class _WelcomeScreenState extends State<WelcomeScreen>
 
   _loadUser() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? userDataString = prefs.getString('user_data');
-    String? role = prefs.getString('role');
+    String? userDataString = prefs.getString('id_and_role');
+    // String? role = prefs.getString('role');
     if (userDataString != null) {
-      Map<String, dynamic> user = jsonDecode(userDataString);
-      CurrentUser.to.setUser(user);
+      Map<String, dynamic> id_and_role = jsonDecode(userDataString);
+
+      var path = id_and_role['role'] == 'USER' ? 'patient' : 'doctor/findbyuserid';
+      var urlForCurrentUser =
+          'http://$ipDevice:8080/api/$path/${id_and_role['id']}';
+      var response = await http.get(
+        Uri.parse(urlForCurrentUser),
+        headers: {'Content-Type': 'application/json'},
+      );
+      var dataForCurrentUser = jsonDecode(response.body);
+      CurrentUser.to.setUser(dataForCurrentUser);
 
       log(userDataString);
 
-      if (role == 'USER') {
+      if (id_and_role['role'] == 'USER') {
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (context) => NavigationMenu()),
         );
-      } else if (role == 'DOCTOR') {
+      } else if (id_and_role['role'] == 'DOCTOR') {
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (context) => NavigationMenuDoctor()),
         );
