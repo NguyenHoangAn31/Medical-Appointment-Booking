@@ -5,10 +5,7 @@
  import org.springframework.http.HttpStatus;
  import org.springframework.http.MediaType;
  import org.springframework.http.ResponseEntity;
- import org.springframework.web.bind.annotation.GetMapping;
- import org.springframework.web.bind.annotation.RequestMapping;
- import org.springframework.web.bind.annotation.RequestParam;
- import org.springframework.web.bind.annotation.RestController;
+ import org.springframework.web.bind.annotation.*;
  import vn.aptech.backendapi.config.PaymentConfiguration;
  import vn.aptech.backendapi.dto.PaymentResDto;
 
@@ -24,20 +21,17 @@
  public class PaymentController {
      @GetMapping(value = "/create_payment_url", produces = MediaType.APPLICATION_JSON_VALUE)
      public ResponseEntity<?> createPayment(
-             @RequestParam String amount,
-             @RequestParam String orderType,
-             @RequestParam String returnUrl,
+             @RequestParam  String amount,
+             @RequestParam  String orderType,
+             @RequestParam  String returnUrl,
              HttpServletRequest request
      ) throws UnsupportedEncodingException {
          String vnp_Version = "2.1.0";
          String vnp_Command = "pay";
-         //String orderType = "other";
-         //long amount = 150000*100;
          String bankCode = "NCB";
-
          String vnp_TxnRef = PaymentConfiguration.getRandomNumber(8);
          String vnp_IpAddr = "127.0.0.1";
-
+         System.out.println(amount);
          String vnp_TmnCode = PaymentConfiguration.vnp_TmnCode;
 
          Map<String, String> vnp_Params = new HashMap<>();
@@ -62,7 +56,7 @@
          String vnp_CreateDate = formatter.format(cld.getTime());
          vnp_Params.put("vnp_CreateDate", vnp_CreateDate);
 
-         cld.add(Calendar.MINUTE, 15);
+         cld.add(Calendar.MINUTE, 9);
          String vnp_ExpireDate = formatter.format(cld.getTime());
          vnp_Params.put("vnp_ExpireDate", vnp_ExpireDate);
 
@@ -109,6 +103,20 @@
          } else {
              response.sendRedirect("http://localhost:5173/proccess-payment?status=failed");
          }
+     }
+
+     @GetMapping(value = "/return", produces = MediaType.APPLICATION_JSON_VALUE)
+     public ResponseEntity<Map<String, String>> paymentReturn(HttpServletRequest request) {
+         // Xử lý kết quả trả về từ VNPay
+         String status = request.getParameter("vnp_ResponseCode");
+         Map<String, String> responseMap = new HashMap<>();
+         if ("00".equals(status)) {
+             responseMap.put("status", "success");
+         } else {
+             responseMap.put("status", "failed");
+         }
+
+         return ResponseEntity.ok(responseMap);
      }
 
  }

@@ -1,10 +1,12 @@
+import 'dart:async';
 import 'dart:convert';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_paypal/flutter_paypal.dart';
 import 'package:intl/intl.dart';
 import 'package:mobile/utils/constants.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../models/doctor.dart';
 import '../../services/doctor/doctor_service.dart';
@@ -12,6 +14,7 @@ import 'package:awesome_dialog/awesome_dialog.dart';
 
 import '../../utils/ip_app.dart';
 import 'package:http/http.dart' as http;
+
 
 
 class PaymentScreen extends StatefulWidget {
@@ -25,13 +28,10 @@ class _PaymentScreenState extends State<PaymentScreen> {
   final ipDevice = BaseClient().ip;
   String _selectedPaymentMethod = 'vnpay';
   late Future<Doctor> _doctorFuture;
+  late Uri paymentUrl;
+  late Timer _timer;
+  bool isCheckingStatus = false;
 
-  @override
-  void initState() {
-    super.initState();
-    // Khởi tạo TextEditingController với dữ liệu có sẵn
-
-  }
 
   late String? fullNameDoctor;
   late String? department;
@@ -40,10 +40,22 @@ class _PaymentScreenState extends State<PaymentScreen> {
   late Map<String, dynamic> _data;
 
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+
+  }
+
+
   void didChangeDependencies() {
     super.didChangeDependencies();
     final Map<String, dynamic> data = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>;
     _data = data;
+    print(_data);
     _doctorFuture =  getDoctorById(data['doctorId']);
     _doctorFuture.then((doctor) {
       if (doctor != null) {
@@ -54,41 +66,19 @@ class _PaymentScreenState extends State<PaymentScreen> {
           price = doctor.price;
         });
       } else {
-        // Handle case when patient data is null
-        if (kDebugMode) {
-          print('Patient data is null.');
-        }
       }
     }).catchError((error) {
       if (kDebugMode) {
         print('Error fetching patient data: $error');
       }
     });
-    setState(() {
-    });
+
   }
 
- void handlePaypal(String paymentMethod,Map<String, dynamic> data){
+ void handlePaypal(String paymentMethod,Map<String, dynamic> data) async{
     double priceFormat = data['price']/Constants.USD;
+    double formattedPrice = double.parse(priceFormat.toStringAsFixed(2));
    if(paymentMethod == 'paypal'){
-     AwesomeDialog(
-       context: context,
-       animType: AnimType.bottomSlide,
-       dialogType: DialogType.success,
-       body: Center(child: Text(
-         'Dear ${_data['patientName']}!'
-             'You have successfully booked your appointment! '
-             'Please come to the medical examination facility on ${_data['medicalExaminationDay']} '
-             'at ${_data['clinicHour']} to have a doctor examine you! '
-             'Wish you quickly recovered. Best regards!',
-         style: TextStyle(fontStyle: FontStyle.italic),
-         textAlign: TextAlign.center,
-       ),),
-       btnOkOnPress: () {
-         addAppointment(_data);
-         Navigator.pushNamed(context, '/appointment/upcoming/detail');
-       },
-     )..show();
      Navigator.of(context).push(
          MaterialPageRoute(
            builder: (BuildContext context) => UsePaypal(
@@ -102,7 +92,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                transactions:  [
                  {
                    "amount": {
-                     "total": '10.2',
+                     "total": '${formattedPrice}',
                      "currency": "USD",
                    },
                    "description":
@@ -111,6 +101,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                ],
                note: "Contact us for any questions on your order.",
                onSuccess: (Map params) async {
+                 print('onSuccess: $params');
                  AwesomeDialog(
                    context: context,
                    animType: AnimType.bottomSlide,
@@ -125,12 +116,13 @@ class _PaymentScreenState extends State<PaymentScreen> {
                      textAlign: TextAlign.center,
                    ),),
                    btnOkOnPress: () {
-                      addAppointment(data);
-                      Navigator.pushNamed(context, '/appointment/upcoming/detail');
+                      // addAppointment(data);
+                      //Navigator.pushNamed(context, '/appointment/upcoming/detail');
                    },
                  )..show();
                },
                onError: (error) {
+                 print('cancelled: $error');
                  AwesomeDialog(
                    context: context,
                    animType: AnimType.bottomSlide,
@@ -162,10 +154,60 @@ class _PaymentScreenState extends State<PaymentScreen> {
          ),
      );
    }else{
-
+     double doubleValue = _data['price'];
+     int intValue = convertToInt(doubleValue);
+     _createPayment(intValue, 'billpayment', 'http://$ipDevice:8080/api/payment/return');
    }
 
  }
+
+
+
+  int convertToInt(double value) {
+    return value.toInt();
+  }
+
+  Future<void> _launchURL(Uri url) async {
+    if (await canLaunchUrl(url)) {
+      await launchUrl(url);
+      _listenForReturnUrl();
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+  void _listenForReturnUrl() {
+    // Listen for returnUrl when the app is resumed
+    SystemChannels.lifecycle.setMessageHandler((msg) {
+      if (msg == AppLifecycleState.resumed.toString()) {
+        _checkReturnUrl();
+      }
+      return Future.value(null);
+    });
+  }
+
+  void _checkReturnUrl() {
+    // Check the URL when the app is resumed
+    // You need to implement the logic to get the URL here
+    // For example, you can use deep link handling or platform-specific code to get the URL
+  }
+
+  Future<void> _createPayment(int amount, String orderType, String returnUrl) async {
+
+    final response = await http.get(
+        Uri.parse('http://$ipDevice:8080/api/payment/create_payment_url?amount=$amount&orderType=$orderType&returnUrl=$returnUrl'),
+    );
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> responseData = jsonDecode(response.body);
+      if (responseData.containsKey('url')) {
+        final String paymentUrl = responseData['url']; // Lấy giá trị của 'url'
+        _launchURL(Uri.parse(paymentUrl));
+      } else {
+        throw Exception('Response does not contain a valid payment URL');
+      }
+    } else {
+      throw Exception('Failed to create payment');
+    }
+  }
 
   void addAppointment(Map<String, dynamic> data) async {
     final _data = {
@@ -183,6 +225,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
     "clinicHours" : data["clinicHours"],
     "reason" : data["reason"],
     };
+    print(_data);
     final response = await http.post(
       Uri.parse(
           'http://$ipDevice:8080/api/appointment/create'),
@@ -190,7 +233,6 @@ class _PaymentScreenState extends State<PaymentScreen> {
     );
     print(response.statusCode);
     if (response.statusCode == 200) {
-      final result = jsonDecode(response.body);
     } else {
       AwesomeDialog(
             context: context,
@@ -202,8 +244,6 @@ class _PaymentScreenState extends State<PaymentScreen> {
               textAlign: TextAlign.center,
             ),),
             btnOkOnPress: () {
-              //addAppointment(_data);
-              //Navigator.pushNamed(context, '/appointment/upcoming/detail');
             },
           )..show();
     }
@@ -212,10 +252,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
 
   @override
   Widget build(BuildContext context) {
-
-    String clinicHours = "08:30";
+    String clinicHours = _data['clinicHours'];
     int durationMinutes = 30;
-
     TimeOfDay startTime = TimeOfDay(
       hour: int.parse(clinicHours.split(":")[0]),
       minute: int.parse(clinicHours.split(":")[1]),
@@ -230,7 +268,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
     String formattedClinicHours = "${startTime.format(context)} - ${endTime.format(context)}";
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Payment'),
+        title: const Text('Payment Information'),
         centerTitle: true,
       ),
       body: SingleChildScrollView(
@@ -292,7 +330,15 @@ class _PaymentScreenState extends State<PaymentScreen> {
                     DataCell(Text('Examination price', style: TextStyle(
                       fontWeight: FontWeight.bold,
                     ))),
-                    DataCell(Text(NumberFormat.currency(locale: 'vi_VN', symbol: '₫').format(price))),
+                    DataCell(
+                        Row(
+                          children: [
+                            Text(NumberFormat.currency(locale: 'vi_VN', symbol: '₫').format(price)),
+                            Text(' - '),
+                            Text('${NumberFormat('#,##0.0', 'en_US').format(_data['price']! / Constants.USD)} USD'),
+                          ],
+                        )
+                    ),
                   ]),
 
                   DataRow(cells: [
@@ -305,7 +351,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                           children: [
                             Text(NumberFormat.currency(locale: 'vi_VN', symbol: '₫').format(_data['price'])),
                             Text(' - '),
-                            Text('${NumberFormat('#,##0.0', 'en_US').format(_data['price']! / 23000)} USD'),
+                            Text('${NumberFormat('#,##0.0', 'en_US').format(_data['price']! / Constants.USD)} USD'),
                           ],
                         )
                     ),

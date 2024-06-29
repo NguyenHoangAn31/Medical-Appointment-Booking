@@ -48,7 +48,7 @@ public class SecurityConfiguration {
     public SecurityFilterChain api(HttpSecurity http) throws Exception {
 
 
-        PublicRoutes.PublicRoutesManager.publicRoutes().add(HttpMethod.POST, "/api/auth/**", "/paypal/**").injectOn(http);
+        PublicRoutes.PublicRoutesManager.publicRoutes().add(HttpMethod.POST, "/api/auth/**", "/paypal/**", "/api/payment/**").injectOn(http);
         PublicRoutes.PublicRoutesManager.publicRoutes().add(HttpMethod.GET, "/api/payment/**","/api/schedules/**" ).injectOn(http);
         http.csrf(AbstractHttpConfigurer::disable).securityMatcher("/api/**")
                 .authorizeHttpRequests(request -> {

@@ -1,13 +1,13 @@
 import 'package:mobile/models/patient.dart';
 import 'dart:core';
-class Feedback{
+class Feedbacks{
   late final int id;
   late final int patientId;
   late final double rate;
   late final String comment;
   late final bool status;
   late final Patient patient;
-  Feedback({
+  Feedbacks({
     required this.id,
     required this.patientId,
     required this.rate,
@@ -15,8 +15,8 @@ class Feedback{
     required this.status,
     required this.patient,
   });
-  factory Feedback.fromJson(Map<String, dynamic> json){
-    return Feedback(
+  factory Feedbacks.fromJson(Map<String, dynamic> json){
+    return Feedbacks(
       id: json['id'] ?? 0,
       patientId: json['patientId'] ?? 0,
       rate: json['rate'] ?? 0.0,
