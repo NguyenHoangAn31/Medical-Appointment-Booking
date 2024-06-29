@@ -224,10 +224,10 @@ const ManageDepartment = () => {
 
     },
     {
-      title: 'Address',
+      title: 'Url',
       dataIndex: 'url',
       key: 'url',
-      width: '26%',
+      width: '16%',
       filteredValue: filteredInfo.url || null,
       sorter: (a, b) => a.url.localeCompare(b.url),
       sortOrder: sortedInfo.columnKey === 'url' ? sortedInfo.order : null,
@@ -288,7 +288,7 @@ const ManageDepartment = () => {
       render: (_, record) => (
         <div style={{ display: 'flex' }}>
           <Link style={{ marginRight: '16px', color: 'blue' }}
-            to={`/dashboard/admin/manage-department/edit?id=${record.id}`}>
+            to={`/dashboard/admin/manage-department/edit?id=${record.id}&slug=${record.url}`}>
             <Button type="primary" icon={<EditOutlined />} style={{ backgroundColor: 'orange' }} >
               Edit
             </Button>

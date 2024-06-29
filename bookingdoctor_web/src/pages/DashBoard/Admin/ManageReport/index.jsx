@@ -284,7 +284,7 @@ const ManageReport = () => {
 
     },
     {
-      title: 'Finished',
+      title: 'Completed',
       dataIndex: 'countFinished',
       key: 'countFinished',
       width: '6%',

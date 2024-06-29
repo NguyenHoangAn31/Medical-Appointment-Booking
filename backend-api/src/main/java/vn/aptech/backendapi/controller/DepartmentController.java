@@ -32,6 +32,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import vn.aptech.backendapi.dto.DepartmentDto;
 import vn.aptech.backendapi.service.Department.DepartmentService;
 import vn.aptech.backendapi.service.File.FileService;
+import org.springframework.util.StringUtils;
 
 @RestController
 @RequestMapping(value = "/api/department")
@@ -43,16 +44,17 @@ public class DepartmentController {
     @Autowired
     private DepartmentService departmentService;
 
-    
+    // @PreAuthorize("hasAnyAuthority('ADMIN')")
+
     @GetMapping(value = "/all", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<DepartmentDto>> findAll() {
         List<DepartmentDto> result = departmentService.findAll();
         return ResponseEntity.ok(result);
     }
 
-    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<DepartmentDto> findById(@PathVariable("id") int id) {
-        Optional<DepartmentDto> result = departmentService.findById(id);
+    @GetMapping(value = "/{slug}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<DepartmentDto> findBySlug(@PathVariable("slug") String slug) {
+        Optional<DepartmentDto> result = departmentService.findBySlug(slug);
         if (result.isPresent()) {
             return ResponseEntity.ok(result.get());
         } else {
@@ -83,23 +85,26 @@ public class DepartmentController {
     }
 
     @PostMapping(value = "/create", produces = MediaType.APPLICATION_JSON_VALUE)
-    // @PreAuthorize("hasAnyAuthority('ADMIN')")
-    public ResponseEntity<DepartmentDto> Create(@RequestParam("icon") MultipartFile photo,
-            @RequestParam("department") String department) throws IOException {
+    public ResponseEntity<DepartmentDto> createDepartment(
+            @RequestParam("icon") MultipartFile photo,
+            @RequestParam("department") String departmentJson) throws IOException {
 
-        // xử lý DepartmentDto
         ObjectMapper objectMapper = new ObjectMapper();
-        DepartmentDto departmentDto = objectMapper.readValue(department, DepartmentDto.class);
-        // xử lý hình ảnh
+        DepartmentDto departmentDto = objectMapper.readValue(departmentJson, DepartmentDto.class);
 
+        // Tạo URL slug từ trường name
+        String slug = generateSlug(departmentDto.getName());
+        departmentDto.setUrl(slug);
+
+        // Xử lý hình ảnh
         departmentDto.setIcon(fileService.uploadFile("department", photo));
+
         DepartmentDto result = departmentService.save(departmentDto);
         if (result != null) {
-            return ResponseEntity.ok(result); // Return the created SlotDto
+            return ResponseEntity.ok(result); // Trả về DepartmentDto đã tạo thành công
         } else {
             return ResponseEntity.notFound().build();
         }
-
     }
 
     @PutMapping(value = "/update/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -124,6 +129,8 @@ public class DepartmentController {
 
         }
         departmentDto.setId(id);
+        String slug = generateSlug(departmentDto.getName());
+        departmentDto.setUrl(slug);
         DepartmentDto updatedDepartment = departmentService.save(departmentDto);
         if (updatedDepartment != null) {
 
@@ -134,12 +141,19 @@ public class DepartmentController {
     }
 
     @PutMapping(value = "/changestatus/{id}/{status}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> changeStatusDepartment(@PathVariable("id") int id,@PathVariable("status") int status) {
-        boolean changed = departmentService.changeStatus(id,status);
+    public ResponseEntity<?> changeStatusDepartment(@PathVariable("id") int id, @PathVariable("status") int status) {
+        boolean changed = departmentService.changeStatus(id, status);
         if (changed) {
             return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    private String generateSlug(String name) {
+        String slug = StringUtils.trimWhitespace(name).toLowerCase()
+                .replaceAll("\\s+", "-")
+                .replaceAll("[^\\w\\-]+", "");
+        return slug;
     }
 }

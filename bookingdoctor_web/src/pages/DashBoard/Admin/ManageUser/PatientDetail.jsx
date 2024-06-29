@@ -6,6 +6,7 @@ import { Input, Switch } from 'antd';
 import { changeStatus } from '../../../../services/API/changeStatus';
 import { AlertContext } from '../../../../components/Layouts/DashBoard';
 import Spinner from '../../../../components/Spinner';
+import { formatDateFromArray } from '../../../../ultils/formatDate';
 
 function PatientDetail() {
 
@@ -97,7 +98,7 @@ function PatientDetail() {
             </div>
             <div className='mb-3'>
               <label className='mb-1' style={{fontWeight:700}}>Birthday</label>
-              <Input value={patient.birthday !== null ? patient.birthday : ''}  />
+              <Input value={patient.birthday !== null ? formatDateFromArray(patient.birthday) : ''}  />
             </div>
             {
               !Object.keys(patient).length != 0 ? null :

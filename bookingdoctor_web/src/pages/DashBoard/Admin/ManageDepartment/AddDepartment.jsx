@@ -102,7 +102,7 @@ function AddDepartment() {
       {/* <Link to={`/dashboard/admin/manage-slot`}><LeftOutlined /> Back To Slot</Link> */}
 
       <div className='d-lg-flex mb-5'>
-        <div  data-aos="fade-down" style={{ flexGrow: 1, marginTop: 50 ,width:'50%'}}>
+        <div data-aos="fade-down" style={{ flexGrow: 1, marginTop: 50, width: '50%' }}>
           <div style={{}}>
             <h1 className='text-primary'>Create New Department</h1>
             <hr className='w-75' />
@@ -119,33 +119,16 @@ function AddDepartment() {
               marginTop: '45px'
             }}
           >
-            <Form.Item label="Name" rules={[
-              {
-                required: true,
-              },
-            ]} name="name">
+
+            <Form.Item label="Name"
+              rules={[
+                { required: true, message: 'Please enter name' },
+                { max: 50, message: 'Name cannot exceed 50 characters' },
+              ]}
+              name="name">
               <Input onChange={(e) => onInputChangeForDepartment('name', e.target.value)} />
             </Form.Item>
 
-            {/* <Form.Item label="Status" rules={[
-          {
-            required: true,
-          },
-        ]} name="status">
-          <Select onChange={(e) => onInputChangeForDepartment('status', e)} >
-            <Select.Option value="1">Active</Select.Option>
-            <Select.Option value="0">Not Active</Select.Option>
-
-          </Select>
-        </Form.Item> */}
-
-            <Form.Item label="Address" rules={[
-              {
-                required: true,
-              },
-            ]} name="url">
-              <Input onChange={(e) => onInputChangeForDepartment('url', e.target.value)} />
-            </Form.Item>
 
             <Form.Item label="Icon" valuePropName="fileList" getValueFromEvent={normFile} rules={[
               {
@@ -186,7 +169,7 @@ function AddDepartment() {
             </Form.Item>
           </Form>
         </div>
-        <div data-aos="fade-left" style={{ width: "50%"}}>
+        <div data-aos="fade-left" style={{ width: "50%" }}>
           <img src='/images/dashboard/department_create.jpg' alt="" className='w-100' />
         </div>
       </div>

@@ -12,4 +12,13 @@ export const formatDateFromJs = (dateString) => {
 
     return `${year}-${month}-${day}`;
 }
+export const formatDateFromArray = (dateArray) => {
+    if (!dateArray || dateArray.length !== 3) return '';
+    const [year, month, day] = dateArray;
+    const formattedDay = String(day).padStart(2, '0');
+    const formattedMonth = String(month).padStart(2, '0');
+    return `${formattedDay}-${formattedMonth}-${year}`;
+  }
+  
 
+  

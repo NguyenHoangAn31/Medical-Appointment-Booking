@@ -13,7 +13,7 @@ import {
 } from 'antd';
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { DeleteOutlined, EditOutlined, EyeOutlined, LeftOutlined, PlusOutlined, SearchOutlined, SoundTwoTone } from '@ant-design/icons';
-import { deleteDoctorFromDepartment, findDepartmentById, getDoctorByDepartmentId } from '../../../../services/API/departmentService';
+import { deleteDoctorFromDepartment, findDepartmentBySlug, getDoctorByDepartmentId } from '../../../../services/API/departmentService';
 import { updateDepartment } from '../../../../services/API/departmentService';
 import { AlertContext } from '../../../../components/Layouts/DashBoard';
 import Spinner from '../../../../components/Spinner';
@@ -71,6 +71,7 @@ function EditDepartment() {
   // lấy id từ url
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
+  const slug = queryParams.get("slug");
   const id = queryParams.get("id");
 
   // khởi tạo đối tượng department
@@ -91,7 +92,7 @@ function EditDepartment() {
 
   // xét giá trị cho department
   const loadDepartment = async () => {
-    setDepartment(await findDepartmentById(id));
+    setDepartment(await findDepartmentBySlug(slug));
   };
   const loadDoctor = async () => {
     const d = await getDoctorByDepartmentId(id);
@@ -126,7 +127,7 @@ function EditDepartment() {
       const formData = new FormData()
       formData.append('icon', icon)
       formData.append('department', JSON.stringify((department)))
-      await updateDepartment(id, formData);
+      await updateDepartment(department.id, formData);
       openNotificationWithIcon('success', 'Editing Department Successfully', '')
       navigate("/dashboard/admin/manage-department");
     }
@@ -420,6 +421,8 @@ function EditDepartment() {
     },
   ];
 
+  console.log(department)
+
   return (
     <>
       {Object.keys(department).length == 0 ? <Spinner /> : <>
@@ -443,13 +446,22 @@ function EditDepartment() {
               }}
             >
 
-              <Form.Item label="Name">
-                <Input value={department.name} onChange={(e) => onInputChangeForDepartment('name', e.target.value)} required />
-              </Form.Item>
+<Form.Item
+  label="Name"
+  name="name"
+  rules={[
+    { required: true, message: 'Please enter name' },
+    { max: 50, message: 'Name cannot exceed 50 characters' },
+  ]}
+  initialValue={department.name} // Sử dụng initialValue để hiển thị giá trị ban đầu
+>
+  <Input onChange={(e) => onInputChangeForDepartment('name', e.target.value)} />
+</Form.Item>
 
-              <Form.Item label="Address">
+
+              {/* <Form.Item label="Address">
                 <Input value={department.url} onChange={(e) => onInputChangeForDepartment('url', e.target.value)} required />
-              </Form.Item>
+              </Form.Item> */}
 
 
 
