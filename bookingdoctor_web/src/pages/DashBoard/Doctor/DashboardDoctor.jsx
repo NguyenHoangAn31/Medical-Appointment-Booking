@@ -57,8 +57,7 @@ const DashboardDoctor = () => {
             </div>
           </div>
           <div className="col-lg-4 p-3">
-            {/* schedule */}
-            {/* 123 */}
+            {/* la sao ta */}
           </div>
         </div>
       </div>
