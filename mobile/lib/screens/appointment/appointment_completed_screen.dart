@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import '../../models/appointment.dart';
@@ -8,7 +7,6 @@ import '../../models/scheduledoctor.dart';
 import '../../services/appointment_service.dart';
 import '../../services/patient_service.dart';
 import '../../utils/ip_app.dart';
-import 'package:http/http.dart' as http;
 
 class AppointmentCompletedScreen extends StatefulWidget {
   const AppointmentCompletedScreen({super.key});
@@ -72,6 +70,7 @@ class _AppointmentCompletedScreenState
     final Map arguments = ModalRoute.of(context)?.settings.arguments as Map;
     appointmentId = arguments['appointmentId'] as int;
     patientId = arguments['patientId'] as int;
+    scheduleId = arguments['scheduleId'] as int;
     _patientFuture = PatientClient().getPatientById(patientId!);
     _patientFuture.then((patient) {
       setState(() {
@@ -81,14 +80,7 @@ class _AppointmentCompletedScreenState
         age = calculateAge(patient.birthday.toString());
       });
     });
-    _appointmentFutureCompleted =
-        AppointmentClient().fetchAppointmentById(appointmentId!);
-    _appointmentFutureCompleted.then((appointment) {
-      setState(() {
-        scheduleId = appointment.scheduledoctorId;
-        scheduleDoctor = AppointmentClient().getDoctorIdByScheduleId(scheduleId!) as ScheduleDoctor?;
-      });
-    });
+    scheduleDoctor = AppointmentClient().getDoctorIdByScheduleId(scheduleId!) as ScheduleDoctor?;
 
 
   }

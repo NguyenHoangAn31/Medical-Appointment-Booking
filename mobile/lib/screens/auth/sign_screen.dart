@@ -106,7 +106,10 @@ class _SignInScreenState extends State<SignInScreen> {
       else {
           String result = await checkRefreshToken();
           if (result == 'USER') {
-            Navigator.pushNamed(context, '/home');
+            Navigator.of(context).pushNamedAndRemoveUntil(
+              '/home',
+                  (Route<dynamic> route) => false,
+            );
           }
           if (result == 'DOCTOR') {
             Navigator.pushNamed(context, '/dashboard/doctor/home');
