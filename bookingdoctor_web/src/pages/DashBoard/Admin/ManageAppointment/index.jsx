@@ -300,7 +300,7 @@ const ManageAppointment = () => {
 
     {
       title: 'Action',
-      width: '8%',
+      width: '6%',
       dataIndex: 'operation',
       render: (_, record) => (
         <div style={{ display: 'flex', justifyContent: 'center' }}>

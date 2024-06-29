@@ -1,8 +1,12 @@
 import 'dart:core';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
+import 'package:get/get_common/get_reset.dart';
 import 'package:intl/intl.dart';
 import 'package:mobile/models/appointment.dart';
+import 'package:mobile/screens/appointment/appointment_screen.dart';
+import 'package:mobile/screens/doctor/doctor_screen.dart';
 import '../../models/department.dart';
 import '../../models/doctor.dart';
 import '../../services/Department/department_api.dart';
@@ -38,7 +42,7 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     departments = getDepartments();
     doctors = getDoctorByDepartmentId(0);
-    _appointmentFuture = getAppointmentsWaiting();
+    _appointmentFuture = AppointmentClient().fetchAppointmentPatient(currentUser['id'], 'waiting') as Future<Appointment>;
   }
 
   String formatTime(String time) {
@@ -61,32 +65,32 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  Future<Appointment> getAppointmentsWaiting() async {
-    _appointmentFutureWaiting =
-        AppointmentClient().fetchAppointmentPatient(currentUser['id'], 'waiting');
-    final appointments = await _appointmentFutureWaiting;
-    if (appointments.isNotEmpty) {
-      return appointments.first;
-    } else {
-      return Appointment(
-        id: 0,
-        partientId: currentUser['id'],
-        doctorId: currentUser['id'],
-        scheduledoctorId: 1,
-        price: 1,
-        image: '',
-        title: '',
-        fullName: '',
-        departmentName: '',
-        status: '',
-        note: '',
-        appointmentDate: '',
-        clinicHours: '',
-        medicalExaminationDay: '',
-        payment: '',
-      );
-    }
-  }
+  // Future<Appointment> getAppointmentsWaiting() async {
+  //   _appointmentFutureWaiting =
+  //       AppointmentClient().fetchAppointmentPatient(currentUser['id'], 'waiting');
+  //   final appointments = await _appointmentFutureWaiting;
+  //   if (appointments.isNotEmpty) {
+  //     return appointments.first;
+  //   } else {
+  //     return Appointment(
+  //       id: 0,
+  //       partientId: currentUser['id'],
+  //       doctorId: currentUser['id'],
+  //       scheduledoctorId: 1,
+  //       price: 1,
+  //       image: '',
+  //       title: '',
+  //       fullName: '',
+  //       departmentName: '',
+  //       status: '',
+  //       note: '',
+  //       appointmentDate: '',
+  //       clinicHours: '',
+  //       medicalExaminationDay: '',
+  //       payment: '',
+  //     );
+  //   }
+  // }
 
   void _handleSelected(int index) {
     setState(() {
@@ -128,7 +132,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               children: <Widget>[
                                 const Text('Hello,',
                                     style: TextStyle(
-                                        color: Colors.black26,
+                                        color: Colors.grey,
                                         fontSize: 14,
                                         fontWeight: FontWeight.bold),
                                     textAlign: TextAlign.start),
@@ -260,7 +264,9 @@ class _HomeScreenState extends State<HomeScreen> {
                             TextButton(
                               onPressed: () {
                                 // Navigate to Create Account screen
-                                Navigator.pushNamed(context, '/sign-in');
+                                Navigator.of(context).push(
+                                    MaterialPageRoute(builder: (context) => AppointmentScreen()
+                                    ));
                               },
                               child: const Text(
                                 'SEE ALL',
@@ -282,29 +288,28 @@ class _HomeScreenState extends State<HomeScreen> {
                           FutureBuilder<Appointment>(
                           future: _appointmentFuture,
                           builder: (context, snapshot) {
-                            if (snapshot.connectionState ==
-                                ConnectionState.waiting) {
-                              return Center(
-                                  child: CircularProgressIndicator());
-                            } else if (!snapshot.hasData ||
-                                 snapshot.hasError) {
+                            if (snapshot.connectionState == ConnectionState.waiting) {
+                              return const Center(child: CircularProgressIndicator());
+                            } else if (snapshot.hasError) {
+                              return Center(child: Text('Error: ${snapshot.error}'));
+                            } else if (!snapshot.hasData || snapshot.hasData == null) {
                               return Center(
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Image.asset(
-                                        'assets/images/no_result_default.png',
-                                        width: 50,
-                                        height: 50,
-                                    ),
+                                    Image.asset('assets/images/no_result_default.png'),
                                     const SizedBox(
                                       height: 10,
                                     ),
                                     const Text(
                                       'No Result Default',
-                                      style: TextStyle(fontSize: 16,
-                                          fontWeight: FontWeight.bold),
+                                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                                     ),
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                    const Text('There is no cancelled appointment'),
+                                    const Text('Book your appointment now.'),
                                   ],
                                 ),
                               );
@@ -501,8 +506,9 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                             TextButton(
                               onPressed: () {
-                                // Navigate to Create Account screen
-                                //Navigator.pushNamed(context, '/sign-in');
+                                Navigator.of(context).push(
+                                    MaterialPageRoute(builder: (context) => DoctorScreen()
+                                    ));
                               },
                               child: const Text(
                                 'SEE ALL',
@@ -553,11 +559,15 @@ class _HomeScreenState extends State<HomeScreen> {
                                           (BuildContext context, int index) => Container(
                                         child: Column(
                                           mainAxisSize: MainAxisSize.max,
-                                          // Adjusts the column to take minimum space
                                           children: [
-                                            ClipRRect(
-                                              child: Opacity(
-                                                opacity: 0.6,
+                                            InkWell(
+                                              onTap: (){
+                                                Navigator.of(context).push(
+                                                    MaterialPageRoute(builder: (context) => DoctorScreen()
+                                                    ));
+                                              },
+
+                                              child: ClipRRect(
                                                 child: Container(
                                                   width: 60,
                                                   height: 60,
@@ -597,7 +607,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                                 fontSize: 13,
                                               ),
                                               overflow: TextOverflow.ellipsis,
-                                              // Thêm dấu ba chấm nếu văn bản quá dài
                                               maxLines: 1,
                                             ),
                                           ],

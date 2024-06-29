@@ -14,10 +14,23 @@ class _PatientScreenInDoctorPageState extends State<PatientScreenInDoctorPage> {
   late Map<String, dynamic> patient;
   late String status;
   late String action;
+  late String note;
   late int id;
   bool isShowButton = false;
-    final ipDevice = BaseClient().ip;
+  final ipDevice = BaseClient().ip;
 
+  String formatDate(List<dynamic> date) {
+    if (date.length != 3) return '';
+    try {
+      int year = date[0] as int;
+      int month = date[1] as int;
+      int day = date[2] as int;
+      DateTime dateTime = DateTime(year, month, day);
+      return "${dateTime.year.toString().padLeft(4, '0')}-${dateTime.month.toString().padLeft(2, '0')}-${dateTime.day.toString().padLeft(2, '0')}";
+    } catch (e) {
+      return 'Invalid date';
+    }
+  }
 
   @override
   void didChangeDependencies() {
@@ -26,6 +39,7 @@ class _PatientScreenInDoctorPageState extends State<PatientScreenInDoctorPage> {
     patient = arguments['patient'] as Map<String, dynamic>;
     status = arguments['status'] as String;
     action = arguments['action'] as String;
+    note = arguments['note'] as String;
     id = arguments['id'] as int;
     setState(() {
       if (status == 'waiting' && action == 'allow') {
@@ -82,7 +96,7 @@ class _PatientScreenInDoctorPageState extends State<PatientScreenInDoctorPage> {
               ),
               const SizedBox(height: 10),
               Text(
-                'Birthday: ${patient["birthday"]}',
+                'Birthday: ${formatDate(patient["birthday"])}',
                 style: const TextStyle(fontSize: 16),
               ),
               const SizedBox(height: 10),
@@ -92,7 +106,7 @@ class _PatientScreenInDoctorPageState extends State<PatientScreenInDoctorPage> {
               ),
               const SizedBox(height: 20),
               Text(
-                'Note: ${patient["note"]}',
+                'Note: ${note}',
                 style: const TextStyle(fontSize: 16),
               ),
               const SizedBox(height: 20),
@@ -158,7 +172,7 @@ class _PatientScreenInDoctorPageState extends State<PatientScreenInDoctorPage> {
                           'No Show',
                           textAlign: TextAlign.center,
                           style: TextStyle(
-                            fontSize: 22,
+                            fontSize: 20,
                             color: Colors.white,
                             fontWeight: FontWeight.w600,
                             textBaseline: TextBaseline
@@ -171,7 +185,7 @@ class _PatientScreenInDoctorPageState extends State<PatientScreenInDoctorPage> {
                   ),
                   InkWell(
                     onTap: () {
-                      _handleChangeStatus("finished");
+                      _handleChangeStatus("completed");
                     },
                     splashColor: Colors.transparent,
                     highlightColor: Colors.transparent,
@@ -193,10 +207,10 @@ class _PatientScreenInDoctorPageState extends State<PatientScreenInDoctorPage> {
                       ),
                       child: const Center(
                         child: Text(
-                          'Finish',
+                          'Complete',
                           textAlign: TextAlign.center,
                           style: TextStyle(
-                            fontSize: 22,
+                            fontSize: 20,
                             color: Colors.white,
                             fontWeight: FontWeight.w600,
                             textBaseline: TextBaseline.ideographic,

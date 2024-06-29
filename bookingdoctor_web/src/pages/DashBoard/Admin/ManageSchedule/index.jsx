@@ -46,11 +46,17 @@ function ManageSchedule() {
 
   useEffect(() => {
     const renderedDates = document.querySelectorAll('.react-calendar__month-view__days__day abbr');
+    const today = new Date();
+
     renderedDates.forEach((dateElement) => {
       const dateValue = dateElement.getAttribute('aria-label');
       const buttonElement = dateElement.parentElement;
-      if (formattedDates.includes(dateValue)) {
-        buttonElement.style.color = '#7dff79';
+
+      if (dateValue) {
+        const date = new Date(dateValue);
+        if (date >= today) {
+          buttonElement.style.color = 'white';
+        }
       }
     });
   }, [value, workDay]);
@@ -83,7 +89,7 @@ function ManageSchedule() {
 
 
   return (
-    <div className='calendar' style={{minWidth:1138}}>
+    <div className='calendar' style={{ minWidth: 1138 }}>
       <Calendar onChange={handleChange} value={value} onActiveStartDateChange={() => setCalendarRendered(true)} />
     </div>
 

@@ -80,7 +80,7 @@ function AddUser() {
 
       {/* <Link to={`/dashboard/admin/manage-slot`}><LeftOutlined /> Back To Slot</Link> */}
       <div className='d-lg-flex mt-4 mb-5'>
-        <div data-aos="fade-down" style={{ width:'50%'}}>
+        <div data-aos="fade-down" style={{ width: '50%' }}>
           <div>
             <h1 className='text-primary'>Register New Account</h1>
             <hr className='w-75' />
@@ -97,20 +97,34 @@ function AddUser() {
             }}
           >
 
-            <Form.Item label="Phone" style={{ marginBottom: 30 }} rules={[
-              {
-                required: true,
-              },
-            ]} name="phone">
+            <Form.Item label="Phone" style={{ marginBottom: 30 }}
+              rules={[
+                {
+                  required: true,
+                  message: 'Phone number is required',
+                },
+                {
+                  pattern: /^[0-9]{10,}$/,
+                  message: 'Phone number must be at least 11 digits and contain only numbers',
+                },
+              ]}
+              name="phone">
               <Input onChange={(e) => onInputChangeForUser('phone', e.target.value)} />
             </Form.Item>
 
 
-            <Form.Item label="Email" style={{ marginBottom: 30 }} rules={[
-              {
-                required: true,
-              },
-            ]} name="email">
+            <Form.Item label="Email" style={{ marginBottom: 30 }}
+              rules={[
+                {
+                  required: true,
+                  message: 'Email is required',
+                },
+                {
+                  type: 'email',
+                  message: 'The input is not valid E-mail!',
+                },
+              ]}
+              name="email">
               <Input onChange={(e) => onInputChangeForUser('email', e.target.value)} />
             </Form.Item>
 
@@ -149,7 +163,7 @@ function AddUser() {
           </Form>
         </div>
 
-        <div data-aos="fade-left" style={{ width:'50%' }}>
+        <div data-aos="fade-left" style={{ width: '50%' }}>
           <img src='/images/dashboard/user_create.jpg' alt="" className='w-100' />
 
         </div>

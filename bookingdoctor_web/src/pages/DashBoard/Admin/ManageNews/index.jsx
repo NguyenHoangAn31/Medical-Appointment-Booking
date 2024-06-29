@@ -10,9 +10,9 @@ import { AlertContext } from '../../../../components/Layouts/DashBoard';
 import getUserData from '../../../../route/CheckRouters/token/Token';
 
 const ManageNews = () => {
-  const {currentUser} = useContext(AlertContext);
+  const { currentUser } = useContext(AlertContext);
   // thông báo
-  const {openNotificationWithIcon} = useContext(AlertContext);
+  const { openNotificationWithIcon } = useContext(AlertContext);
   // useState cho mảng dữ liệu news
   const [news, setNews] = useState([]);
   // useState clear search , sort
@@ -49,7 +49,7 @@ const ManageNews = () => {
     }));
     setNews(newsWithKeys);
   };
-  
+
   // thực hiện load dữ liệu 1 lần 
   useEffect(() => {
     loadNews();
@@ -70,7 +70,7 @@ const ManageNews = () => {
   // thay đổi trạng thái
   const handlechangeStatus = async (id, status) => {
     try {
-      await changeStatus('news',id, status);
+      await changeStatus('news', id, status);
       openNotificationWithIcon('success', 'Change Status Feedback Successfully', '')
       loadNews();
     } catch (error) {
@@ -283,21 +283,19 @@ const ManageNews = () => {
             </Button>
           </Link>
 
-          {
-            record.creator_id == currentUser.user.id ? <>
-              <Link style={{ marginRight: '16px' }}
-                to={`/dashboard/admin/manage-news/edit?id=${record.id}`}>
-                <Button type="primary" icon={<EditOutlined />} style={{ backgroundColor: 'orange' }}>
-                  Edit
-                </Button>
-              </Link>
-              {news.length >= 1 ? (
-                <Popconfirm title="Sure to delete?" onConfirm={() => delete_News(record.id)}>
-                  <Button type="primary" disabled={record.status} danger icon={<DeleteOutlined />}>Delete</Button>
-                </Popconfirm>
-              ) : null}
-            </> : null
-          }
+
+          <Link style={{ marginRight: '16px' }}
+            to={`/dashboard/admin/manage-news/edit?id=${record.id}`}>
+            <Button type="primary" icon={<EditOutlined />} style={{ backgroundColor: 'orange' }}>
+              Edit
+            </Button>
+          </Link>
+          {news.length >= 1 ? (
+            <Popconfirm title="Sure to delete?" onConfirm={() => delete_News(record.id)}>
+              <Button type="primary" disabled={record.status} danger icon={<DeleteOutlined />}>Delete</Button>
+            </Popconfirm>
+          ) : null}
+
 
         </div>
       ),
@@ -324,7 +322,7 @@ const ManageNews = () => {
         </Link>
       </Space>
 
-      {news.length != 0?<Table style={{userSelect:'none'}} columns={columns} dataSource={news} onChange={handleChange} />:<Spinner/>}
+      {news.length != 0 ? <Table style={{ userSelect: 'none' }} columns={columns} dataSource={news} onChange={handleChange} /> : <Spinner />}
     </>
   )
 };

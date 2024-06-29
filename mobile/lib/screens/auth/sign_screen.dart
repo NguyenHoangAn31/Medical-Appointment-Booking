@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
@@ -8,6 +10,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:mobile/services/auth_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
@@ -63,56 +66,102 @@ class _SignInScreenState extends State<SignInScreen> {
   }
 
   Future<void> verifyPhoneNumber() async {
-    bool isAccount = await AuthClient().checkAccount(
-        _phoneNumberController.text);
+    bool isAccount =
+        await AuthClient().checkAccount(_phoneNumberController.text);
     if (isAccount) {
-      bool isPhone = await AuthClient().sendOtp(_phoneNumberController.text);
-      if (isPhone) {
-              await auth.verifyPhoneNumber(
-                timeout: const Duration(seconds: 60),
-                phoneNumber: formatPhoneNumber(_phoneNumberController.text),
-                verificationCompleted: (PhoneAuthCredential credential) async {
-                  // Auto-retrieval or instant validation
-                  await auth.signInWithCredential(credential);
-                  if (kDebugMode) {
-                    print(
-                        'Phone number automatically verified and user signed in: ${auth.currentUser}');
-                  }
-                },
-                verificationFailed: (FirebaseAuthException e) {
-                  if (kDebugMode) {
-                    print(
-                        'Phone number verification failed. Code: ${e.code}. Message: ${e.message}');
-                  }
-                },
-                codeSent: (String verificationId, int? resendToken) {
-                  setState(() {
-                    _isShowOtp = true;
-                    otpVisibility = true;
-                    this.verificationId = verificationId;
-                  });
-                  if (kDebugMode) {
-                    print('Please check your phone for the verification code.');
-                  }
-                },
-                codeAutoRetrievalTimeout: (String verificationId) {
-                  // Auto-resolution timed out...
-                  setState(() {
-                    this.verificationId = verificationId;
-                  });
-                },
-              );
-        }
-      else {
-          String result = await checkRefreshToken();
-          if (result == 'USER') {
-            Navigator.pushNamed(context, '/home');
+      // bool isPhone = await AuthClient().sendOtp(_phoneNumberController.text);
+      // if (isPhone) {
+      await auth.verifyPhoneNumber(
+        timeout: const Duration(seconds: 60),
+        phoneNumber: formatPhoneNumber(_phoneNumberController.text),
+        verificationCompleted: (PhoneAuthCredential credential) async {
+          // Auto-retrieval or instant validation
+          await auth.signInWithCredential(credential);
+          if (kDebugMode) {
+            print(
+                'Phone number automatically verified and user signed in: ${auth.currentUser}');
+
+//       bool isPhone = await AuthClient().sendOtp(_phoneNumberController.text);
+//       if (isPhone) {
+//               await auth.verifyPhoneNumber(
+//                 timeout: const Duration(seconds: 60),
+//                 phoneNumber: formatPhoneNumber(_phoneNumberController.text),
+//                 verificationCompleted: (PhoneAuthCredential credential) async {
+//                   // Auto-retrieval or instant validation
+//                   await auth.signInWithCredential(credential);
+//                   if (kDebugMode) {
+//                     print(
+//                         'Phone number automatically verified and user signed in: ${auth.currentUser}');
+//                   }
+//                 },
+//                 verificationFailed: (FirebaseAuthException e) {
+//                   if (kDebugMode) {
+//                     print(
+//                         'Phone number verification failed. Code: ${e.code}. Message: ${e.message}');
+//                   }
+//                 },
+//                 codeSent: (String verificationId, int? resendToken) {
+//                   setState(() {
+//                     _isShowOtp = true;
+//                     otpVisibility = true;
+//                     this.verificationId = verificationId;
+//                   });
+//                   if (kDebugMode) {
+//                     print('Please check your phone for the verification code.');
+//                   }
+//                 },
+//                 codeAutoRetrievalTimeout: (String verificationId) {
+//                   // Auto-resolution timed out...
+//                   setState(() {
+//                     this.verificationId = verificationId;
+//                   });
+//                 },
+//               );
+//         }
+//       else {
+//           String result = await checkRefreshToken();
+//           if (result == 'USER') {
+//             Navigator.of(context).pushNamedAndRemoveUntil(
+//               '/home',
+//                   (Route<dynamic> route) => false,
+//             );
+// >>>>>>> main
           }
-          if (result == 'DOCTOR') {
-            Navigator.pushNamed(context, '/dashboard/doctor/home');
+        },
+        verificationFailed: (FirebaseAuthException e) {
+          if (kDebugMode) {
+            print(
+                'Phone number verification failed. Code: ${e.code}. Message: ${e.message}');
           }
-        }
-    }else{
+        },
+        codeSent: (String verificationId, int? resendToken) {
+          setState(() {
+            _isShowOtp = true;
+            otpVisibility = true;
+            this.verificationId = verificationId;
+          });
+          if (kDebugMode) {
+            print('Please check your phone for the verification code.');
+          }
+        },
+        codeAutoRetrievalTimeout: (String verificationId) {
+          // Auto-resolution timed out...
+          setState(() {
+            this.verificationId = verificationId;
+          });
+        },
+      );
+      // }
+      // else {
+      //     String result = await checkRefreshToken();
+      //     if (result == 'USER') {
+      //       Navigator.pushNamed(context, '/home');
+      //     }
+      //     if (result == 'DOCTOR') {
+      //       Navigator.pushNamed(context, '/dashboard/doctor/home');
+      //     }
+      //   }
+    } else {
       Fluttertoast.showToast(
           msg: 'Phone not exits!',
           toastLength: Toast.LENGTH_SHORT,
@@ -120,8 +169,7 @@ class _SignInScreenState extends State<SignInScreen> {
           timeInSecForIosWeb: 1,
           backgroundColor: Colors.red,
           textColor: Colors.white,
-          fontSize: 16.0
-      );
+          fontSize: 16.0);
     }
   }
 
@@ -132,7 +180,6 @@ class _SignInScreenState extends State<SignInScreen> {
       smsCode: smsCode,
     );
     try {
-
       await auth.signInWithCredential(credential);
       await AuthClient().setKeyCode(_phoneNumberController.text, smsCode);
       // check Login
@@ -141,11 +188,11 @@ class _SignInScreenState extends State<SignInScreen> {
         'keycode': smsCode,
         'provider': 'phone',
       };
+
       var url = Uri.parse('http://$ipDevice:8080/api/auth/login');
       var response = await http.post(url,
           headers: {'Content-Type': 'application/json'},
-          body: jsonEncode(data)
-      );
+          body: jsonEncode(data));
       var result = jsonDecode(response.body);
 
       if (result['user'] == null) {
@@ -161,14 +208,21 @@ class _SignInScreenState extends State<SignInScreen> {
           headers: {'Content-Type': 'application/json'},
         );
         var dataForCurrentUser = jsonDecode(response.body);
+
+        // lưu user
         CurrentUser.to.setUser(dataForCurrentUser);
+      
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        // String userDataString = jsonEncode();
+        String role = result['user']['roles'][0];
+        await prefs.setString('id_and_role', '{"id":"${dataForCurrentUser['id']}","role":"${role}"}');
+
         if (result['user']['roles'][0] == 'USER') {
           Navigator.pushNamed(context, '/home');
         }
         if (result['user']['roles'][0] == 'DOCTOR') {
           Navigator.pushNamed(context, '/dashboard/doctor/home');
         }
-
       }
     } catch (e) {
       if (kDebugMode) {
@@ -199,7 +253,6 @@ class _SignInScreenState extends State<SignInScreen> {
 
     var jsonResponse = jsonDecode(response.body);
     if (jsonResponse['user'] == null) {
-
     } else {
       var path = jsonResponse['user']['roles'][0] == 'USER'
           ? 'patient'
@@ -212,12 +265,10 @@ class _SignInScreenState extends State<SignInScreen> {
       );
       var dataForCurrentUser = jsonDecode(response.body);
       CurrentUser.to.setUser(dataForCurrentUser);
-    return jsonResponse['user']['roles'][0];
+      return jsonResponse['user']['roles'][0];
     }
     return "error";
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -365,15 +416,14 @@ class _SignInScreenState extends State<SignInScreen> {
                       elevation: 0,
                       backgroundColor: const Color(0xFF92A3FD),
                     ),
-                    onPressed: (){
-                      if(otpVisibility){
+                    onPressed: () {
+                      if (otpVisibility) {
+                        log("alo");
                         signInWithOTP();
-                      }
-                      else {
+                      } else {
                         verifyPhoneNumber();
                       }
                     },
-
                     child: Text(
                       otpVisibility ? 'SEND OTP' : 'VERIFY PHONE',
                       style: const TextStyle(

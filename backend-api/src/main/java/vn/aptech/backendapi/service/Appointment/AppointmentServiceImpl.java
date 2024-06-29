@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import vn.aptech.backendapi.dto.AppointmentCreateDto;
 import vn.aptech.backendapi.dto.AppointmentDto;
 import vn.aptech.backendapi.dto.PatientDto;
 import vn.aptech.backendapi.dto.Appointment.AppointmentDetail;
@@ -77,6 +76,25 @@ public class AppointmentServiceImpl implements AppointmentService {
             Optional<Appointment> appointmentOptional = appointmentRepository.findById(id);
             if (appointmentOptional.isPresent()) {
                 Appointment a = appointmentOptional.get();
+                a.setStatus(status);
+                appointmentRepository.save(a);
+            } else {
+                // Xử lý khi không tìm thấy Appointment với id tương ứng
+                throw new IllegalArgumentException("Appointment not found for id: " + id);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            // Xử lý các ngoại lệ tại đây nếu cần
+        }
+    }
+
+    @Override
+    public void changeStatusReason(int id, String reason, String status) {
+        try {
+            Optional<Appointment> appointmentOptional = appointmentRepository.findById(id);
+            if (appointmentOptional.isPresent()) {
+                Appointment a = appointmentOptional.get();
+                a.setReason(reason);
                 a.setStatus(status);
                 appointmentRepository.save(a);
             } else {

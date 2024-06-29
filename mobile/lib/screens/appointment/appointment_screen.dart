@@ -260,81 +260,43 @@ class ReceivingScreen extends StatelessWidget {
                               const SizedBox(
                                 height: 10,
                               ),
-                              Row(
-                                children: [
-                                  GestureDetector(
-                                    onTap: () {
-                                      // Navigator.pushNamed(context, '/register');
-                                      // xử lý code hủy appointment booking
-                                    },
-                                    child: Container(
-                                      width: 160,
-                                      height: 55,
-                                      padding: const EdgeInsets.all(16),
-                                      decoration: ShapeDecoration(
-                                        color: Colors.red,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(40),
-                                        ),
-                                      ),
-                                      child: const Center(
-                                        child: Text(
-                                          'Cancel Booking',
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 16,
-                                            fontFamily: 'Poppins',
-                                            fontWeight: FontWeight.w600,
-                                            height: 1.25,
-                                            letterSpacing: 0.02,
-                                          ),
-                                        ),
+                              GestureDetector(
+                                onTap: () {
+                                  Navigator.pushNamed(context,
+                                      '/appointment/upcoming/detail',
+                                      arguments: {
+                                        'appointmentId':
+                                        appointments[index].id,
+                                        'patientId':
+                                        appointments[index].partientId,
+                                      });
+                                },
+                                child: Container(
+                                  width: 160,
+                                  height: 55,
+                                  padding: const EdgeInsets.all(16),
+                                  decoration: ShapeDecoration(
+                                    color: Colors.blueAccent,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius:
+                                      BorderRadius.circular(40),
+                                    ),
+                                  ),
+                                  child: const Center(
+                                    child: Text(
+                                      'Reschedule',
+                                      style: TextStyle(
+                                        //color: Color(0xFF92A3FD),
+                                        fontSize: 16,
+                                        fontFamily: 'Poppins',
+                                        fontWeight: FontWeight.w600,
+                                        height: 1.25,
+                                        letterSpacing: 0.02,
+                                        color: Colors.white,
                                       ),
                                     ),
                                   ),
-                                  const SizedBox(
-                                    width: 10,
-                                  ),
-                                  GestureDetector(
-                                    onTap: () {
-                                      Navigator.pushNamed(context,
-                                          '/appointment/upcoming/detail',
-                                          arguments: {
-                                            'appointmentId':
-                                                appointments[index].id,
-                                            'patientId':
-                                                appointments[index].partientId,
-                                          });
-                                    },
-                                    child: Container(
-                                      width: 160,
-                                      height: 55,
-                                      padding: const EdgeInsets.all(16),
-                                      decoration: ShapeDecoration(
-                                        color: Colors.blueAccent,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(40),
-                                        ),
-                                      ),
-                                      child: const Center(
-                                        child: Text(
-                                          'Reschedule',
-                                          style: TextStyle(
-                                            //color: Color(0xFF92A3FD),
-                                            fontSize: 16,
-                                            fontFamily: 'Poppins',
-                                            fontWeight: FontWeight.w600,
-                                            height: 1.25,
-                                            letterSpacing: 0.02,
-                                            color: Colors.white,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
+                                ),
                               ),
                             ],
                           ),
@@ -522,10 +484,12 @@ class CompletedScreen extends StatelessWidget {
                                       Navigator.pushNamed(context,
                                           '/appointment/completed/detail',
                                           arguments: {
-                                            'appointmentId':
+                                            "appointmentId":
                                             appointments[index].id,
-                                            'patientId':
+                                            "patientId":
                                             appointments[index].partientId,
+                                            "scheduleId":
+                                            appointments[index].scheduledoctorId,
                                           });
                                     },
                                     child: Container(

@@ -40,6 +40,11 @@ const Payment = ({ setActiveHourIndex, setSlotName, setSchedules, isOpen, data, 
         if (method === 'vnpay') {
             setIsDisabled(true);
             try {
+                // const data = {
+                //     amount: data?.price * 0.3, // Số tiền cần thanh toán
+                //     orderType: 'billpayment',
+                //     returnUrl: 'http://localhost:8080/api/payment/vn-pay-callback',
+                // }
                 const response = await axios.get('http://localhost:8080/api/payment/create_payment_url', {
                     params: {
                         amount: data?.price * 0.3, // Số tiền cần thanh toán
@@ -60,7 +65,7 @@ const Payment = ({ setActiveHourIndex, setSlotName, setSchedules, isOpen, data, 
             });
 
             // Chuyển hướng người dùng sang trang thanh toán của PayPal
-            setPaymentUrl(paymentResponse.data);
+            setPaymentUrl(paymentResponse.data);;
         } else {
             console.log('Payment method is not recognized, handle accordingly');
         }
@@ -90,9 +95,9 @@ const Payment = ({ setActiveHourIndex, setSlotName, setSchedules, isOpen, data, 
             doctorName: data.doctorName,
             departmentName: data.departmentName,    
         };
-       // console.log(data);
+       console.log(paymentUrl);
         localStorage.setItem('paymentData', JSON.stringify(paymentData));
-        window.location.href = `${paymentUrl}`;
+       window.location.href = `${paymentUrl}`;
         
     };
 

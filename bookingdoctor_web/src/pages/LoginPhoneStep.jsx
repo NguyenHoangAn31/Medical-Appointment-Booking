@@ -1,6 +1,6 @@
 
 // eslint-disable-next-line no-unused-vars
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import axios from 'axios';
 import bg_login from '../../public/images/image-login.png';
 import { motion } from 'framer-motion';
@@ -8,6 +8,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import queryString from 'query-string';
 import { toast } from "react-hot-toast";
 import * as ecryptToken from '../ultils/encrypt'
+import getUserData from '../route/CheckRouters/token/Token';
+import { UserContext } from '../components/Layouts/Client';
 
 
 const LoginPhoneStep = () => {
@@ -16,6 +18,8 @@ const LoginPhoneStep = () => {
     const [loading, setLoading] = useState(false);
     const navigateTo = useNavigate();
     const currentPath = localStorage.getItem('currentPath');
+    const { currentUser, setCurrentUser } = useContext(UserContext);
+
     useEffect(() => {
         const queryParams = queryString.parse(window.location.search);
         setUsername(queryParams.username);
@@ -35,6 +39,30 @@ const LoginPhoneStep = () => {
             .confirm(data.keycode)
             .then(async (res) => {
                 setLoading(false);
+                await axios.post('http://localhost:8080/api/auth/set-keycode', data);
+                try {
+                    const result = await axios.post('http://localhost:8080/api/auth/login', data);
+
+                    if (result.data.accessToken != null) {
+                        localStorage.setItem('Token', ecryptToken.encryptToken(JSON.stringify(result.data)));
+                        if (result.data.user.roles[0] == 'USER') {
+                            setCurrentUser(result.data)
+                        }
+                        if (getUserData().user.roles[0] == 'USER') {
+                            navigateTo(`/`);
+                        }
+                        else if (getUserData().user.roles[0] == 'DOCTOR') {
+                            navigateTo(`/dashboard/doctor`);
+                        }
+                        else if (getUserData().user.roles[0] == 'ADMIN') {
+                            navigateTo(`/dashboard/admin`);
+                        }
+
+                    }
+                    // window.location.reload();
+
+                } catch (error) { /* empty */ }
+
             })
             .catch((err) => {
                 toast.error("OTP is incorrect", {
@@ -45,40 +73,9 @@ const LoginPhoneStep = () => {
 
         // setup keycode vào database
 
-        await axios.post('http://localhost:8080/api/auth/set-keycode', data);
 
         //console.log(data);
-        try {
-            const result = await axios.post('http://localhost:8080/api/auth/login', data);
 
-            // console.log(result.data.user.roles[0]);
-
-            if (result && result.data) {
-                localStorage.setItem('Token', ecryptToken.encryptToken(JSON.stringify(result.data)));
-                if (result.data.user.roles[0] === 'DOCTOR') {
-                    localStorage.setItem('currentPath', '');
-                    navigateTo(`/dashboard/doctor`);
-                } else if (result.data.user.roles[0] === 'ADMIN') {
-                    localStorage.setItem('currentPath', '');
-                    navigateTo(`/dashboard/admin`);
-                } else {
-                    //const resultUser = await axios.get(`http://localhost:8080/api/user/search/${username}`);
-                    //console.log(resultUser.data);
-                    //const resultDoctor = await axios.get(`http://localhost:8080/api/doctor/findbyuserid/${id}`);
-                    if (currentPath == null || currentPath == '' || currentPath == '/login'
-                        || currentPath == '/login-by-phone'
-                        || currentPath == '/login-by-phone-submit') {
-                        navigateTo('/');
-                    } else {
-                        localStorage.setItem('currentPath', '');
-                        navigateTo(currentPath);
-                    }
-                }
-
-            }
-            window.location.reload();
-
-        } catch (error) { /* empty */ }
     }
 
     return (
@@ -101,14 +98,14 @@ const LoginPhoneStep = () => {
                                     <form onSubmit={handleSubmit}>
                                         <input type="hidden" name="provider" value="phone" />
                                         <div className="mb-5 input__keycode-total">
-                                            <input type="text" className="input__username" 
-                                            placeholder="Enter keycode"
+                                            <input type="text" className="input__username"
+                                                placeholder="Enter keycode"
                                                 id="input__phone"
                                                 maxLength={6}
                                                 value={keycode}
                                                 onChange={(e) => setKeycode(e.target.value)}
                                             />
-                                            
+
                                         </div>
                                         <div className="mb-4">
                                             <motion.div whileTap={{ scale: 0.8 }}>

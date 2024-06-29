@@ -33,41 +33,44 @@ public class AuthenticationWithUsernameAndKeycodeService {
     @Autowired
     private JWT jwt;
 
-    public Authentication processLogin(AuthenticationWithUsernameAndKeycode body){
+    public Authentication processLogin(AuthenticationWithUsernameAndKeycode body) {
         String username = body.getUsername();
         String keycode = body.getKeycode();
         User user = userRepository.findByEmailOrPhone(username, username)
                 .orElseThrow(() -> new UsernameNotFoundException("Invalid Username or Password"));
-        if(!keycode.equals(user.getKeyCode())){
+        if (!keycode.equals(user.getKeyCode())) {
             throw new UsernameNotFoundException("Invalid Username or Password");
         }
+        // xoa token cu
+        refreshTokenRepository.findRefreshTokenByUsername(username)
+            .ifPresent(refreshTokenRepository::delete);
+        // tao refresh token
         var expiredAt = LocalDateTime.now().plusDays(1);
         var accessToken = jwt.encode(user.getId(), user.getAuthorities(), expiredAt, TOKEN_SECRET);
-        // tao refresh token
         refreshTokenRepository.disableOldRefreshTokenFromUser(user.getId());
         RefreshToken refresh = new RefreshToken(user, 5);
         refreshTokenRepository.save(refresh);
 
         Authentication auth = new Authentication(new UserInformation(user), accessToken, refresh.getCode(), expiredAt);
-        return  auth;
+        return auth;
 
     }
 
-    public Authentication checkToken(String username){
+    public Authentication checkToken(String username) {
         Optional<RefreshToken> authenticationOptional = refreshTokenRepository.findRefreshTokenByUsername(username);
         Authentication auth = new Authentication();
-        if(authenticationOptional.isPresent()){
+        if (authenticationOptional.isPresent()) {
             RefreshToken refreshToken = authenticationOptional.get();
             User user = refreshToken.getUser();
             String tokenCode = refreshToken.getCode();
             LocalDateTime expiredAt = refreshToken.getExpiredAt();
             LocalDateTime now = LocalDateTime.now();
             // if(now.isBefore(expiredAt)){
-                var accessToken = jwt.encode(user.getId(), user.getAuthorities(), expiredAt, TOKEN_SECRET);
-                auth = new Authentication(new UserInformation(user), accessToken, tokenCode, expiredAt);
+            var accessToken = jwt.encode(user.getId(), user.getAuthorities(), expiredAt, TOKEN_SECRET);
+            auth = new Authentication(new UserInformation(user), accessToken, tokenCode, expiredAt);
             // }
         }
-        return  auth;
+        return auth;
     }
 
 }

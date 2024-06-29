@@ -67,6 +67,19 @@ public class AppointmentController {
         }
 
     }
+
+    @PutMapping(value = "/cancelled-appointment/{id}/{reason}/{status}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> changeStatusReason(@PathVariable("id") int id,@PathVariable("reason") String reason, @PathVariable("status") String status) {
+        try {
+            appointmentService.changeStatusReason(id,reason, status);
+            return ResponseEntity.ok("Appointment status updated successfully");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to update appointment status");
+        }
+
+    }
     @GetMapping("/appointmentbyscheduledoctoridandstarttime/{scheduledoctorid}/{starttime}")
     public ResponseEntity<List<AppointmentDto>> getAppointments(
             @PathVariable("starttime") @DateTimeFormat(iso = DateTimeFormat.ISO.TIME) LocalTime starttime,
