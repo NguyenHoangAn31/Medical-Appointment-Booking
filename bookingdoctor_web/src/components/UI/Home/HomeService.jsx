@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react'
+import React, { useState, useEffect } from 'react'
 import Slider from "react-slick"
 import "slick-carousel/slick/slick.css"
 import "slick-carousel/slick/slick-theme.css"
@@ -10,16 +10,16 @@ import { motion } from 'framer-motion';
 const HomeService = () => {
 
     const [departments, setDepartments] = useState([]);
-   // console.log(departments);
+    // console.log(departments);
     // tải dữ liệu và gán vào departments thông qua hàm setDepartments
-  const loadDepartments = async () => {
-    const fetchedDepartments = await department.getAllDepartment();
-    setDepartments(fetchedDepartments);
-  };
-  // thực hiện load dữ liệu 1 lần 
-  useEffect(() => {
-    loadDepartments();
-  }, []);
+    const loadDepartments = async () => {
+        const fetchedDepartments = await department.getAllDepartment();
+        setDepartments(fetchedDepartments);
+    };
+    // thực hiện load dữ liệu 1 lần 
+    useEffect(() => {
+        loadDepartments();
+    }, []);
 
     const settings = {
         dots: true,
@@ -60,12 +60,12 @@ const HomeService = () => {
     }
     return (
         <section className='container'>
-           <div className='d-flex justify-content-between align-items-center mb-5'>
+            <div className='d-flex justify-content-between align-items-center mb-5'>
                 <h1 className='main__title' >Our Services</h1>
-                <motion.div whileTap={{scale: 0.8}}>
+                <motion.div whileTap={{ scale: 0.8 }}>
                     <Link className='btn__service' to={'/service'}>See all</Link>
                 </motion.div>
-           </div>
+            </div>
             <div>
                 <Slider {...settings}>
                     {departments.map((item) => (
@@ -77,7 +77,7 @@ const HomeService = () => {
                     )}
                 </Slider>
             </div>
-            
+
         </section>
     )
 }

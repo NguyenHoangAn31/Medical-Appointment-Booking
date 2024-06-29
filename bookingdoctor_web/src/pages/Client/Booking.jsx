@@ -1,5 +1,6 @@
+// eslint-disable-next-line no-unused-vars
 import React, { useState, useEffect, useContext } from 'react'
-import { MdSearch, MdOutlineStarPurple500, MdCalendarMonth, MdOutlinePhoneInTalk, MdArrowBackIos, MdArrowForwardIos, MdArrowBack } from "react-icons/md";
+import { MdSearch, MdOutlineStarPurple500, MdCalendarMonth, MdOutlinePhoneInTalk, MdArrowBackIos, MdArrowForwardIos } from "react-icons/md";
 import { BiCommentDots, BiSolidVideo } from "react-icons/bi";
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -14,7 +15,7 @@ import getUserData from '../../route/CheckRouters/token/Token'
 import Payment from '../../components/Card/Payment';
 import { formatDateFromJs } from '../../ultils/formatDate';
 import { UserContext } from '../../components/Layouts/Client';
-import Swal from 'sweetalert2'
+import Swal from 'sweetalert2';
 
 const Booking = () => {
   const slots = [
@@ -127,7 +128,7 @@ const Booking = () => {
       "January", "February", "March", "April", "May", "June",
       "July", "August", "September", "October", "November", "December"
     ];
-  
+
     // monthNumber - 1 vì mảng bắt đầu từ 0, trong khi tháng bắt đầu từ 1
     return monthNames[monthNumber - 1];
   }
@@ -156,7 +157,7 @@ const Booking = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalData, setModalData] = useState(null);
   // Khởi tạo state cho ngày
-  
+
   const [daySelected, setDaySelected] = useState('');
   const loadDepartments = async () => {
     const fetchedDepartments = await axios.get('http://localhost:8080/api/department/all');
@@ -172,9 +173,7 @@ const Booking = () => {
     try {
       const fetchedDoctor = await axios.get('http://localhost:8080/api/doctor/' + id);
       setDoctor(fetchedDoctor.data)
-    } catch (error) {
-
-    }
+    } catch (error) { /* empty */ }
   };
 
 
@@ -238,8 +237,7 @@ const Booking = () => {
         setPatient(result.data);
         setPatientId(result.data.id);
       }
-    } catch (error) {
-    }
+    } catch (error) { /* empty */ }
   }
 
   const handleSearch = async (event) => {
@@ -266,16 +264,14 @@ const Booking = () => {
     try {
       const fetchedDoctorDepartment = await axios.get('http://localhost:8080/api/doctor/related-doctor/' + index);
       setDoctorForSearch(fetchedDoctorDepartment.data)
-    } catch (error) {
-
-    }
+    } catch (error) { /* empty */ }
   }
 
   function stripTime(date) {
     return new Date(date.getFullYear(), date.getMonth(), date.getDate());
   }
 
-  
+
 
 
 
@@ -289,7 +285,7 @@ const Booking = () => {
     return format(Date(index), 'dd MMMM, yyyy')
   }
 
-  
+
 
 
   const handleDoctorClick = async (index) => {
@@ -311,7 +307,7 @@ const Booking = () => {
     } catch (error) {
       if (error.response && error.response.status === 404) {
         setSchedules([]);
-      }else {
+      } else {
         console.error('An error occurred:', error);
       }
     }
@@ -341,14 +337,15 @@ const Booking = () => {
         setSchedules(fetchedSlotByDoctorAndDay.data)
       } else if (fetchedSlotByDoctorAndDay.status === 404) {
         setSchedules([])
-      }else {
+      } else {
+        // eslint-disable-next-line no-undef
         console.error('An error occurred:', error);
       }
 
     } catch (error) {
       if (error.response && error.response.status === 404) {
         setSchedules([]);
-      }else {
+      } else {
         console.error('An error occurred:', error);
       }
     }
@@ -381,12 +378,12 @@ const Booking = () => {
 
 
   const handleSlotClick = async (slot_Name, slot_Id, scheduledoctor_Id, dayCurrent, patientId) => {
-    const hourCurrent = new Date().getHours(); 
+    const hourCurrent = new Date().getHours();
     const dateCurrent = new Date().getDate();
-    const monthCurrent= new Date().getMonth() + 1;
+    const monthCurrent = new Date().getMonth() + 1;
     const yearCurrent = new Date().getFullYear();
     const [yearsStr, monthsStr, daysStr] = dayCurrent.split('-');
-    const [hoursStr, minutesStr] = slot_Name.split(':');
+    const [hoursStr] = slot_Name.split(':');
     const dayInt = parseInt(daysStr, 10);
     const monthInt = parseInt(monthsStr, 10);
     const yearInt = parseInt(yearsStr, 10);
@@ -394,7 +391,7 @@ const Booking = () => {
     const currentDate = new Date(yearCurrent, monthCurrent - 1, dateCurrent, hourCurrent);
     const selectedDate = new Date(yearInt, monthInt - 1, dayInt, hoursInt);
     if (selectedDate - currentDate > (2 * 60 * 60 * 1000)) {
-         try {
+      try {
         const response = await axios.get(`http://localhost:8080/api/appointment/check-schedule-for-patient/${doctorId}/${patientId}/${dayCurrent}`);
         if (response.data) {
           Swal.fire({
@@ -413,24 +410,22 @@ const Booking = () => {
                 confirmButtonText: 'Ok'
               });
               return;
-              
+
             } else {
               setActiveHourIndex(slot_Id);
               setSlotName(slot_Name);
               setScheduledoctorId(scheduledoctor_Id);
             }
-          } catch (error) {
-          }
+          } catch (error) { /* empty */ }
         }
 
-      } catch (error) {
-      }
+      } catch (error) { /* empty */ }
     } else {
       Swal.fire({
         text: 'Please book an appointment two hours in advance!',
         icon: 'error',
         confirmButtonText: 'Ok'
-      });     
+      });
     }
 
   }
@@ -481,6 +476,7 @@ const Booking = () => {
 
   }
 
+  // eslint-disable-next-line react/prop-types
   const RatingStar = ({ rating }) => {
     const fullStar = '★';
     const emptyStar = '☆';
@@ -586,10 +582,10 @@ const Booking = () => {
                         const dayYear = day.nam; // Thay thế bằng trường dữ liệu thích hợp nếu có
                         const dayMonth = day.thang; // Thay thế bằng trường dữ liệu thích hợp nếu có
                         const dayDate = day.ngayOfMonth;
-                        
+
                         const isDisabled01 = (dayYear < currentYear) ||
-                             (dayYear === currentYear && dayMonth < currentMonth) ||
-                             (dayYear === currentYear && dayMonth === currentMonth && dayDate < currentDate);
+                          (dayYear === currentYear && dayMonth < currentMonth) ||
+                          (dayYear === currentYear && dayMonth === currentMonth && dayDate < currentDate);
                         return (
                           <div
                             key={i}

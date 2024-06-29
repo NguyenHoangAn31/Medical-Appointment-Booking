@@ -140,7 +140,7 @@ function Schedule() {
         return { border: '2px solid #1890ff' }; // blue
       case 'no show':
         return { border: '2px solid #fa8c16' }; // orange
-      case 'cancel':
+      case 'cancelled':
         return { border: '2px solid #f5222d' }; // red
       case 'completed':
         return { border: '2px solid #52c41a' }; // green
@@ -289,7 +289,7 @@ function Schedule() {
                 <div className="card-body text-center p-0">
                   {appointments[`${slotItem.startTime}-${slotItem.scheduledoctorId}`]?.[0]?.status === 'waiting' ? 'waiting'
                     : appointments[`${slotItem.startTime}-${slotItem.scheduledoctorId}`]?.[0]?.status === 'no show' ? 'no show'
-                      : appointments[`${slotItem.startTime}-${slotItem.scheduledoctorId}`]?.[0]?.status === 'cancel' ? 'cancel'
+                      : appointments[`${slotItem.startTime}-${slotItem.scheduledoctorId}`]?.[0]?.status === 'cancelled' ? 'cancelled'
                         : appointments[`${slotItem.startTime}-${slotItem.scheduledoctorId}`]?.[0]?.status === 'completed' ? 'completed'
                           : ''}
                 </div>
@@ -335,11 +335,11 @@ function Schedule() {
                             [patient.id]: !prev[patient.id]
                           }));
                         }}>
-                        {appointments[`${selectedSlot.startTime}-${selectedSlot.scheduledoctorId}`].some(appointment => appointment.status === 'completed')
+                        {appointments[`${selectedSlot.startTime}-${selectedSlot.scheduledoctorId}`].some(appointment => appointment.status === 'completed' || appointment.status === 'cancelled')
                           ?
                           <span style={{ border: "0", display: "none" }}></span>
                           : (
-                            <span>Create a prescription</span>
+                            <strong>Create a prescription</strong>
                           )}
                       </Button>
                       {/* <Select value={appointment.status} style={{ width: 120 }} onChange={(value) => handleStatusChange(appointment.id, value)}>
@@ -436,7 +436,7 @@ function Schedule() {
                             visible={isModalVisible}
                             onOk={createMedical}
                             onCancel={handleCancel}
-                            okButtonProps={{ disabled: !isChecked }}
+                            okButtonProps={{ disabled: isChecked }}
                           >
                             <p><strong>Disease name:</strong> {modalData.name}</p>
                             <p><strong>Symptom:</strong> {modalData.content}</p>
@@ -446,7 +446,7 @@ function Schedule() {
                                 <p key={index}>
                                   <input
                                     type="checkbox"
-                                    checked={appointment.status === "completed"}
+                                    checked={appointment.status == "completed" ? "true" : "false"}
                                     onChange={(e) => {
                                       handleStatusChange(appointment.id, e.target.checked ? "completed" : "waiting")
                                       setIsChecked(e.target.checked);
