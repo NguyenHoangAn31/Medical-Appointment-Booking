@@ -80,6 +80,52 @@ class _SignInScreenState extends State<SignInScreen> {
           if (kDebugMode) {
             print(
                 'Phone number automatically verified and user signed in: ${auth.currentUser}');
+
+//       bool isPhone = await AuthClient().sendOtp(_phoneNumberController.text);
+//       if (isPhone) {
+//               await auth.verifyPhoneNumber(
+//                 timeout: const Duration(seconds: 60),
+//                 phoneNumber: formatPhoneNumber(_phoneNumberController.text),
+//                 verificationCompleted: (PhoneAuthCredential credential) async {
+//                   // Auto-retrieval or instant validation
+//                   await auth.signInWithCredential(credential);
+//                   if (kDebugMode) {
+//                     print(
+//                         'Phone number automatically verified and user signed in: ${auth.currentUser}');
+//                   }
+//                 },
+//                 verificationFailed: (FirebaseAuthException e) {
+//                   if (kDebugMode) {
+//                     print(
+//                         'Phone number verification failed. Code: ${e.code}. Message: ${e.message}');
+//                   }
+//                 },
+//                 codeSent: (String verificationId, int? resendToken) {
+//                   setState(() {
+//                     _isShowOtp = true;
+//                     otpVisibility = true;
+//                     this.verificationId = verificationId;
+//                   });
+//                   if (kDebugMode) {
+//                     print('Please check your phone for the verification code.');
+//                   }
+//                 },
+//                 codeAutoRetrievalTimeout: (String verificationId) {
+//                   // Auto-resolution timed out...
+//                   setState(() {
+//                     this.verificationId = verificationId;
+//                   });
+//                 },
+//               );
+//         }
+//       else {
+//           String result = await checkRefreshToken();
+//           if (result == 'USER') {
+//             Navigator.of(context).pushNamedAndRemoveUntil(
+//               '/home',
+//                   (Route<dynamic> route) => false,
+//             );
+// >>>>>>> main
           }
         },
         verificationFailed: (FirebaseAuthException e) {

@@ -140,10 +140,7 @@ class _DoctorScreenState extends State<DoctorScreen> {
                           children: [
                             InkWell(
                               onTap: () {
-                                Navigator.pushNamed(context, '/doctor', arguments:
-                                {
-                                  'doctorId': doctor.id,
-                                });
+                                Navigator.pushNamed(context, '/doctor', arguments: {'doctorId' : doctor.id} );
                               },
                               child: Row(
                                 children: [

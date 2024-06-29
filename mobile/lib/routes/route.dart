@@ -23,7 +23,7 @@ class Routes {
 
   static Map<String, WidgetBuilder> getRoutes() {
     return {
-      '/home': (context) => const NavigationMenu(),
+      '/home':(context) => const NavigationMenu (),
       '/login': (context) => const LoginScreen(),
       '/register': (context) => const RegisterScreen(),
       '/sign-in': (context) => const SignInScreen(),

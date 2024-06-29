@@ -19,7 +19,7 @@ public class PatientDto {
     private LocalDate birthday; // ngày sinh
     private String address; // Địa chỉ
     private String image; // Image
-    private Boolean status;
+    private boolean status;
     private LocalDateTime createdAt;
     private UserDto user;
     private List<MedicalDto> medicals;

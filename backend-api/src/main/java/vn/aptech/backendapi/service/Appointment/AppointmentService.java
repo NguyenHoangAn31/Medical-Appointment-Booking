@@ -12,7 +12,9 @@ import vn.aptech.backendapi.dto.Appointment.CustomAppointmentDto;
 public interface AppointmentService {
         List<CustomAppointmentDto> findAll();
 
-        AppointmentDetail appointmentDetail(int appointmentId);
+    void changeStatusReason(int id, String reason, String status);
+
+    AppointmentDetail appointmentDetail(int appointmentId);
 
         void changestatus(int id, String status);
 

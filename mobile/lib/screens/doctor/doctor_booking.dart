@@ -55,7 +55,6 @@ class _DoctorBookingScreenState extends State<DoctorBookingScreen> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     final Map arguments = ModalRoute.of(context)?.settings.arguments as Map;
-
     doctorId = arguments['doctorId'] as int;
      _doctorFuture = getDoctorById(doctorId);
     toDay = DateTime.now();
@@ -90,12 +89,6 @@ class _DoctorBookingScreenState extends State<DoctorBookingScreen> {
     if (difference.inMinutes > 120) {
       bool result = await AppointmentClient().checkAppointmentForPatient(data['doctorId'], data['patientId'], data['daySelected']);
       if(result){
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('You are booking with one doctor for one day. Please select again.'),
-            backgroundColor: Colors.red,
-          ),
-        );
         AwesomeDialog(
           context: context,
           animType: AnimType.bottomSlide,
@@ -107,7 +100,11 @@ class _DoctorBookingScreenState extends State<DoctorBookingScreen> {
           ),),
           title: 'This is Ignored',
           desc:   'This is also Ignored',
-          btnOkOnPress: () {},
+          btnOkOnPress: () {
+            setState(() {
+              _selectedIndex = -1;
+            });
+          },
         )..show();
         return;
       }else{
@@ -128,12 +125,12 @@ class _DoctorBookingScreenState extends State<DoctorBookingScreen> {
             ),),
             title: 'This is Ignored',
             desc:   'This is also Ignored',
-            btnOkOnPress: () {},
+            btnOkOnPress: () {
+              setState(() {
+                _selectedIndex = -1;
+              });
+            },
             )..show();
-        }else{
-
-
-          // xử lý các hàm khác trong này
         }
 
       }
@@ -143,13 +140,17 @@ class _DoctorBookingScreenState extends State<DoctorBookingScreen> {
         animType: AnimType.bottomSlide,
         dialogType: DialogType.error,
         body: Center(child: Text(
-          'YPlease book an appointment two hours in advance!.!',
+          'Please book an appointment two hours in advance!.!',
           style: TextStyle(fontStyle: FontStyle.italic),
           textAlign: TextAlign.center,
         ),),
         title: 'This is Ignored',
         desc:   'This is also Ignored',
-        btnOkOnPress: () {},
+        btnOkOnPress: () {
+          setState(() {
+            _selectedIndex = -1;
+          });
+        },
       )..show();
 
     }
@@ -169,6 +170,7 @@ class _DoctorBookingScreenState extends State<DoctorBookingScreen> {
         centerTitle: true,
       ),
       body: SingleChildScrollView(
+        scrollDirection: Axis.vertical,
         padding: const EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -290,7 +292,7 @@ class _DoctorBookingScreenState extends State<DoctorBookingScreen> {
                   onDaySelected: _onDaySelected,
                   enabledDayPredicate: (day) {
                     // Only enable days from today onwards
-                    return !day.isBefore(DateTime.now().subtract(const Duration(days: 1)));
+                    return !day.isBefore(DateTime.now().subtract(const Duration(days: 0)));
                   },
                 ),
               )
@@ -436,7 +438,11 @@ class _DoctorBookingScreenState extends State<DoctorBookingScreen> {
                     ),),
                     title: 'This is Ignored',
                     desc:   'This is also Ignored',
-                    btnOkOnPress: () {},
+                    btnOkOnPress: () {
+                      setState(() {
+                        _selectedIndex = -1;
+                      });
+                    },
                   )..show();
                 }else{
 
@@ -455,9 +461,8 @@ class _DoctorBookingScreenState extends State<DoctorBookingScreen> {
                     'status': 'waiting',
                     'reason': ''
                   };
-                  print(data);
                   if (_selectedIndex != -1) {
-                   Navigator.pushNamed(context, '/doctor/booking/patient', arguments: data);
+                        Navigator.pushNamed(context, '/doctor/booking/patient', arguments: data);
                   } else {
                     AwesomeDialog(
                       context: context,
@@ -468,7 +473,11 @@ class _DoctorBookingScreenState extends State<DoctorBookingScreen> {
                         style: TextStyle(fontStyle: FontStyle.italic),
                         textAlign: TextAlign.center,
                       ),),
-                      btnOkOnPress: () {},
+                      btnOkOnPress: () {
+                        setState(() {
+                          _selectedIndex = -1;
+                        });
+                      },
                     )..show();
                   }
                 }
