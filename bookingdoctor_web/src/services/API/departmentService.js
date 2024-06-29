@@ -18,9 +18,9 @@ export const deleteDepartment = async (id) => {
         throw error;
     }
 };
-export const findDepartmentById = async (id) => {
+export const findDepartmentBySlug = async (slug) => {
     try {
-        const response = await request.get(`department/${id}`);
+        const response = await request.get(`department/${slug}`);
         return response;
     } catch (error) {
         console.log(error);

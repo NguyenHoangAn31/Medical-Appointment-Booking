@@ -6,7 +6,7 @@ import { Badge, Dropdown, Rate, Space } from 'antd';
 import Spinner from '../../../../components/Spinner';
 import { DownOutlined } from '@ant-design/icons';
 import { AlertContext } from '../../../../components/Layouts/DashBoard';
-import { formatDate } from '../../../../ultils/formatDate';
+import { formatDate, formatDateFromJs } from '../../../../ultils/formatDate';
 
 function FeedbackDetail() {
   const {openNotificationWithIcon} = useContext(AlertContext);
@@ -43,11 +43,12 @@ function FeedbackDetail() {
 
   const handlechangeStatus = async (id, status) => {
     try {
+      status = status?1:0
       await changeStatus('feedback', id, status);
       loadDetailFeedback();
       openNotificationWithIcon('success', 'Change Status Feedback Successfully', '')
     } catch (error) {
-      Alert('warning', 'Something Went Wrong', '')
+      openNotificationWithIcon('warning', 'Something Went Wrong', '')
       console.log(error)
     }
   };
@@ -187,8 +188,8 @@ function FeedbackDetail() {
                     />
                   </div>
                   <div className="comment_patient">
-                    <p className='mb-1'>{value.patient.fullName}</p>
-                    <Rate className="fs-6 mb-2" count={5} disabled defaultValue={value.rate} />
+                    <p className='mb-2'>{value.patient.fullName} ({formatDateFromJs(value.createdAt)})</p>
+                    <Rate className="fs-6 mb-1" count={5} disabled defaultValue={value.rate} />
                     <p className='pt-2'>{value.comment}</p>
                   </div>
                   <div className="option">

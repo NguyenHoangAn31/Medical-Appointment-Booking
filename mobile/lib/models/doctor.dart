@@ -1,4 +1,4 @@
-import 'package:mobile/models/feedback.dart';
+import 'package:mobile/models/feedback_model.dart';
 import 'package:mobile/models/working.dart';
 
 import 'department.dart';
@@ -20,7 +20,7 @@ class Doctor{
   late final Department department;
 
   final List<Working> working;
-  final List<Feedback> feedback;
+  final List<Feedbacks> feedback;
   Doctor({required this.id, required this.fullName, required this.title, required this.gender, required this.birthday,
   required this.address, required this.image, required this.price, required this.biography, required this.experience, required this.rate,
      required this.userId, required this.status, required this.department, required this.working, required this.feedback});
@@ -31,8 +31,8 @@ class Doctor{
         ? workingJson.map((e) => Working.fromJson(e as Map<String, dynamic>)).toList()
         : [];
     var feedbackJson = json['feedback'] as List<dynamic>?; // Handle potential null value
-    List<Feedback> feedbackList = feedbackJson != null
-    ? feedbackJson.map((e) => Feedback.fromJson(e as Map<String, dynamic>)).toList()
+    List<Feedbacks> feedbackList = feedbackJson != null
+    ? feedbackJson.map((e) => Feedbacks.fromJson(e as Map<String, dynamic>)).toList()
         : [];
     return Doctor(
       id: json['id'],

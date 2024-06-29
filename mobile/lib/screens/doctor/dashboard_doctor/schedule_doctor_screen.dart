@@ -41,12 +41,31 @@ class _ScheduleDoctorScreenState extends State<ScheduleDoctorScreen> {
     fetchHoursList(formattedDate);
   }
 
-  void _onSlotSelected() {
-    log("date : $toDay");
-    log("focusedDay : $daySelected");
+  void _onSlotSelected(String startTime) {
+    final now = DateTime.now();
+    final currentTime = TimeOfDay(hour: now.hour, minute: now.minute);
+
+    final startTimeParts = startTime.split(':');
+    final startHour = int.parse(startTimeParts[0]);
+    final startMinute = int.parse(startTimeParts[1]);
+    final selectedTime = TimeOfDay(hour: startHour, minute: startMinute);
+
+    final isCurrentTimeGreaterThanStartTime =
+        currentTime.hour > selectedTime.hour ||
+            (currentTime.hour == selectedTime.hour &&
+                currentTime.minute > selectedTime.minute);
+
+    log("isCurrentTimeGreaterThanStartTime : $isCurrentTimeGreaterThanStartTime");
+
     setState(() {
-      isShowButton =
-          toDay.isBefore(daySelected) || isSameDay(toDay, daySelected);
+      if (isSameDay(toDay, daySelected) && !isCurrentTimeGreaterThanStartTime) {
+        isShowButton = true;
+      } else if (daySelected.isAfter(toDay)) {
+        log("if 3");
+        isShowButton = true;
+      } else {
+        isShowButton = false;
+      }
     });
   }
 
@@ -203,7 +222,7 @@ class _ScheduleDoctorScreenState extends State<ScheduleDoctorScreen> {
                                       hoursList[index]['endTime']);
                           return InkWell(
                             onTap: () {
-                              _onSlotSelected();
+                              _onSlotSelected(hoursList[index]['startTime']);
                               setState(() {
                                 if (isDoctorHour) {
                                   isRegistered = true;

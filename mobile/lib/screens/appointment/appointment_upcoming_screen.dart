@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mobile/models/patient.dart';
 import 'package:mobile/services/appointment_service.dart';
-
+import 'package:http/http.dart' as http;
 import '../../models/appointment.dart';
 import '../../services/patient_service.dart';
+import 'package:awesome_dialog/awesome_dialog.dart';
 import '../../utils/ip_app.dart';
 
 class AppointmentUpcomingScreen extends StatefulWidget {
@@ -24,6 +25,7 @@ class _AppointmentUpcomingScreen extends State<AppointmentUpcomingScreen> {
   late int? age;
   late Future<Appointment> _appointmentFutureWaiting;
   late Future<Patient> _patientFuture;
+  final FocusNode _focusNode = FocusNode();
 
 
   String getDayOfWeek(String date) {
@@ -58,6 +60,12 @@ class _AppointmentUpcomingScreen extends State<AppointmentUpcomingScreen> {
   }
 
   @override
+  void dispose() {
+    _focusNode.dispose();
+    super.dispose();
+  }
+
+  @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     final Map arguments = ModalRoute.of(context)?.settings.arguments as Map;
@@ -81,6 +89,44 @@ class _AppointmentUpcomingScreen extends State<AppointmentUpcomingScreen> {
   }
 
   late TextEditingController txtCancelledReason = TextEditingController();
+
+  void handleCancelledSubmit(Map data) async {
+      final response = await http.put(
+        Uri.parse('http://$ipDevice:8080/api/appointment/cancelled-appointment/${data['id']}/${data['reason']}/${data['status']}'),
+        headers: {'Content-Type': 'application/json'},
+      );
+      if (response.statusCode == 200) {
+        AwesomeDialog(
+          context: context,
+          animType: AnimType.bottomSlide,
+          dialogType: DialogType.success,
+          body: Center(child: Text(
+            'Hủy lịch thành công!',
+            style: TextStyle(fontStyle: FontStyle.normal),
+            textAlign: TextAlign.center,
+          ),),
+          btnOkOnPress: () {
+          },
+        )..show();
+      } else {
+        AwesomeDialog(
+          context: context,
+          animType: AnimType.bottomSlide,
+          dialogType: DialogType.error,
+          body: Center(child: Text(
+            'Hủy lịch thất bại! Vui lòng thử lại',
+            style: TextStyle(fontStyle: FontStyle.normal),
+            textAlign: TextAlign.center,
+          ),),
+          btnOkOnPress: () {
+            Navigator.pushNamed(context, '/home');
+          },
+        )..show();
+      }
+
+
+
+  }
 
 
 
@@ -251,8 +297,9 @@ class _AppointmentUpcomingScreen extends State<AppointmentUpcomingScreen> {
                       const SizedBox(
                         height: 20,
                       ),
-                      const Column(
-                        children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
                           Text(
                             'Patient Information',
                             style: TextStyle(
@@ -260,131 +307,147 @@ class _AppointmentUpcomingScreen extends State<AppointmentUpcomingScreen> {
                               fontWeight: FontWeight.bold,
                             ),
                           ),
+                          const SizedBox(
+                            height: 25,
+                          ),
+                          Padding(padding: EdgeInsets.symmetric(horizontal: 15),
+                            child: Table(columnWidths: const {
+                              0: FixedColumnWidth(100), // Độ rộng cột đầu tiên
+                            }, children: [
+                              TableRow(
+                                children: [
+                                  const Padding(
+                                    padding:
+                                    EdgeInsets.symmetric(vertical: 5.0),
+                                    child: Text(
+                                      'Full Name',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: 18.0,
+                                      ),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding:
+                                    const EdgeInsets.symmetric(vertical: 5.0),
+                                    child: Text(
+                                      patientName!,
+                                      style: const TextStyle(
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: 18.0,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              TableRow(
+                                children: [
+                                  Padding(
+                                    padding:
+                                    EdgeInsets.symmetric(vertical: 5.0),
+                                    child: Text(
+                                      'Age',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: 18.0,
+                                      ),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding:
+                                    EdgeInsets.symmetric(vertical: 5.0),
+                                    child: Text(
+                                      '${age!}',
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: 18.0,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              TableRow(
+                                children: [
+                                  Padding(
+                                    padding:
+                                    EdgeInsets.symmetric(vertical: 5.0),
+                                    child: Text(
+                                      'Gender',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: 18.0,
+                                      ),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding:
+                                    EdgeInsets.symmetric(vertical: 5.0),
+                                    child: Text(
+                                      '${gender!}',
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: 18.0,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              TableRow(
+                                children: [
+                                  Padding(
+                                    padding:
+                                    EdgeInsets.symmetric(vertical: 5.0),
+                                    child: Text(
+                                      'Problem',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: 18.0,
+                                      ),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding:
+                                    EdgeInsets.symmetric(vertical: 5.0),
+                                    child: Text(
+                                      item.note,
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: 18.0,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ]),
+                          ),
+                          const SizedBox(
+                            height: 25,
+                          ),
+                          Text('Reason cancelled', style: TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                          ),),
+                          const SizedBox(
+                            height: 25,
+                          ),
+                          TextField(
+                            focusNode: _focusNode,
+                            controller: txtCancelledReason,
+                            decoration: const InputDecoration(
+                              // border: OutlineInputBorder(),
+                              hintText: 'Enter your reason cancelled',
+                            ),
+                            onSubmitted: (value) {
+                              // Hide the keyboard when the user submits
+                              _focusNode.unfocus();
+                            },
+                          )
                         ],
                       ),
-                      Table(columnWidths: const {
-                        0: FixedColumnWidth(100), // Độ rộng cột đầu tiên
-                      }, children: [
-                        TableRow(
-                          children: [
-                            const Padding(
-                              padding:
-                                  EdgeInsets.symmetric(vertical: 5.0),
-                              child: Text(
-                                'Full Name',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 18.0,
-                                ),
-                              ),
-                            ),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(vertical: 5.0),
-                              child: Text(
-                                patientName!,
-                                style: const TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 18.0,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        TableRow(
-                          children: [
-                            Padding(
-                              padding:
-                                  EdgeInsets.symmetric(vertical: 5.0),
-                              child: Text(
-                                'Age',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 18.0,
-                                ),
-                              ),
-                            ),
-                            Padding(
-                              padding:
-                                  EdgeInsets.symmetric(vertical: 5.0),
-                              child: Text(
-                                '${age!}',
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 18.0,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        TableRow(
-                          children: [
-                            Padding(
-                              padding:
-                                  EdgeInsets.symmetric(vertical: 5.0),
-                              child: Text(
-                                'Gender',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 18.0,
-                                ),
-                              ),
-                            ),
-                            Padding(
-                              padding:
-                                  EdgeInsets.symmetric(vertical: 5.0),
-                              child: Text(
-                                '${gender!}',
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 18.0,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        TableRow(
-                          children: [
-                            Padding(
-                              padding:
-                                  EdgeInsets.symmetric(vertical: 5.0),
-                              child: Text(
-                                'Problem',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 18.0,
-                                ),
-                              ),
-                            ),
-                            Padding(
-                              padding:
-                                  EdgeInsets.symmetric(vertical: 5.0),
-                              child: Text(
-                                item.note,
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 18.0,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ]),
-                      const SizedBox(
-                        height: 25,
-                      ),
-                      TextField(
-                        controller: txtCancelledReason,
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
-                          labelText: 'Cancelled Reason',
-                        ),
-                      )
-
                     ],
                   ),
                   //)
@@ -396,7 +459,15 @@ class _AppointmentUpcomingScreen extends State<AppointmentUpcomingScreen> {
             color: Colors.white,
             padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 30),
             child: InkWell(
-              onTap: () {},
+              onTap: () {
+                print(appointmentId);
+                var data = {
+                    'id': appointmentId,
+                    'reason': txtCancelledReason.text,
+                    'status' :'cancelled'
+                };
+                handleCancelledSubmit(data);
+              },
               child: Container(
                 height: 50,
                 width: 150,
@@ -426,4 +497,6 @@ class _AppointmentUpcomingScreen extends State<AppointmentUpcomingScreen> {
       ),
     );
   }
+
+
 }

@@ -24,6 +24,7 @@ public class CustomAppointmentDto {
     private int price;
     private String payment;
     private String status;
+    private String note;
     private String appointmentDate;
     private String medicalExaminationDay;
     private String clinicHours;

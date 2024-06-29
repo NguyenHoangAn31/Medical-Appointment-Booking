@@ -62,6 +62,7 @@ class _AppointmentDoctorScreenState extends State<AppointmentDoctorScreen> {
         examinationToday = result;
         filteredExaminationToday = result; // Initially show all
         noAppointments = result.isEmpty ? true : false;
+        log(filteredExaminationToday.toString());
       });
     } else {
       throw Exception('Failed to load examinationToday');
@@ -169,6 +170,7 @@ class _AppointmentDoctorScreenState extends State<AppointmentDoctorScreen> {
                                     arguments: {
                                       'patient': patient,
                                       'status': examination['status'],
+                                      'note' : examination['note'],
                                       'action': 'allow',
                                       'id': examination['id']
                                     },
